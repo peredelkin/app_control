@@ -1,0 +1,210 @@
+1)Direction
+2)Reset
+3)HandAuto
+4)E Stop
+5)StartStop
+6)MotPotUp
+7)MotPotDown
+8)ExtFault
+9)ExtAlarm
+
+
+
+
+
+
+AlarmWord1 (9.06):
+0)Off2
+1)Off3
+2)DC-Breaker
+3)Converter overtemperature
+4)Dynamic braking is still pending
+5)Motor measured overtemperature
+6)Motor calculated overload
+7)Motor current reduced
+8)
+9)
+10)Mains low (under-) voltage (AC)
+11)
+12)SDCS-COM-8 com. loss
+13)Armature Current Deviation
+14)Tacho range
+15)
+
+AlarmWord2 (9.07):
+0)Armature current ripple
+1)
+2)
+3)
+4)Autotuning failed
+5)
+6)Fault suppressed
+7)Speed scaling out of range
+8)Speed feedback
+9)External alarm via binary input
+10)Analog input range
+11)
+12)Parameter restored
+13)Local command loss
+14)Parameter added
+15)Parameter setting conflict
+
+AlarmWord3 (9.08):
+0)Retain data invalid
+1)Parameter compatibility
+2)Parameter up- or download failed
+3)AP task time not set
+4)Speed not zero
+5)
+6)
+7)
+8)
+9)
+10)
+11)
+12)
+13)
+14)
+15)
+
+AuxCtrlWord
+AuxCtrlWord2
+AuxStatWord
+
+DI StatWord (8.05): (default)
+0)ConvFanAck
+1)MotFanAck
+2)MainContAck
+3)Off2
+4)E Stop
+5)Reset
+6)OnOff
+7)StartStop
+8)
+9)
+10)
+11)
+12)
+13)
+14)
+15)
+
+CtrlWordAO1
+CtrlWordAO2
+CtrlWordAO3
+CtrlWordAO4
+
+DO CtrlWord (7.05):
+0)
+1)
+2)
+3)
+4)
+5)
+6)
+7)
+8)
+9)
+10)
+11)
+12)
+13)
+14)
+15)
+
+DO StatWord (8.06): (default)
+0)FansOn
+1)
+2)MainContactorOn
+3)
+4)
+5)
+6)
+7)MainContactorOn
+8)
+9)
+10)
+11)
+12)
+13)
+14)
+15)
+
+FaultWord1 (9.01):
+0)Auxiliary undervoltage
+1)Armature overcurrent
+2)Armature overvoltage
+3)Converter overtemperature
+4)
+5)Motor measured overtemperature
+6)Motor calculated overload
+7)I/O board not found or faulty
+8)
+9)
+10)
+11)Mains low (under-) voltage (AC)
+12)Mains overvoltage (AC)
+13)Mains not in synchronism (AC)
+14)Field exciter overcurrent
+15)
+
+FaultWord2 (9.02):
+0)Armature current ripple
+1)
+2)
+3)
+4)
+5)Speed feedback
+6)External fan acknowledge missing
+7)Main contactor acknowledge missing
+8)
+9)External fault via binary input
+10)
+11)
+12)
+13)
+14)Motor stalled
+15)Motor overspeed
+
+FaultWord3 (9.03):
+0)
+1)
+2)
+3)
+4)
+5)
+6)
+7)
+8)Field exciter low (under-) current
+9)
+10)
+11)
+12)
+13)Local command loss
+14)Hardware failure
+15)Firmware failure
+
+FaultWord4 (9.04):
+0)
+1)
+2)Analog input range
+3)
+4)Tacho polarity
+5)Tacho range
+6)
+7)
+8)Reversal time
+9)
+10)
+11)
+12)
+13)
+14)
+15)
+
+LimWord
+MainCtrlWord
+MainStatWord
+SysFaultWord
+UserAlarmWord
+UserFaultWord

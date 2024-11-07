@@ -1,0 +1,383 @@
+<HTML>
+ <HEAD>
+  <TITLE>﻿Измерение температуры при помощи NTC термистора и микроконтроллера AVR</TITLE>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <LINK REL="stylesheet" TYPE="text/css" HREF="/css/style.css">
+ </HEAD>
+ <BODY>
+  <TABLE CELLSPACING=0 CELLPADDING=0 CLASS="pagebound" WIDTH=100% HEIGHT=100%>
+   <TR WIDTH=100%>
+    <TD VALIGN=TOP ALIGN=LEFT WIDTH=100%>
+<DIV CLASS="article">
+<H1>﻿Измерение температуры при помощи NTC термистора и микроконтроллера AVR</H1>
+<DIV CLASS="contents">
+<A HREF="#__h2_1">Характеристика NTC термистора</A><br/>
+<A HREF="#__h2_2">Вычисление температуры</A><br/>
+<A HREF="#__h2_3">Схемы подключения</A><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#__h3_4">Подключение термистора</A><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#__h3_5">Подключение к АЦП микроконтроллера ATmega</A><br/>
+<A HREF="#__h2_6">Расчёт таблицы значений</A><br/>
+<A HREF="#__h2_7">Пример использования</A><br/>
+</DIV>
+<br />
+<p>Автор: Погребняк Дмитрий</p>
+<p>Самара, 2013.</p>
+<br />
+<p><A HREF="/article/ntcresistor-en">Click here</A> to read this article in English.</p>
+<br />
+<p>Одним из вариантов для измерения температуры является использование термисторов. Среди преимуществ термистора можно выделить большое значение температурного коэффициента, то есть значительное изменение сопротивления в зависимости от температуры (порядка 2-10% на Кельвин). Термисторы бывают двух типов: с положительным температурным коэффициентом (PTC, Positive Temperature Coefficient), то есть увеличивающие своё сопротивление с увеличением температуры, и с отрицательным (NTC, Negative Temperature Coefficient) – уменьшающие сопротивление с возрастанием температуры. Речь в данной статье пойдёт про вторые, и про их использования для измерения температуры в сочетании с микроконтроллерами AVR</p>
+<br />
+<a name="__h2_1"></a><H2>Характеристика NTC термистора</H2>
+<p>Термисторы характеризуются рядом параметров, такими, как максимальный допустимый ток, точность, сопротивление при определённой температуре (как правило, при 25°С). Одним из параметров, характеризующим степень изменения сопротивления в зависимости от температуры является <b>коэффициент температурной чувствительности</b>, обозначаемый <b>B</b>. Этот коэффициент рассчитывается на основе значений сопротивления при двух конкретных значениях температур. Во многих случаях этими температурами выбираются 25°С и 100°С. Обычно температуры, использованные при вычислении коэффициента указываются после буквы, например <b>B<sub>25/100</sub></b>. Коэффициент B измеряется в Кельвинах и вычисляется по следующей формуле:</p>
+<a name="FORMULA1"></a><p><center><b>B = (ln(R<sub>1</sub>) – ln(R<sub>2</sub>)) / (1 / T<sub>1</sub> -  1 / T<sub>2</sub>)</b> <i>[1]</i>,</center></p>
+<p>где R<sub>1</sub> и R<sub>2</sub> - значения сопротивлений при температурах соответственно T<sub>1</sub> и T<sub>2</sub>, выраженных в Кельвинах. </p>
+<p>Из этой формулы следуют и обратные: </p>
+<a name="FORMULA2"></a><p><center><b>R<sub>1</sub> = R<sub>2</sub> * e<sup>(B * (1 / T<sub>1</sub> -  1 / T<sub>2</sub>))</sup></b> <i>[2]</i>.</center></p>
+<p><center>и</center></p>
+<a name="FORMULA3"></a><p><center><b>T<sub>1</sub> = 1 / ((ln(R<sub>1</sub>) – ln(R<sub>2</sub>)) / B + 1 / T<sub>2</sub>)</b> <i>[3]</i>.</center></p>
+<br />
+<a name="__h2_2"></a><H2>Вычисление температуры</H2>
+<p>Термисторы обладают высокой степенью нелинейности параметров, и термисторы различных моделей, даже при одинаковых значениях параметра B<sub>25/100</sub> могут по разному изменять сопротивление в зависимости от температуры. Поэтому формула <A HREF="#FORMULA3"><i>[3]</i></A> может лишь приблизительно оценить температуру. Кроме того, такая формула подразумевает сложные вычисления, которые требуют много процессорного времени, что часто является неприемлемым. Более простым и эффективным подходом является хранение таблицы, в которую заносятся предварительно рассчитанные значения, возвращаемые АЦП при тех, или иных температурах. Для экономии памяти можно хранить значения только для некоторых точек, искать их в таблице двоичным поиском, а промежуточные значения получать линейной интерполяцией. Для измерений температуры окружающего воздуха с точностью до 0.3°C, достаточно хранить значения с шагом 5°C. Если значения лежат в пределах 16 бит (и занимают 2 байта), то для хранения такой таблицы для диапазона измеряемых температур от -30 до 70 градусов потребуется всего 40 байт. Точность измерений можно повысить, уменьшив шаг таблицы. Так при шаге 2°C можно добиться точности до 0.1°C на широком диапазоне измерений.</p>
+<br />
+<p>Производители термисторов, как правило, приводят таблицы показывающие изменение сопротивления в зависимости от температур. Значения в этих таблицах также привязаны к сетке температур с некоторым шагом (например, 5°C). Используя формулы <A HREF="#FORMULA1"><i>[1]</i></A> и <A HREF="#FORMULA2"><i>[2]</i></A> можно с достаточной точностью интерполировать табличные значения.</p>
+<br />
+<a name="__h2_3"></a><H2>Схемы подключения</H2>
+<a name="__h3_4"></a><H3>Подключение термистора</H3>
+<a name="SCHEMES"></a><p><TABLE WIDTH=1 CELLSPACING=0 CELLPADDING=0 CLASS="imgtable" ALIGN=left STYLE="margin-right:10px; align:left"><TR CLASS="imgtable"><TD CLASS="imgtable"><IMG SRC="/articles/img/ntc_a.png" ALT="Схема A" CLASS="artimg"></TD></TR><TR WIDTH=1 CLASS="imgtablelabel"><TD CLASS="imgtablelabel">Схема A</TD></TR></TABLE><TABLE WIDTH=1 CELLSPACING=0 CELLPADDING=0 CLASS="imgtable" ALIGN=left STYLE="margin-right:10px; align:left"><TR CLASS="imgtable"><TD CLASS="imgtable"><IMG SRC="/articles/img/ntc_b.png" ALT="Схема B" CLASS="artimg"></TD></TR><TR WIDTH=1 CLASS="imgtablelabel"><TD CLASS="imgtablelabel">Схема B</TD></TR></TABLE><TABLE WIDTH=1 CELLSPACING=0 CELLPADDING=0 CLASS="imgtable" ALIGN=left STYLE="margin-right:10px; align:left"><TR CLASS="imgtable"><TD CLASS="imgtable"><IMG SRC="/articles/img/ntc_c.png" ALT="Схема C" CLASS="artimg"></TD></TR><TR WIDTH=1 CLASS="imgtablelabel"><TD CLASS="imgtablelabel">Схема C</TD></TR></TABLE><TABLE WIDTH=1 CELLSPACING=0 CELLPADDING=0 CLASS="imgtable" ALIGN=baseline STYLE="margin-right:10px; align:baseline"><TR CLASS="imgtable"><TD CLASS="imgtable"><IMG SRC="/articles/img/ntc_d.png" ALT="Схема D" CLASS="artimg"></TD></TR><TR WIDTH=1 CLASS="imgtablelabel"><TD CLASS="imgtablelabel">Схема D</TD></TR></TABLE></p>
+<p>Наиболее простым вариантом подключения является схема A. При выборе номинала резистора R<sub>A</sub> примерно равным сопротивлению термистора в районе измеряемых температур, значения U будут изменяться ближе к линейным, что обеспечит большую точность при интерполяции табличных значений.</p>
+<p>Выбирая номиналы R<sub>A</sub> и термистора, следует учесть, что протекающий через термистор ток вызывает его нагрев и, как следствие, искажение показаний. Желательно чтобы мощность на термисторе не превышала 1 мВт. А значит, при напряжении U<sub>0</sub> = 5В, R<sub>A</sub> должен быть как минимум, 10 килоОм. Сопротивление термистора в измеряемом диапазоне должно иметь примерно тот же порядок.</p>
+<br />
+<p>Схема B призвана ограничить мощность, рассеиваемую на термисторе.</p>
+<br />
+<p>Схемы C и D являются обратными к A и B. Их имеет смысл использовать, если требуется измерять низкие температуры, когда референтное значение АЦП (U<sub>ref</sub>) ниже U<sub>0</sub>.</p>
+<br />
+<a name="__h3_5"></a><H3>Подключение к АЦП микроконтроллера ATmega</H3>
+<p><CENTER><TABLE WIDTH=1 CELLSPACING=0 CELLPADDING=0 CLASS="imgtable" STYLE="margin-right:10px; align:center"><TR CLASS="imgtable"><TD CLASS="imgtable"><IMG SRC="/articles/img/atmega_adc.png" ALT="Подключение АЦП микроконтроллеров ATmega" CLASS="artimg"></TD></TR><TR WIDTH=1 CLASS="imgtablelabel"><TD CLASS="imgtablelabel">Подключение АЦП микроконтроллеров ATmega</TD></TR></TABLE></CENTER></p>
+<p>У контроллеров ATmega для снижения шумов используется отдельная линия питания для модуля АЦП. Инструкция рекомендует подключать эти входы через фильтр: индуктивность L = 10мкГн, и конденсатор C2 = 0,1мкФ.</p>
+<p>Микроконтроллер может использовать либо внешнее референтное напряжение для АЦП, либо внутреннее (2,56В или 1,1В), либо, в качестве такового, использовать напряжение питания АЦП: AVCC. При использовании внешнего напряжения, оно должно быть подано на вход AREF. При использовании AVCC, или внутреннего напряжения 2,56В, между этим входом и землёй должен быть размещён конденсатор (на схеме C1). Инструкция не даёт чёткого указания для выбора ёмкости конденсатора, рекомендую использовать керамический конденсатор 0,1мкФ и более.</p>
+<br />
+<p>Для снижения измеряемых шумов, рекомендую термистор также подключать к фильтрованному напряжению параллельно AVCC, и настроить на использование этого напряжения в качестве референтного.</p>
+<p>Дополнительно, для подавления шумов возникающих на линиях, можно установить конденсатор C3 в диапазоне 1-100нФ.</p>
+<br />
+<p>Следует учесть, что помимо модуля АЦП, вход AVCC запитывает также некоторые из портов ввода/вывода (как правило, на тех же выводах, что используются для АЦП). Использование этих портов на вывод и подключение к ним нагрузки может создать дополнительные шумы в работе АЦП.</p>
+<br />
+<p>Чтобы нивелировать шумы, возникающие на АЦП, рекомендую провести замеры несколько раз подряд и просуммировать полученные значения. В микроконтроллерах ATmega АЦП – 10-разрядный. Просуммировав результаты 64 подряд идущих измерений, результат остаётся в пределах 16-битного беззнакового целого, что не потребует дополнительной памяти для сохранения таблицы значений. При большем числе измерений также можно оставаться в пределах 16 бит, соответствующим образом сдвигая или деля результат.</p>
+<br />
+<a name="__h2_6"></a><H2>Расчёт таблицы значений</H2>
+<p>Вашему вниманию предлагаю скрипт для онлайн расчёта таблицы значений АЦП.</p>
+<p>Расчёт значений ведётся либо по двум значениям температур и сопротивлений, либо вводится списком, либо используется одна из предзагруженных R/T характеристик. В настоящее время загружены R/T характеристики термисторов фирмы Siemens/EPCOS. Выберите подходящую из списка.</p>
+<p>Загруженные характеристики даны с шагом 5°С, при выборе меньшего шага сетки, значения получаются путём интерполяции по формулам <A HREF="#FORMULA1"><i>[1]</i></A> и <A HREF="#FORMULA2"><i>[2]</i></A> двух ближайших значений из таблицы.</p>
+<p>При построении таблицы автоматически соответствующим образом обновляется пример исходного кода под ней.</p>
+<br />
+<p><b>Внимание!</b> Так как параметры термисторов в значительной мере нелинейны, расчёт по двум значениям сопротивлений, либо по значению и коэффициенту будет очень приблизительным. Вычисленное значение температуры при измерении высоких, или низких температур в таком случае может значительно (на десятки градусов) отличаться от актуальной.</p>
+<p>Чтобы узнать подходящий тип R/T характеристики для вашего термистора, скачайте документацию, данную заводом изготовителем. </p>
+<p>Сводная таблица для некоторых моделей термисторов Siemens/Epcos приведена ниже. Нажмите на код R/T характеристики, чтобы подгрузить параметры в форму ниже:</p>
+<table class="article">
+ <tr><td><B>Код</B></td><td><B>Сопротивление при 25°С, кОм</B></td><td><B>R/T характеристика</B></td><td colspan=2><B>B<small>25/100</small>, К</B></td></tr>
+ <tr><td colspan=5><B>B57891S</B>, выводной 4,5мм <i>(<A HREF="http://www.epcos.com/inf/50/db/ntc_09/LeadedDisks__B57891__S891.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57891S0222+008</td><td align=right>2,2</td><td align=right><A HREF="JavaScript:ntcRT(1008, 2.2);">1008</A></td><td colspan=2 align=right>3560</td></tr>
+ <tr><td>B57891S0502+008</td><td align=right>5</td><td align=right><A HREF="JavaScript:ntcRT(2003, 5);">2003</A></td><td colspan=2 align=right>3980</td></tr>
+ <tr><td>B57891S0103+008</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(4901, 10);">4901</A></td><td colspan=2 align=right>3950</td></tr>
+ <tr><td>B57891S0203+008</td><td align=right>20</td><td align=right><A HREF="JavaScript:ntcRT(2904, 20);">2904</A></td><td colspan=2 align=right>4300</td></tr>
+ <tr><td>B57891S0104+008</td><td align=right>100</td><td align=right><A HREF="JavaScript:ntcRT(4003, 100);">4003</A></td><td colspan=2 align=right>4450</td></tr>
+ <tr><td colspan=5><BR /><B>B57891M</B>, выводной 3,5мм <i>(<A HREF="http://www.epcos.com/inf/50/db/ntc_09/LeadedDisks__B57891__M891.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57891M0102+000</td><td align=right>1</td><td align=right><A HREF="JavaScript:ntcRT(1009, 1);">1009</A></td><td colspan=2 align=right>3930</td></tr>
+ <tr><td>B57891M0152+000</td><td align=right>1,5</td><td align=right><A HREF="JavaScript:ntcRT(1008, 1.5);">1008</A></td><td colspan=2 align=right>3560</td></tr>
+ <tr><td>B57891M0222+000</td><td align=right>2,2</td><td align=right><A HREF="JavaScript:ntcRT(1013, 2.2);">1013</A></td><td colspan=2 align=right>3900</td></tr>
+ <tr><td>B57891M0332+000</td><td align=right>3,3</td><td align=right><A HREF="JavaScript:ntcRT(2003, 3.3);">2003</A></td><td colspan=2 align=right>3980</td></tr>
+ <tr><td>B57891M0472+000</td><td align=right>4,7</td><td align=right><A HREF="JavaScript:ntcRT(2003, 4.7);">2003</A></td><td colspan=2 align=right>3980</td></tr>
+ <tr><td>B57891M0682+000</td><td align=right>6,8</td><td align=right><A HREF="JavaScript:ntcRT(2003, 6.8);">2003</A></td><td colspan=2 align=right>3980</td></tr>
+ <tr><td>B57891M0103+000</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(4901, 10);">4901</A></td><td colspan=2 align=right>3950</td></tr>
+ <tr><td>B57891M0153+000</td><td align=right>15</td><td align=right><A HREF="JavaScript:ntcRT(2004, 15);">2004</A></td><td colspan=2 align=right>4100</td></tr>
+ <tr><td>B57891M0223+000</td><td align=right>22</td><td align=right><A HREF="JavaScript:ntcRT(2904, 22);">2904</A></td><td colspan=2 align=right>4300</td></tr>
+ <tr><td>B57891M0333+000</td><td align=right>33</td><td align=right><A HREF="JavaScript:ntcRT(2904, 33);">2904</A></td><td colspan=2 align=right>4300</td></tr>
+ <tr><td>B57891M0473+000</td><td align=right>47</td><td align=right><A HREF="JavaScript:ntcRT(4012, 47);">4012</A></td><td colspan=2 align=right>4355</td></tr>
+ <tr><td>B57891M0683+000</td><td align=right>68</td><td align=right><A HREF="JavaScript:ntcRT(4012, 68);">4012</A></td><td colspan=2 align=right>4355</td></tr>
+ <tr><td>B57891M0104+000</td><td align=right>100</td><td align=right><A HREF="JavaScript:ntcRT(4003, 100);">4003</A></td><td colspan=2 align=right>4450</td></tr>
+ <tr><td>B57891M0154+000</td><td align=right>150</td><td align=right><A HREF="JavaScript:ntcRT(2005, 150);">2005</A></td><td colspan=2 align=right>4600</td></tr>
+ <tr><td>B57891M0224+000</td><td align=right>220</td><td align=right><A HREF="JavaScript:ntcRT(2005, 220);">2005</A></td><td colspan=2 align=right>4600</td></tr>
+ <tr><td>B57891M0334+000</td><td align=right>330</td><td align=right><A HREF="JavaScript:ntcRT(2007, 330);">2007</A></td><td colspan=2 align=right>4830</td></tr>
+ <tr><td>B57891M0474+000</td><td align=right>470</td><td align=right><A HREF="JavaScript:ntcRT(2006, 470);">2006</A></td><td colspan=2 align=right>5000</td></tr>
+ <tr><td colspan=5><BR /><B>B57164K</B>, выводной 5,5мм <i>(<A HREF="http://www.epcos.com/inf/50/db/ntc_09/LeadedDisks__B57164__K164.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57164K0471+000</td><td align=right>0,47</td><td align=right><A HREF="JavaScript:ntcRT(1306, 0.47);">1306</A></td><td colspan=2 align=right>3450</td></tr>
+ <tr><td>B57164K0681+000</td><td align=right>0,68</td><td align=right><A HREF="JavaScript:ntcRT(1307, 0.68);">1307</A></td><td colspan=2 align=right>3560</td></tr>
+ <tr><td>B57164K0102+000</td><td align=right>1</td><td align=right><A HREF="JavaScript:ntcRT(1011, 1);">1011</A></td><td colspan=2 align=right>3730</td></tr>
+ <tr><td>B57164K0152+000</td><td align=right>1,5</td><td align=right><A HREF="JavaScript:ntcRT(1013, 1.5);">1013</A></td><td colspan=2 align=right>3900</td></tr>
+ <tr><td>B57164K0222+000</td><td align=right>2,2</td><td align=right><A HREF="JavaScript:ntcRT(1013, 2.2);">1013</A></td><td colspan=2 align=right>3900</td></tr>
+ <tr><td>B57164K0332+000</td><td align=right>3,3</td><td align=right><A HREF="JavaScript:ntcRT(4001, 3.3);">4001</A></td><td colspan=2 align=right>3950</td></tr>
+ <tr><td>B57164K0472+000</td><td align=right>4,7</td><td align=right><A HREF="JavaScript:ntcRT(4001, 4.7);">4001</A></td><td colspan=2 align=right>3950</td></tr>
+ <tr><td>B57164K0682+000</td><td align=right>6,8</td><td align=right><A HREF="JavaScript:ntcRT(2903, 6.8);">2903</A></td><td colspan=2 align=right>4200</td></tr>
+ <tr><td>B57164K0103+000</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(2904, 10);">2904</A></td><td colspan=2 align=right>4300</td></tr>
+ <tr><td>B57164K0153+000</td><td align=right>15</td><td align=right><A HREF="JavaScript:ntcRT(1014, 15);">1014</A></td><td colspan=2 align=right>4250</td></tr>
+ <tr><td>B57164K0223+000</td><td align=right>22</td><td align=right><A HREF="JavaScript:ntcRT(1012, 22);">1012</A></td><td colspan=2 align=right>4300</td></tr>
+ <tr><td>B57164K0333+000</td><td align=right>33</td><td align=right><A HREF="JavaScript:ntcRT(1012, 33);">1012</A></td><td colspan=2 align=right>4300</td></tr>
+ <tr><td>B57164K0473+000</td><td align=right>47</td><td align=right><A HREF="JavaScript:ntcRT(4003, 47);">4003</A></td><td colspan=2 align=right>4450</td></tr>
+ <tr><td>B57164K0683+000</td><td align=right>68</td><td align=right><A HREF="JavaScript:ntcRT(2005, 68);">2005</A></td><td colspan=2 align=right>4600</td></tr>
+ <tr><td>B57164K0104+000</td><td align=right>100</td><td align=right><A HREF="JavaScript:ntcRT(2005, 100);">2005</A></td><td colspan=2 align=right>4600</td></tr>
+ <tr><td>B57164K0154+000</td><td align=right>150</td><td align=right><A HREF="JavaScript:ntcRT(2005, 150);">2005</A></td><td colspan=2 align=right>4600</td></tr>
+ <tr><td>B57164K0224+000</td><td align=right>220</td><td align=right><A HREF="JavaScript:ntcRT(2007, 220);">2007</A></td><td colspan=2 align=right>4830</td></tr>
+ <tr><td>B57164K0334+000</td><td align=right>330</td><td align=right><A HREF="JavaScript:ntcRT(2006, 330);">2006</A></td><td colspan=2 align=right>5000</td></tr>
+ <tr><td>B57164K0474+000</td><td align=right>470</td><td align=right><A HREF="JavaScript:ntcRT(2006, 470);">2006</A></td><td colspan=2 align=right>5000</td></tr>
+ <tr><td colspan=5><BR /><B>B57540G</B>, выводной, стеклянный &quot;капля&quot; 0,8мм <i>(<A HREF="http://www.epcos.com/inf/50/db/ntc_09/Glass_enc_Sensors__B57540__G540__G1540.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57540G0502+000, +002</td><td align=right>5</td><td align=right><A HREF="JavaScript:ntcRT(8402, 5);">8402</A></td><td colspan=2 align=right>3497</td></tr>
+ <tr><td>B57540G1103+000, +002</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(8307, 10);">8307</A></td><td colspan=2 align=right>3492</td></tr>
+ <tr><td>B57540G1103+005, +007</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(7003, 10);">7003</A></td><td colspan=2 align=right>3625</td></tr>
+ <tr><td>B57540G0203+000, +002</td><td align=right>20</td><td align=right><A HREF="JavaScript:ntcRT(8415, 20);">8415</A></td><td colspan=2 align=right>4006</td></tr>
+ <tr><td>B57540G1303+005, +007</td><td align=right>30</td><td align=right><A HREF="JavaScript:ntcRT(7002, 30);">7002</A></td><td colspan=2 align=right>3988</td></tr>
+ <tr><td>B57540G0503+000, +002</td><td align=right>50</td><td align=right><A HREF="JavaScript:ntcRT(8403, 50);">8403</A></td><td colspan=2 align=right>4006</td></tr>
+ <tr><td>B57540G1104+000, +002</td><td align=right>100</td><td align=right><A HREF="JavaScript:ntcRT(8304, 100);">8304</A></td><td colspan=2 align=right>4092</td></tr>
+ <tr><td>B57540G0234+000, +002</td><td align=right>230</td><td align=right><A HREF="JavaScript:ntcRT(8405, 230);">8405</A></td><td colspan=2 align=right>4264</td></tr>
+ <tr><td>B57540G0145+000, +002</td><td align=right>1400</td><td align=right><A HREF="JavaScript:ntcRT(8406, 1400);">8406</A></td><td colspan=2 align=right>4581</td></tr>
+ <tr><td colspan=5><BR /><B>B57551G</B>, выводной, стеклянный &quot;капля&quot; 1,8мм <i>(<A HREF="http://www.epcos.com/inf/50/db/ntc_09/Glass_enc_Sensors__B57551__G551__G1551__coated.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57551G0202+000, +002</td><td align=right>2</td><td align=right><A HREF="JavaScript:ntcRT(8401, 2);">8401</A></td><td colspan=2 align=right>3436</td></tr>
+ <tr><td>B57551G1103+000, +002</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(8307, 10);">8307</A></td><td colspan=2 align=right>3492</td></tr>
+ <tr><td>B57551G1103+005, +007</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(7003, 10);">7003</A></td><td colspan=2 align=right>3625</td></tr>
+ <tr><td>B57551G1303+005, +007</td><td align=right>30</td><td align=right><A HREF="JavaScript:ntcRT(7002, 30);">7002</A></td><td colspan=2 align=right>3988</td></tr>
+ <tr><td>B57551G1104+000, +002</td><td align=right>100</td><td align=right><A HREF="JavaScript:ntcRT(8304, 100);">8304</A></td><td colspan=2 align=right>4092</td></tr>
+ <tr><td colspan=5><BR /><B>B57621С5</B>, SMD 3,2х1,6мм <i>(<A HREF="http://www.epcos.com/inf/50/db/ntcsmd_11/SMD_NTCs_NiBarrier_Standard_1206.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57621C5102+062</td><td align=right>1,0</td><td align=right><A HREF="JavaScript:ntcRT(3206, 1);">3206</A></td><td colspan=2 align=right>3450</td></tr>
+ <tr><td>B57621C5472+062</td><td align=right>4,7</td><td align=right><A HREF="JavaScript:ntcRT(1309, 4.7);">1309</A></td><td colspan=2 align=right>3520</td></tr>
+ <tr><td>B57621C5103+062</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(1010, 10);">1010</A></td><td colspan=2 align=right>3530</td></tr>
+ <tr><td>B57621C5153+062</td><td align=right>15</td><td align=right><A HREF="JavaScript:ntcRT(1008, 15);">1008</A></td><td colspan=2 align=right>3560</td></tr>
+ <tr><td colspan=5><BR /><B>B57621С0</B>, SMD 3,2х1,6мм <i>(<A HREF="http://media.digikey.com/pdf/Data%20Sheets/Epcos%20PDFs/B57621C.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57621C0222+062</td><td align=right>2,2</td><td align=right><A HREF="JavaScript:ntcRT(1308, 2.2);">1308</A></td><td colspan=2 align=right>3060</td></tr>
+ <tr><td>B57621C0332+062</td><td align=right>3,3</td><td align=right><A HREF="JavaScript:ntcRT(1309, 3.3);">1309</A></td><td colspan=2 align=right>3520</td></tr>
+ <tr><td>B57621C0472+062</td><td align=right>4,7</td><td align=right><A HREF="JavaScript:ntcRT(1309, 4.7);">1309</A></td><td colspan=2 align=right>3520</td></tr>
+ <tr><td>B57621C0103+062</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(1010, 10);">1010</A></td><td colspan=2 align=right>3530</td></tr>
+ <tr><td>B57621C0153+062</td><td align=right>15</td><td align=right><A HREF="JavaScript:ntcRT(1008, 15);">1008</A></td><td colspan=2 align=right>3560</td></tr>
+ <tr><td>B57621C0223+062</td><td align=right>22</td><td align=right><A HREF="JavaScript:ntcRT(1008, 22);">1008</A></td><td colspan=2 align=right>3560</td></tr>
+ <tr><td>B57621C0333+062</td><td align=right>33</td><td align=right><A HREF="JavaScript:ntcRT(2003, 33);">2003</A></td><td colspan=2 align=right>3980</td></tr>
+ <tr><td>B57621C0473+062</td><td align=right>47</td><td align=right><A HREF="JavaScript:ntcRT(2001, 47);">2001</A></td><td colspan=2 align=right>3920</td></tr>
+ <tr><td>B57621C0683+062</td><td align=right>68</td><td align=right><A HREF="JavaScript:ntcRT(2001, 68);">2001</A></td><td colspan=2 align=right>3920</td></tr>
+ <tr><td>B57621C0104+062</td><td align=right>100</td><td align=right><A HREF="JavaScript:ntcRT(4901, 100);">4901</A></td><td colspan=2 align=right>3950</td></tr>
+ <tr><td>B57621C0154+162</td><td align=right>150</td><td align=right><A HREF="JavaScript:ntcRT(2903, 150);">2903</A></td><td colspan=2 align=right>4200</td></tr>
+ <tr><td>B57621C0224+062</td><td align=right>220</td><td align=right><A HREF="JavaScript:ntcRT(2903, 220);">2903</A></td><td colspan=2 align=right>4200</td></tr>
+ <tr><td>B57621C0334+062</td><td align=right>330</td><td align=right><A HREF="JavaScript:ntcRT(1014, 330);">1014</A></td><td colspan=2 align=right>4250</td></tr>
+ <tr><td>B57621C0474+062</td><td align=right>470</td><td align=right><A HREF="JavaScript:ntcRT(1014, 470);">1014</A></td><td colspan=2 align=right>4250</td></tr>
+ <tr><td colspan=5><BR /><B>B57703M</B>, выводной 10мм, с &quot;ухом&quot; 8,5x3,7мм <i>(<A HREF="http://www.epcos.com/inf/50/db/ntc_13/NTC_Probe_ass_M703.pdf" TARGET=_blank>datasheet, pdf</A>)</i></td></tr>
+ <tr><td>B57703M0502G040</td><td align=right>5</td><td align=right><A HREF="JavaScript:ntcRT(8016, 5);">8016</A></td><td colspan=2 align=right>3988</td></tr>
+ <tr><td>B57703M0103G040</td><td align=right>10</td><td align=right><A HREF="JavaScript:ntcRT(8016, 10);">8016</A></td><td colspan=2 align=right>3988</td></tr>
+ <tr><td>B57703M0303G040</td><td align=right>30</td><td align=right><A HREF="JavaScript:ntcRT(8018, 30);">8018</A></td><td colspan=2 align=right>3964</td></tr>
+</table>
+<p><b>Форма для он-лайн расчёта значений АЦП</b></p>
+<SCRIPT LANGUAGE="JavaScript" SRC="/js/ntcresistor.js"></SCRIPT>
+  <IMG ALIGN=RIGHT ID="ntc_img_scheme" SRC="/articles/img/ntc_a.png" BORDER=0>
+  <TABLE CLASS="form">
+   <TR><TD CLASS="formdesc">Данные для таблицы</TD><TD CLASS="form" WIDTH=320><SELECT ID="ntc_b_select" CLASS="formsel" onchange="onNtcSelectChange();"></SELECT>
+<DIV WIDTH=100% STYLE="text-align: justify; white-space:normal;" ID="ntc_b_notice"><SMALL><FONT COLOR="#C00000">*Из-за нелинейности параметров термистора, расчёт температуры на основе таблицы, построенной по двум точкам, будет грубым и полученное значение может на десятки градусов отличаться от действительного при измерении высоких и низких температур. 
+Для точного измерения в широком диапазоне выберите одну из предзагруженных R/T характеристик, соответствующую вашему термистору, или перечислите  список значений R/R1 вручную.
+</FONT></SMALL></DIV></TD></TR>
+   <TR ID="ntc_tr_t1"><TD CLASS="formdesc">T1</TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_t1" SIZE=20 VALUE="25"/>&nbsp;°С</TD>
+   <TR><TD CLASS="formdesc">R1, cопротивление при <SPAN ID="ntc_r1_ref_desc">T1</SPAN></TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_r1" SIZE=20 VALUE="22.0"/>&nbsp;<b><u>кило</u></b>Ом</TD>
+   <TR ID="ntc_tr_t2"><TD CLASS="formdesc">T2</TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_t2" SIZE=20 VALUE="100"/>&nbsp;°С</TD>
+   <TR ID="ntc_tr_r2"><TD CLASS="formdesc">R2, сопротивление при T2</TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_r2" SIZE=20 VALUE="1.211034"/>&nbsp;<b><u>кило</u></b>Ом</TD>
+   <TR ID="ntc_tr_tab"><TD CLASS="formdesc">Данные для таблицы:R/R1<br/>
+     начиная с T2, с выбранным шагом сетки.<br/>
+     Разделитель значений - запятая.
+    </TD><TD><TEXTAREA CLASS="formtext" ID="ntc_tab" COLS=50 ROWS=10></TEXTAREA></TD>
+   </TR>
+   <TR ID="ntc_tr_b"><TD CLASS="formdesc">B<sub>T1/T2</sub></TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_b_t1_t2" SIZE=20/>&nbsp;K</TD>
+   <TR><TD CLASS="formdesc"><A HREF="#SCHEMES">Схема включения термистора</A></TD><TD CLASS="form"><SELECT CLASS="formsel" ID="ntc_scheme" onchange="onNtcSchemeChange();">
+     <OPTION VALUE="0" SELECTED>Схема A</VALUE>
+     <OPTION VALUE="1">Схема B</VALUE>
+     <OPTION VALUE="2">Схема C</VALUE>
+     <OPTION VALUE="3">Схема D</VALUE>
+    </SELECT>
+   </TD></TR>
+   <TR><TD CLASS="formdesc">Номинал резистора R<sub>A</sub></TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_ra" SIZE=20 VALUE="10"/>&nbsp;<b><u>кило</u></b>Ом</TD>
+   <TR ID="ntc_tr_rb"><TD CLASS="formdesc">Номинал резистора R<sub>B</sub></TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_rb" SIZE=20 VALUE="50"/>&nbsp;<b><u>кило</u></b>Ом</TD>
+   <TR><TD CLASS="formdesc">Разрядность АЦП</TD><TD CLASS="form"><SELECT CLASS="formsel" ID="ntc_adc_limit">
+     <OPTION VALUE="64">6 бит</VALUE>
+     <OPTION VALUE="128">7 бит</VALUE>
+     <OPTION VALUE="256">8 бит</VALUE>
+     <OPTION VALUE="512">9 бит</VALUE>
+     <OPTION VALUE="1024" SELECTED>10 бит</VALUE>
+     <OPTION VALUE="2048">11 бит</VALUE>
+     <OPTION VALUE="4096">12 бит</VALUE>
+     <OPTION VALUE="8192">13 бит</VALUE>
+     <OPTION VALUE="16384">14 бит</VALUE>
+     <OPTION VALUE="32768">15 бит</VALUE>
+     <OPTION VALUE="65536">16 бит</VALUE>
+     <OPTION VALUE="131072">17 бит</VALUE>
+     <OPTION VALUE="262144">18 бит</VALUE>
+     <OPTION VALUE="524288">19 бит</VALUE>
+     <OPTION VALUE="1048576">20 бит</VALUE>
+    </SELECT>
+   </TD></TR>
+   <TR><TD CLASS="formdesc">Множитель результата АЦП<TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_adc_scaler" SIZE=20 VALUE="64"/></TD>
+   <TR><TD CLASS="formdesc">U<sub>0</sub>, напряжение на входе<TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_u0" SIZE=20 VALUE="5.0"/>&nbsp;В</TD>
+   <TR><TD CLASS="formdesc">U<sub>ref</sub>, референтное напряжение АЦП<TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_uref" SIZE=20 VALUE="5.0"/>&nbsp;В</TD>
+   <TR><TD CLASS="formdesc">Рассчитать с</TD><TD CLASS="form"><INPUT TYPE=TEXT CLASS="formtext" ID="ntc_t_from" SIZE=5 VALUE="-55"/>&nbsp;°С&nbsp;по&nbsp;<INPUT TYPE=TEXT CLASS="formtext" ID="ntc_t_to" SIZE=5 VALUE="125"/>&nbsp;°С</TD>
+   <TR><TD CLASS="formdesc">Шаг сетки</TD><TD CLASS="form"><SELECT CLASS="formsel" ID="ntc_table_step">
+     <OPTION VALUE="0.5">0.5 °С</VALUE>
+     <OPTION VALUE="1">1 °С</VALUE>
+     <OPTION VALUE="2">2 °С</VALUE>
+     <OPTION VALUE="2.5">2.5 °С</VALUE>
+     <OPTION VALUE="5" SELECTED>5 °С</VALUE>
+     <OPTION VALUE="10">10 °С</VALUE>
+    </SELECT>
+   </TD></TR>
+   
+   <TR><TD CLASS="form" colspan=2 ALIGN=CENTER><BUTTON CLASS="formbtn" onclick="ntcBuildTable('ru');">Построить таблицу</BUTTON></TD></TR>
+  </TABLE>
+  <TABLE WIDTH=100%>
+   <THEAD>
+    <TH>T,°С<TH>R/R1</TH><TH>R,килоОм</TH><TH>U,В</TH><TH>I,мкА</TH><TH>P,мВт</TH><TH>U/Uref</TH><TH>ADC</TH><TH>E,°С</TH>
+   </THEAD>
+   <TBODY ID="ntc_result_table_body">
+   </TBODY> 
+  </TABLE>
+  <SCRIPT LANGUAGE="JavaScript">
+   fillNtcSelect('ru');
+  </SCRIPT>
+<p><b>Пояснения к таблице:</b></p>
+<p><b>жирным</b> выделены значения R/R1 и R, полученные на основе табличных. Обычным шрифтом обозначены значения полученные интерполяцией или экстраполяцией по формулам.</p>
+<p><b>ADC</b> – округлённое значение на выходе АЦП, с учётом множителя. Значения, выходящие за предел измерений АЦП, не отображаются.</p>
+<p><b>I,мкА</b> - ток в цепи.</p>
+<p><b>P,мВт</b> - мощность, рассеиваемая на термисторе.</p>
+<p><b>E</b> – эвристическая оценка возможной погрешности вычисленной температуры, вызванной использованием линейной интерполяции табличных значений, и ограниченной точностью АЦП. Позволяет выбрать параметры и схему включения таким образом, чтобы в области измеряемых значений погрешность была минимальна. Эта оценка не учитывает возможный шум, возникающий на АЦП, а также погрешность, вызванную нагревом термистора из-за протекающих токов. Погрешность можно уменьшить выбрав меньший шаг таблицы, используя АЦП большей разрядности, или путём усреднения большего числа измерений, а также подбором номиналов сопротивлений в цепи.</p>
+<br />
+<p><b>Код, соответствующий таблице</b></p>
+<PRE CLASS="code"><span class="keyword">#include</span> <span class="str">&lt;avr/io.h&gt</span>
+<span class="keyword">#include</span> <span class="str">&lt;avr/pgmspace.h&gt</span>
+
+<span class="comment">// Значение температуры, возвращаемое если сумма результатов АЦП больше первого значения таблицы</span>
+<span class="keyword">#define</span> <span class="const">TEMPERATURE_UNDER</span> <span class="numeric" id="ntc_code_under">0</span>
+<span class="comment">// Значение температуры, возвращаемое если сумма результатов АЦП меньше последнего значения таблицы</span>
+<span class="keyword">#define</span> <span class="const">TEMPERATURE_OVER</span> <span class="numeric" id="ntc_code_over">0</span>
+<span class="comment">// Значение температуры соответствующее первому значению таблицы</span>
+<span class="keyword">#define</span> <span class="const">TEMPERATURE_TABLE_START</span> <span class="numeric" id="ntc_code_start">0</span>
+<span class="comment">// Шаг таблицы </span>
+<span class="keyword">#define</span> <span class="const">TEMPERATURE_TABLE_STEP</span> <span class="numeric" id="ntc_code_step">50</span>
+
+<span class="comment">// Тип каждого элемента в таблице, если сумма выходит в пределах 16 бит - uint16_t, иначе - uint32_t</span>
+<span class="keyword">typedef</span> <span class="keyword" id="ntc_code_type_entry">uint16_t</span> <span class="var">temperature_table_entry_type</span>;
+<span class="comment">// Тип индекса таблицы. Если в таблице больше 256 элементов, то uint16_t, иначе - uint8_t</span>
+<span class="keyword">typedef</span> <span class="keyword" id="ntc_code_type_index">uint8_t</span> <span class="var">temperature_table_index_type</span>;
+<span class="comment">// Метод доступа к элементу таблицы, должна соответствовать temperature_table_entry_type</span>
+<span class="keyword">#define</span> <span class="const">TEMPERATURE_TABLE_READ</span>(<span class="var">i</span>) <span class="method" id="ntc_code_pgm_read">pgm_read_word</span>(&amp;<span class="var">termo_table</span>[<span class="var">i</span>])
+
+<span class="comment">/* Таблица суммарного значения АЦП в зависимости от температуры. От большего значения к меньшему
+   Для построения таблицы использованы следующие парамертры:</span>
+<span class="comment" id="ntc_code_params"></span><span class="comment">*/</span>
+<span class="keyword">const</span> <span class="var">temperature_table_entry_type</span> <span class="var">termo_table</span>[] <span class="const">PROGMEM</span> = {<span class="numeric" id="ntc_code_table">
+  0 <span class="comment">// Нажмите "Построить  таблицу" на форме выше, чтобы заполнить этот массив</span></span>
+};
+
+<span class="comment">// Функция вычисляет значение температуры в десятых долях градусов Цельсия</span>
+<span class="comment">// в зависимости от суммарного значения АЦП.</span>
+<span class="keyword">int16_t</span> <span class="method">calc_temperature</span>(<span class="var">temperature_table_entry_type</span> <span class="var">adcsum</span>) {
+  <span class="var">temperature_table_index_type</span> <span class="var">l</span> = <span class="numeric">0</span>;
+  <span class="var">temperature_table_index_type</span> <span class="var">r</span> = (<span class="keyword">sizeof</span>(<span class="var">termo_table</span>) / <span class="keyword">sizeof</span>(<span class="var">termo_table</span>[<span class="numeric">0</span>])) - <span class="numeric">1</span>;
+  <span class="var">temperature_table_entry_type</span> <span class="var">thigh</span> = <span class="const">TEMPERATURE_TABLE_READ</span>(<span class="var">r</span>);
+  
+  <span class="comment">// Проверка выхода за пределы и граничных значений</span>
+  <span class="keyword">if</span> (<span class="var">adcsum</span> &lt;= <span class="var">thigh</span>) {
+    <span class="keyword">#ifdef</span> <span class="const">TEMPERATURE_UNDER</span>
+      <span class="keyword">if</span> (<span class="var">adcsum</span> &lt; <span class="var">thigh</span>) 
+        <span class="keyword">return</span> <span class="const">TEMPERATURE_UNDER</span>;
+    <span class="keyword">#endif</span>
+    <span class="keyword">return</span> <span class="const">TEMPERATURE_TABLE_STEP</span> * <span class="var">r</span> + <span class="const">TEMPERATURE_TABLE_START</span>;
+  }
+  <span class="var">temperature_table_entry_type</span> <span class="var">tlow</span> = <span class="const">TEMPERATURE_TABLE_READ</span>(<span class="numeric">0</span>);
+  <span class="keyword">if</span> (<span class="var">adcsum</span> &gt;= <span class="var">tlow</span>) {
+    <span class="keyword">#ifdef</span> <span class="const">TEMPERATURE_OVER</span>
+      <span class="keyword">if</span> (<span class="var">adcsum</span> &gt; <span class="var">tlow</span>)
+        <span class="keyword">return</span> <span class="const">TEMPERATURE_OVER</span>;
+    <span class="keyword">#endif</span>
+    <span class="keyword">return</span> <span class="const">TEMPERATURE_TABLE_START</span>;
+  }
+
+  <span class="comment">// Двоичный поиск по таблице</span>
+  <span class="keyword">while</span> ((<span class="var">r</span> - <span class="var">l</span>) &gt; <span class="numeric">1</span>) {
+    <span class="var">temperature_table_index_type</span> <span class="var">m</span> = (<span class="var">l</span> + <span class="var">r</span>) &gt;&gt; <span class="numeric">1</span>;
+    <span class="var">temperature_table_entry_type</span> <span class="var">mid</span> = <span class="const">TEMPERATURE_TABLE_READ</span>(<span class="var">m</span>);
+    <span class="keyword">if</span> (<span class="var">adcsum</span> &gt; <span class="var">mid</span>) {
+      <span class="var">r</span> = <span class="var">m</span>;
+    } <span class="keyword">else</span> {
+      <span class="var">l</span> = <span class="var">m</span>;
+    }
+  }
+  <span class="var">temperature_table_entry_type</span> <span class="var">vl</span> = <span class="const">TEMPERATURE_TABLE_READ</span>(<span class="var">l</span>);
+  <span class="keyword">if</span> (<span class="var">adcsum</span> &gt;= <span class="var">vl</span>) {
+    <span class="keyword">return</span> <span class="var">l</span> * <span class="const">TEMPERATURE_TABLE_STEP</span> + <span class="const">TEMPERATURE_TABLE_START</span>;
+  }
+  <span class="var">temperature_table_entry_type</span> <span class="var">vr</span> = <span class="const">TEMPERATURE_TABLE_READ</span>(<span class="var">r</span>);
+  <span class="var">temperature_table_entry_type</span> <span class="var">vd</span> = <span class="var">vl</span> - <span class="var">vr</span>;
+  <span class="keyword">int16_t</span> <span class="var">res</span> = <span class="const">TEMPERATURE_TABLE_START</span> + <span class="var">r</span> * <span class="const">TEMPERATURE_TABLE_STEP</span>; 
+  <span class="keyword">if</span> (<span class="var">vd</span>) {
+    <span class="comment">// Линейная интерполяция</span>
+    <span class="var">res</span> -= ((<span class="const">TEMPERATURE_TABLE_STEP</span> * (<span class="keyword">int32_t</span>)(<span class="var">adcsum</span> - <span class="var">vr</span>) + (<span class="var">vd</span> &gt;&gt; <span class="numeric">1</span>)) / <span class="var">vd</span>);
+  }
+  <span class="keyword">return</span> <span class="var">res</span>;
+}
+</PRE>
+<br />
+<a name="__h2_7"></a><H2>Пример использования</H2>
+<p>В примере ниже используется вывод на семисигментный индикатор. </p>
+<p>Описание работы с индикатором смотрите в <A HREF="/article/avr_cc56-12">другой моей статье</A>.</p>
+<p><CENTER><TABLE WIDTH=1 CELLSPACING=0 CELLPADDING=0 CLASS="imgtable" STYLE="margin-right:10px; align:center"><TR CLASS="imgtable"><TD CLASS="imgtable"><IMG SRC="/articles/img/cc56-12gwa.png" ALT="Вывод значения температуры на идникатор СС56-12GWA" CLASS="artimg"></TD></TR><TR WIDTH=1 CLASS="imgtablelabel"><TD CLASS="imgtablelabel">Вывод значения температуры на идникатор СС56-12GWA</TD></TR></TABLE></CENTER></p>
+<br />
+<PRE CLASS="code">  <span class="const">ADMUX</span> = <span class="numeric">0b01000111</span>; <span class="comment">// референтное напряжение - Vcc, вход ADC7, реузультат по правому краю</span>
+  <span class="const">ADCSRA</span> = <span class="numeric">0b10000111</span>; <span class="comment">// 1/128 делитель частоты, включение АЦП</span>
+
+  <span class="keyword">while</span>(<span class="numeric">1</span>)  {
+    <span class="var">temperature_table_entry_type</span> <span class="var">summ</span> = <span class="numeric">0</span>;
+    <span class="keyword">for</span> (<span class="keyword">uint8_t</span> <span class="var">i</span> = <span class="numeric">0</span>; <span class="var">i</span> &lt; <span class="numeric">64</span>; <span class="var">i</span>++) {
+      <span class="const">ADCSRA</span> |= <span class="const">_BV</span>(<span class="const">ADSC</span>);
+      <span class="method">loop_until_bit_is_clear</span>(<span class="const">ADCSRA</span>, <span class="const">ADSC</span>);
+      <span class="var">summ</span> += <span class="const">ADC</span>;
+    }
+    <span class="keyword">int16_t</span> <span class="var">t</span> = <span class="method">calc_temperature</span>(<span class="var">summ</span>);
+    <span class="method">ledind_num</span>(<span class="var">t</span>, <span class="numeric">1</span>, <span class="numeric">0b01010011</span>); <span class="comment">// Вывод значения на индикатор с префиксом в виде буквы t</span>
+    <span class="method">_delay_ms</span>(<span class="numeric">250</span>);
+  }
+</PRE>
+<br />
+<script type="text/javascript" src="//vk.com/js/api/openapi.js?95"></script>
+
+<script type="text/javascript">
+  VK.init({apiId: 3679790, onlyWidgets: true});
+</script>
+
+<div id="vk_like"></div>
+<script type="text/javascript">
+VK.Widgets.Like("vk_like", {type: "full", verb: 1, height: 24});
+</script>
+<br/>
+<div id="vk_comments"></div>
+<script type="text/javascript">
+VK.Widgets.Comments("vk_comments", {limit: 10, width: "496", attach: "*"});
+</script>
+<br />
+</DIV><!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter21973744 = new Ya.Metrika({id:21973744,
+                    trackLinks:true});
+        } catch(e) { }
+    });
+
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="//mc.yandex.ru/watch/21973744" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<br/><FONT SIZE=1 COLOR=#C0C0C0>0 ms; mod: Mon, 11 Jan 2021 09:39:36 GMT; gen: Wed, 01 Nov 2023 05:30:45 GMT</FONT>
+    </TD>
+   </TR>
+  </TABLE>
+ </BODY>
+</HTML>
