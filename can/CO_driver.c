@@ -148,12 +148,14 @@ void CO_CANmodule_process(CO_CANmodule_t* CANmodule) {
 
 	uint16_t status = CANmodule->CANerrorStatus;
 
-	uint32_t REC = can_ESR_REC_read(can_device->bus);
+	uint32_t ESR = can_ESR_read(can_device->bus);
 
-	uint32_t TEC = can_ESR_TEC_read(can_device->bus);
+	uint32_t REC = can_ESR_REC_read(ESR);
+
+	uint32_t TEC = can_ESR_TEC_read(ESR);
 
 	if(can_IER_EWGIE_read(can_device->bus)) {
-		if(can_ESR_EWGF_read(can_device->bus)) {
+		if(can_ESR_EWGF_read(ESR)) {
 			if(REC >= 96) {
 				status |= CO_CAN_ERRRX_WARNING;
 			}
@@ -167,7 +169,7 @@ void CO_CANmodule_process(CO_CANmodule_t* CANmodule) {
 	}
 
 	if(can_IER_EPVIE_read(can_device->bus)) {
-		if(can_ESR_EPVF_read(can_device->bus)) {
+		if(can_ESR_EPVF_read(ESR)) {
 			if(REC > 127) {
 				status |= CO_CAN_ERRRX_PASSIVE;
 			}
@@ -181,7 +183,7 @@ void CO_CANmodule_process(CO_CANmodule_t* CANmodule) {
 	}
 
 	if(can_IER_BOFIE_read(can_device->bus)) {
-		if(can_ESR_BOFF_read(can_device->bus)) {
+		if(can_ESR_BOFF_read(ESR)) {
 			status |= CO_CAN_ERRTX_BUS_OFF;
 		} else {
 			status &= ~CO_CAN_ERRTX_BUS_OFF;
@@ -189,7 +191,7 @@ void CO_CANmodule_process(CO_CANmodule_t* CANmodule) {
 	}
 
 	if(can_IER_LECIE_read(can_device->bus)) {
-		uint32_t LEC = can_ESR_LEC_read(can_device->bus);
+		uint32_t LEC = can_ESR_LEC_read(ESR);
 		switch(LEC) {
 		case CAN_ESR_LEC_No_Error:
 			break;
@@ -272,8 +274,10 @@ void CO_SCE_IRQHandler(CO_CANmodule_t* CANmodule) {
 
 	can_bus_t* can_device = (can_bus_t*)(CANmodule->CANptr); //Pointer to CAN device.
 
+	uint32_t MSR = can_MSR_read(can_device->bus);
+
 	if(can_IER_ERRIE_read(can_device->bus)) {
-		if(can_MSR_ERRI_read(can_device->bus)) {
+		if(can_MSR_ERRI_read(MSR)) {
 
 			CO_CANmodule_process(CANmodule);
 

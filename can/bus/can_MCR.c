@@ -5,8 +5,7 @@
  *      Author: Ruslan
  */
 
-#include "stm32f4xx/stm32f4xx.h"
-#include "can_reg.h"
+#include "can_bus.h"
 
 /**
  * Sets INRQ to 1 and waits for INAK 1
@@ -14,7 +13,7 @@
  */
 void can_bus_initialization_request(CAN_TypeDef* CAN) {
 	BIT_ON_MASK(CAN->MCR, CAN_MCR_INRQ);			//Initialization request
-	while(can_MSR_INAK_read(CAN) != CAN_MSR_INAK);	//Waits for Initialization acknowledge
+	while(can_MSR_INAK_read(can_MSR_read(CAN)) != CAN_MSR_INAK);	//Waits for Initialization acknowledge
 }
 
 /**
@@ -23,7 +22,7 @@ void can_bus_initialization_request(CAN_TypeDef* CAN) {
  */
 void can_bus_initialization_exit(CAN_TypeDef* CAN) {
 	BIT_OFF_MASK(CAN->MCR, CAN_MCR_INRQ);			//Normal mode request
-	while(can_MSR_INAK_read(CAN) == CAN_MSR_INAK);	//Waits for Normal mode
+	while(can_MSR_INAK_read(can_MSR_read(CAN)) == CAN_MSR_INAK);	//Waits for Normal mode
 }
 
 /**
@@ -32,7 +31,7 @@ void can_bus_initialization_exit(CAN_TypeDef* CAN) {
  */
 void can_bus_sleep_request(CAN_TypeDef* CAN) {
 	BIT_ON_MASK(CAN->MCR, CAN_MCR_SLEEP);			//Sleep mode request
-	while(can_MSR_SLAK_read(CAN) != CAN_MSR_SLAK);	//Waits for Sleep acknowledge
+	while(can_MSR_SLAK_read(can_MSR_read(CAN)) != CAN_MSR_SLAK);	//Waits for Sleep acknowledge
 }
 
 /**
@@ -41,5 +40,5 @@ void can_bus_sleep_request(CAN_TypeDef* CAN) {
  */
 void can_bus_sleep_exit(CAN_TypeDef* CAN) {
 	BIT_OFF_MASK(CAN->MCR, CAN_MCR_SLEEP);			//Left Sleep mode request
-	while(can_MSR_SLAK_read(CAN) == CAN_MSR_SLAK);	//Waits for Left Sleep mode
+	while (can_MSR_SLAK_read(can_MSR_read(CAN)) == CAN_MSR_SLAK);
 }
