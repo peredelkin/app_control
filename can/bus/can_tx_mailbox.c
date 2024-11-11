@@ -109,45 +109,14 @@ void can_TDHR_write(CAN_TypeDef* CAN, int mailbox, uint32_t data) {
 	}
 }
 
-#define CAN_TX_MAILBOX_COUNT 3
-
-enum {
-	CAN_TX_MAILBOX_NOT_EMPY = -1,
-	CAN_TX_MAILBOX_EMPY_0,
-	CAN_TX_MAILBOX_EMPY_1,
-	CAN_TX_MAILBOX_EMPY_2
-};
-
-int can_TSR_get_empy(CAN_TypeDef* CAN) {
-	for(int i = 0; i < CAN_TX_MAILBOX_COUNT; i++) {
-		switch(i) {
-		case CAN_TX_MAILBOX_EMPY_0:
-			if(CAN->TSR & CAN_TSR_TME0) {
-				return CAN_TX_MAILBOX_EMPY_0;
-			}
-			break;
-		case CAN_TX_MAILBOX_EMPY_1:
-			if(CAN->TSR & CAN_TSR_TME1) {
-				return CAN_TX_MAILBOX_EMPY_1;
-			}
-			break;
-		case CAN_TX_MAILBOX_EMPY_2:
-			if(CAN->TSR & CAN_TSR_TME2) {
-				return CAN_TX_MAILBOX_EMPY_2;
-			}
-			break;
-		default: return CAN_TX_MAILBOX_NOT_EMPY;
-		}
-	}
-	return CAN_TX_MAILBOX_NOT_EMPY;
-}
-
 err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, can_bus_tx_t* tx_message) {
 	if(CAN == NULL) return E_NULL_POINTER;
 
 	if(tx_message == NULL) return E_NULL_POINTER;
 
-	int tx_empty = can_TSR_get_empy(CAN);
+	uint32_t TSR = can_TSR_read(CAN);
+
+	int tx_empty = can_TSR_TME_get(TSR);
 
 	if(tx_empty < 0) return E_BUSY;
 

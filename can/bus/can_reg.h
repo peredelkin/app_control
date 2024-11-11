@@ -118,7 +118,9 @@
 #define CAN_TSR_ABRQ2	((uint32_t)BIT(23))	//Bit 23 ABRQ2: Abort request for mailbox 2
 
 #undef CAN_TSR_CODE
-#define CAN_TSR_CODE	((uint32_t)BIT_MAKE_MASK(2,24))	//Bits 25:24 CODE[1:0]: Mailbox code
+#define CAN_TIR_CODE_LENGTH 2
+#define CAN_TIR_CODE_SHIFT 24
+#define CAN_TSR_CODE	((uint32_t)BIT_MAKE_MASK(CAN_TIR_CODE_LENGTH,CAN_TIR_CODE_SHIFT))	//Bits 25:24 CODE[1:0]: Mailbox code
 
 #undef CAN_TSR_TME0
 #define CAN_TSR_TME0	((uint32_t)BIT(26))	//Bit 26 TME0: Transmit mailbox 0 empty
@@ -208,13 +210,19 @@
 #define CAN_ESR_BOFF	((uint32_t)BIT(2))	//Bit 2 BOFF: Bus-off flag
 
 #undef CAN_ESR_LEC
-#define CAN_ESR_LEC		((uint32_t)BIT_MAKE_MASK(3,4))	//Bits 6:4 LEC[2:0]: Last error code
+#define CAN_ESR_LEC_LENGTH 3
+#define CAN_ESR_LEC_SHIFT 4
+#define CAN_ESR_LEC		((uint32_t)BIT_MAKE_MASK(CAN_ESR_LEC_LENGTH,CAN_ESR_LEC_SHIFT))	//Bits 6:4 LEC[2:0]: Last error code
 
 #undef CAN_ESR_TEC
-#define CAN_ESR_TEC		((uint32_t)BIT_MAKE_MASK(8,16))	//Bits 23:16 TEC[7:0]: Least significant byte of the 9-bit transmit error counter
+#define CAN_ESR_TEC_LENGTH 8
+#define CAN_ESR_TEC_SHIFT 16
+#define CAN_ESR_TEC		((uint32_t)BIT_MAKE_MASK(CAN_ESR_TEC_LENGTH,CAN_ESR_TEC_SHIFT))	//Bits 23:16 TEC[7:0]: Least significant byte of the 9-bit transmit error counter
 
 #undef CAN_ESR_REC
-#define CAN_ESR_REC		((uint32_t)BIT_MAKE_MASK(8,24))	//Bits 31:24 REC[7:0]: Receive error counter
+#define CAN_ESR_REC_LENGTH 8
+#define CAN_ESR_REC_SHIFT 24
+#define CAN_ESR_REC		((uint32_t)BIT_MAKE_MASK(CAN_ESR_REC_LENGTH,CAN_ESR_REC_SHIFT))	//Bits 31:24 REC[7:0]: Receive error counter
 
 
 //CAN bit timing register (CAN_BTR)

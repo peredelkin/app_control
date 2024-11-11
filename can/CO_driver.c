@@ -16,6 +16,7 @@ void CO_CANsetConfigurationMode(void* CANptr) {
 	if(((can_bus_t*)CANptr)->bus == NULL) return;
 
 	can_bus_initialization_request((CAN_TypeDef*)(((can_bus_t*)CANptr)->bus));
+	can_filter_init_mode((CAN_TypeDef*)(((can_bus_t*)CANptr)->bus));
 }
 
 void CO_CANsetNormalMode(CO_CANmodule_t* CANmodule) {
@@ -25,6 +26,7 @@ void CO_CANsetNormalMode(CO_CANmodule_t* CANmodule) {
 
 	if(((can_bus_t*)CANmodule->CANptr)->bus == NULL) return;
 
+	can_filter_active_mode((CAN_TypeDef*)(((can_bus_t*)CANmodule->CANptr)->bus));
 	can_bus_initialization_exit((CAN_TypeDef*)(((can_bus_t*)CANmodule->CANptr)->bus));
 
 	CANmodule->CANnormal = true;
@@ -129,6 +131,90 @@ void CO_CANmodule_disable(CO_CANmodule_t* CANmodule) {
     }
 }
 
+enum {
+	CAN_ESR_LEC_No_Error = 0,
+	CAN_ESR_LEC_Stuff_Error,
+	CAN_ESR_LEC_Form_Error,
+	CAN_ESR_LEC_Acknowledgment_Error,
+	CAN_ESR_LEC_Bit_recessive_Error,
+	CAN_ESR_LEC_Bit_dominant_Error,
+	CAN_ESR_LEC_CRC_Error,
+	CAN_ESR_LEC_Set_by_software
+};
+
+void CO_CANmodule_process(CO_CANmodule_t* CANmodule) {
+
+	can_bus_t* can_device = (can_bus_t*)(CANmodule->CANptr); //Pointer to CAN device.
+
+	uint16_t status = CANmodule->CANerrorStatus;
+
+	uint32_t REC = can_ESR_REC_read(can_device->bus);
+
+	uint32_t TEC = can_ESR_TEC_read(can_device->bus);
+
+	if(can_IER_EWGIE_read(can_device->bus)) {
+		if(can_ESR_EWGF_read(can_device->bus)) {
+			if(REC >= 96) {
+				status |= CO_CAN_ERRRX_WARNING;
+			}
+
+			if(TEC >= 96) {
+				status |= CO_CAN_ERRTX_WARNING;
+			}
+		} else {
+			status &= ~(CO_CAN_ERRTX_WARNING | CO_CAN_ERRRX_WARNING);
+		}
+	}
+
+	if(can_IER_EPVIE_read(can_device->bus)) {
+		if(can_ESR_EPVF_read(can_device->bus)) {
+			if(REC > 127) {
+				status |= CO_CAN_ERRRX_PASSIVE;
+			}
+
+			if(TEC > 127) {
+				status |= CO_CAN_ERRTX_PASSIVE;
+			}
+		} else {
+			status &= ~(CO_CAN_ERRTX_PASSIVE | CO_CAN_ERRRX_PASSIVE);
+		}
+	}
+
+	if(can_IER_BOFIE_read(can_device->bus)) {
+		if(can_ESR_BOFF_read(can_device->bus)) {
+			status |= CO_CAN_ERRTX_BUS_OFF;
+		} else {
+			status &= ~CO_CAN_ERRTX_BUS_OFF;
+		}
+	}
+
+	if(can_IER_LECIE_read(can_device->bus)) {
+		uint32_t LEC = can_ESR_LEC_read(can_device->bus);
+		switch(LEC) {
+		case CAN_ESR_LEC_No_Error:
+			break;
+		case CAN_ESR_LEC_Stuff_Error:
+			break;
+		case CAN_ESR_LEC_Form_Error:
+			break;
+		case CAN_ESR_LEC_Acknowledgment_Error:
+			break;
+		case CAN_ESR_LEC_Bit_recessive_Error:
+			break;
+		case CAN_ESR_LEC_Bit_dominant_Error:
+			break;
+		case CAN_ESR_LEC_CRC_Error:
+			break;
+		case CAN_ESR_LEC_Set_by_software:
+			break;
+		default:
+			break;
+		}
+	}
+
+	CANmodule->CANerrorStatus = status;
+}
+
 
 //CAN1_TX_IRQHandler                /* CAN1 TX                      */
 //CAN1_RX0_IRQHandler               /* CAN1 RX0                     */
@@ -184,5 +270,15 @@ void CO_RX_IRQHandler(CO_CANmodule_t* CANmodule, int fifo) {
 
 void CO_SCE_IRQHandler(CO_CANmodule_t* CANmodule) {
 
+	can_bus_t* can_device = (can_bus_t*)(CANmodule->CANptr); //Pointer to CAN device.
+
+	if(can_IER_ERRIE_read(can_device->bus)) {
+		if(can_MSR_ERRI_read(can_device->bus)) {
+
+			CO_CANmodule_process(CANmodule);
+
+			can_MSR_ERRI_clear(can_device->bus);
+		}
+	}
 }
 

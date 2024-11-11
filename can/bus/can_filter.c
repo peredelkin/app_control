@@ -136,6 +136,9 @@ err_t can_filter_bank_set(CAN_TypeDef* CAN, int filter, uint32_t id, uint32_t ma
 
 	err_t err = E_NO_ERROR;
 
+	err = can_filter_set_inactive(CAN, filter);
+	if(err) return err;
+
 	err = can_filter_set_mask_mode(CAN, filter);
 	if(err) return err;
 

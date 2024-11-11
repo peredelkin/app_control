@@ -40,6 +40,10 @@ void can_IER_ERRIE_set(CAN_TypeDef* can, bool state) {
 	}
 }
 
+uint32_t can_IER_ERRIE_read(CAN_TypeDef* can) {
+	return can->IER & CAN_IER_ERRIE;
+}
+
 //LECIE: Last error code interrupt enable
 void can_IER_LECIE_set(CAN_TypeDef* can, bool state) {
 	if(state) {
@@ -47,6 +51,10 @@ void can_IER_LECIE_set(CAN_TypeDef* can, bool state) {
 	} else {
 		can->IER &= ~CAN_IER_LECIE;
 	}
+}
+
+uint32_t can_IER_LECIE_read(CAN_TypeDef* can) {
+	return can->IER & CAN_IER_LECIE;
 }
 
 //BOFIE: Bus-off interrupt enable
@@ -58,6 +66,10 @@ void can_IER_BOFIE_set(CAN_TypeDef* can, bool state) {
 	}
 }
 
+uint32_t can_IER_BOFIE_read(CAN_TypeDef* can) {
+	return can->IER & CAN_IER_BOFIE;
+}
+
 //EPVIE: Error passive interrupt enable
 void can_IER_EPVIE_set(CAN_TypeDef* can, bool state) {
 	if(state) {
@@ -67,6 +79,10 @@ void can_IER_EPVIE_set(CAN_TypeDef* can, bool state) {
 	}
 }
 
+uint32_t can_IER_EPVIE_read(CAN_TypeDef* can) {
+	return can->IER & CAN_IER_EPVIE;
+}
+
 //EWGIE: Error warning interrupt enable
 void can_IER_EWGIE_set(CAN_TypeDef* can, bool state) {
 	if(state) {
@@ -74,6 +90,10 @@ void can_IER_EWGIE_set(CAN_TypeDef* can, bool state) {
 	} else {
 		can->IER &= ~CAN_IER_EWGIE;
 	}
+}
+
+uint32_t can_IER_EWGIE_read(CAN_TypeDef* can) {
+	return can->IER & CAN_IER_EWGIE;
 }
 
 //FOVIE: FIFO overrun interrupt enable

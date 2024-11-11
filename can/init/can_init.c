@@ -22,27 +22,27 @@
 
 //CAN interrupts
 //TRANSMIT INTERRUPT
-#define CAN1_TMEIE		0
+#define CAN1_TMEIE		false
 
 //FIFO 0 INTERRUPT
-#define CAN1_FMPIE0		0
-#define CAN1_FFIE0		0
-#define CAN1_FOVIE0		0
+#define CAN1_FMPIE0		false
+#define CAN1_FFIE0		false
+#define CAN1_FOVIE0		false
 
 //FIFO 1 INTERRUPT
-#define CAN1_FMPIE1		0
-#define CAN1_FFIE1		0
-#define CAN1_FOVIE1		0
+#define CAN1_FMPIE1		false
+#define CAN1_FFIE1		false
+#define CAN1_FOVIE1		false
 
 //STATUS CHANGE ERROR INTERRUPT
-#define CAN1_ERRIE		0
-#define CAN1_EWGIE		0
-#define CAN1_EPVIE		0
-#define CAN1_BOFIE		0
-#define CAN1_LECIE		0
+#define CAN1_ERRIE		false
+#define CAN1_EWGIE		false
+#define CAN1_EPVIE		false
+#define CAN1_BOFIE		false
+#define CAN1_LECIE		false
 
-#define CAN1_WKUIE		0
-#define CAN1_SLKIE		0
+#define CAN1_WKUIE		false
+#define CAN1_SLKIE		false
 
 
 can_bus_t can1;
@@ -95,64 +95,26 @@ void can1_struct_init(void) {
 
 void can1_interrupts_init(void) {
 	//TRANSMIT INTERRUPT
-	if(CAN1_TMEIE) {
-
-	}
+	can_IER_TMEIE_set(can1.bus, CAN1_TMEIE);
 
 	//FIFO 0 INTERRUPT
-	if(CAN1_FMPIE0) {
-
-	}
-
-	if(CAN1_FFIE0) {
-
-	}
-
-	if(CAN1_FOVIE0) {
-
-	}
+	can_IER_FMPIE_set(can1.bus, 0, CAN1_FMPIE0);
+	can_IER_FFIE_set(can1.bus, 0, CAN1_FFIE0);
+	can_IER_FOVIE_set(can1.bus, 0, CAN1_FOVIE0);
 
 	//FIFO 1 INTERRUPT
-	if(CAN1_FMPIE1) {
-
-	}
-
-	if(CAN1_FFIE1) {
-
-	}
-
-	if(CAN1_FOVIE1) {
-
-	}
+	can_IER_FMPIE_set(can1.bus, 1, CAN1_FMPIE1);
+	can_IER_FFIE_set(can1.bus, 1, CAN1_FFIE1);
+	can_IER_FOVIE_set(can1.bus, 1, CAN1_FOVIE1);
 
 	//STATUS CHANGE ERROR INTERRUPT
-	if(CAN1_ERRIE) {
-
-	}
-
-	if(CAN1_EWGIE) {
-
-	}
-
-	if(CAN1_EPVIE) {
-
-	}
-
-	if(CAN1_BOFIE) {
-
-	}
-
-	if(CAN1_LECIE) {
-
-	}
-
-	if(CAN1_WKUIE) {
-
-	}
-
-	if(CAN1_SLKIE) {
-
-	}
+	can_IER_ERRIE_set(can1.bus, CAN1_ERRIE);
+	can_IER_EWGIE_set(can1.bus, CAN1_EWGIE);
+	can_IER_EPVIE_set(can1.bus, CAN1_EPVIE);
+	can_IER_BOFIE_set(can1.bus, CAN1_BOFIE);
+	can_IER_LECIE_set(can1.bus, CAN1_LECIE);
+	can_IER_WKUIE_set(can1.bus, CAN1_WKUIE);
+	can_IER_SLKIE_set(can1.bus, CAN1_SLKIE);
 }
 
 int create_CO(CO_t** co)
@@ -211,4 +173,8 @@ void can1_init(void) {
 	can1_rcc_init();
 
 	can1_struct_init();
+
+
+
+	can1_interrupts_init();
 }
