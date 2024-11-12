@@ -134,22 +134,22 @@ err_t can_filter_bank_set(CAN_TypeDef* CAN, int filter, uint32_t id, uint32_t ma
 	if(filter < 0) return E_INVALID_VALUE;
 	if(filter > 27) return E_OUT_OF_RANGE;
 
-	err_t err = E_NO_ERROR;
+	//err_t err = E_NO_ERROR;
 
-	err = can_filter_set_inactive(CAN, filter);
-	if(err) return err;
+	/*err = */can_filter_set_inactive(CAN, filter);
+	//if(err) return err;
 
-	err = can_filter_set_mask_mode(CAN, filter);
-	if(err) return err;
+	/*err = */can_filter_set_mask_mode(CAN, filter);
+	//if(err) return err;
 
-	err = can_filter_set_single_scale(CAN, filter);
-	if(err) return err;
+	/*err = */can_filter_set_single_scale(CAN, filter);
+	//if(err) return err;
 
 	CAN->sFilterRegister[filter].FR1 = id;
 	CAN->sFilterRegister[filter].FR1 = mask;
 
-	err = can_filter_set_active(CAN, filter);
-	if(err) return err;
+	/*err = */can_filter_set_active(CAN, filter);
+	//if(err) return err;
 
 	return E_NO_ERROR;
 }

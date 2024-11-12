@@ -91,7 +91,7 @@ void CO_CANsetConfigurationMode(void* CANptr) {
 
 	can_bus_initialization_request(can_bus);
 	can_filter_init_mode(can_bus);
-	can_interrupts_disable();
+	can_interrupts_disable(can_bus);
 }
 
 void CO_CANsetNormalMode(CO_CANmodule_t* CANmodule) {
@@ -218,6 +218,35 @@ CO_ReturnError_t CO_CANrxBufferInit(
 		void* object,
 		void (*CANrx_callback)(void* object, void* message)) {
 
+	if(CANmodule == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
+	if(index < CANmodule->rxSize) return CO_ERROR_ILLEGAL_ARGUMENT;
+	if(object == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
+	if(CANrx_callback == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
+
+	CAN_TypeDef* can_bus = (CAN_TypeDef*)(((can_bus_t*)CANmodule->CANptr)->bus);
+
+	err_t err = E_NO_ERROR;
+
+    /* buffer, which will be configured */
+    CO_CANrx_t* buffer = &CANmodule->rxArray[index];
+
+    /* Configure object variables */
+    buffer->object = object;
+    buffer->pCANrx_callback = CANrx_callback;
+
+    /* CAN identifier and CAN mask, bit aligned with CAN module. */
+    uint32_t can_id = (uint32_t)(CAN_FIR_STID & (ident << CAN_FIR_STID_SHIFT));
+    uint32_t can_mask = (uint32_t)(CAN_FIR_STID & (mask << CAN_FIR_STID_SHIFT));
+
+    if(rtr) {
+    	can_id |= CAN_FIR_RTR;
+    	can_mask |= CAN_FIR_RTR;
+    }
+
+    err = can_filter_bank_set(can_bus, index, can_id, can_mask);
+    if(err == E_INVALID_VALUE || err == E_OUT_OF_RANGE) return CO_ERROR_ILLEGAL_ARGUMENT;
+
+    return CO_ERROR_NO;
 }
 
 CO_CANtx_t* CO_CANtxBufferInit(

@@ -374,6 +374,22 @@
 #define CAN_FA1R_FACTx	((uint32_t)BIT_MAKE_MASK(CAN_FA1R_FACTx_LENGTH,CAN_FA1R_FACTx_SHIFT))	//Bits 27:0 FACTx: Filter active
 
 
+//CAN receive FiRx mailbox identifier register
+#undef CAN_FIR_RTR
+#define CAN_FIR_RTR		((uint32_t)BIT(1))	//Bit 1 RTR: Remote transmission request
+
+#undef CAN_FIR_IDE
+#define CAN_FIR_IDE		((uint32_t)BIT(2))	//Bit 2 IDE: Identifier extension
+
+#define CAN_FIR_EXID_LENGTH 29
+#define CAN_FIR_EXID_SHIFT 3
+#undef CAN_FIR_EXID
+#define CAN_FIR_EXID	((uint32_t)BIT_MAKE_MASK(CAN_FIR_EXID_LENGTH,CAN_FIR_EXID_SHIFT))	//Bits 31:3 EXID[28:0]: Extended identifier
+
+#define CAN_FIR_STID_LENGTH 11
+#define CAN_FIR_STID_SHIFT 21
+#undef CAN_FIR_STID
+#define CAN_FIR_STID	((uint32_t)BIT_MAKE_MASK(CAN_FIR_STID_LENGTH,CAN_FIR_STID_SHIFT))	//Bits 31:21 STID[10:0]: Standard identifier
 
 
 #endif /* CAN_BUS_CAN_REG_H_ */
