@@ -22,6 +22,10 @@ void can_IER_SLKIE_set(CAN_TypeDef* can, bool state) {
 	}
 }
 
+uint32_t can_IER_SLKIE_read(CAN_TypeDef* can) {
+	return can->IER & CAN_IER_SLKIE;
+}
+
 //WKUIE: Wakeup interrupt enable
 void can_IER_WKUIE_set(CAN_TypeDef* can, bool state) {
 	if(state) {
@@ -29,6 +33,10 @@ void can_IER_WKUIE_set(CAN_TypeDef* can, bool state) {
 	} else {
 		can->IER &= ~CAN_IER_WKUIE;
 	}
+}
+
+uint32_t can_IER_WKUIE_read(CAN_TypeDef* can) {
+	return can->IER & CAN_IER_WKUIE;
 }
 
 //ERRIE: Error interrupt enable

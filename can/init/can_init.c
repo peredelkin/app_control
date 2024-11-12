@@ -20,32 +20,14 @@
 //CAN1_SCE_IRQHandler               /* CAN1 SCE                     */
 
 
-//CAN interrupts
-//TRANSMIT INTERRUPT
-#define CAN1_TMEIE		false
-
-//FIFO 0 INTERRUPT
-#define CAN1_FMPIE0		false
-#define CAN1_FFIE0		false
-#define CAN1_FOVIE0		false
-
-//FIFO 1 INTERRUPT
-#define CAN1_FMPIE1		false
-#define CAN1_FFIE1		false
-#define CAN1_FOVIE1		false
-
-//STATUS CHANGE ERROR INTERRUPT
-#define CAN1_ERRIE		false
-#define CAN1_EWGIE		false
-#define CAN1_EPVIE		false
-#define CAN1_BOFIE		false
-#define CAN1_LECIE		false
-
-#define CAN1_WKUIE		false
-#define CAN1_SLKIE		false
-
-
-can_bus_t can1;
+can_bus_t can1 = {
+		.bus = CAN1,
+		.rx_index[0] = 0,
+		.rx_index[1] = 0,
+		.rx[0] = {0},
+		.rx[1] = {0},
+		.tx = {0}
+};
 
 CO_t* co = NULL;
 
@@ -89,32 +71,18 @@ void can1_rcc_init(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
 }
 
-void can1_struct_init(void) {
-	can1.bus = CAN1;
-}
+void can1_MCR_init(void) {
+	can_bus_initialization_request(can1.bus);
 
-void can1_interrupts_init(void) {
-	//TRANSMIT INTERRUPT
-	can_IER_TMEIE_set(can1.bus, CAN1_TMEIE);
+	can_software_master_reset(can1.bus);	//Force a master reset of the bxCAN
 
-	//FIFO 0 INTERRUPT
-	can_IER_FMPIE_set(can1.bus, 0, CAN1_FMPIE0);
-	can_IER_FFIE_set(can1.bus, 0, CAN1_FFIE0);
-	can_IER_FOVIE_set(can1.bus, 0, CAN1_FOVIE0);
-
-	//FIFO 1 INTERRUPT
-	can_IER_FMPIE_set(can1.bus, 1, CAN1_FMPIE1);
-	can_IER_FFIE_set(can1.bus, 1, CAN1_FFIE1);
-	can_IER_FOVIE_set(can1.bus, 1, CAN1_FOVIE1);
-
-	//STATUS CHANGE ERROR INTERRUPT
-	can_IER_ERRIE_set(can1.bus, CAN1_ERRIE);
-	can_IER_EWGIE_set(can1.bus, CAN1_EWGIE);
-	can_IER_EPVIE_set(can1.bus, CAN1_EPVIE);
-	can_IER_BOFIE_set(can1.bus, CAN1_BOFIE);
-	can_IER_LECIE_set(can1.bus, CAN1_LECIE);
-	can_IER_WKUIE_set(can1.bus, CAN1_WKUIE);
-	can_IER_SLKIE_set(can1.bus, CAN1_SLKIE);
+	can_MCR_TXFP_set(can1.bus, true);		//Priority driven by the request order (chronologically)
+	can_MCR_RFLM_set(can1.bus, true);		//Receive FIFO locked against overrun.
+	can_MCR_NART_set(can1.bus,false);		//The CAN hardware will automatically retransmit the message
+	can_MCR_AWUM_set(can1.bus,false);		//The Sleep mode is left on software request
+	can_MCR_ABOM_set(can1.bus, true);		//The Bus-Off state is left automatically by hardware
+	can_MCR_TTCM_set(can1.bus,false);		//Time Triggered Communication mode disabled
+	can_MCR_DBF_set(can1.bus, true);		//CAN reception/transmission frozen during debug
 }
 
 int create_CO(CO_t** co)
@@ -172,9 +140,7 @@ void can1_init(void) {
 
 	can1_rcc_init();
 
-	can1_struct_init();
+	while(can1.bus == NULL);
 
-
-
-	can1_interrupts_init();
+	can1_MCR_init();
 }

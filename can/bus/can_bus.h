@@ -35,10 +35,17 @@ typedef struct {
 	uint8_t rx_index[2];
 	can_bus_rx_t rx[2];
 	can_bus_tx_t tx;
-	uint32_t MSR;
 } can_bus_t;
 
 //Address offset: 0x00
+extern void can_MCR_DBF_set(CAN_TypeDef* CAN, bool DBF);
+extern void can_software_master_reset(CAN_TypeDef* CAN);
+extern void can_MCR_TTCM_set(CAN_TypeDef* CAN, bool TTCM);
+extern void can_MCR_ABOM_set(CAN_TypeDef* CAN, bool ABOM);
+extern void can_MCR_AWUM_set(CAN_TypeDef* CAN, bool AWUM);
+extern void can_MCR_NART_set(CAN_TypeDef* CAN, bool NART);
+extern void can_MCR_RFLM_set(CAN_TypeDef* CAN, bool RFLM);
+extern void can_MCR_TXFP_set(CAN_TypeDef* CAN, bool TXFP);
 extern void can_bus_initialization_request(CAN_TypeDef* CAN);
 extern void can_bus_initialization_exit(CAN_TypeDef* CAN);
 extern void can_bus_sleep_request(CAN_TypeDef* CAN);
@@ -52,8 +59,8 @@ extern void can_MSR_WKUI_clear(CAN_TypeDef* can);
 extern uint32_t can_MSR_WKUI_read(uint32_t MSR);
 extern void can_MSR_ERRI_clear(CAN_TypeDef* can);
 extern uint32_t can_MSR_ERRI_read(uint32_t MSR);
-extern uint32_t can_MSR_SLAK_read(uint32_t MSR);
-extern uint32_t can_MSR_INAK_read(uint32_t MSR);
+extern uint32_t can_MSR_SLAK_read(CAN_TypeDef* can);
+extern uint32_t can_MSR_INAK_read(CAN_TypeDef* can);
 
 //Address offset: 0x08
 extern uint32_t can_TSR_read(CAN_TypeDef* can);
@@ -79,7 +86,9 @@ extern void can_RFR_fifo_release(CAN_TypeDef* CAN, int fifo);
 
 //Address offset: 0x14
 extern void can_IER_SLKIE_set(CAN_TypeDef* can, bool state);
+extern uint32_t can_IER_SLKIE_read(CAN_TypeDef* can);
 extern void can_IER_WKUIE_set(CAN_TypeDef* can, bool state);
+extern uint32_t can_IER_WKUIE_read(CAN_TypeDef* can);
 extern void can_IER_ERRIE_set(CAN_TypeDef* can, bool state);
 extern uint32_t can_IER_ERRIE_read(CAN_TypeDef* can);
 extern void can_IER_LECIE_set(CAN_TypeDef* can, bool state);

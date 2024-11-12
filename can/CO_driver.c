@@ -10,13 +10,88 @@
 #include "301/CO_driver.h"
 #include "can/bus/can_bus.h"
 
+//CAN interrupts
+//TRANSMIT INTERRUPT
+#define CAN1_TMEIE		false
+
+//FIFO 0 INTERRUPT
+#define CAN1_FMPIE0		false
+#define CAN1_FFIE0		false
+#define CAN1_FOVIE0		false
+
+//FIFO 1 INTERRUPT
+#define CAN1_FMPIE1		false
+#define CAN1_FFIE1		false
+#define CAN1_FOVIE1		false
+
+//STATUS CHANGE ERROR INTERRUPT
+#define CAN1_ERRIE		false
+#define CAN1_EWGIE		false
+#define CAN1_EPVIE		false
+#define CAN1_BOFIE		false
+#define CAN1_LECIE		false
+
+#define CAN1_WKUIE		false
+#define CAN1_SLKIE		false
+
+void can_interrupts_enable(CAN_TypeDef* can) {
+	//TRANSMIT INTERRUPT
+	can_IER_TMEIE_set(can, CAN1_TMEIE);
+
+	//FIFO 0 INTERRUPT
+	can_IER_FMPIE_set(can, 0, CAN1_FMPIE0);
+	can_IER_FFIE_set(can, 0, CAN1_FFIE0);
+	can_IER_FOVIE_set(can, 0, CAN1_FOVIE0);
+
+	//FIFO 1 INTERRUPT
+	can_IER_FMPIE_set(can, 1, CAN1_FMPIE1);
+	can_IER_FFIE_set(can, 1, CAN1_FFIE1);
+	can_IER_FOVIE_set(can, 1, CAN1_FOVIE1);
+
+	//STATUS CHANGE ERROR INTERRUPT
+	can_IER_ERRIE_set(can, CAN1_ERRIE);
+	can_IER_EWGIE_set(can, CAN1_EWGIE);
+	can_IER_EPVIE_set(can, CAN1_EPVIE);
+	can_IER_BOFIE_set(can, CAN1_BOFIE);
+	can_IER_LECIE_set(can, CAN1_LECIE);
+	can_IER_WKUIE_set(can, CAN1_WKUIE);
+	can_IER_SLKIE_set(can, CAN1_SLKIE);
+}
+
+void can_interrupts_disable(CAN_TypeDef* can) {
+	//TRANSMIT INTERRUPT
+	can_IER_TMEIE_set(can, false);
+
+	//FIFO 0 INTERRUPT
+	can_IER_FMPIE_set(can, 0, false);
+	can_IER_FFIE_set(can, 0, false);
+	can_IER_FOVIE_set(can, 0, false);
+
+	//FIFO 1 INTERRUPT
+	can_IER_FMPIE_set(can, 1, false);
+	can_IER_FFIE_set(can, 1, false);
+	can_IER_FOVIE_set(can, 1, false);
+
+	//STATUS CHANGE ERROR INTERRUPT
+	can_IER_ERRIE_set(can, false);
+	can_IER_EWGIE_set(can, false);
+	can_IER_EPVIE_set(can, false);
+	can_IER_BOFIE_set(can, false);
+	can_IER_LECIE_set(can, false);
+	can_IER_WKUIE_set(can, false);
+	can_IER_SLKIE_set(can, false);
+}
+
 void CO_CANsetConfigurationMode(void* CANptr) {
 	if(CANptr == NULL) return;
 
 	if(((can_bus_t*)CANptr)->bus == NULL) return;
 
-	can_bus_initialization_request((CAN_TypeDef*)(((can_bus_t*)CANptr)->bus));
-	can_filter_init_mode((CAN_TypeDef*)(((can_bus_t*)CANptr)->bus));
+	CAN_TypeDef* can_bus = (CAN_TypeDef*)(((can_bus_t*)CANptr)->bus);
+
+	can_bus_initialization_request(can_bus);
+	can_filter_init_mode(can_bus);
+	can_interrupts_disable();
 }
 
 void CO_CANsetNormalMode(CO_CANmodule_t* CANmodule) {
@@ -26,8 +101,11 @@ void CO_CANsetNormalMode(CO_CANmodule_t* CANmodule) {
 
 	if(((can_bus_t*)CANmodule->CANptr)->bus == NULL) return;
 
-	can_filter_active_mode((CAN_TypeDef*)(((can_bus_t*)CANmodule->CANptr)->bus));
-	can_bus_initialization_exit((CAN_TypeDef*)(((can_bus_t*)CANmodule->CANptr)->bus));
+	CAN_TypeDef* can_bus = (CAN_TypeDef*)(((can_bus_t*)CANmodule->CANptr)->bus);
+
+	can_filter_active_mode(can_bus);
+	can_bus_initialization_exit(can_bus);
+	can_interrupts_enable(can_bus);
 
 	CANmodule->CANnormal = true;
 }
@@ -131,6 +209,38 @@ void CO_CANmodule_disable(CO_CANmodule_t* CANmodule) {
     }
 }
 
+CO_ReturnError_t CO_CANrxBufferInit(
+		CO_CANmodule_t* CANmodule,
+		uint16_t index,
+		uint16_t ident,
+		uint16_t mask,
+		bool_t rtr,
+		void* object,
+		void (*CANrx_callback)(void* object, void* message)) {
+
+}
+
+CO_CANtx_t* CO_CANtxBufferInit(
+		CO_CANmodule_t* CANmodule,
+		uint16_t index,
+		uint16_t ident,
+		bool_t rtr,
+		uint8_t noOfBytes,
+		bool_t syncFlag) {
+
+}
+
+CO_ReturnError_t CO_CANsend(
+		CO_CANmodule_t* CANmodule,
+		CO_CANtx_t* buffer) {
+
+}
+
+void CO_CANclearPendingSyncPDOs(
+		CO_CANmodule_t* CANmodule) {
+
+}
+
 enum {
 	CAN_ESR_LEC_No_Error = 0,
 	CAN_ESR_LEC_Stuff_Error,
@@ -226,6 +336,17 @@ void CO_CANmodule_process(CO_CANmodule_t* CANmodule) {
 
 void CO_TX_IRQHandler(CO_CANmodule_t* CANmodule) {
 
+	can_bus_t* can_device = (can_bus_t*)(CANmodule->CANptr); //Pointer to CAN device.
+
+	uint32_t TSR = can_TSR_read(can_device->bus);
+
+	if(can_IER_TMEIE_read(can_device->bus)) {
+		for(int i = 0; i < 3; i++) {
+			if(can_TSR_RQCP_get(TSR, i)) {
+				can_TSR_RQCP_clear(can_device->bus, i);
+			}
+		}
+	}
 }
 
 void CO_RX_IRQHandler(CO_CANmodule_t* CANmodule, int fifo) {
@@ -282,6 +403,20 @@ void CO_SCE_IRQHandler(CO_CANmodule_t* CANmodule) {
 			CO_CANmodule_process(CANmodule);
 
 			can_MSR_ERRI_clear(can_device->bus);
+		}
+	}
+
+	if(can_IER_WKUIE_read(can_device->bus)) {
+		if(can_MSR_WKUI_read(MSR)) {
+
+			can_MSR_WKUI_clear(can_device->bus);
+		}
+	}
+
+	if(can_IER_SLKIE_read(can_device->bus)) {
+		if(can_MSR_SLAKI_read(MSR)) {
+
+			can_MSR_SLAKI_clear(can_device->bus);
 		}
 	}
 }

@@ -35,10 +35,10 @@ uint32_t can_MSR_ERRI_read(uint32_t MSR) {
 	return MSR & CAN_MSR_ERRI;
 }
 
-uint32_t can_MSR_SLAK_read(uint32_t MSR) {
-	return MSR & CAN_MSR_SLAK;
+uint32_t can_MSR_SLAK_read(CAN_TypeDef* can) {
+	return can->MSR & CAN_MSR_SLAK;
 }
 
-uint32_t can_MSR_INAK_read(uint32_t MSR) {
-	return MSR & CAN_MSR_INAK;
+uint32_t can_MSR_INAK_read(CAN_TypeDef* can) {
+	return can->MSR & CAN_MSR_INAK;
 }
