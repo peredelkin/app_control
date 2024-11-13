@@ -97,11 +97,11 @@ void CANrx_callback(void* object, void* rxMsg);
 /**
  * CAN rx message structure.
  */
-//typedef struct {
-//    uint32_t ident;
-//    uint8_t DLC;
-//    uint8_t data[8];
-//} CO_CANrxMsg_t;
+typedef struct {
+    uint32_t ident;
+    uint8_t DLC;
+    uint8_t data[8];
+} CO_CANrxMsg_t;
 
 /**
  * CANrx_callback() can read CAN identifier from received CAN message
@@ -111,7 +111,7 @@ void CANrx_callback(void* object, void* rxMsg);
  */
 static inline uint16_t
 CO_CANrxMsg_readIdent(void* rxMsg) {
-    return ((uint16_t)(((can_bus_rx_t*)(rxMsg)))->id);
+    return ((uint16_t)(((CO_CANrxMsg_t*)(rxMsg)))->ident);
 }
 
 /**
@@ -122,7 +122,7 @@ CO_CANrxMsg_readIdent(void* rxMsg) {
  */
 static inline uint8_t
 CO_CANrxMsg_readDLC(void* rxMsg) {
-    return ((uint8_t)(((can_bus_rx_t*)(rxMsg)))->dlc);
+    return ((uint8_t)(((CO_CANrxMsg_t*)(rxMsg)))->DLC);
 }
 
 /**
@@ -133,7 +133,7 @@ CO_CANrxMsg_readDLC(void* rxMsg) {
  */
 static inline const uint8_t*
 CO_CANrxMsg_readData(void* rxMsg) {
-    return ((uint8_t*)(((can_bus_rx_t*)(rxMsg)))->data);
+    return ((uint8_t*)(((CO_CANrxMsg_t*)(rxMsg)))->data);
 }
 
 /**

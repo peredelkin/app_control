@@ -13,28 +13,8 @@
 #include "errors/errors.h"
 #include "can_reg.h"
 
-
-typedef struct {
-	uint32_t id;
-	bool ide;
-	bool rtr;
-	uint8_t dlc;
-	uint8_t data[8];
-} can_bus_rx_t;
-
-typedef struct {
-	uint32_t id;
-	bool ide;
-	bool rtr;
-	uint8_t dlc;
-	uint8_t data[8];
-} can_bus_tx_t;
-
 typedef struct {
 	CAN_TypeDef *bus;
-	uint8_t rx_index[2];
-	can_bus_rx_t rx[2];
-	can_bus_tx_t tx;
 } can_bus_t;
 
 //Address offset: 0x00
@@ -125,7 +105,7 @@ extern void can_filter_init_mode(CAN_TypeDef* CAN);
 extern void can_filter_active_mode(CAN_TypeDef* CAN);
 extern err_t can_filter_bank_set(CAN_TypeDef* CAN, int filter, uint32_t id, uint32_t mask);
 
-extern err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint8_t* fmi, can_bus_rx_t* rx_message);
+extern err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, uint8_t* dlc, uint8_t* index, uint8_t* data);
 extern err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dlc, uint8_t* data);
 
 #endif /* CAN_BUS_CAN_BUS_H_ */

@@ -137,7 +137,7 @@ err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, 
 	*index = (uint8_t)((CAN_RDTR_FMI & RDTR) >> CAN_RIR_FMI_SHIFT);
 
 	//DATA
-	memcpy(data, RDLHR, dlc); //copy DATA
+	memcpy(data, RDLHR, *dlc); //copy DATA
 
 	return E_NO_ERROR;
 }

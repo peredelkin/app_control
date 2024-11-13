@@ -402,6 +402,10 @@ void CO_RX_IRQHandler(CO_CANmodule_t* CANmodule, int fifo) {
 
 	CO_CANrx_t* buffer = NULL;
 
+	uint8_t index = 0;
+
+	CO_CANrxMsg_t rcvMsg = {0};
+
 	uint32_t RFR = can_RFR_read(can_device->bus, fifo);
 
 	//FOVIE0: FIFO overrun interrupt enabled
@@ -424,13 +428,13 @@ void CO_RX_IRQHandler(CO_CANmodule_t* CANmodule, int fifo) {
 	if(can_IER_FMPIE_read(can_device->bus, fifo)) {
 		//FIFO 0 message pending
 		if(can_RFR_FMP_read(RFR)) {
-			err = can_rx_mailbox_read_and_release(can_device->bus, fifo, &(can_device->rx_index[fifo]), &(can_device->rx[fifo]));
+			err = can_rx_mailbox_read_and_release(can_device->bus, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index, rcvMsg.data);
 
-			buffer = &CANmodule->rxArray[can_device->rx_index[fifo]];
+			buffer = &CANmodule->rxArray[index];
 
 	        /* Call specific function, which will process the message */
 	        if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
-	            buffer->pCANrx_callback(buffer->object, (void*)&(can_device->rx[fifo]));
+	            buffer->pCANrx_callback(buffer->object, (void*)&rcvMsg);
 	        }
 		}
 	}

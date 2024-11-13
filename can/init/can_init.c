@@ -22,11 +22,6 @@
 
 can_bus_t can1 = {
 		.bus = CAN1,
-		.rx_index[0] = 0,
-		.rx_index[1] = 0,
-		.rx[0] = {0},
-		.rx[1] = {0},
-		.tx = {0}
 };
 
 CO_t* co = NULL;
