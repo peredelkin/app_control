@@ -219,7 +219,7 @@ CO_ReturnError_t CO_CANrxBufferInit(
 		void (*CANrx_callback)(void* object, void* message)) {
 
 	if(CANmodule == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
-	if(index < CANmodule->rxSize) return CO_ERROR_ILLEGAL_ARGUMENT;
+	if(index >= CANmodule->rxSize) return CO_ERROR_ILLEGAL_ARGUMENT;
 	if(object == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
 	if(CANrx_callback == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
 
