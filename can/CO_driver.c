@@ -283,6 +283,52 @@ CO_ReturnError_t CO_CANsend(
 		CO_CANmodule_t* CANmodule,
 		CO_CANtx_t* buffer) {
 
+	CAN_TypeDef* can_bus = (CAN_TypeDef*)(((can_bus_t*)CANmodule->CANptr)->bus);
+
+    CO_ReturnError_t co_err = CO_ERROR_NO;
+
+    err_t bus_err = E_NO_ERROR;
+
+    /* Verify overflow */
+    if (buffer->bufferFull) {
+        if (!CANmodule->firstCANtxMessage) {
+            /* don't set error, if bootup message is still on buffers */
+            CANmodule->CANerrorStatus |= CO_CAN_ERRTX_OVERFLOW;
+        }
+        co_err = CO_ERROR_TX_OVERFLOW;
+    }
+
+    CO_LOCK_CAN_SEND(CANmodule);
+    /* if CAN TX buffer is free, copy message to it */
+    bus_err = can_tx_mailbox_write_and_request(can_bus, buffer->ident, buffer->DLC, buffer->data);
+
+    switch(bus_err) {
+    case E_NULL_POINTER:
+    	co_err = CO_ERROR_ILLEGAL_ARGUMENT;
+    	break;
+
+    case E_BUSY:
+    	buffer->bufferFull = true;
+    	CANmodule->CANtxCount++;
+    	break;
+
+    case E_OUT_OF_RANGE:
+    	co_err = CO_ERROR_ILLEGAL_ARGUMENT;
+    	break;
+
+    case E_NO_ERROR:
+    	if(CANmodule->CANtxCount == 0) {
+    		CANmodule->bufferInhibitFlag = buffer->syncFlag;
+    	}
+    	break;
+
+    default:
+    	break;
+    }
+
+    CO_UNLOCK_CAN_SEND(CANmodule);
+
+    return co_err;
 }
 
 void CO_CANclearPendingSyncPDOs(
