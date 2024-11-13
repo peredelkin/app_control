@@ -264,15 +264,19 @@ CO_CANtx_t* CO_CANtxBufferInit(
         buffer = &CANmodule->txArray[index];
 
         /* CAN identifier, DLC and rtr, bit aligned with CAN module transmit buffer, microcontroller specific. */
-        buffer->ident = ((uint32_t)ident & 0x07FFU) | ((uint32_t)(((uint32_t)noOfBytes & 0xFU) << 11U))
-                        | ((uint32_t)(rtr ? 0x8000U : 0U));
+        if(rtr) {
+        	buffer->ident = (uint32_t)((CAN_TIR_STID & (ident << CAN_TIR_STID_SHIFT)) | CAN_TIR_RTR);
+        } else {
+        	buffer->ident = (uint32_t)(CAN_TIR_STID & (ident << CAN_TIR_STID_SHIFT));
+        }
+
+        buffer->DLC = noOfBytes;
 
         buffer->bufferFull = false;
         buffer->syncFlag = syncFlag;
     }
 
     return buffer;
-
 }
 
 CO_ReturnError_t CO_CANsend(
@@ -297,6 +301,10 @@ enum {
 	CAN_ESR_LEC_Set_by_software
 };
 
+/*
+ * TODO: переписать и разделить - can_device должен собирать флаги в свою структуру,
+ * a CO_CANmodule_process должен из этой структуры забирать флаги и передавать в свои.
+ */
 void CO_CANmodule_process(CO_CANmodule_t* CANmodule) {
 
 	can_bus_t* can_device = (can_bus_t*)(CANmodule->CANptr); //Pointer to CAN device.

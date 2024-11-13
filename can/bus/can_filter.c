@@ -17,7 +17,7 @@ void can_filter_active_mode(CAN_TypeDef* CAN) {
 }
 
 
-err_t can_filter_set_can2_start_bank(CAN_TypeDef* CAN, int CAN2SB) {
+err_t can2_filter_start_bank_set(CAN_TypeDef* CAN, int CAN2SB) {
 	if(CAN2SB < 0) return E_INVALID_VALUE;
 	if(CAN2SB > 27) return E_OUT_OF_RANGE;
 

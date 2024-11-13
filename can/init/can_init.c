@@ -78,6 +78,10 @@ void can1_MCR_init(void) {
 	can_MCR_ABOM_set(can1.bus, true);		//The Bus-Off state is left automatically by hardware
 	can_MCR_TTCM_set(can1.bus,false);		//Time Triggered Communication mode disabled
 	can_MCR_DBF_set(can1.bus, true);		//CAN reception/transmission frozen during debug
+
+	can_filter_init_mode(can1.bus);			//Initialization mode for the filters
+	can2_filter_start_bank_set(can1.bus, 28); //28d, all the filters to CAN1 can be used
+	can_filter_active_mode(can1.bus);		//Active filters mode
 }
 
 int create_CO(CO_t** co)
