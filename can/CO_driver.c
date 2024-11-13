@@ -257,6 +257,22 @@ CO_CANtx_t* CO_CANtxBufferInit(
 		uint8_t noOfBytes,
 		bool_t syncFlag) {
 
+    CO_CANtx_t* buffer = NULL;
+
+    if ((CANmodule != NULL) && (index < CANmodule->txSize)) {
+        /* get specific buffer */
+        buffer = &CANmodule->txArray[index];
+
+        /* CAN identifier, DLC and rtr, bit aligned with CAN module transmit buffer, microcontroller specific. */
+        buffer->ident = ((uint32_t)ident & 0x07FFU) | ((uint32_t)(((uint32_t)noOfBytes & 0xFU) << 11U))
+                        | ((uint32_t)(rtr ? 0x8000U : 0U));
+
+        buffer->bufferFull = false;
+        buffer->syncFlag = syncFlag;
+    }
+
+    return buffer;
+
 }
 
 CO_ReturnError_t CO_CANsend(

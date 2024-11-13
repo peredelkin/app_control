@@ -109,10 +109,8 @@ void can_TDHR_write(CAN_TypeDef* CAN, int mailbox, uint32_t data) {
 	}
 }
 
-err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, can_bus_tx_t* tx_message) {
+err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dlc, uint8_t* data) {
 	if(CAN == NULL) return E_NULL_POINTER;
-
-	if(tx_message == NULL) return E_NULL_POINTER;
 
 	uint32_t TSR = can_TSR_read(CAN);
 
@@ -120,29 +118,22 @@ err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, can_bus_tx_t* tx_messag
 
 	if(tx_empty < 0) return E_BUSY;
 
-	if(tx_message->dlc > 8) return E_OUT_OF_RANGE;
+	if(dlc > 8) return E_OUT_OF_RANGE;
+
+	if(data == NULL) return E_NULL_POINTER;
 
 	uint32_t TIR = 0;
 	uint32_t TDTR = 0;
 	uint32_t TDLHR[2] = {0,0};
 
+	//ID
+	TIR = ((CAN_TIR_STID | CAN_TIR_EXID | CAN_TIR_IDE | CAN_TIR_RTR) & id); //set ID
+
 	//DLC
-	TDTR |= (CAN_TDTR_DLC & tx_message->dlc); //set DLC
+	TDTR = (CAN_TDTR_DLC & dlc); //set DLC
 
-	//RTR or DATA?
-	if (tx_message->rtr) {
-		TIR |= CAN_TIR_RTR; //set RTR
-	} else {
-		memcpy(TDLHR, tx_message->data, tx_message->dlc); //copy DATA
-	}
-
-	//EXTID or STDID?
-	if(tx_message->ide) {
-		TIR |= CAN_TIR_IDE; //set IDE
-		TIR |= (CAN_TIR_EXID & (tx_message->id << CAN_TIR_EXID_SHIFT)); //set EXTID
-	} else {
-		TIR |= (CAN_TIR_STID & (tx_message->id << CAN_TIR_STID_SHIFT)); //set STID
-	}
+	//DATA
+	memcpy(TDLHR, data, dlc); //copy DATA
 
 	can_TIR_write(CAN, tx_empty, TIR);			//TX mailbox identifier
 	can_TDTR_write(CAN, tx_empty, TDTR);		//CAN mailbox data length control and time stamp
