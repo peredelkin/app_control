@@ -105,12 +105,16 @@ void can_RFR_fifo_release(CAN_TypeDef* CAN, int fifo) {
 	}
 }
 
-err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint8_t* fmi, can_bus_rx_t* rx_message) {
+err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, uint8_t* dlc, uint8_t* index, uint8_t* data) {
 	if(CAN == NULL) return E_NULL_POINTER;
 
-	if(fmi == NULL) return E_NULL_POINTER;
+	if(id == NULL) return E_NULL_POINTER;
 
-	if(rx_message == NULL) return E_NULL_POINTER;
+	if(dlc == NULL) return E_NULL_POINTER;
+
+	if(index == NULL) return E_NULL_POINTER;
+
+	if(data == NULL) return E_NULL_POINTER;
 
 	uint32_t RIR = 0;
 	uint32_t RDTR = 0;
@@ -123,28 +127,17 @@ err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint8_t* fmi, 
 
 	can_RFR_fifo_release(CAN, fifo);
 
-	//FMI
-	*fmi = (uint8_t)((RDTR & CAN_RDTR_FMI) >> CAN_RIR_FMI_SHIFT);
+	//ID
+	*id = ((CAN_TIR_STID | CAN_TIR_EXID | CAN_TIR_IDE | CAN_TIR_RTR) & RIR);
 
 	//DLC
-	rx_message->dlc = (uint8_t)(RDTR & CAN_RDTR_DLC);
+	*dlc = (uint8_t)(CAN_RDTR_DLC & RDTR);
 
-	//RTR or DATA?
-	if (RIR & CAN_RIR_RTR) {
-		rx_message->rtr = true;
-	} else {
-		rx_message->rtr = false;
-		memcpy(rx_message->data, RDLHR, rx_message->dlc); //copy DATA
-	}
+	//INDEX
+	*index = (uint8_t)((CAN_RDTR_FMI & RDTR) >> CAN_RIR_FMI_SHIFT);
 
-	//EXTID or STDID?
-	if(RIR & CAN_RIR_IDE) {
-		rx_message->ide = true;
-		rx_message->id = (uint32_t)((RIR & CAN_RIR_EXID) >> CAN_RIR_EXID_SHIFT);
-	} else {
-		rx_message->ide = false;
-		rx_message->id = (uint32_t)((RIR & CAN_RIR_STID) >> CAN_RIR_STID_SHIFT);
-	}
+	//DATA
+	memcpy(data, RDLHR, dlc); //copy DATA
 
 	return E_NO_ERROR;
 }
