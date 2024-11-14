@@ -67,10 +67,10 @@ uint32_t can_RDHR_read(CAN_TypeDef* CAN, int fifo) {
 
 uint32_t can_RFR_read(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case 0:
+	case CAN_RX_FIFO_0:
 		return CAN->RF0R;
 
-	case 1:
+	case CAN_RX_FIFO_1:
 		return CAN->RF1R;
 
 	default:
@@ -90,14 +90,44 @@ uint32_t can_RFR_FOVR_read(uint32_t RFR) {
 	return RFR & CAN_RFR_FOVR;
 }
 
-void can_RFR_fifo_release(CAN_TypeDef* CAN, int fifo) {
+void can_RFR_FULL_clear(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case 0:
-		CAN->RF0R |= CAN_RFR_RFOM;
+	case CAN_RX_FIFO_0:
+		CAN->RF0R = CAN_RFR_FULL;
 		break;
 
-	case 1:
-		CAN->RF1R |= CAN_RFR_RFOM;
+	case CAN_RX_FIFO_1:
+		CAN->RF1R = CAN_RFR_FULL;
+		break;
+
+	default:
+		return;
+	}
+}
+
+void can_RFR_FOVR_clear(CAN_TypeDef* CAN, int fifo) {
+	switch(fifo) {
+	case CAN_RX_FIFO_0:
+		CAN->RF0R = CAN_RFR_FULL;
+		break;
+
+	case CAN_RX_FIFO_1:
+		CAN->RF1R = CAN_RFR_FULL;
+		break;
+
+	default:
+		return;
+	}
+}
+
+void can_RFR_RFOM_set(CAN_TypeDef* CAN, int fifo) {
+	switch(fifo) {
+	case CAN_RX_FIFO_0:
+		CAN->RF0R = CAN_RFR_RFOM;
+		break;
+
+	case CAN_RX_FIFO_1:
+		CAN->RF1R = CAN_RFR_RFOM;
 		break;
 
 	default:
@@ -125,7 +155,7 @@ err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, 
 	RDLHR[0] = can_RDLR_read(CAN, fifo);
 	RDLHR[1] = can_RDHR_read(CAN, fifo);
 
-	can_RFR_fifo_release(CAN, fifo);
+	can_RFR_RFOM_set(CAN, fifo);
 
 	//ID
 	*id = ((CAN_TIR_STID | CAN_TIR_EXID | CAN_TIR_IDE | CAN_TIR_RTR) & RIR);

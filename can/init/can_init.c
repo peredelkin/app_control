@@ -22,6 +22,10 @@
 
 can_bus_t can1 = {
 		.bus = CAN1,
+		.error = 0,
+		.tx_error_counter  = 0,
+		.rx_error_counter = 0,
+		.last_error_code  = 0
 };
 
 CO_t* co = NULL;

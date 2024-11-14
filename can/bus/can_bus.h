@@ -11,10 +11,42 @@
 #include <stdbool.h>
 #include "stm32f4xx/stm32f4xx.h"
 #include "errors/errors.h"
+#include "bits/bits.h"
 #include "can_reg.h"
+
+
+#define CAN_ERROR_RX_WARNING	((uint32_t)BIT(0))
+#define CAN_ERROR_TX_WARNING	((uint32_t)BIT(1))
+
+#define CAN_ERROR_RX_PASSIVE	((uint32_t)BIT(2))
+#define CAN_ERROR_TX_PASSIVE	((uint32_t)BIT(3))
+
+#define CAN_ERROR_TX_BUSSOFF	((uint32_t)BIT(4))
+
+#define CAN_ERROR_RX0_OVERRUN	((uint32_t)BIT(5))
+#define CAN_ERROR_RX0_FULL		((uint32_t)BIT(6))
+
+#define CAN_ERROR_RX1_OVERRUN	((uint32_t)BIT(7))
+#define CAN_ERROR_RX1_FULL		((uint32_t)BIT(8))
+
+enum {
+	CAN_ESR_LEC_No_Error = 0,
+	CAN_ESR_LEC_Stuff_Error,
+	CAN_ESR_LEC_Form_Error,
+	CAN_ESR_LEC_Acknowledgment_Error,
+	CAN_ESR_LEC_Bit_recessive_Error,
+	CAN_ESR_LEC_Bit_dominant_Error,
+	CAN_ESR_LEC_CRC_Error,
+	CAN_ESR_LEC_Set_by_software
+};
+
 
 typedef struct {
 	CAN_TypeDef *bus;
+	uint32_t error;
+	uint32_t tx_error_counter;
+	uint32_t rx_error_counter;
+	uint32_t last_error_code;
 } can_bus_t;
 
 //Address offset: 0x00
@@ -62,7 +94,9 @@ extern uint32_t can_RFR_read(CAN_TypeDef* CAN, int fifo);
 extern uint32_t can_RFR_FMP_read(uint32_t RFR);
 extern uint32_t can_RFR_FULL_read(uint32_t RFR);
 extern uint32_t can_RFR_FOVR_read(uint32_t RFR);
-extern void can_RFR_fifo_release(CAN_TypeDef* CAN, int fifo);
+extern void can_RFR_FULL_clear(CAN_TypeDef* CAN, int fifo);
+extern void can_RFR_FOVR_clear(CAN_TypeDef* CAN, int fifo);
+extern void can_RFR_RFOM_set(CAN_TypeDef* CAN, int fifo);
 
 //Address offset: 0x14
 extern void can_IER_SLKIE_set(CAN_TypeDef* can, bool state);
