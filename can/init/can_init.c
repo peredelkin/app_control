@@ -73,7 +73,7 @@ void can1_rcc_init(void) {
 void can1_pre_init(void) {
 	can_bus_initialization_request(can1.bus);
 
-	//can_software_master_reset(can1.bus);	//Force a master reset of the bxCAN
+	can_software_master_reset(can1.bus);	//Force a master reset of the bxCAN
 
 	can_MCR_TXFP_set(can1.bus, true);		//Priority driven by the request order (chronologically)
 	can_MCR_RFLM_set(can1.bus, true);		//Receive FIFO locked against overrun.
@@ -81,7 +81,7 @@ void can1_pre_init(void) {
 	can_MCR_AWUM_set(can1.bus,false);		//The Sleep mode is left on software request
 	can_MCR_ABOM_set(can1.bus, true);		//The Bus-Off state is left automatically by hardware
 	can_MCR_TTCM_set(can1.bus,false);		//Time Triggered Communication mode disabled
-	can_MCR_DBF_set(can1.bus, false);		//CAN reception/transmission frozen during debug
+	can_MCR_DBF_set(can1.bus, true);		//CAN reception/transmission frozen during debug
 
 	can_filter_init_mode(can1.bus);			//Initialization mode for the filters
 	can2_filter_start_bank_set(can1.bus, 28); //28d, all the filters to CAN1 can be used
