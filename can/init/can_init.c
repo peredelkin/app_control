@@ -160,10 +160,10 @@ void can1_init(void) {
 			printf("Error init CO (%d)!\n", (int)coerr);
 		} else {
 			printf("CO inited (%d)\n", (int)coerr);
-			uint32_t id = 1;
-			uint32_t dlc = 8;
-			uint8_t data[8] = {1,2,3,4,5,6,7,8};
-			can_tx_mailbox_write_and_request(can1.bus, id, dlc, data);
+//			uint32_t id = 1;
+//			uint32_t dlc = 8;
+//			uint8_t data[8] = {1,2,3,4,5,6,7,8};
+//			can_tx_mailbox_write_and_request(can1.bus, id, dlc, data);
 		}
 	}
 }
