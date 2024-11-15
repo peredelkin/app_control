@@ -146,6 +146,8 @@ err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, 
 
 	if(data == NULL) return E_NULL_POINTER;
 
+	__disable_irq();
+
 	uint32_t RIR = 0;
 	uint32_t RDTR = 0;
 	uint32_t RDLHR[2] = {0,0};
@@ -168,6 +170,8 @@ err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, 
 
 	//DATA
 	memcpy(data, RDLHR, *dlc); //copy DATA
+
+	__enable_irq();
 
 	return E_NO_ERROR;
 }

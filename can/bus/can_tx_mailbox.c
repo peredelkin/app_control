@@ -112,15 +112,20 @@ void can_TDHR_write(CAN_TypeDef* CAN, int mailbox, uint32_t data) {
 err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dlc, uint8_t* data) {
 	if(CAN == NULL) return E_NULL_POINTER;
 
+	if(dlc > 8) return E_OUT_OF_RANGE;
+
+	if(data == NULL) return E_NULL_POINTER;
+
+	__disable_irq();
+
 	uint32_t TSR = can_TSR_read(CAN);
 
 	int tx_empty = can_TSR_TME_get(TSR);
 
-	if(tx_empty < 0) return E_BUSY;
-
-	if(dlc > 8) return E_OUT_OF_RANGE;
-
-	if(data == NULL) return E_NULL_POINTER;
+	if(tx_empty < 0) {
+		__enable_irq();
+		return E_BUSY;
+	}
 
 	uint32_t TIR = 0;
 	uint32_t TDTR = 0;
@@ -141,6 +146,8 @@ err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dl
 	can_TDHR_write(CAN, tx_empty, TDLHR[1]);	//CAN mailbox data high
 
 	can_tx_request(CAN, tx_empty);	//Transmit mailbox request
+
+	__enable_irq();
 
 	return E_NO_ERROR;
 }

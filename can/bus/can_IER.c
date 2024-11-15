@@ -7,11 +7,6 @@
 
 #include "can_bus.h"
 
-enum {
-	CAN_RX_MAILBOX_0 = 0,
-	CAN_RX_MAILBOX_1
-};
-
 
 //SLKIE: Sleep interrupt enable
 void can_IER_SLKIE_set(CAN_TypeDef* can, bool state) {
