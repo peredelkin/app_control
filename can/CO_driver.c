@@ -92,6 +92,7 @@ void CO_CANsetConfigurationMode(void *CANptr) {
 	CAN_TypeDef *can_bus = (CAN_TypeDef*) (((can_bus_t*) CANptr)->bus);
 
 	can_bus_initialization_request(can_bus);
+	//can_bus_sleep_request(can_bus); TODO: //разобраться, почему зависает
 	can_filter_init_mode(can_bus);
 	can_interrupts_disable(can_bus);
 }
@@ -110,6 +111,7 @@ void CO_CANsetNormalMode(CO_CANmodule_t *CANmodule) {
 
 	can_filter_active_mode(can_bus);
 	can_bus_initialization_exit(can_bus);
+	can_bus_sleep_exit(can_bus);
 	can_interrupts_enable(can_bus);
 
 	CANmodule->CANnormal = true;
