@@ -10,6 +10,8 @@
 
 #include "gpio/init/gpio_init.h" //TODO: убрать
 
+#include "can/init/can_init.h" //CANopen
+
 static void sys_tim_handler(void* arg)
 {
     M_sys_main* sys = (M_sys_main*)arg;
@@ -189,6 +191,8 @@ static void FSM_state(M_sys_main* sys)
 
 struct timeval sys_main_execution_time; //TODO: определить куда засунуть
 
+extern CO_t* co; //CANopen
+
 METHOD_CALC_IMPL(M_sys_main, sys)
 {
 	struct timeval tv_start; //время начала
@@ -199,6 +203,8 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     //CALC(conf); // conf не требует вычисления.
 
     // Вычислительные модули.
+    can1_CO_process(co, 10000, NULL);
+
     CALC(cli);
     CALC(rgb_led);
     CALC(msdi);
