@@ -70,7 +70,7 @@ void can1_rcc_init(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
 }
 
-void can1_MCR_init(void) {
+void can1_pre_init(void) {
 	can_bus_initialization_request(can1.bus);
 
 	can_software_master_reset(can1.bus);	//Force a master reset of the bxCAN
@@ -103,37 +103,40 @@ int create_CO(CO_t** co)
     return 0;
 }
 
-CO_ReturnError_t init_CO(CO_t* co, can_bus_t* can_bus)
-{
-    if(co == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
-    if(can_bus == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
+CO_ReturnError_t init_CO(CO_t *co, can_bus_t *can_bus) {
+	if (co == NULL)
+		return CO_ERROR_ILLEGAL_ARGUMENT;
+	if (can_bus == NULL)
+		return CO_ERROR_ILLEGAL_ARGUMENT;
 
-    CO_ReturnError_t coerr = CO_ERROR_NO;
+	CO_ReturnError_t coerr = CO_ERROR_NO;
 
-    coerr = CO_CANinit(co, can_bus, 125);
-    if(coerr != CO_ERROR_NO) return coerr;
+	coerr = CO_CANinit(co, can_bus, 125);
+	if (coerr != CO_ERROR_NO)
+		return coerr;
 
-    uint32_t errInfo = 0;
+	uint32_t errInfo = 0;
 
-    coerr = CO_CANopenInit(co,
-            NULL, NULL, OD, NULL, CO_CONFIG_NMT, FIRST_HB_TIME_MS, SDO_SERVER_TIMEOUT_MS, SDO_CLIENT_TIMEOUT_MS, SDO_CLIENT_BLOCK_TRANSFER, NODE_ID, &errInfo);
+	coerr = CO_CANopenInit(co,
+	NULL, NULL, OD, NULL, CO_CONFIG_NMT, FIRST_HB_TIME_MS, SDO_SERVER_TIMEOUT_MS, SDO_CLIENT_TIMEOUT_MS,
+			SDO_CLIENT_BLOCK_TRANSFER, NODE_ID, &errInfo);
 
-    if(coerr != CO_ERROR_NO){
-        printf("CANopen init fail! (err: %d err_info: %d)\n", (int)coerr, (int)errInfo);
-        return coerr;
-    }
+	if (coerr != CO_ERROR_NO) {
+		printf("CANopen init fail! (err: %d err_info: %d)\n", (int) coerr, (int) errInfo);
+		return coerr;
+	}
 
-    coerr = CO_CANopenInitPDO(co, co->em, OD, NODE_ID, &errInfo);
+	coerr = CO_CANopenInitPDO(co, co->em, OD, NODE_ID, &errInfo);
 
-    if(coerr != CO_ERROR_NO){
-        printf("CANopen init PDO fail! (err: %d err_info: %d)\n", (int)coerr, (int)errInfo);
-        return coerr;
-    }
+	if (coerr != CO_ERROR_NO) {
+		printf("CANopen init PDO fail! (err: %d err_info: %d)\n", (int) coerr, (int) errInfo);
+		return coerr;
+	}
 
-    /* Разрешение работы */
-    CO_CANsetNormalMode(co->CANmodule);
+	/* Разрешение работы */
+	CO_CANsetNormalMode(co->CANmodule);
 
-    return CO_ERROR_NO;
+	return CO_ERROR_NO;
 }
 
 void can1_init(void) {
@@ -145,5 +148,18 @@ void can1_init(void) {
 
 	while(can1.bus == NULL);
 
-	can1_MCR_init();
+	can1_pre_init();
+
+	int res = create_CO(&co);
+	if(res == -1 || co == NULL) {
+		printf("Error create CO!\n");
+	} else {
+		printf("CO created\n");
+		CO_ReturnError_t coerr = init_CO(co, &can1);
+		if(coerr != CO_ERROR_NO) {
+			printf("Error init CO (%d)!\n", (int)coerr);
+		} else {
+			printf("CO inited (%d)\n", (int)coerr);
+		}
+	}
 }

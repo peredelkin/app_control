@@ -12,12 +12,12 @@
 
 //CAN interrupts
 //TRANSMIT INTERRUPT
-#define CAN1_TMEIE		false
+#define CAN1_TMEIE		true
 
 //FIFO 0 INTERRUPT
-#define CAN1_FMPIE0		false
-#define CAN1_FFIE0		false
-#define CAN1_FOVIE0		false
+#define CAN1_FMPIE0		true
+#define CAN1_FFIE0		true
+#define CAN1_FOVIE0		true
 
 //FIFO 1 INTERRUPT
 #define CAN1_FMPIE1		false
@@ -25,11 +25,11 @@
 #define CAN1_FOVIE1		false
 
 //STATUS CHANGE ERROR INTERRUPT
-#define CAN1_ERRIE		false
-#define CAN1_EWGIE		false
-#define CAN1_EPVIE		false
-#define CAN1_BOFIE		false
-#define CAN1_LECIE		false
+#define CAN1_ERRIE		true
+#define CAN1_EWGIE		true
+#define CAN1_EPVIE		true
+#define CAN1_BOFIE		true
+#define CAN1_LECIE		true
 
 #define CAN1_WKUIE		false
 #define CAN1_SLKIE		false
