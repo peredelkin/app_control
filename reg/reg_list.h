@@ -20,7 +20,7 @@
  * //DEF - Значение по-умолчанию.
  * //FLG - Флаги.
  */
-#define REG(ID, DATA, TYPE, FLAG) {ID, (void*)&DATA, TYPE, FLAG},
+#define REG(ID, DATA, TYPE, FLAG, BASE) {ID, (void*)&DATA, TYPE, FLAG},
 /*
  * Окончание массива регистров.
  */
@@ -34,6 +34,7 @@
 
 #define REG_ARRAY_NAME regs
 #include "reg_list_data.h"
+#define REGS_COUNT REGS_COUNT_VALUE(REG_ARRAY_NAME)
 
 
 #endif /* REG_LIST_H */

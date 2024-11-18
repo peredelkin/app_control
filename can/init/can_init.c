@@ -49,16 +49,16 @@ void CAN1_SCE_IRQHandler() {
 
 void can1_nvic_init(uint32_t priority) {
 	NVIC_SetPriority(CAN1_TX_IRQn, priority);
-	//NVIC_EnableIRQ(CAN1_TX_IRQn);
+	NVIC_EnableIRQ(CAN1_TX_IRQn);
 
 	NVIC_SetPriority(CAN1_RX0_IRQn, priority);
-	//NVIC_EnableIRQ(CAN1_RX0_IRQn);
+	NVIC_EnableIRQ(CAN1_RX0_IRQn);
 
 	NVIC_SetPriority(CAN1_RX1_IRQn, priority);
-	//NVIC_EnableIRQ(CAN1_RX1_IRQn);
+	NVIC_EnableIRQ(CAN1_RX1_IRQn);
 
 	NVIC_SetPriority(CAN1_SCE_IRQn, priority);
-	//NVIC_EnableIRQ(CAN1_SCE_IRQn);
+	NVIC_EnableIRQ(CAN1_SCE_IRQn);
 }
 
 void can1_reset(void) {
@@ -85,7 +85,6 @@ void can1_pre_init(void) {
 
 	can_filter_init_mode(can1.bus);			//Initialization mode for the filters
 	can2_filter_start_bank_set(can1.bus, 28); //28d, all the filters to CAN1 can be used
-	can_filter_active_mode(can1.bus);		//Active filters mode
 }
 
 int create_CO(CO_t** co)

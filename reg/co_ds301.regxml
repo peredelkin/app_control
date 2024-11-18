@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RegEntries>
+    <RegEntry index="4096" name="Device type" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="16" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4097" name="Error register" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="524320" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4099" name="Pre-defined error field" type="1" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of errors" type="5" count="1" memory="" minimum="0" maximum="16" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Standard error field" type="3" count="16" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4101" name="COB-ID SYNC message" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80" base_index="0" base_subindex="0" flags="0" eflags="393280" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4102" name="Communication cycle period" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393344" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4103" name="Synchronous window length" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4112" name="Store parameters" type="1" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="4" default="4" base_index="0" base_subindex="0" flags="0" eflags="131076" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Save all parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393472" description=""/>
+            <RegVar subindex="2" name="Save communication parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393472" description=""/>
+            <RegVar subindex="3" name="Save application parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393472" description=""/>
+            <RegVar subindex="4" name="Save manufacturer defined parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393472" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4113" name="Restore default parameters" type="1" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="4" default="4" base_index="0" base_subindex="0" flags="0" eflags="131076" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Restore all default parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Restore communication default parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Restore application default parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Restore manufacturer defined default parameters" type="3" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4114" name="COB-ID time stamp object" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="3" count="1" memory="" minimum="0" maximum="0" default="0x00000100" base_index="0" base_subindex="0" flags="0" eflags="393728" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4116" name="COB-ID EMCY" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80" base_index="0" base_subindex="0" flags="0" eflags="394240" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4117" name="Inhibit time EMCY" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4118" name="Consumer heartbeat time" type="1" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="8" default="8" base_index="0" base_subindex="0" flags="0" eflags="133124" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Consumer heartbeat time" type="3" count="8" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="395264" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4119" name="Producer heartbeat time" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="397312" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4120" name="Identity" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="4" default="4" base_index="0" base_subindex="0" flags="0" eflags="131076" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Vendor-ID" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="2" name="Product code" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="3" name="Revision number" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="4" name="Serial number" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4121" name="Synchronous counter overflow value" type="0" description="">
+        <RegVars>
+            <RegVar subindex="0" name="value" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4608" name="SDO server parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="2" base_index="0" base_subindex="0" flags="0" eflags="139268" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID client to server (rx)" type="3" count="1" memory="" minimum="0" maximum="0" default="0x600" base_index="0" base_subindex="0" flags="0" eflags="663552" description=""/>
+            <RegVar subindex="2" name="COB-ID server to client (tx)" type="3" count="1" memory="" minimum="0" maximum="0" default="0x580" base_index="0" base_subindex="0" flags="0" eflags="663552" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="4736" name="SDO client parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="count" type="5" count="1" memory="" minimum="0" maximum="0" default="3" base_index="0" base_subindex="0" flags="0" eflags="147460" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID client to server (tx)" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80000000" base_index="0" base_subindex="0" flags="0" eflags="1982464" description=""/>
+            <RegVar subindex="2" name="COB-ID server to client (rx)" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80000000" base_index="0" base_subindex="0" flags="0" eflags="1982464" description=""/>
+            <RegVar subindex="3" name="Node-ID of the SDO server" type="5" count="1" memory="" minimum="0" maximum="0" default="1" base_index="0" base_subindex="0" flags="0" eflags="409600" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5120" name="RPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="5" base_index="0" base_subindex="0" flags="0" eflags="163844" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by RPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80000200" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5121" name="RPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="5" base_index="0" base_subindex="0" flags="0" eflags="163844" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by RPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80000300" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5122" name="RPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="5" base_index="0" base_subindex="0" flags="0" eflags="163844" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by RPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80000400" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5123" name="RPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="5" base_index="0" base_subindex="0" flags="0" eflags="163844" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by RPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0x80000500" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="425984" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5632" name="RPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5633" name="RPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5634" name="RPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="5635" name="RPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6144" name="TPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="6" base_index="0" base_subindex="0" flags="0" eflags="196612" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by TPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0xC0000180" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="3" name="Inhibit time" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="6" name="SYNC start value" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6145" name="TPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="6" base_index="0" base_subindex="0" flags="0" eflags="196612" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by TPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0xC0000280" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="3" name="Inhibit time" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="6" name="SYNC start value" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6146" name="TPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="6" base_index="0" base_subindex="0" flags="0" eflags="196612" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by TPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0xC0000380" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="3" name="Inhibit time" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="6" name="SYNC start value" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6147" name="TPDO communication parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Highest sub-index supported" type="5" count="1" memory="" minimum="0" maximum="0" default="6" base_index="0" base_subindex="0" flags="0" eflags="196612" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="COB-ID used by TPDO" type="3" count="1" memory="" minimum="0" maximum="0" default="0xC0000480" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="2" name="Transmission type" type="5" count="1" memory="" minimum="0" maximum="0" default="254" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="3" name="Inhibit time" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="5" name="Event timer" type="4" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+            <RegVar subindex="6" name="SYNC start value" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="458752" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6656" name="TPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6657" name="TPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6658" name="TPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="6659" name="TPDO mapping parameter" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="Number of mapped application objects in PDO" type="5" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393220" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="Application object 1" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="2" name="Application object 2" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="3" name="Application object 3" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="4" name="Application object 4" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="5" name="Application object 5" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="6" name="Application object 6" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="7" name="Application object 7" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+            <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
+        </RegVars>
+    </RegEntry>
+</RegEntries>

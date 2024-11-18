@@ -20,6 +20,12 @@
 // User static variables for allocation.
 #define CO_USE_GLOBALS 1
 
+// crc16.
+#define CO_CONFIG_CRC16 CO_CONFIG_CRC16_ENABLE
+
+// SDO srv buf.
+#define CO_CONFIG_SDO_SRV_BUFFER_SIZE 1024
+
 // Disable LEDs.
 #define CO_CONFIG_LEDS 0
 
@@ -36,7 +42,7 @@
 #define CO_CONFIG_HB_CONS 0
 
 // HB config.
-#define FIRST_HB_TIME_MS 0xffff
+#define FIRST_HB_TIME_MS 0
 
 // NMT config.
 #define CO_CONFIG_NMT (CO_NMT_STARTUP_TO_OPERATIONAL)
@@ -51,7 +57,8 @@
 #define CO_CONFIG_PDO 0
 
 // Enable SDO server.
-//#define CO_CONFIG_SDO_SRV
+#define CO_CONFIG_SDO_SRV (CO_CONFIG_SDO_SRV_SEGMENTED | CO_CONFIG_SDO_SRV_BLOCK |\
+						   CO_CONFIG_FLAG_CALLBACK_PRE | CO_CONFIG_FLAG_TIMERNEXT)
 
 // SDO server timeout.
 #define SDO_SERVER_TIMEOUT_MS 500
@@ -67,6 +74,7 @@
 
 // Node Id.
 #define NODE_ID 1
+
 
 #undef CO_CONFIG_STORAGE_ENABLE // We don't need Storage option, implement based on your use case and remove this line from here
 

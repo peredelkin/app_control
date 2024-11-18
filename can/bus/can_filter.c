@@ -146,7 +146,7 @@ err_t can_filter_bank_set(CAN_TypeDef* CAN, int filter, uint32_t id, uint32_t ma
 	//if(err) return err;
 
 	CAN->sFilterRegister[filter].FR1 = id;
-	CAN->sFilterRegister[filter].FR1 = mask;
+	CAN->sFilterRegister[filter].FR2 = mask;
 
 	/*err = */can_filter_set_active(CAN, filter);
 	//if(err) return err;
