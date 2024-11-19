@@ -283,12 +283,12 @@
     <RegEntry index="8192" name="Ntc" type="2" description="">
         <RegVars>
             <RegVar subindex="0" name="Count" type="2" count="1" memory="" minimum="0" maximum="6" default="6" base_index="0" base_subindex="0" flags="0" eflags="131076" description=""/>
-            <RegVar subindex="1" name="Ntc 0" type="3" count="1" memory="ntc_temp.out_temp[0]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
-            <RegVar subindex="2" name="Ntc 1" type="3" count="1" memory="ntc_temp.out_temp[1]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
-            <RegVar subindex="3" name="Ntc 2" type="3" count="1" memory="ntc_temp.out_temp[2]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
-            <RegVar subindex="4" name="Ntc 3" type="3" count="1" memory="ntc_temp.out_temp[3]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
-            <RegVar subindex="5" name="Ntc 4" type="3" count="1" memory="ntc_temp.out_temp[4]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
-            <RegVar subindex="6" name="Ntc 5" type="3" count="1" memory="ntc_temp.out_temp[5]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="1" name="Ntc 0" type="0" count="1" memory="ntc_temp.out_temp[0]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="2" name="Ntc 1" type="0" count="1" memory="ntc_temp.out_temp[1]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="3" name="Ntc 2" type="0" count="1" memory="ntc_temp.out_temp[2]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="4" name="Ntc 3" type="0" count="1" memory="ntc_temp.out_temp[3]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="5" name="Ntc 4" type="0" count="1" memory="ntc_temp.out_temp[4]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+            <RegVar subindex="6" name="Ntc 5" type="0" count="1" memory="ntc_temp.out_temp[5]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
         </RegVars>
     </RegEntry>
 </RegEntries>

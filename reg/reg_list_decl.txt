@@ -23,12 +23,12 @@ GROUP CONF, 0
 
 // NTC
 GROUP NTC, 200
-REG NTC_0, ntc_temp.out_temp[0], U32, NONE
-REG NTC_1, ntc_temp.out_temp[1], U32, NONE
-REG NTC_2, ntc_temp.out_temp[2], U32, NONE
-REG NTC_3, ntc_temp.out_temp[3], U32, NONE
-REG NTC_4, ntc_temp.out_temp[4], U32, NONE
-REG NTC_5, ntc_temp.out_temp[5], U32, NONE
+REG NTC_0, ntc_temp.out_temp[0], I32, NONE
+REG NTC_1, ntc_temp.out_temp[1], I32, NONE
+REG NTC_2, ntc_temp.out_temp[2], I32, NONE
+REG NTC_3, ntc_temp.out_temp[3], I32, NONE
+REG NTC_4, ntc_temp.out_temp[4], I32, NONE
+REG NTC_5, ntc_temp.out_temp[5], I32, NONE
 
 !// Measurement
 !GROUP MEAS, 400
