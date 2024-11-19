@@ -71,9 +71,9 @@ void can1_rcc_init(void) {
 }
 
 void can1_pre_init(void) {
-	can_bus_initialization_request(can1.bus);
-
 	can_software_master_reset(can1.bus);	//Force a master reset of the bxCAN
+
+	can_bus_initialization_request(can1.bus);
 
 	can_MCR_TXFP_set(can1.bus, true);		//Priority driven by the request order (chronologically)
 	can_MCR_RFLM_set(can1.bus, true);		//Receive FIFO locked against overrun.
