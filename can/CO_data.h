@@ -255,9 +255,9 @@ struct _S_TPDOMappingParameter_1a03 {
     uint32_t applicationObject8; /*  */
 } TPDOMappingParameter_1a03;
 
-struct _S_digitalOutput {
+struct _S_ntc {
     int8_t count; /*  */
-} digitalOutput;
+} ntc;
 
 };
 extern struct _S_CO_data CO_data;

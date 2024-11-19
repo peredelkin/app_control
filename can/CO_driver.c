@@ -428,68 +428,76 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
 //CAN1_RX1_IRQHandler               /* CAN1 RX1                     */
 //CAN1_SCE_IRQHandler               /* CAN1 SCE                     */
 
+void CO_TSR_RQCP_Handler(CO_CANmodule_t *CANmodule, uint32_t TSR) {
+	can_bus_t *can_device = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
+
+	err_t bus_err = E_NO_ERROR;
+
+	int mailbox;
+
+	for (mailbox = 0; mailbox < 3; mailbox++) {
+		if (can_TSR_RQCP_get(TSR, mailbox)) {
+			/* First CAN message (bootup) was sent successfully */
+			CANmodule->firstCANtxMessage = false;
+			/* clear flag from previous message */
+			CANmodule->bufferInhibitFlag = false;
+			/* Are there any new messages waiting to be send */
+			if (CANmodule->CANtxCount > 0U) {
+				uint16_t message_index; /* index of transmitting message */
+
+				/* first buffer */
+				CO_CANtx_t *buffer = &CANmodule->txArray[0];
+				/* search through whole array of pointers to transmit message buffers. */
+				for (message_index = CANmodule->txSize; message_index > 0U; message_index--) {
+					/* if message buffer is full, send it. */
+					if (buffer->bufferFull) {
+						/* if CAN TX buffer is free, copy message to it */
+						bus_err = can_tx_mailbox_write_and_request(can_device->bus, buffer->ident, buffer->DLC,
+								buffer->data);
+
+						switch (bus_err) {
+						case E_NULL_POINTER:
+							break;
+
+						case E_BUSY:
+							break;
+
+						case E_OUT_OF_RANGE:
+							break;
+
+						case E_NO_ERROR:
+							buffer->bufferFull = false;
+							if(CANmodule->CANtxCount > 0) CANmodule->CANtxCount--;
+							CANmodule->bufferInhibitFlag = buffer->syncFlag;
+							break;
+
+						default:
+							break;
+						}
+					}
+
+					buffer++;
+				} /* end of for loop */
+
+				/* Clear counter if no more messages */
+//				if (message_index == 0U) {
+//					CANmodule->CANtxCount = 0U;
+//				}
+			} else {
+				can_TSR_RQCP_clear(can_device->bus, mailbox); //TODO: определить условие сброса фалага и место вызова
+			}
+		}
+	}
+}
+
 void CO_TX_IRQHandler(CO_CANmodule_t *CANmodule) {
 
 	can_bus_t *can_device = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
 
 	uint32_t TSR = can_TSR_read(can_device->bus);
 
-	err_t bus_err = E_NO_ERROR;
-
 	if (can_IER_TMEIE_read(can_device->bus)) {
-		for (int i = 0; i < 3; i++) {
-			if (can_TSR_RQCP_get(TSR, i)) {
-				/* First CAN message (bootup) was sent successfully */
-				CANmodule->firstCANtxMessage = false;
-				/* clear flag from previous message */
-				CANmodule->bufferInhibitFlag = false;
-				/* Are there any new messages waiting to be send */
-				if (CANmodule->CANtxCount > 0U) {
-					uint16_t i; /* index of transmitting message */
-
-					/* first buffer */
-					CO_CANtx_t *buffer = &CANmodule->txArray[0];
-					/* search through whole array of pointers to transmit message buffers. */
-					for (i = CANmodule->txSize; i > 0U; i--) {
-						/* if message buffer is full, send it. */
-						if (buffer->bufferFull) {
-							/* if CAN TX buffer is free, copy message to it */
-							bus_err = can_tx_mailbox_write_and_request(can_device->bus, buffer->ident, buffer->DLC,
-									buffer->data);
-
-							switch (bus_err) {
-							case E_NULL_POINTER:
-								break;
-
-							case E_BUSY:
-								break;
-
-							case E_OUT_OF_RANGE:
-								break;
-
-							case E_NO_ERROR:
-								buffer->bufferFull = false;
-								CANmodule->CANtxCount--;
-								CANmodule->bufferInhibitFlag = buffer->syncFlag;
-								break;
-
-							default:
-								break;
-							}
-						}
-
-						buffer++;
-					} /* end of for loop */
-
-					/* Clear counter if no more messages */
-					if (i == 0U) {
-						CANmodule->CANtxCount = 0U;
-						/* Clear interrupt flag */
-						can_TSR_RQCP_clear(can_device->bus, i); //TODO: определить условие сброса фалага и место вызова
-					}
-				}
-			}
-		}
+		CO_TSR_RQCP_Handler(CANmodule, TSR);
 	}
 }
 

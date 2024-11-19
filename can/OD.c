@@ -49,7 +49,7 @@ typedef struct {
     OD_obj_record_t o_1A01_TPDOMappingParameter[9];
     OD_obj_record_t o_1A02_TPDOMappingParameter[9];
     OD_obj_record_t o_1A03_TPDOMappingParameter[9];
-    OD_obj_record_t o_2000_digitalOutput[35];
+    OD_obj_record_t o_2000_ntc[7];
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -917,216 +917,48 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2000_digitalOutput = {
+.o_2000_ntc = {
     {
-    .dataOrig = &CO_data.digitalOutput.count,
+    .dataOrig = &CO_data.ntc.count,
     .subIndex = 0,
-    .attribute = 0,
+    .attribute = ODA_SDO_R,
     .dataLength = 1
     },
     {
-    .dataOrig = &dout.out,
+    .dataOrig = &ntc_temp.out_temp[0],
     .subIndex = 1,
-    .attribute = ODA_MB,
-    .dataLength = 2
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
     },
     {
-    .dataOrig = &dout.inv,
+    .dataOrig = &ntc_temp.out_temp[1],
     .subIndex = 2,
-    .attribute = ODA_MB,
-    .dataLength = 2
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
     },
     {
-    .dataOrig = &dout.id_in[0],
+    .dataOrig = &ntc_temp.out_temp[2],
     .subIndex = 3,
-    .attribute = ODA_MB,
-    .dataLength = 2
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
     },
     {
-    .dataOrig = &dout.bit_in[0],
+    .dataOrig = &ntc_temp.out_temp[3],
     .subIndex = 4,
-    .attribute = ODA_MB,
-    .dataLength = 2
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
     },
     {
-    .dataOrig = &dout.id_in[1],
+    .dataOrig = &ntc_temp.out_temp[4],
     .subIndex = 5,
-    .attribute = ODA_MB,
-    .dataLength = 2
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
     },
     {
-    .dataOrig = &dout.bit_in[1],
+    .dataOrig = &ntc_temp.out_temp[5],
     .subIndex = 6,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[2],
-    .subIndex = 7,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[2],
-    .subIndex = 8,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[3],
-    .subIndex = 9,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[3],
-    .subIndex = 10,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[4],
-    .subIndex = 11,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[4],
-    .subIndex = 12,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[5],
-    .subIndex = 13,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[5],
-    .subIndex = 14,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[6],
-    .subIndex = 15,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[6],
-    .subIndex = 16,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[7],
-    .subIndex = 17,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[7],
-    .subIndex = 18,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[8],
-    .subIndex = 19,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[8],
-    .subIndex = 20,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[9],
-    .subIndex = 21,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[9],
-    .subIndex = 22,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[10],
-    .subIndex = 23,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[10],
-    .subIndex = 24,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[11],
-    .subIndex = 25,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[11],
-    .subIndex = 26,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[12],
-    .subIndex = 27,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[12],
-    .subIndex = 28,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[13],
-    .subIndex = 29,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[13],
-    .subIndex = 30,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[14],
-    .subIndex = 31,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[14],
-    .subIndex = 32,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.id_in[15],
-    .subIndex = 33,
-    .attribute = ODA_MB,
-    .dataLength = 2
-    },
-    {
-    .dataOrig = &dout.bit_in[15],
-    .subIndex = 34,
-    .attribute = ODA_MB,
-    .dataLength = 2
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
     }
 }
 };
@@ -1165,7 +997,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1a01, 0x09, ODT_REC, &ODObjs.o_1A01_TPDOMappingParameter, NULL},
     {0x1a02, 0x09, ODT_REC, &ODObjs.o_1A02_TPDOMappingParameter, NULL},
     {0x1a03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
-    {0x2000, 0x23, ODT_REC, &ODObjs.o_2000_digitalOutput, NULL},
+    {0x2000, 0x07, ODT_REC, &ODObjs.o_2000_ntc, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

@@ -218,7 +218,7 @@ struct _S_CO_data CO_data = {
     .applicationObject7 = 0 /*  */,
     .applicationObject8 = 0 /*  */
 },
-.digitalOutput = {
-    .count = 34 /*  */
+.ntc = {
+    .count = 6 /*  */
 }
 };

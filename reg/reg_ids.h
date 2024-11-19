@@ -13,41 +13,13 @@
 // Nominal values
 
 
-// DO
-#define REG_ID_DO_OUT    201
-#define REG_ID_DO_INV    202
-#define REG_ID_DO_ID_1    203
-#define REG_ID_DO_BIT_1    204
-#define REG_ID_DO_ID_2    205
-#define REG_ID_DO_BIT_2    206
-#define REG_ID_DO_ID_3    207
-#define REG_ID_DO_BIT_3    208
-#define REG_ID_DO_ID_4    209
-#define REG_ID_DO_BIT_4    210
-#define REG_ID_DO_ID_5    211
-#define REG_ID_DO_BIT_5    212
-#define REG_ID_DO_ID_6    213
-#define REG_ID_DO_BIT_6    214
-#define REG_ID_DO_ID_7    215
-#define REG_ID_DO_BIT_7    216
-#define REG_ID_DO_ID_8    217
-#define REG_ID_DO_BIT_8    218
-#define REG_ID_DO_ID_9    219
-#define REG_ID_DO_BIT_9    220
-#define REG_ID_DO_ID_10    221
-#define REG_ID_DO_BIT_10    222
-#define REG_ID_DO_ID_11    223
-#define REG_ID_DO_BIT_11    224
-#define REG_ID_DO_ID_12    225
-#define REG_ID_DO_BIT_12    226
-#define REG_ID_DO_ID_13    227
-#define REG_ID_DO_BIT_13    228
-#define REG_ID_DO_ID_14    229
-#define REG_ID_DO_BIT_14    230
-#define REG_ID_DO_ID_15    231
-#define REG_ID_DO_BIT_15    232
-#define REG_ID_DO_ID_16    233
-#define REG_ID_DO_BIT_16    234
+// NTC
+#define REG_ID_NTC_NTC_0    200
+#define REG_ID_NTC_NTC_1    201
+#define REG_ID_NTC_NTC_2    202
+#define REG_ID_NTC_NTC_3    203
+#define REG_ID_NTC_NTC_4    204
+#define REG_ID_NTC_NTC_5    205
 
 
 // End

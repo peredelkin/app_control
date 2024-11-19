@@ -110,7 +110,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H1A01_TPDOMappingParameter &OD->list[30]
 #define OD_ENTRY_H1A02_TPDOMappingParameter &OD->list[31]
 #define OD_ENTRY_H1A03_TPDOMappingParameter &OD->list[32]
-#define OD_ENTRY_H2000_digitalOutput &OD->list[33]
+#define OD_ENTRY_H2000_ntc &OD->list[33]
 
 
 // OD config structure
