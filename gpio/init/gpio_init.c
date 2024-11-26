@@ -1,4 +1,19 @@
 #include "gpio_init.h"
+
+void gpio_rcc_init() {
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOFEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOGEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOIEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOKEN;
+}
+
 //TODO: перенести инициализацию пинов в соответствующие модули и выкинуть gpio_init
 //
 const gpio_pin_t GPO_Chr_Batt_App = GPIO_PIN(GPIOE, GPIO_PIN_3); /*2, PE3, GPIO_Output, Chr_Batt_App*/

@@ -49,7 +49,7 @@ void MS_TIM_IRQHANDLER(void)
 	CALC(ms_tim);
 }
 
-void TIM2_IRQHandler() {
+void SYS_CNT_IRQHANDLER(void) {
 	sys_counter_irq_handler();
 }
 
@@ -74,6 +74,8 @@ int main(void)
 	yaffs_trace_mask |= YAFFS_TRACE_NANDACCESS;
 	//yaffs_trace_mask |= YAFFS_TRACE_VERIFY_ALL;
 	yaffs_trace_mask |= YAFFS_TRACE_ERROR;
+
+	gpio_rcc_init();
 
 	rcc_init();
 	nvic_init();

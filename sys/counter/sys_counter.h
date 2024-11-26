@@ -10,7 +10,10 @@
 #include <stdbool.h>
 #include <sys/time.h>
 
-
+#define SYS_CNT_TIM TIM2
+#define SYS_CNT_IRQN TIM2_IRQn
+#define SYS_CNT_IRQ_PRIO 6
+#define SYS_CNT_IRQHANDLER TIM2_IRQHandler
 
 // Параметры таймера.
 //! Период таймера в тиках.

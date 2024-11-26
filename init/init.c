@@ -7,28 +7,9 @@
 
 #include "init.h"
 
-void gpio_rcc_init(void) {
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOFEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOGEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOIEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOKEN;
-}
-
 void rcc_init(void) {
-	//TIM2
-	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
-
 	//TIM5
 	//RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
-
-	gpio_rcc_init();
 
 	//DMA
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
@@ -43,9 +24,6 @@ void nvic_init(void) {
 	NVIC_SetPriorityGrouping(0b000);
 
 	//TIM
-	NVIC_SetPriority(TIM2_IRQn, 6);
-	NVIC_EnableIRQ(TIM2_IRQn);
-
 	NVIC_SetPriority(TIM5_IRQn, 6);
 	NVIC_EnableIRQ(TIM5_IRQn);
 
@@ -69,7 +47,9 @@ void nvic_init(void) {
 }
 
 void system_counter_init(void) {
-	sys_counter_init(TIM2);
+	sys_counter_init(SYS_CNT_TIM);
 	sys_counter_irq_enable();
+	NVIC_SetPriority(SYS_CNT_IRQN, SYS_CNT_IRQ_PRIO);
+	NVIC_EnableIRQ(SYS_CNT_IRQN);
 	sys_counter_start();
 }

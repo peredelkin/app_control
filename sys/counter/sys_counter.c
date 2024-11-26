@@ -14,6 +14,9 @@ static sys_counter_t system_counter;
 
 static void sys_counter_priph_init(TIM_TypeDef* TIM)
 {
+	//TIM2
+	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN; //TODO: добавить макрос параметризации шины и маски
+
     TIM->CR1 = 0;
     TIM->CR2 = 0;
     TIM->DIER = 0;

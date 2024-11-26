@@ -10,6 +10,8 @@
 
 #include "../gpio.h"
 
+extern void gpio_rcc_init();
+
 extern void socket3_enable();
 extern void socket3_disable();
 extern void gpio_socket3_cfg_setup();

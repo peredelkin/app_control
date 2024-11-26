@@ -67,7 +67,6 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     }
 
     // Медленный таймер.
-    ms_tim.TIM = MS_TIM_TIM;
     INIT(ms_tim);
     CALLBACK_PROC(ms_tim.on_timeout) = ms_tim_handler;
     CALLBACK_ARG(ms_tim.on_timeout) = (void*)sys;
