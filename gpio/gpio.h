@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "defs/defs.h"
+#include "lib/defs/defs.h"
 #include "stm32f4xx.h"
 
 #define GPIO_PORT_PIN_COUNT 16

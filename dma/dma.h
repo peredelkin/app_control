@@ -2,7 +2,7 @@
 #ifndef DMA_H
 #define DMA_H
 
-#include "stm32f4xx/stm32f4xx.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
 #include <stdbool.h>
 
 #define DMA_ISR_FEIF DMA_LISR_FEIF0

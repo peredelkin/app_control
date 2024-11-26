@@ -9,9 +9,9 @@
 #define CAN_BUS_CAN_BUS_H_
 
 #include <stdbool.h>
-#include "stm32f4xx/stm32f4xx.h"
-#include "errors/errors.h"
-#include "bits/bits.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
+#include "lib/errors/errors.h"
+#include "lib/bits/bits.h"
 #include "can_reg.h"
 
 

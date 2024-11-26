@@ -8,7 +8,7 @@
 #include "fmc_nand.h"
 #include "yaffs2/yaffs_guts.h"
 #include "yaffs2/yaffs_ecc.h"
-#include "utils/barrier.h"
+#include "lib/utils/barrier.h"
 
 //mem to mem -> Source:PAR to Destination:M0AR
 //MINC for Read

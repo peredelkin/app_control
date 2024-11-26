@@ -2,8 +2,8 @@
 #define BASE_REG_TYPES_H
 
 #include <stdint.h>
-#include "iqmath/iq24.h"
-#include "iqmath/iq15.h"
+#include "lib/iqmath/iq24.h"
+#include "lib/iqmath/iq15.h"
 
 
 // Перечисление типов.

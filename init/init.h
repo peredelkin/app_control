@@ -8,8 +8,8 @@
 #ifndef INC_INIT_H_
 #define INC_INIT_H_
 
-#include <sys_counter/sys_counter.h>
-#include "stm32f4xx/stm32f4xx.h"
+#include "sys/counter/sys_counter.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
 
 #define SYS_TIM_TIM TIM3
 #define SYS_TIM_IRQN TIM3_IRQn

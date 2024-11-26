@@ -9,7 +9,7 @@
 #define FMC_INIT_FMC_INIT_H_
 
 #include "../fmc.h"
-#include "errors/errors.h"
+#include "lib/errors/errors.h"
 
 extern err_t fmc_init(void);
 

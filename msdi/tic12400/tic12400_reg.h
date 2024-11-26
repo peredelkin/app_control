@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include <assert.h>
-#include "defs/defs.h"
+#include "lib/defs/defs.h"
 
 #define TIC12400_STATUS_SIZE 1
 #define TIC12400_DATA_SIZE 3

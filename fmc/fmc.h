@@ -11,9 +11,9 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "defs/defs.h"
-#include "errors/errors.h"
-#include "stm32f4xx/stm32f4xx.h"
+#include "lib/defs/defs.h"
+#include "lib/errors/errors.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
 
 /* FMC memory banks begin */
 //Bank1 BASE

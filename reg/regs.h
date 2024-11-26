@@ -1,7 +1,7 @@
 #ifndef REG_REGS_H
 #define REG_REGS_H
 
-#include "defs/defs.h"
+#include "lib/defs/defs.h"
 #include "reg.h"
 #include "reg_ids.h"
 

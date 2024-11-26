@@ -3,19 +3,19 @@
 
 
 #include "conf/conf.h"
-#include "sys_main/sys_main.h"
-#include "sys_timer/sys_timer.h"
-#include "ms_timer/ms_timer.h"
+#include "sys/main/sys_main.h"
+#include "sys/timer/sys_timer.h"
+#include "timer/ms/ms_timer.h"
 #include "data_log/data_log.h"
 
 #include "cli/cli.h"
-#include "rgb_led/rgb_led.h"
+#include "led/rgb/rgb_led.h"
 #include "msdi/msdi.h"
-#include "digital_input/digital_input.h"
-#include "ntc_temp/ntc_temp.h"
-#include "digital_output/relay_output.h"
-#include "digital_output/digital_output.h"
-#include "ncv7608/ncv7608.h"
+#include "digital/input/digital_input.h"
+#include "temp/ntc/ntc_temp.h"
+#include "digital/output/relay/relay_output.h"
+#include "digital/output/digital_output.h"
+#include "digital/output/ncv7608/ncv7608.h"
 
 extern M_conf conf;
 extern M_sys_main sys;

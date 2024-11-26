@@ -9,10 +9,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "stm32f4xx/stm32f4xx.h"
-#include "defs/defs.h"
-#include "errors/errors.h"
-#include "buffer/circular_buffer.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
+#include "lib/defs/defs.h"
+#include "lib/errors/errors.h"
+#include "lib/buffer/circular_buffer.h"
 
 /**
  * Структура буферизации USART.

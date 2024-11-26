@@ -9,7 +9,7 @@
 #include "fmc_test.h"
 #include "../sram/fmc_sram.h"
 #include "../nand/fmc_nand.h"
-#include "sys_counter/sys_counter.h"
+#include "sys/counter/sys_counter.h"
 
 err_t sram_32_test() {
 	volatile uint32_t sram_w_data;

@@ -1,7 +1,7 @@
 #include "usart_buf.h"
 #include "uart/usart.h"
-#include "utils/utils.h"
-#include "defs/defs.h"
+#include "lib/utils/utils.h"
+#include "lib/defs/defs.h"
 #include <stdbool.h>
 
 ALWAYS_INLINE static bool usart_tx_it_enabled(USART_TypeDef* usart)

@@ -1,6 +1,6 @@
 #include "usart_int.h"
 #include "uart/usart.h"
-#include "utils/utils.h"
+#include "lib/utils/utils.h"
 
 //UART RE
 bool usart_int_receiver_enabled(usart_int_t* usart) {

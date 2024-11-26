@@ -6,7 +6,7 @@
  */
 
 #include "spi_init.h"
-#include "stm32f4xx/stm32f4xx.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
 #include "gpio/init/gpio_init.h"
 
 /* SPI4 BEGIN */

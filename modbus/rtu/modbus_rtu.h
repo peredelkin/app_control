@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "errors/errors.h"
-#include "defs/defs.h"
+#include "lib/errors/errors.h"
+#include "lib/defs/defs.h"
 
 
 //! Тип адреса протокола Modbus RTU.

@@ -9,7 +9,7 @@
 #include "fmc_init.h"
 #include "../settings/fmc_settings.h"
 #include "gpio/init/gpio_init.h"
-#include "sys_counter/sys_counter.h"
+#include "sys/counter/sys_counter.h"
 #include "../test/fmc_test.h"
 #include "../nand/fmc_nand.h"
 

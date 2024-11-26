@@ -9,9 +9,9 @@
 #define INC_TIC12400_H_
 
 #include <stdbool.h>
-#include "errors/errors.h"
+#include "lib/errors/errors.h"
 #include "tic12400_reg.h"
-#include "parity/parity.h"
+#include "lib/parity/parity.h"
 #include "spi/spi.h"
 
 typedef enum {

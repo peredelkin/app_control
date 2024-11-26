@@ -1,7 +1,7 @@
 #ifndef MODULE_METHOD_H
 #define MODULE_METHOD_H
 
-#include "defs/defs.h"
+#include "lib/defs/defs.h"
 
 
 //typedef struct _S_Module_Name MModuleName;

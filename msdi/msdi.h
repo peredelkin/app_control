@@ -3,7 +3,7 @@
 
 #include "module/base.h"
 #include "tic12400/tic12400.h"
-#include "fsm/fsm.h"
+#include "lib/fsm/fsm.h"
 
 typedef struct {
 	TIC12400_INT_STAT_REG INT_STAT;

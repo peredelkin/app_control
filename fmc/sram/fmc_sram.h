@@ -9,7 +9,7 @@
 #define FMC_SRAM_FMC_SRAM_H_
 
 #include "../fmc.h"
-#include "errors/errors.h"
+#include "lib/errors/errors.h"
 
 #define SRAM_WORDS_32			262144
 #define SRAM_WORDS_16			(SRAM_WORDS_32 * 2)

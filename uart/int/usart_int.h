@@ -9,10 +9,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "stm32f4xx/stm32f4xx.h"
-#include "errors/errors.h"
-#include "defs/defs.h"
-#include "buffer/buffer.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
+#include "lib/errors/errors.h"
+#include "lib/defs/defs.h"
+#include "lib/buffer/buffer.h"
 
 //! Состояние шины USART.
 typedef enum _Usart_Int__Status {

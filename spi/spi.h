@@ -10,10 +10,10 @@
 
 #include <assert.h>
 #include <stdbool.h>
-#include <sys_counter/sys_counter.h>
-#include "defs/defs.h"
-#include "errors/errors.h"
-#include "stm32f4xx/stm32f4xx.h"
+#include "sys/counter/sys_counter.h"
+#include "lib/defs/defs.h"
+#include "lib/errors/errors.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
 #include "gpio/gpio.h"
 
 #define SPI_CR1_T_SIZE 2

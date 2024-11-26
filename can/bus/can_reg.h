@@ -8,7 +8,7 @@
 #ifndef CAN_BUS_CAN_REG_H_
 #define CAN_BUS_CAN_REG_H_
 
-#include "bits/bits.h"
+#include "lib/bits/bits.h"
 
 //CAN master control register (CAN_MCR)
 #undef CAN_MCR_INRQ

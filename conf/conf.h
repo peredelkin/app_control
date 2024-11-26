@@ -2,7 +2,7 @@
 #define CONF_H
 
 #include "module/base.h"
-#include "iqmath/iqmath.h"
+#include "lib/iqmath/iqmath.h"
 #include "consts.h"
 
 //! Перечисление возможных бит управления.

@@ -9,7 +9,7 @@
 #define FMC_NAND_FMC_NAND_H_
 
 #include "../fmc.h"
-#include "errors/errors.h"
+#include "lib/errors/errors.h"
 #include "dma/dma.h"
 
 //BLOCK

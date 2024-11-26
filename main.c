@@ -11,7 +11,7 @@
 #include "spi/init/spi_init.h"
 #include "uart/init/uart_init.h"
 #include "modbus/init/modbus_init.h"
-#include "eth_init/eth_init.h"
+#include "eth/init/eth_init.h"
 #include "can/init/can_init.h"
 #include "fmc/init/fmc_init.h"
 #include "fmc/sram/fmc_sram.h"

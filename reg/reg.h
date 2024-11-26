@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "defs/defs.h"
+#include "lib/defs/defs.h"
 #include "reg_types.h"
 
 //! Тип идентификатора регистра.
