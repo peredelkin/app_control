@@ -75,6 +75,8 @@ int main(void)
 	//yaffs_trace_mask |= YAFFS_TRACE_VERIFY_ALL;
 	yaffs_trace_mask |= YAFFS_TRACE_ERROR;
 
+	NVIC_SetPriorityGrouping(0b000);
+
 	gpio_rcc_init();
 
 	rcc_init();
@@ -84,14 +86,19 @@ int main(void)
 	gpio_socket3_cfg_setup();
 	socket3_enable();
 
+	usart6_nvic_init(5);
 	usart6_init(); //Socket3
 	sys_counter_tv_print();
 	printf("UART6 initialized\n");
 
+	//spi2_nvic_init(4);
+
+	spi4_nvic_init(4);
 	spi4_bus_init(); //tic12400,ncv7608
 	sys_counter_tv_print();
 	printf("SPI4 initialized\n");
 
+	usart3_nvic_init(5);
 	usart3_init(); //RS485_1
 	sys_counter_tv_print();
 	printf("UART3 initialized\n");
@@ -100,6 +107,7 @@ int main(void)
 	sys_counter_tv_print();
 	printf("MODBUS1 initialized\n");
 
+	uart7_nvic_init(5);
 	uart7_init(); //RS485_Panel
 	sys_counter_tv_print();
 	printf("UART7 initialized\n");
@@ -108,7 +116,7 @@ int main(void)
 	sys_counter_tv_print();
 	printf("MODBUS Panel initialized\n");
 
-	//CAN1
+	can1_nvic_init(5);
 	can1_init();
 	sys_counter_tv_print();
 	printf("CAN1 initialized\n");

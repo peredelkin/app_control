@@ -9,7 +9,7 @@
 
 void rcc_init(void) {
 	//TIM5
-	//RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+	//RCC->APB1ENR |= RCC_APB1ENR_TIM5EN; //RGB
 
 	//DMA
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
@@ -21,29 +21,9 @@ void rcc_init(void) {
 #include "can/init/can_init.h"
 
 void nvic_init(void) {
-	NVIC_SetPriorityGrouping(0b000);
-
 	//TIM
-	NVIC_SetPriority(TIM5_IRQn, 6);
-	NVIC_EnableIRQ(TIM5_IRQn);
-
-	//UART3
-	usart3_nvic_init(5);
-
-	//UART6
-	usart6_nvic_init(5);
-
-	//UART7
-	uart7_nvic_init(5);
-
-	//SPI2
-	spi2_nvic_init(4);
-
-	//SPI4
-	spi4_nvic_init(4);
-
-	//CAN1
-	can1_nvic_init(5);
+	//NVIC_SetPriority(TIM5_IRQn, 6); //RGB
+	//NVIC_EnableIRQ(TIM5_IRQn); //RGB
 }
 
 void system_counter_init(void) {
