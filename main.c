@@ -66,21 +66,35 @@ void SYS_CNT_IRQHANDLER(void) {
 //__attribute__((section(".extsram"), used))
 //volatile int test_extsram;
 
+void system_counter_init(void) {
+	sys_counter_init(SYS_CNT_TIM);
+	sys_counter_irq_enable();
+	NVIC_SetPriority(SYS_CNT_IRQN, SYS_CNT_IRQ_PRIO);
+	NVIC_EnableIRQ(SYS_CNT_IRQN);
+	sys_counter_start();
+}
+
+
+void rcc_dma_init() {
+	//DMA
+	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
+}
+
 int main(void)
 {
 
-	yaffs_trace_mask |= YAFFS_TRACE_MOUNT;
+	//yaffs_trace_mask |= YAFFS_TRACE_MOUNT;
 	//yaffs_trace_mask |= YAFFS_TRACE_ALWAYS;
-	yaffs_trace_mask |= YAFFS_TRACE_NANDACCESS;
+	//yaffs_trace_mask |= YAFFS_TRACE_NANDACCESS;
 	//yaffs_trace_mask |= YAFFS_TRACE_VERIFY_ALL;
-	yaffs_trace_mask |= YAFFS_TRACE_ERROR;
+	//yaffs_trace_mask |= YAFFS_TRACE_ERROR;
 
 	NVIC_SetPriorityGrouping(0b000);
 
 	gpio_rcc_init();
+	rcc_dma_init();
 
-	rcc_init();
-	nvic_init();
 	system_counter_init();
 
 	gpio_socket3_cfg_setup();
