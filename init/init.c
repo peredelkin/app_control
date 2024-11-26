@@ -25,9 +25,6 @@ void rcc_init(void) {
 	//TIM2
 	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
 
-	//TIM4 MS_TIM
-	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN; //TODO: перенести в инит MS_TIM
-
 	//TIM5
 	//RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
 
@@ -48,9 +45,6 @@ void nvic_init(void) {
 	//TIM
 	NVIC_SetPriority(TIM2_IRQn, 6);
 	NVIC_EnableIRQ(TIM2_IRQn);
-
-	NVIC_SetPriority(MS_TIM_IRQN, MS_TIM_IRQ_PRIO);
-	NVIC_EnableIRQ(MS_TIM_IRQN);
 
 	NVIC_SetPriority(TIM5_IRQn, 6);
 	NVIC_EnableIRQ(TIM5_IRQn);

@@ -33,8 +33,6 @@ static int timer_init_impl(M_sys_timer* sys_tmr)
     } else {
     	return -1;
     }
-
-
 }
 
 static int timer_start_impl(M_sys_timer* sys_tmr)
