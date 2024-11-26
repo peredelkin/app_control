@@ -59,7 +59,6 @@ METHOD_INIT_IMPL(M_sys_main, sys)
 
     // Таймеры.
     // Системный таймер.
-    sys_tim.TIM = SYS_TIM_TIM;
     INIT(sys_tim);
     CALLBACK_PROC(sys_tim.on_timeout) = sys_tim_handler;
     CALLBACK_ARG(sys_tim.on_timeout) = (void*)sys;

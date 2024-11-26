@@ -11,11 +11,6 @@
 #include "sys/counter/sys_counter.h"
 #include "lib/stm32f4xx/stm32f4xx.h"
 
-#define SYS_TIM_TIM TIM3
-#define SYS_TIM_IRQN TIM3_IRQn
-#define SYS_TIM_IRQ_PRIO 7
-#define SYS_TIM_IRQHANDLER TIM3_IRQHandler
-
 #define MS_TIM_TIM TIM4
 #define MS_TIM_IRQN TIM4_IRQn
 #define MS_TIM_IRQ_PRIO 8

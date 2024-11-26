@@ -15,6 +15,9 @@ METHOD_CALC_IMPL(M_sys_timer, sys_tmr) {
 
 static int timer_init_impl(M_sys_timer* sys_tmr)
 {
+	//TIM3 SYS_TIM
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN; //TODO: добавить макрос параметризации шины и маски
+
     sys_tmr->TIM->CR1 = 0;
     sys_tmr->TIM->CR2 = 0;
     sys_tmr->TIM->DIER = TIM_DIER_UIE;
@@ -23,7 +26,15 @@ static int timer_init_impl(M_sys_timer* sys_tmr)
     sys_tmr->TIM->CNT = 0;
     sys_tmr->TIM->SR  = 0;
 
-    return 0;
+    //таймер проинициализирован?
+    if((sys_tmr->TIM->PSC == (SYS_TIMER_PRESCALER - 1)) &&
+    		(sys_tmr->TIM->ARR == (SYS_TIMER_TICKS_PERIOD_US - 1))) {
+    	return 0;
+    } else {
+    	return -1;
+    }
+
+
 }
 
 static int timer_start_impl(M_sys_timer* sys_tmr)
@@ -67,6 +78,8 @@ METHOD_INIT_IMPL(M_sys_timer, sys_tmr)
 
     if(res == 0){
         sys_tmr->status = SYS_TIMER_STATUS_READY;
+        NVIC_SetPriority(SYS_TIM_IRQN, SYS_TIM_IRQ_PRIO);
+        NVIC_EnableIRQ(SYS_TIM_IRQN);
     }else{
         sys_tmr->status = SYS_TIMER_STATUS_ERROR;
     }

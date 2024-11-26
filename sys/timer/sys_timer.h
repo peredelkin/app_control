@@ -4,6 +4,11 @@
 #include "module/base.h"
 #include "stm32f4xx.h"
 
+#define SYS_TIM_TIM TIM3
+#define SYS_TIM_IRQN TIM3_IRQn
+#define SYS_TIM_IRQ_PRIO 7
+#define SYS_TIM_IRQHANDLER TIM3_IRQHandler
+
 //! Перечисление возможных бит управления.
 enum _E_Sys_Timer_Control {
     SYS_TIMER_CONTROL_NONE = CONTROL_NONE,
@@ -54,11 +59,14 @@ EXTERN METHOD_CALC_PROTO(M_sys_timer);
 EXTERN METHOD_CONTROL_PROTO(M_sys_timer);
 
 #define SYS_TIMER_DEFAULTS {\
-        0, 0, /* control, status */\
-		NULL, /* TIM */\
+        0, /*control*/\
+		0, /*status */\
+		SYS_TIM_TIM, /* TIM */\
         0, /* out_counter */\
-        METHOD_INIT_PTR(M_sys_timer), METHOD_DEINIT_PTR(M_sys_timer),\
-		METHOD_CALC_PTR(M_sys_timer), METHOD_CONTROL_PTR(M_sys_timer),\
+        METHOD_INIT_PTR(M_sys_timer),\
+		METHOD_DEINIT_PTR(M_sys_timer),\
+		METHOD_CALC_PTR(M_sys_timer),\
+		METHOD_CONTROL_PTR(M_sys_timer),\
         CALLBACK_DEFAULTS /* on_timeout */,\
     }
 
