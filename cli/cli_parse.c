@@ -20,7 +20,7 @@ typedef enum _E_Args_Parse_State {
 
 int cli_line_parse(M_cli* args)
 {
-    char* str = args->line;
+    char* str = (char*)(args->line);
 
     char* put = str;
     char* get = str;

@@ -185,7 +185,7 @@ u32 yaffs2_find_refresh_block(struct yaffs_dev *dev)
 
 	if (oldest > 0) {
 		yaffs_trace(YAFFS_TRACE_GC,
-			"GC refresh count %l selected block %l with seq_number %d",
+			"GC refresh count %u selected block %u with seq_number %u",
 			dev->refresh_count, oldest, oldest_seq);
 	}
 

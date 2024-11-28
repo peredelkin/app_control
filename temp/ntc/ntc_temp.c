@@ -56,7 +56,7 @@ METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
 		wheit = IQ_N_TO_M(ntc_filter.out[ntc_counter], ntc_4901_data_shift, 15);
 		wheit = iq15_fract(iq15_abs(wheit));
 
-		ntc_temp->tmp[ntc_counter] += ((iq15_lerp(temp_1, temp_2, wheit) << 4) - (ntc_temp->out_temp[ntc_counter] << 4) >> 4);
+		ntc_temp->tmp[ntc_counter] += (((iq15_lerp(temp_1, temp_2, wheit) << 4) - (ntc_temp->out_temp[ntc_counter] << 4)) >> 4);
 		ntc_temp->out_temp[ntc_counter] = ntc_temp->tmp[ntc_counter] >> 4;
 
 //	}

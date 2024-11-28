@@ -564,7 +564,13 @@ void CO_RX_IRQHandler(CO_CANmodule_t *CANmodule, int fifo) {
 			err = can_rx_mailbox_read_and_release(can_device->bus, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
 					rcvMsg.data);
 
-			buffer = &CANmodule->rxArray[index];
+			switch(err) {
+			case E_NO_ERROR:
+				buffer = &CANmodule->rxArray[index];
+				break;
+			default:
+				break;
+			}
 
 			/* Call specific function, which will process the message */
 			if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
