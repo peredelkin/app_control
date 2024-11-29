@@ -52,9 +52,9 @@ extern int cli_rm_nand_file(int argc, char* argv[]);
 int cli_free_ram(int argc, char* argv[]) {
 	if(argc != 1) return -1;
 
-	extern char _sextsram;
+	extern char _sextsram[];
 	void* cur = sbrk(0);
-	void* end = &_sextsram + SRAM_WORDS_8;
+	void* end = _sextsram + SRAM_WORDS_8;
 
 	ptrdiff_t free_ram = end - cur;
 	ptrdiff_t used_ram = SRAM_WORDS_8 - free_ram;
