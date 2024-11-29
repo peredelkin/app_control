@@ -48,7 +48,7 @@ size_t strnlen(const char *s, size_t maxlen);
 
 #define yaffs_strcat(a, b)	strcat(a, b)
 #define yaffs_strcpy(a, b)	strcpy(a, b)
-#define yaffs_strncpy(a, b, c)	strncpy(a, b, c)
+#define yaffs_strncpy(a, b, c)	memcpy(a, b, c) //strncpy(a, b, c)
 #define yaffs_strnlen(s, m)	strnlen(s, m)
 #ifdef CONFIG_YAFFS_CASE_INSENSITIVE
 #define yaffs_strcmp(a, b)	strcasecmp(a, b)
