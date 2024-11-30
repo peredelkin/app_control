@@ -1,7 +1,8 @@
+#include <stdint.h>
 #include "ntc_table.h"
 #include "ntc_temp.h"
 #include "lib/iqmath/iqmath.h"
-#include <stdint.h>
+#include "modules/modules.h"
 
 #define NTC_FILTER_SHIFT 2
 #define NTC_FILTER_LENGTH (1 << NTC_FILTER_SHIFT)
@@ -17,10 +18,12 @@ uint32_t ntc_counter;
 
 METHOD_INIT_IMPL(M_ntc_temp, ntc_temp)
 {
+	ntc_temp->ai = msdi.out_ai;
 }
 
 METHOD_DEINIT_IMPL(M_ntc_temp, ntc_temp)
 {
+	ntc_temp->ai = NULL;
 }
 
 METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
