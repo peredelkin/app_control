@@ -49,7 +49,6 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(cli);
     INIT(rgb_led);
     INIT(msdi);
-    ntc_temp.ai = msdi.out_ai; //настройка указателя данных NTC
     INIT(ntc_temp);
     INIT(do_relay);
     INIT(do_ncv7608);
