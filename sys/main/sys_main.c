@@ -44,17 +44,14 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(conf);
 
     // Осциллограф.
-    //INIT(dlog);
 
     // Вычислительные модули.
     INIT(cli);
     INIT(rgb_led);
     INIT(msdi);
-    INIT(din);
     ntc_temp.ai = msdi.out_ai; //настройка указателя данных NTC
     INIT(ntc_temp);
     INIT(do_relay);
-    INIT(dout);
     INIT(do_ncv7608);
 
     // Таймеры.
@@ -111,15 +108,12 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     // Деинициализация модулей.
     DEINIT(sys_tim);
     DEINIT(ms_tim);
-    //DEINIT(dlog);
     DEINIT(conf);
     DEINIT(cli);
     DEINIT(rgb_led);
     DEINIT(msdi);
-    DEINIT(din);
     DEINIT(ntc_temp);
     DEINIT(do_relay);
-    DEINIT(dout);
     DEINIT(do_ncv7608);
 
     // Вычислительные модули.
@@ -206,12 +200,9 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(cli);
     CALC(rgb_led);
     CALC(msdi);
-    din.msdi_in = msdi.out_di; //передача дискретных входов
-    CALC(din);
     CALC(ntc_temp);
-    do_relay.in = din.out; //TODO: убрать
     CALC(do_relay);
-    //do_ncv7608.in = din.out; //TODO: убрать
+
     //TODO: убрать
     if(rs485_panel_detect()) {
     	 do_ncv7608.in |= 1;
@@ -222,7 +213,6 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(do_ncv7608);
 
     // Последний модуль - запись лога.
-    //CALC(dlog);
 
     struct timeval tv_stop; //время конца
     sys_counter_value(&tv_stop);

@@ -6,17 +6,57 @@
 #include "tic12400/tic12400.h"
 #include "./tic12400/settings/tic12400_settings.h"
 
+#define DI_MSDI_COUNT 10
+
+#define DI_0_MSDI_INPUT  8
+#define DI_1_MSDI_INPUT  9
+#define DI_2_MSDI_INPUT  10
+#define DI_3_MSDI_INPUT  11
+#define DI_4_MSDI_INPUT  12
+#define DI_5_MSDI_INPUT  13
+#define DI_6_MSDI_INPUT  14
+#define DI_7_MSDI_INPUT  15
+#define DI_8_MSDI_INPUT  19
+#define DI_9_MSDI_INPUT  20
+
+#define AI_0_MSDI_INPUT  4
+#define AI_1_MSDI_INPUT  5
+#define AI_2_MSDI_INPUT  3
+#define AI_3_MSDI_INPUT  0
+#define AI_4_MSDI_INPUT  2
+#define AI_5_MSDI_INPUT  1
+#define AI_6_MSDI_INPUT  6
+#define AI_7_MSDI_INPUT  7
+
+static const uint32_t DI_MSDI_MASK [DI_MSDI_COUNT] = {
+		(1 << DI_0_MSDI_INPUT),
+		(1 << DI_1_MSDI_INPUT),
+		(1 << DI_2_MSDI_INPUT),
+		(1 << DI_3_MSDI_INPUT),
+		(1 << DI_4_MSDI_INPUT),
+		(1 << DI_5_MSDI_INPUT),
+		(1 << DI_6_MSDI_INPUT),
+		(1 << DI_7_MSDI_INPUT),
+		(1 << DI_8_MSDI_INPUT),
+		(1 << DI_9_MSDI_INPUT)
+};
 
 void msdi_data_fill(M_msdi *msdi) {
-	msdi->out_di = msdi->data.IN_STAT_COMP.all;
-	msdi->out_ai[4] = msdi->data.ANA_STAT1.bit.in0_ana;
-	msdi->out_ai[5] = msdi->data.ANA_STAT1.bit.in1_ana;
-	msdi->out_ai[3] = msdi->data.ANA_STAT2.bit.in0_ana;
-	msdi->out_ai[0] = msdi->data.ANA_STAT2.bit.in1_ana;
-	msdi->out_ai[2] = msdi->data.ANA_STAT3.bit.in0_ana;
-	msdi->out_ai[1] = msdi->data.ANA_STAT3.bit.in1_ana;
-	msdi->out_ai[6] = msdi->data.ANA_STAT9.bit.in0_ana;
-	msdi->out_ai[7] = msdi->data.ANA_STAT12.bit.in0_ana;
+	for (int n = 0; n < DI_MSDI_COUNT; n++) {
+		if((msdi->data.IN_STAT_COMP.all & DI_MSDI_MASK[n]) == DI_MSDI_MASK[n]) {
+			msdi->out_di |= (1 << n);
+		} else {
+			msdi->out_di &= ~(1 << n);
+		}
+	}
+	msdi->out_ai[AI_0_MSDI_INPUT] = msdi->data.ANA_STAT1.bit.in0_ana;
+	msdi->out_ai[AI_1_MSDI_INPUT] = msdi->data.ANA_STAT1.bit.in1_ana;
+	msdi->out_ai[AI_2_MSDI_INPUT] = msdi->data.ANA_STAT2.bit.in0_ana;
+	msdi->out_ai[AI_3_MSDI_INPUT] = msdi->data.ANA_STAT2.bit.in1_ana;
+	msdi->out_ai[AI_4_MSDI_INPUT] = msdi->data.ANA_STAT3.bit.in0_ana;
+	msdi->out_ai[AI_5_MSDI_INPUT] = msdi->data.ANA_STAT3.bit.in1_ana;
+	msdi->out_ai[AI_6_MSDI_INPUT] = msdi->data.ANA_STAT9.bit.in0_ana;
+	msdi->out_ai[AI_7_MSDI_INPUT] = msdi->data.ANA_STAT12.bit.in0_ana;
 }
 
 void msdi_data_reset(M_msdi *msdi) {
@@ -58,6 +98,8 @@ METHOD_DEINIT_IMPL(M_msdi, msdi)
 //tic12400_reg_read(&(msdi->tic12400), &((uint32_t*) &tic12400_data_array)[0], &tic12400_addr_array[0], 7);
 //tic12400_wait(&msdi->tic12400);
 //tic12400_reg_write(&(msdi->tic12400), (uint32_t*)&tic124_settings_const, &tic124_settings_addr[0], TIC12400_SETTINGS_COUNT);
+
+//TODO: сделать счетчик ошибок обращения к микросхеме
 METHOD_CALC_IMPL(M_msdi, msdi)
 {
 	//Инит SPI
