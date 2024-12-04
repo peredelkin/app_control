@@ -40,7 +40,7 @@ const gpio_pin_t GPI_Dip0_App = GPIO_PIN(GPIOF, GPIO_PIN_10); /*28, PF10, GPIO_I
 const gpio_pin_t GPI_Dip1_App = GPIO_PIN(GPIOC, GPIO_PIN_0); /*32, PC0, GPIO_Input, Dip1_App*/
 //
 const gpio_pin_t GPO_OutDis_I_AO_App = GPIO_PIN(GPIOC, GPIO_PIN_2); /*34, PC2, GPIO_Output, OutDis_I_AO_App*/
-const gpio_pin_t GPI_EmStop_App = GPIO_PIN(GPIOC, GPIO_PIN_3); /*35, PC3, GPIO_Input, EmStop_App*/
+
 //
 //
 const gpio_pin_t GPI_Board_In1_App = GPIO_PIN(GPIOH, GPIO_PIN_3); /*44, PH3, GPIO_Input, Board_In1_App*/
@@ -177,7 +177,7 @@ const gpio_pin_t GPI_Board_ID3 = GPIO_PIN(GPIOI, GPIO_PIN_7); /*176, PI7, GPIO_I
 //GPIO_PIN_CFG(GPIOC, GPIO_PIN_0, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*32, PC0,		GPIO_Input,		OFF,		Dip1_App*/
 /*33, PC1,		ETH_MDC,		OFF,		ETH_MDC_App*/
 //GPIO_PIN_CFG(GPIOC, GPIO_PIN_2, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*34, PC2,		GPIO_Output,	OFF,	OutDis_I_AO_App*/
-//GPIO_PIN_CFG(GPIOC, GPIO_PIN_3, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*35, PC3,		GPIO_Input,		OFF,		EmStop_App*/
+/*35, PC3,		GPIO_Input,		OFF,		EmStop_App*/
 /*40, PA0/WKUP,	GPIO_Output,	OFF,	EN_DO_App*/
 /*41, PA1,		ETH_REF_CLK,	OFF,		ETH_OSCIN_App*/
 /*42, PA2,		ETH_MDIO,		OFF,		ETH_MDIO_App*/

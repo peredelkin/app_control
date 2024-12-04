@@ -26,6 +26,7 @@ extern M_data_log dlog;
 extern M_cli cli;
 extern M_rgb_led rgb_led;
 extern M_msdi msdi;
+extern M_digital_input digital_in;
 extern M_ntc_temp ntc_temp;
 extern M_relay_output do_relay;
 extern M_ncv7608 do_ncv7608;

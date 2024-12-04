@@ -75,7 +75,7 @@ void system_counter_init(void) {
 }
 
 
-void rcc_dma_init() {
+void dma_rcc_init() {
 	//DMA
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
@@ -93,11 +93,13 @@ int main(void)
 	NVIC_SetPriorityGrouping(0b000);
 
 	gpio_rcc_init();
-	rcc_dma_init();
+	dma_rcc_init();
 
 	system_counter_init();
 
-	gpio_socket3_cfg_setup();
+	gpio_em_stop_cfg_setup(); //EmStop_App
+
+	gpio_socket3_cfg_setup(); //OE_App
 	socket3_enable();
 
 	usart6_nvic_init(5);

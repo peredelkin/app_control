@@ -1,7 +1,23 @@
 #ifndef DIGITAL_INPUT_H
 #define DIGITAL_INPUT_H
 
+#include <assert.h>
 #include "module/base.h"
+
+#define DIGITAL_INPUT_COUNT 32
+
+typedef struct _digital_input_bit {
+	unsigned em_stop :1;
+	unsigned panel :1;
+	unsigned msdi :10;
+	unsigned reserved :20;
+} _digital_input_bit_t;
+static_assert(sizeof(_digital_input_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
+
+typedef union _digital_input_reg {
+	uint32_t all;
+	struct _digital_input_bit bit;
+} _digital_input_reg_t;
 
 //! Перечисление возможных бит управления.
 enum _E_Digital_Input_Control {
@@ -22,10 +38,11 @@ struct _S_Digital_Input {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u32_t msdi_in;
     // Выходные данные.
-    volatile reg_u16_t out;
+    volatile reg_u32_t out;
     // Параметры.
+    reg_u32_t invert;
+    reg_u8_t select[DIGITAL_INPUT_COUNT];
     // Регистры.
     // Методы.
     METHOD_INIT(M_digital_input);
@@ -33,6 +50,7 @@ struct _S_Digital_Input {
     METHOD_CALC(M_digital_input);
     // Коллбэки.
     // Внутренние данные.
+    _digital_input_reg_t raw;
 };
 
 EXTERN METHOD_INIT_PROTO(M_digital_input);
@@ -44,10 +62,11 @@ EXTERN METHOD_CALC_PROTO(M_digital_input);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
-		0,\
         /* Выходные данные */\
 		0,\
         /* Параметры */\
+		0,\
+		{0},\
         /* Регистры */\
         /* Методы */\
         METHOD_INIT_PTR(M_digital_input),\
@@ -55,6 +74,7 @@ EXTERN METHOD_CALC_PROTO(M_digital_input);
         METHOD_CALC_PTR(M_digital_input),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		{0},\
     }
 
 #endif /* DIGITAL_INPUT_H */

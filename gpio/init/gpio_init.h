@@ -36,7 +36,7 @@ extern const gpio_pin_t GPI_NAND_RnB;
 extern const gpio_pin_t GPO_NAND_nWP;
 extern void gpio_fmc_cfg_setup();
 
-extern bool rs485_panel_detect();
+extern const gpio_pin_t gpio_rs485_panel_detect;
 extern void rs485_panel_set_out();
 extern void rs485_panel_set_in();
 extern void gpio_rs485_panel_cfg_setup();
@@ -50,9 +50,11 @@ extern const gpio_pin_t GPO_Reset_DI_App;
 extern const gpio_pin_t GPI_Int_DI_App;
 extern void gpio_tic12400_cfg_setup();
 
-
 extern const gpio_pin_t GPO_CS_DO_App;
 extern const gpio_pin_t GPO_EN_DO_App;
 extern void gpio_ncv7608_cfg_setup();
+
+extern const gpio_pin_t GPI_EmStop_App;
+extern void gpio_em_stop_cfg_setup();
 
 #endif /* INC_GPIO_INIT_H_ */

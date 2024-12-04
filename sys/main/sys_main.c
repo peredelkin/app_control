@@ -49,6 +49,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(cli);
     INIT(rgb_led);
     INIT(msdi);
+    INIT(digital_in);
     INIT(ntc_temp);
     INIT(do_relay);
     INIT(do_ncv7608);
@@ -111,6 +112,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(cli);
     DEINIT(rgb_led);
     DEINIT(msdi);
+    DEINIT(digital_in);
     DEINIT(ntc_temp);
     DEINIT(do_relay);
     DEINIT(do_ncv7608);
@@ -194,20 +196,16 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     //CALC(conf); // conf не требует вычисления.
 
     // Вычислительные модули.
-    can1_CO_process(co, 10000, NULL);
+    can1_CO_process(co, 10000, NULL); //TODO: выделить для этой функции отдельный таймеры
 
     CALC(cli);
     CALC(rgb_led);
     CALC(msdi);
+    CALC(digital_in);
     CALC(ntc_temp);
     CALC(do_relay);
 
-    //TODO: убрать
-    if(rs485_panel_detect()) {
-    	 do_ncv7608.in |= 1;
-    } else {
-    	 do_ncv7608.in &= ~1;
-    }
+    do_ncv7608.in = digital_in.out;//для дебага!
 
     CALC(do_ncv7608);
 
