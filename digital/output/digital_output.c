@@ -1,38 +1,41 @@
+#include "gpio/init/gpio_init.h"
 #include "digital_output.h"
+#include "modules/modules.h"
 
 
-METHOD_INIT_IMPL(M_digital_output, dout)
+METHOD_INIT_IMPL(M_digital_output, output)
 {
 }
 
-METHOD_DEINIT_IMPL(M_digital_output, dout)
+METHOD_DEINIT_IMPL(M_digital_output, output)
 {
 }
 
-METHOD_CALC_IMPL(M_digital_output, dout)
+METHOD_CALC_IMPL(M_digital_output, output)
 {
-	for(int n = 0; n < DIGITAL_OUTPUT_BITS_COUNT; n++) {
-		dout->tmp_out_mask = (1 << n);
-		if(dout->reg_in[n]) {
-			if(dout->reg_in[n]->data) {
-				dout->tmp_in = reg_value_u16(dout->reg_in[n]);
-				dout->tmp_in_mask = (1 << dout->bit_in[n]);
-				if((dout->tmp_in & dout->tmp_in_mask) == dout->tmp_in_mask) {
-					//Установить
-					dout->tmp_out |= (dout->tmp_out_mask);
-				} else {
-					//Сбросить
-					dout->tmp_out &= ~(dout->tmp_out_mask);
-				}
+	uint32_t raw_mask;
+	uint32_t in_mask;
+	uint32_t invert_res;
+	for(int i = 0; i < DIGITAL_INPUT_COUNT; i++) {
+		raw_mask = (1 << output->select[i]);
+		in_mask = (1 << i);
+		invert_res = (in_mask & output->invert);
+		if(output->in & raw_mask) {
+			if(invert_res) {
+				output->raw.all &= ~in_mask;
 			} else {
-				//Сбросить
-				dout->tmp_out &= ~(dout->tmp_out_mask);
+				output->raw.all |= in_mask;
 			}
 		} else {
-			//Сбросить
-			dout->tmp_out &= ~(dout->tmp_out_mask);
+			if(invert_res) {
+				output->raw.all |= in_mask;
+			} else {
+				output->raw.all &= ~in_mask;
+			}
 		}
 	}
-	//Инверсия по маске
-	dout->out = dout->tmp_out ^ dout->inv;
+
+	do_ncv7608.in = output->raw.bit.ncv;
+
+	do_relay.in = output->raw.bit.relay;
 }

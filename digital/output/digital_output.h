@@ -1,7 +1,22 @@
 #ifndef DIGITAL_OUTPUT_H
 #define DIGITAL_OUTPUT_H
 
+#include <assert.h>
 #include "module/base.h"
+
+#define DIGITAL_OUTPUT_COUNT 32
+
+typedef struct _digital_output_bit {
+	unsigned ncv :8;
+	unsigned relay :4;
+	unsigned reserved :20;
+} _digital_output_bit_t;
+static_assert(sizeof(_digital_output_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
+
+typedef union _digital_output_reg {
+	uint32_t all;
+	struct _digital_output_bit bit;
+} _digital_output_reg_t;
 
 //! Перечисление возможных бит управления.
 enum _E_Digital_Output_Control {
@@ -24,12 +39,11 @@ struct _S_Digital_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
+    reg_u32_t in;
     // Выходные данные.
-    reg_u16_t out;
     // Параметры.
-    reg_id_t id_in[DIGITAL_OUTPUT_BITS_COUNT];
-    reg_u16_t bit_in[DIGITAL_OUTPUT_BITS_COUNT];
-    reg_u16_t inv;
+    reg_u32_t invert;
+    reg_u8_t select[DIGITAL_OUTPUT_COUNT];
     // Регистры.
     // Методы.
     METHOD_INIT(M_digital_output);
@@ -37,11 +51,7 @@ struct _S_Digital_Output {
     METHOD_CALC(M_digital_output);
     // Коллбэки.
     // Внутренние данные.
-    reg_t* reg_in[DIGITAL_OUTPUT_BITS_COUNT];
-    reg_u16_t tmp_in;
-    reg_u16_t tmp_in_mask;
-    reg_u16_t tmp_out_mask;
-    reg_u16_t tmp_out;
+    _digital_output_reg_t raw;
 };
 
 EXTERN METHOD_INIT_PROTO(M_digital_output);
@@ -53,12 +63,11 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
+		0,\
         /* Выходные данные */\
-		0,\
         /* Параметры */\
-		{0},\
-		{0},\
 		0,\
+		{0},\
         /* Регистры */\
         /* Методы */\
         METHOD_INIT_PTR(M_digital_output),\
@@ -67,10 +76,6 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
         /* Коллбэки */\
         /* Внутренние данные */\
 		{0},\
-		0,\
-		0,\
-		0,\
-		0,\
     }
 
 #endif /* DIGITAL_OUTPUT_H */

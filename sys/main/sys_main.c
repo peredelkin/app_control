@@ -49,10 +49,11 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(cli);
     INIT(rgb_led);
     INIT(msdi);
-    INIT(digital_in);
     INIT(ntc_temp);
     INIT(do_relay);
     INIT(do_ncv7608);
+    INIT(digital_in);
+    INIT(digital_out);
 
     // Таймеры.
     // Системный таймер.
@@ -112,10 +113,11 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(cli);
     DEINIT(rgb_led);
     DEINIT(msdi);
-    DEINIT(digital_in);
     DEINIT(ntc_temp);
     DEINIT(do_relay);
     DEINIT(do_ncv7608);
+    DEINIT(digital_in);
+    DEINIT(digital_out);
 
     // Вычислительные модули.
 
@@ -202,11 +204,12 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(rgb_led);
     CALC(msdi);
     CALC(digital_in);
+
+    digital_out.in = digital_in.out;
+
+    CALC(digital_out);
     CALC(ntc_temp);
     CALC(do_relay);
-
-    do_ncv7608.in = digital_in.out;//для дебага!
-
     CALC(do_ncv7608);
 
     // Последний модуль - запись лога.
