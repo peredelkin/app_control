@@ -36,7 +36,6 @@ struct _S_Ntc_Temp {
     // Внутренние данные.
     reg_u16_t *ai;
     reg_u16_t index;
-    reg_iq15_t tmp[NTC_TEMP_COUNT];
 };
 
 EXTERN METHOD_INIT_PROTO(M_ntc_temp);
@@ -60,7 +59,6 @@ EXTERN METHOD_CALC_PROTO(M_ntc_temp);
         /* Внутренние данные */\
 		0,\
 		0,\
-		{0}\
     }
 
 #endif /* NTC_TEMP_H */

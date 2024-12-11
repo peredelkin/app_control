@@ -280,7 +280,7 @@
             <RegVar subindex="8" name="Application object 8" type="3" count="1" memory="" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="393216" description=""/>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8192" name="Ntc" type="2" description="">
+    <RegEntry index="8192" name="Temp" type="2" description="">
         <RegVars>
             <RegVar subindex="0" name="Count" type="2" count="1" memory="" minimum="0" maximum="6" default="6" base_index="0" base_subindex="0" flags="0" eflags="131076" description=""/>
             <RegVar subindex="1" name="Ntc 0" type="0" count="1" memory="ntc_temp.out_temp[0]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
@@ -289,6 +289,12 @@
             <RegVar subindex="4" name="Ntc 3" type="0" count="1" memory="ntc_temp.out_temp[3]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
             <RegVar subindex="5" name="Ntc 4" type="0" count="1" memory="ntc_temp.out_temp[4]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
             <RegVar subindex="6" name="Ntc 5" type="0" count="1" memory="ntc_temp.out_temp[5]" minimum="0" maximum="0" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="8193" name="Voltage" type="2" description="">
+        <RegVars>
+            <RegVar subindex="0" name="count" type="5" count="1" memory="" minimum="0" maximum="254" default="1" base_index="0" base_subindex="0" flags="0" eflags="5" description="Number of sub-entries"/>
+            <RegVar subindex="1" name="MSDI Vcc" type="7" count="1" memory="msdi.vcc" minimum="-2147483648" maximum="2147483647" default="0" base_index="0" base_subindex="0" flags="0" eflags="131072" description=""/>
         </RegVars>
     </RegEntry>
 </RegEntries>

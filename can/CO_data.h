@@ -255,9 +255,13 @@ struct _S_TPDOMappingParameter_1a03 {
     uint32_t applicationObject8; /*  */
 } TPDOMappingParameter_1a03;
 
-struct _S_ntc {
+struct _S_temp {
     int8_t count; /*  */
-} ntc;
+} temp;
+
+struct _S_voltage {
+    uint8_t count; /* Number of sub-entries */
+} voltage;
 
 };
 extern struct _S_CO_data CO_data;

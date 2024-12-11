@@ -57,6 +57,10 @@ void msdi_data_fill(M_msdi *msdi) {
 	msdi->out_ai[AI_5_MSDI_INPUT] = msdi->data.ANA_STAT3.bit.in1_ana;
 	msdi->out_ai[AI_6_MSDI_INPUT] = msdi->data.ANA_STAT9.bit.in0_ana;
 	msdi->out_ai[AI_7_MSDI_INPUT] = msdi->data.ANA_STAT12.bit.in0_ana;
+
+	msdi->ref = ((IQ15(6) * (msdi->out_ai[6])) >> 10); //full scale 6v
+
+	msdi->vcc = ((IQ15(30) * (msdi->out_ai[7])) >> 10); //full scale 30v
 }
 
 void msdi_data_reset(M_msdi *msdi) {
@@ -117,7 +121,8 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	}
 	//чтение входов
 	if(!(tic12400_wait(&msdi->tic12400))) {
-		tic12400_reg_read(&(msdi->tic12400), ((uint32_t*) &msdi->data), tic12400_addr_array, 1, 6);
+		//TODO: переименовать аргумент count в end либо переписать, чтобы работало как количество
+		tic12400_reg_read(&(msdi->tic12400), ((uint32_t*) &msdi->data), tic12400_addr_array, 1, 7);
 	}
 	//заполнение данных
 	if(!(tic12400_wait(&msdi->tic12400))) {

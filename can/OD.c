@@ -10,7 +10,6 @@
 #include "CO_data.h"
 
 // user code begin
-// Модули.
 #include "modules/modules.h"
 // user code end
 
@@ -49,7 +48,8 @@ typedef struct {
     OD_obj_record_t o_1A01_TPDOMappingParameter[9];
     OD_obj_record_t o_1A02_TPDOMappingParameter[9];
     OD_obj_record_t o_1A03_TPDOMappingParameter[9];
-    OD_obj_record_t o_2000_ntc[7];
+    OD_obj_record_t o_2000_temp[7];
+    OD_obj_record_t o_2001_voltage[3];
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -67,7 +67,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataOrig0 = &CO_data.pre_definedErrorField.numberOfErrors,
     .dataOrig = &CO_data.pre_definedErrorField.pre_definedErrorField[0],
     .attribute0 = ODA_SDO_RW,
-    .attribute = ODA_SDO_R | ODA_MB,
+    .attribute = ODA_SDO_R,
     .dataElementLength = 4,
     .dataElementSizeof = sizeof(uint32_t)
 },
@@ -90,7 +90,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataOrig0 = &CO_data.storeParameters.highestSub_indexSupported,
     .dataOrig = &CO_data.storeParameters.storeParameters[0],
     .attribute0 = ODA_SDO_R,
-    .attribute = ODA_SDO_RW | ODA_MB,
+    .attribute = ODA_SDO_RW,
     .dataElementLength = 4,
     .dataElementSizeof = sizeof(uint32_t)
 },
@@ -98,7 +98,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataOrig0 = &CO_data.restoreDefaultParameters.highestSub_indexSupported,
     .dataOrig = &CO_data.restoreDefaultParameters.restoreDefaultParameters[0],
     .attribute0 = ODA_SDO_R,
-    .attribute = ODA_SDO_RW | ODA_MB,
+    .attribute = ODA_SDO_RW,
     .dataElementLength = 4,
     .dataElementSizeof = sizeof(uint32_t)
 },
@@ -121,7 +121,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataOrig0 = &CO_data.consumerHeartbeatTime.highestSub_indexSupported,
     .dataOrig = &CO_data.consumerHeartbeatTime.consumerHeartbeatTime[0],
     .attribute0 = ODA_SDO_R,
-    .attribute = ODA_SDO_RW | ODA_MB,
+    .attribute = ODA_SDO_RW,
     .dataElementLength = 4,
     .dataElementSizeof = sizeof(uint32_t)
 },
@@ -917,9 +917,9 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2000_ntc = {
+.o_2000_temp = {
     {
-    .dataOrig = &CO_data.ntc.count,
+    .dataOrig = &CO_data.temp.count,
     .subIndex = 0,
     .attribute = ODA_SDO_R,
     .dataLength = 1
@@ -960,6 +960,26 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .attribute = ODA_SDO_R | ODA_MB,
     .dataLength = 4
     }
+},
+.o_2001_voltage = {
+    {
+    .dataOrig = &CO_data.voltage.count,
+    .subIndex = 0,
+    .attribute = 0,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &msdi.vcc,
+    .subIndex = 1,
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &msdi.ref,
+    .subIndex = 2,
+    .attribute = ODA_SDO_R | ODA_MB,
+    .dataLength = 4
+    }
 }
 };
 // Object dictionary
@@ -997,7 +1017,8 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1a01, 0x09, ODT_REC, &ODObjs.o_1A01_TPDOMappingParameter, NULL},
     {0x1a02, 0x09, ODT_REC, &ODObjs.o_1A02_TPDOMappingParameter, NULL},
     {0x1a03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
-    {0x2000, 0x07, ODT_REC, &ODObjs.o_2000_ntc, NULL},
+    {0x2000, 0x07, ODT_REC, &ODObjs.o_2000_temp, NULL},
+    {0x2001, 0x03, ODT_REC, &ODObjs.o_2001_voltage, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

@@ -7,7 +7,7 @@
 #include "reg_types.h"
 
 //! Тип идентификатора регистра.
-typedef uint16_t reg_id_t;
+typedef uint32_t reg_id_t;
 
 typedef enum _E_Reg_Flag {
     REG_FLAG_NONE = 0x00,

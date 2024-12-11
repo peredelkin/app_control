@@ -218,7 +218,10 @@ struct _S_CO_data CO_data = {
     .applicationObject7 = 0 /*  */,
     .applicationObject8 = 0 /*  */
 },
-.ntc = {
+.temp = {
     .count = 6 /*  */
+},
+.voltage = {
+    .count = 2 /* Number of sub-entries */
 }
 };

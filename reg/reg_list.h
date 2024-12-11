@@ -20,7 +20,7 @@
  * //DEF - Значение по-умолчанию.
  * //FLG - Флаги.
  */
-#define REG(ID, DATA, TYPE, FLAG, BASE) {ID, (void*)&DATA, TYPE, FLAG},
+#define REG(ID, DATA, TYPE, FLAG, BASE) {ID, (void*)DATA, TYPE, FLAG},
 /*
  * Окончание массива регистров.
  */

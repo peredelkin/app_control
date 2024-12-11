@@ -40,6 +40,8 @@ struct _S_Msdi {
     // Выходные данные.
     reg_u32_t out_di;
     reg_u16_t out_ai[MSDI_AI_COUNT];
+    reg_iq15_t ref;
+    reg_iq15_t vcc;
     // Параметры.
     // Регистры.
     // Методы.
@@ -66,6 +68,8 @@ EXTERN METHOD_CALC_PROTO(M_msdi);
         /* Выходные данные */\
 		0,\
 		{0},\
+		0,\
+		0,\
         /* Параметры */\
         /* Регистры */\
         /* Методы */\

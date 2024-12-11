@@ -63,10 +63,10 @@ const TIC12400_SETTINGS_TypeDef tic124_settings_const = {
 		.CS_SELECT.bit.cs_in9 = 0x1,		/*Current Sink (CSI)*/
 
 		.WC_CFG0.bit.wc_in0_in1 = 0x0,		/*0mA wetting current ResDI_4 and ResDI_2*/
-		.WC_CFG0.bit.wc_in2_in3 = 0x1,		/*1mA wetting current NTC5 and NTC6*/
-		.WC_CFG0.bit.wc_in4 = 0x1,			/*1mA wetting current NTC4*/
-		.WC_CFG0.bit.wc_in5 = 0x1,			/*1mA wetting current NTC1*/
-		.WC_CFG0.bit.wc_in6_in7 = 0x1,		/*1mA wetting current NTC3 and NTC2*/
+		.WC_CFG0.bit.wc_in2_in3 = 0x0,		/*0mA wetting current NTC5 and NTC6*/
+		.WC_CFG0.bit.wc_in4 = 0x0,			/*0mA wetting current NTC4*/
+		.WC_CFG0.bit.wc_in5 = 0x0,			/*0mA wetting current NTC1*/
+		.WC_CFG0.bit.wc_in6_in7 = 0x0,		/*0mA wetting current NTC3 and NTC2*/
 		.WC_CFG0.bit.wc_in8_in9 = 0x0,		/*0mA wetting current DI1 and DI2*/
 		.WC_CFG0.bit.wc_in10 = 0x0,			/*0mA wetting current DI3*/
 		.WC_CFG0.bit.wc_in11 = 0x0,			/*0mA wetting current DI4*/
