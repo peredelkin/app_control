@@ -7,10 +7,12 @@
 #define DIGITAL_INPUT_COUNT 32
 
 typedef struct _digital_input_bit {
-	unsigned em_stop :1;
-	unsigned panel :1;
 	unsigned msdi :10;
-	unsigned reserved :20;
+	unsigned em_stop :1;
+	unsigned ac_lost :1;
+	unsigned dc_lost :1;
+	unsigned panel :1;
+	unsigned reserved :18;
 } _digital_input_bit_t;
 static_assert(sizeof(_digital_input_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
 

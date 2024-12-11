@@ -99,6 +99,8 @@ int main(void)
 
 	gpio_em_stop_cfg_setup(); //EmStop_App
 
+	gpio_ac_dc_lost_cfg_setup();//AC DC Lost
+
 	gpio_socket3_cfg_setup(); //OE_App
 	socket3_enable();
 

@@ -57,4 +57,8 @@ extern void gpio_ncv7608_cfg_setup();
 extern const gpio_pin_t GPI_EmStop_App;
 extern void gpio_em_stop_cfg_setup();
 
+extern const gpio_pin_t GPI_AC_lost_App;
+extern const gpio_pin_t GPI_Lost_5V_App;
+extern void gpio_ac_dc_lost_cfg_setup();
+
 #endif /* INC_GPIO_INIT_H_ */

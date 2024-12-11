@@ -74,14 +74,14 @@ const gpio_pin_t GPI_BOOT1 = GPIO_PIN(GPIOB, GPIO_PIN_2); /*58, PB2/BOOT1, GPIO_
 //
 //
 //
-const gpio_pin_t GPI_Lost_5V_App = GPIO_PIN(GPIOH, GPIO_PIN_7); /*84, PH7, GPIO_Input, Lost_5V_App*/
+
 
 //
 //
 //
 //
 //
-const gpio_pin_t GPI_AC_lost_App = GPIO_PIN(GPIOB, GPIO_PIN_14); /*94, PB14, GPIO_Input, AC_lost_App*/
+
 const gpio_pin_t GPI_RVS2_App = GPIO_PIN(GPIOB, GPIO_PIN_15); /*95, PB15, GPIO_Input, RVS2_App*/
 //
 //
@@ -214,7 +214,7 @@ const gpio_pin_t GPI_Board_ID3 = GPIO_PIN(GPIOI, GPIO_PIN_7); /*176, PI7, GPIO_I
 /*79, PB10,		USART3_TX,		OFF,		Tx1_485_App*/
 /*80, PB11,		USART3_RX,		OFF,		Rx1_485_App*/
 /*83, PH6,		SPI5_SCK,		OFF,		CLK_SPI5_App*/
-//GPIO_PIN_CFG(GPIOH, GPIO_PIN_7, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*84, PH7,		GPIO_Input,		OFF,		Lost_5V_App*/
+/*84, PH7,		GPIO_Input,		OFF,		Lost_5V_App*/
 /*85, PH8,		GPIO_Output,	OFF,	Dir1_485_App*/
 /*86, PH9,		GPIO_Input,		OFF,		Panel_Detect_App*/
 /*87, PH10,		TIM5_CH1,		OFF,		B_LED_App*/
@@ -222,7 +222,7 @@ const gpio_pin_t GPI_Board_ID3 = GPIO_PIN(GPIOI, GPIO_PIN_7); /*176, PI7, GPIO_I
 /*89, PH12,		TIM5_CH3,		OFF,		R_LED_App*/
 /*92, PB12,		ETH_TXD0,		OFF,		ETH_TXD0_App*/
 /*93, PB13,		ETH_TXD1,		OFF,		ETH_TXD1_App*/
-//GPIO_PIN_CFG(GPIOB, GPIO_PIN_14, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*94, PB14,		GPIO_Input,		OFF,		AC_lost_App*/
+/*94, PB14,		GPIO_Input,		OFF,		AC_lost_App*/
 //GPIO_PIN_CFG(GPIOB, GPIO_PIN_15, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*95, PB15,		GPIO_Input,		OFF,		RVS2_App*/
 /*96, PD8,		FMC_D13,		OFF,		SRAM_IO13_App*/
 /*97, PD9,		FMC_D14,		OFF,		SRAM_IO14_App*/

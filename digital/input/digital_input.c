@@ -14,19 +14,15 @@ METHOD_DEINIT_IMPL(M_digital_input, input)
 
 METHOD_CALC_IMPL(M_digital_input, input)
 {
-	if(gpio_input_bit_read(&GPI_EmStop_App)) {
-		input->raw.bit.em_stop = 1;
-	} else {
-		input->raw.bit.em_stop = 0;
-	}
-
-	if(gpio_input_bit_read(&gpio_rs485_panel_detect)) {
-		input->raw.bit.panel = 1;
-	} else {
-		input->raw.bit.panel = 0;
-	}
-
 	input->raw.bit.msdi = msdi.out_di;
+
+	input->raw.bit.em_stop = gpio_input_bit_read(&GPI_EmStop_App);
+
+	input->raw.bit.ac_lost = gpio_input_bit_read(&GPI_AC_lost_App);
+
+	input->raw.bit.dc_lost = gpio_input_bit_read(&GPI_Lost_5V_App);
+
+	input->raw.bit.panel = gpio_input_bit_read(&gpio_rs485_panel_detect);
 
 	uint32_t raw_mask;
 	uint32_t out_mask;
