@@ -63,4 +63,7 @@ extern void gpio_ac_dc_lost_cfg_setup();
 extern const gpio_pin_t GPO_Relay_DO_App[];
 extern void gpio_relay_output_cfg_setup();
 
+extern const gpio_pin_t GPO_RGB_LED_App[];
+extern void gpio_rgb_led_cfg_setup();
+
 #endif /* INC_GPIO_INIT_H_ */

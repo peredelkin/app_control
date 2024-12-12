@@ -97,6 +97,8 @@ int main(void)
 
 	system_counter_init();
 
+	gpio_rgb_led_cfg_setup(); //RGB Led
+
 	gpio_em_stop_cfg_setup(); //EmStop_App
 
 	gpio_ac_dc_lost_cfg_setup(); //AC DC Lost

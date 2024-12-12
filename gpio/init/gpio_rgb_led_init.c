@@ -1,0 +1,27 @@
+/*
+ * gpio_rgb_led_init.c
+ *
+ *  Created on: 12 дек. 2024 г.
+ *      Author: ruslan
+ */
+
+#include "gpio_init.h"
+
+#define RGB_LED_INIT_PINS_COUNT 3
+
+const gpio_pin_t GPO_RGB_LED_App[RGB_LED_INIT_PINS_COUNT] ={
+		GPIO_PIN(GPIOH, GPIO_PIN_10), /*87, PH10, B_LED_App*/
+		GPIO_PIN(GPIOH, GPIO_PIN_11), /*88, PH11, G_LED_App*/
+		GPIO_PIN(GPIOH, GPIO_PIN_12), /*89, PH12, R_LED_App*/
+};
+
+const gpio_pin_cfg_t rgb_led_gpio_cfg[RGB_LED_INIT_PINS_COUNT] =
+{
+		GPIO_PIN_CFG(GPIOH, GPIO_PIN_10, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_2, GPIO_STATE_ON),	/*87, PH10,		TIM5_CH1,		OFF,		B_LED_App*/
+		GPIO_PIN_CFG(GPIOH, GPIO_PIN_11, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_2, GPIO_STATE_ON),	/*88, PH11,		TIM5_CH2,		OFF,		G_LED_App*/
+		GPIO_PIN_CFG(GPIOH, GPIO_PIN_12, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_2, GPIO_STATE_ON),	/*89, PH12,		TIM5_CH3,		OFF,		R_LED_App*/
+};
+
+void gpio_rgb_led_cfg_setup() {
+	gpio_pins_cfg_setup(rgb_led_gpio_cfg, RGB_LED_INIT_PINS_COUNT);
+}

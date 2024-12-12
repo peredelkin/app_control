@@ -14,27 +14,6 @@ enum _E_Rgb_Led_Status {
     RGB_LED_STATUS_NONE = STATUS_NONE,
 };
 
-//! Перечисление цветов
-enum _Rgb_Led_Сolor {
-	RGB_LED_COLOR_BLACK,
-	RGB_LED_COLOR_VIOLET,
-	RGB_LED_COLOR_BLUE_DARK,
-	RGB_LED_COLOR_BLUE,
-	RGB_LED_COLOR_GREEN,
-	RGB_LED_COLOR_YELLOW,
-	RGB_LED_COLOR_RED,
-	RGB_LED_COLOR_WHITE
-};
-
-#define LED_RGB_GPIO ((BITS_GPIO_TypeDef*)GPIOH)
-#define LED_RGB_PIN_COUNT 3
-#define LED_RGB_R_PIN GPIO_PIN_12
-#define LED_RGB_G_PIN GPIO_PIN_11
-#define LED_RGB_B_PIN GPIO_PIN_10
-#define LEG_RGB_MASK ((1 << LED_RGB_R_PIN) | (1 << LED_RGB_G_PIN) | (1 << LED_RGB_B_PIN))
-#define LED_RGB_STATE_COUNT 8
-#define LED_RGB_STATE_MASK 7
-
 //! Предварительная декларация типа модуля.
 typedef struct _S_Rgb_Led M_rgb_led;
 
