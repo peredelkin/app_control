@@ -469,7 +469,7 @@ int yaffs_start_up(void)
 
 	dev->drv.drv_write_chunk_fn = &drv_K9F1G08U0E_write_chunk_fn;
 	dev->drv.drv_read_chunk_fn = &drv_K9F1G08U0E_read_chunk_fn;
-	dev->drv.drv_erase_fn = drv_K9F1G08U0E_erase_fn;
+	dev->drv.drv_erase_fn = &drv_K9F1G08U0E_erase_fn;
 	dev->drv.drv_mark_bad_fn = &drv_K9F1G08U0E_mark_bad_fn;
 	dev->drv.drv_check_bad_fn = &drv_K9F1G08U0E_check_bad_fn;
 	dev->drv.drv_initialise_fn = &drv_K9F1G08U0E_initialise_fn;
