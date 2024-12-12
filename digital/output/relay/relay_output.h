@@ -4,6 +4,20 @@
 #include "module/base.h"
 #include "gpio/gpio.h"
 
+typedef struct _relay_output_bit {
+	unsigned relay_1 :1;
+	unsigned relay_2 :1;
+	unsigned relay_3 :1;
+	unsigned relay_4 :1;
+	unsigned reserved :28;
+} _relay_output_bit_t;
+static_assert(sizeof(_relay_output_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
+
+typedef union _relay_output_reg {
+	uint32_t all;
+	struct _relay_output_bit bit;
+} _relay_output_reg_t;
+
 //! Перечисление возможных бит управления.
 enum _E_Relay_Output_Control {
     RELAY_OUTPUT_CONTROL_NONE = CONTROL_NONE,
@@ -23,7 +37,7 @@ struct _S_Relay_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u16_t in;
+    _relay_output_reg_t in;
     // Выходные данные.
     // Параметры.
     // Регистры.
@@ -44,7 +58,7 @@ EXTERN METHOD_CALC_PROTO(M_relay_output);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
-		0,\
+		{0},\
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\

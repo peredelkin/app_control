@@ -99,10 +99,12 @@ int main(void)
 
 	gpio_em_stop_cfg_setup(); //EmStop_App
 
-	gpio_ac_dc_lost_cfg_setup();//AC DC Lost
+	gpio_ac_dc_lost_cfg_setup(); //AC DC Lost
+
+	gpio_relay_output_cfg_setup(); //Relay output
 
 	gpio_socket3_cfg_setup(); //OE_App
-	socket3_enable();
+	gpio_output_bit_setup(&GPO_OE_App, GPIO_STATE_OFF); //Socket 3 Enable
 
 	usart6_nvic_init(5);
 	usart6_init(); //Socket3

@@ -12,8 +12,7 @@
 
 extern void gpio_rcc_init();
 
-extern void socket3_enable();
-extern void socket3_disable();
+extern const gpio_pin_t GPO_OE_App;
 extern void gpio_socket3_cfg_setup();
 
 extern void gpio_spi2_cfg_setup();
@@ -60,5 +59,8 @@ extern void gpio_em_stop_cfg_setup();
 extern const gpio_pin_t GPI_AC_lost_App;
 extern const gpio_pin_t GPI_Lost_5V_App;
 extern void gpio_ac_dc_lost_cfg_setup();
+
+extern const gpio_pin_t GPO_Relay_DO_App[];
+extern void gpio_relay_output_cfg_setup();
 
 #endif /* INC_GPIO_INIT_H_ */

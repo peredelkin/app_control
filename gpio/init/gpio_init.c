@@ -130,10 +130,7 @@ const gpio_pin_t GPO_Dir2_485_App_Jmp = GPIO_PIN(GPIOD, GPIO_PIN_3); /*145, PD3,
 //
 const gpio_pin_t GPO_nLDAC_App = GPIO_PIN(GPIOG, GPIO_PIN_10); /*153, PG10, GPIO_Output, nLDAC_App*/
 //
-const gpio_pin_t GPO_Relay1_DO_App = GPIO_PIN(GPIOG, GPIO_PIN_12); /*155, PG12, GPIO_Output, Relay1_DO_App*/
-const gpio_pin_t GPO_Relay2_DO_App = GPIO_PIN(GPIOG, GPIO_PIN_13); /*156, PG13, GPIO_Output, Relay2_DO_App*/
-const gpio_pin_t GPO_Relay3_DO_App = GPIO_PIN(GPIOG, GPIO_PIN_14); /*157, PG14, GPIO_Output, Relay3_DO_App*/
-const gpio_pin_t GPO_Relay4_DO_App = GPIO_PIN(GPIOG, GPIO_PIN_15); /*160, PG15, GPIO_Output, Relay4_DO_App*/
+
 //
 const gpio_pin_t GPI_IO0_App_MC = GPIO_PIN(GPIOB, GPIO_PIN_4); /*162, PB4, GPIO_Input, IO0_App_MC*/
 //

@@ -10,8 +10,6 @@ METHOD_DEINIT_IMPL(M_digital_input, input)
 {
 }
 
-//msdi.out_di
-
 METHOD_CALC_IMPL(M_digital_input, input)
 {
 	input->raw.bit.msdi = msdi.out_di;
