@@ -82,7 +82,7 @@ typedef union PACKED _TIC12400_STATUS {
 
 //структура последовательного чтения
 typedef struct {
-	uint8_t count;
+	uint8_t end;
 	uint8_t index;
 	const uint8_t *addr;
 	uint32_t *data;

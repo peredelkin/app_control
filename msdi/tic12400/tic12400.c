@@ -51,7 +51,7 @@ bool tic12400_rx_frame_parity_check(tic12400_t *tic) {
 void tic12400_tx_handler(tic12400_t *tic) {
 	if (tic->sequential.data) {
 		tic->sequential.index++;
-		if (tic->sequential.index < tic->sequential.count) {
+		if (tic->sequential.index < tic->sequential.end) {
 			tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index],
 					tic->sequential.data[tic->sequential.index]);
 			tic12400_transfer_from_callback(tic);
@@ -67,7 +67,7 @@ void tic12400_rx_handler(tic12400_t *tic) {
 	if (tic->sequential.data) {
 		tic->sequential.data[tic->sequential.index] = tic->rx_frame.bit.data;
 		tic->sequential.index++;
-		if (tic->sequential.index < tic->sequential.count) {
+		if (tic->sequential.index < tic->sequential.end) {
 			tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
 			tic12400_transfer_from_callback(tic);
 		} else {
@@ -110,7 +110,7 @@ void tic12400_init(tic12400_t *tic, SPI_BUS_TypeDef *spi_bus, const CFG_REG_SPI_
 	tic->tx_frame.all = 0;
 	tic->rx_frame.all = 0;
 
-	tic->sequential.count = 0;
+	tic->sequential.end = 0;
 	tic->sequential.index = 0;
 	tic->sequential.addr = NULL;
 	tic->sequential.data = NULL;
@@ -121,7 +121,7 @@ void tic12400_init(tic12400_t *tic, SPI_BUS_TypeDef *spi_bus, const CFG_REG_SPI_
 }
 
 void tic12400_sequential_fill(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	tic->sequential.count = count;
+	tic->sequential.end = start + count;
 	tic->sequential.index = start;
 	tic->sequential.addr = addr;
 	tic->sequential.data = data;

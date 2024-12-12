@@ -82,7 +82,7 @@ uint8_t tic12400_addr_array[7] = {
 
 METHOD_INIT_IMPL(M_msdi, msdi)
 {
-	gpio_tic12400_cfg_setup();
+	gpio_tic12400_cfg_setup(); //TODO: вынести
 	tic12400_init(&(msdi->tic12400), &SPI4_Bus, &spi_tic12400_cfg);
 
 	//Инит SPI
@@ -98,10 +98,6 @@ METHOD_INIT_IMPL(M_msdi, msdi)
 METHOD_DEINIT_IMPL(M_msdi, msdi)
 {
 }
-
-//tic12400_reg_read(&(msdi->tic12400), &((uint32_t*) &tic12400_data_array)[0], &tic12400_addr_array[0], 7);
-//tic12400_wait(&msdi->tic12400);
-//tic12400_reg_write(&(msdi->tic12400), (uint32_t*)&tic124_settings_const, &tic124_settings_addr[0], TIC12400_SETTINGS_COUNT);
 
 //TODO: сделать счетчик ошибок обращения к микросхеме
 METHOD_CALC_IMPL(M_msdi, msdi)
@@ -121,8 +117,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	}
 	//чтение входов
 	if(!(tic12400_wait(&msdi->tic12400))) {
-		//TODO: переименовать аргумент count в end либо переписать, чтобы работало как количество
-		tic12400_reg_read(&(msdi->tic12400), ((uint32_t*) &msdi->data), tic12400_addr_array, 1, 7);
+		tic12400_reg_read(&(msdi->tic12400), ((uint32_t*) &msdi->data), tic12400_addr_array, 1, 6);
 	}
 	//заполнение данных
 	if(!(tic12400_wait(&msdi->tic12400))) {
