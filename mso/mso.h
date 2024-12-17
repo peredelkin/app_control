@@ -5,12 +5,12 @@
 
 #include "module/base.h"
 
-typedef int mso_data_t;
+typedef iql_t mso_data_t;
 
 #define MSO_MAX_CHANNEL_COUNT 32
 #define MSO_DATA_BLOCK_COUNT 128
-#define MSO_WORDS_COUNT (MSO_MAX_CHANNEL_COUNT * MSO_DATA_BLOCK_COUNT)
-#define MSO_DATA_SIZE (MSO_WORDS_COUNT * sizeof(mso_data_t))
+#define MSO_DATA_COUNT (MSO_MAX_CHANNEL_COUNT * MSO_DATA_BLOCK_COUNT)
+#define MSO_DATA_SIZE (MSO_DATA_COUNT * sizeof(mso_data_t))
 
 
 //! Перечисление возможных бит управления.
@@ -26,7 +26,9 @@ enum _E_Mso_Status {
 typedef struct {
 	bool enabled;
 	reg_id_t id;
+	reg_id_t id_old;
 	reg_t* reg;
+	mso_data_t *ptr;
 } mso_channel_t;
 
 //! Предварительная декларация типа модуля.
@@ -49,7 +51,8 @@ struct _S_Mso {
     // Коллбэки.
     // Внутренние данные.
     mso_channel_t channel[MSO_MAX_CHANNEL_COUNT];
-    int channel_count;
+    int ch_count;
+    int ch_data_count;
     mso_data_t *ptr;
 };
 
@@ -74,6 +77,7 @@ EXTERN METHOD_IDLE_PROTO(M_mso);
         /* Коллбэки */\
         /* Внутренние данные */\
 		{{0}},\
+		0,\
 		0,\
 		0,\
     }

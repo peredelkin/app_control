@@ -67,6 +67,13 @@ ALWAYS_INLINE static reg_flags_t reg_flags(const reg_t* reg)
 #define reg_value(reg, T) *((T*)(reg)->data)
 
 /**
+ * Получает значение регистра как 32 бита.
+ * @param reg Регистр.
+ * @return Значение регистра как 32 бита.
+ */
+EXTERN iql_t reg_valuel(const reg_t* reg);
+
+/**
  * Получает значение данных регистра.
  * @param reg Регистр.
  * @return Значение данных.

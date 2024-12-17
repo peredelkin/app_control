@@ -78,20 +78,24 @@ int cli_top_sys(int argc, char* argv[]) {
 int cli_mso_print(int argc, char* argv[]) {
 	if(argc != 1) return -1;
 
-	if(mso.ptr == NULL) return -1;
+//	for(int i = 0; i < MSO_MAX_CHANNEL_COUNT; i++) {
+//		printf("MSO ch %i ptr: %u\n", i, (unsigned int)(mso.channel[i].ptr));
+//	}
 
-	if(mso.channel_count == 0) return -1;
+	float data = 0.0;
 
-	int cycle_count = MSO_WORDS_COUNT/mso.channel_count;
+	int first;
 
-	float val = 0.0;
-
-	for(int cycle = 0; cycle < cycle_count; cycle++) {
-		for(int channel = 0; channel < mso.channel_count; channel++) {
-			val = mso.ptr[((cycle*2) + channel)]/32768.0;
-			printf("%f", val);
-			if(channel < (mso.channel_count - 1)) {
-				printf(", ");
+	for(int index = 0; index < mso.ch_data_count; index++) {
+		first = 1;
+		for(int ch = 0; ch < MSO_MAX_CHANNEL_COUNT; ch++) {
+			if(mso.channel[ch].ptr != NULL) {
+				if(first == 0){
+					printf(", ");
+				}
+				first = 0;
+				data = mso.channel[ch].ptr[index]/32768.0;
+				printf("%f", data);
 			}
 		}
 		printf("\n");
