@@ -75,7 +75,32 @@ int cli_top_sys(int argc, char* argv[]) {
 	return 0;
 }
 
-#define CLI_COMMANDS_COUNT 10
+int cli_mso_print(int argc, char* argv[]) {
+	if(argc != 1) return -1;
+
+	if(mso.ptr == NULL) return -1;
+
+	if(mso.channel_count == 0) return -1;
+
+	int cycle_count = MSO_WORDS_COUNT/mso.channel_count;
+
+	float val = 0.0;
+
+	for(int cycle = 0; cycle < cycle_count; cycle++) {
+		for(int channel = 0; channel < mso.channel_count; channel++) {
+			val = mso.ptr[((cycle*2) + channel)]/32768.0;
+			printf("%f", val);
+			if(channel < (mso.channel_count - 1)) {
+				printf(", ");
+			}
+		}
+		printf("\n");
+	}
+
+	return 0;
+}
+
+#define CLI_COMMANDS_COUNT 11
 const cli_command_t cli_cmds[CLI_COMMANDS_COUNT] = {
 	{"df", cli_yaffs_freespace},
 	{"rgb_set", cli_rgb_set},
@@ -87,6 +112,7 @@ const cli_command_t cli_cmds[CLI_COMMANDS_COUNT] = {
 	{"fappend", cli_append_nand_file},
 	{"free", cli_free_ram},
 	{"top_sys", cli_top_sys},
+	{"mso_print", cli_mso_print}
 };
 
 int cli_call(M_cli* cli, const cli_command_t* cmds, int cmds_count, int* cmd_res)

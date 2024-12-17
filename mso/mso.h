@@ -8,7 +8,7 @@
 typedef int mso_data_t;
 
 #define MSO_MAX_CHANNEL_COUNT 32
-#define MSO_DATA_BLOCK_COUNT 1024
+#define MSO_DATA_BLOCK_COUNT 128
 #define MSO_WORDS_COUNT (MSO_MAX_CHANNEL_COUNT * MSO_DATA_BLOCK_COUNT)
 #define MSO_DATA_SIZE (MSO_WORDS_COUNT * sizeof(mso_data_t))
 
@@ -49,6 +49,7 @@ struct _S_Mso {
     // Коллбэки.
     // Внутренние данные.
     mso_channel_t channel[MSO_MAX_CHANNEL_COUNT];
+    int channel_count;
     mso_data_t *ptr;
 };
 
@@ -73,6 +74,7 @@ EXTERN METHOD_IDLE_PROTO(M_mso);
         /* Коллбэки */\
         /* Внутренние данные */\
 		{{0}},\
+		0,\
 		0,\
     }
 

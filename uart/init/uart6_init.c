@@ -36,7 +36,7 @@ void usart6_rcc_init() {
 }
 
 void usart6_buf_init() {
-	usart_baud_rate_set(USART6,/*90000000*/SystemCoreClock/2, 9600);
+	usart_baud_rate_set(USART6,/*90000000*/SystemCoreClock/2, 115200);
 	usart_buf_tx_rx_enable(USART6, true, true);
 	usart_buf_enable(USART6, true);
 

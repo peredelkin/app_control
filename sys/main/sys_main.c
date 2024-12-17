@@ -202,7 +202,6 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     // Вычислительные модули.
     can1_CO_process(co, 10000, NULL); //TODO: выделить для этой функции отдельный таймер
 
-    CALC(cli);
     CALC(rgb_led);
     CALC(msdi);
     CALC(digital_in);
@@ -227,5 +226,6 @@ METHOD_IDLE_IMPL(M_sys_main, sys)
 {
     IDLE(conf);
     IDLE(mso);
+    CALC(cli); //TODO: возможно, переобозвать
 }
 
