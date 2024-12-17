@@ -54,10 +54,11 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(do_ncv7608);
     INIT(digital_in);
     INIT(digital_out);
+    INIT(mso);
 
     // Таймеры.
     // Системный таймер.
-    INIT(sys_tim);
+    INIT(sys_tim); //TIM3
     CALLBACK_PROC(sys_tim.on_timeout) = sys_tim_handler;
     CALLBACK_ARG(sys_tim.on_timeout) = (void*)sys;
     if(sys_tim.status & SYS_TIMER_STATUS_ERROR){
@@ -65,7 +66,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     }
 
     // Медленный таймер.
-    INIT(ms_tim);
+    INIT(ms_tim); //TIM4
     CALLBACK_PROC(ms_tim.on_timeout) = ms_tim_handler;
     CALLBACK_ARG(ms_tim.on_timeout) = (void*)sys;
     if(ms_tim.status & MS_TIMER_STATUS_ERROR){
@@ -118,6 +119,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(do_ncv7608);
     DEINIT(digital_in);
     DEINIT(digital_out);
+    DEINIT(mso);
 
     // Вычислительные модули.
 
@@ -198,7 +200,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     //CALC(conf); // conf не требует вычисления.
 
     // Вычислительные модули.
-    can1_CO_process(co, 10000, NULL); //TODO: выделить для этой функции отдельный таймеры
+    can1_CO_process(co, 10000, NULL); //TODO: выделить для этой функции отдельный таймер
 
     CALC(cli);
     CALC(rgb_led);
@@ -211,6 +213,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(ntc_temp);
     CALC(do_relay);
     CALC(do_ncv7608);
+    CALC(mso);
 
     // Последний модуль - запись лога.
 
@@ -223,6 +226,6 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 METHOD_IDLE_IMPL(M_sys_main, sys)
 {
     IDLE(conf);
-    //IDLE(dlog);
+    IDLE(mso);
 }
 

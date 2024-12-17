@@ -81,6 +81,10 @@ void dma_rcc_init() {
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
 }
 
+//TIM2 sys_counter
+//TIM3 sys_tim
+//TIM4 ms_tim
+
 int main(void)
 {
 
@@ -95,7 +99,7 @@ int main(void)
 	gpio_rcc_init();
 	dma_rcc_init();
 
-	system_counter_init();
+	system_counter_init(); //TIM2
 
 	gpio_rgb_led_cfg_setup(); //RGB Led
 
