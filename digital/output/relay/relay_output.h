@@ -1,6 +1,7 @@
 #ifndef RELAY_OUTPUT_H
 #define RELAY_OUTPUT_H
 
+#include <assert.h>
 #include "module/base.h"
 #include "gpio/gpio.h"
 

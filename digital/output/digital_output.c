@@ -41,7 +41,7 @@ METHOD_CALC_IMPL(M_digital_output, output)
 		}
 	}
 
-	do_ncv7608.in = output->raw.bit.ncv;
+	do_ncv7608.in.all = output->raw.bit.ncv;
 
 	do_relay.in.all = output->raw.bit.relay;
 
