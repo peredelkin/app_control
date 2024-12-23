@@ -1,65 +1,58 @@
-/*
- * dac7562.h
- *
- *  Created on: 21 дек. 2022 г.
- *      Author: Ruslan
- */
+#ifndef DAC7562_H
+#define DAC7562_H
 
-#ifndef INC_DAC7562_H_
-#define INC_DAC7562_H_
+#include "module/base.h"
 
-#include <stdint.h>
-#include <assert.h>
-#include "lib/defs/defs.h"
+//! Перечисление возможных бит управления.
+enum _E_Dac7562_Control {
+    DAC7562_CONTROL_NONE = CONTROL_NONE,
+};
 
-#define DAC7562_DATA_SIZE 2
+//! Перечисление возможных бит статуса.
+enum _E_Dac7562_Status {
+    DAC7562_STATUS_NONE = STATUS_NONE,
+};
 
-typedef struct PACKED _DAC7562_DATA_BITS {
-	unsigned db0 : 1;
-	unsigned db1 : 1;
-	unsigned db2 : 1;
-	unsigned db3 : 1;
-	unsigned db4 : 1;
-	unsigned db5 : 1;
-	unsigned db6 : 1;
-	unsigned db7 : 1;
-	unsigned db8 : 1;
-	unsigned db9 : 1;
-	unsigned db10 : 1;
-	unsigned db11 : 1;
-	unsigned db12 : 1;
-	unsigned db13 : 1;
-	unsigned db14 : 1;
-	unsigned db15 : 1;
-} DAC7562_DATA_BITS;
-static_assert(sizeof(DAC7562_DATA_BITS) == DAC7562_DATA_SIZE, "Invalid size of DAC7562_DATA_BITS!");
+//! Предварительная декларация типа модуля.
+typedef struct _S_Dac7562 M_dac7562;
 
-typedef union _DAC7562_DATA_BITS_REG {
-	uint16_t all;
-	struct _DAC7562_DATA_BITS bit;
-} DAC7562_DATA_BITS_REG;
+//! Структура модуля.
+struct _S_Dac7562 {
+    // Базовые поля.
+    control_t control; //!< Слово управления.
+    status_t status; //!< Слово состояния.
+    // Входные данные.
+    // Выходные данные.
+    // Параметры.
+    // Регистры.
+    // Методы.
+    METHOD_INIT(M_dac7562);
+    METHOD_DEINIT(M_dac7562);
+    METHOD_CALC(M_dac7562);
+    // Коллбэки.
+    // Внутренние данные.
+    reg_u8_t m_frame[3];
+};
 
-#define DAC7562_CMD_ADDR_SIZE 1
+EXTERN METHOD_INIT_PROTO(M_dac7562);
+EXTERN METHOD_DEINIT_PROTO(M_dac7562);
+EXTERN METHOD_CALC_PROTO(M_dac7562);
 
-typedef struct PACKED _DAC7562_CMD_ADDR_BITS {
-	unsigned addr : 3;
-	unsigned cmd : 3;
-	unsigned reserved : 2;
-} DAC7562_CMD_ADDR_BITS;
-static_assert(sizeof(DAC7562_CMD_ADDR_BITS) == DAC7562_CMD_ADDR_SIZE, "Invalid size of DAC7562_CMD_ADDR_BITS!");
+#define DAC7562_DEFAULTS {\
+        /* Базовые поля */\
+        0, /* control */\
+        0, /* status */\
+        /* Входные данные */\
+        /* Выходные данные */\
+        /* Параметры */\
+        /* Регистры */\
+        /* Методы */\
+        METHOD_INIT_PTR(M_dac7562),\
+        METHOD_DEINIT_PTR(M_dac7562),\
+        METHOD_CALC_PTR(M_dac7562),\
+        /* Коллбэки */\
+        /* Внутренние данные */\
+		{0},\
+    }
 
-typedef union _DAC7562_CMD_ADDR_BITS_REG {
-	uint8_t all;
-	struct _DAC7562_CMD_ADDR_BITS bit;
-} DAC7562_CMD_ADDR_BITS_REG;
-
-#define DAC7562_FRAME_SIZE (DAC7562_DATA_SIZE + DAC7562_CMD_ADDR_SIZE)
-
-typedef struct PACKED _DAC7562_TX_FRAME_REG {
-	DAC7562_DATA_BITS_REG data;
-	DAC7562_CMD_ADDR_BITS_REG cmd_addr;
-} DAC7562_TX_FRAME_REG;
-
-extern void dac7562_tx_frame_write_data(DAC7562_TX_FRAME_REG* tx_frame, uint16_t data);
-
-#endif /* INC_DAC7562_H_ */
+#endif /* DAC7562_H */

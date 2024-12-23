@@ -9,8 +9,6 @@ METHOD_INIT_IMPL(M_mso, mso)
 {
 	mso->ptr = malloc(MSO_DATA_SIZE);
 
-	printf("MSO ptr: %u\n", (unsigned int)(mso->ptr));
-
 	mso->channel[0].id = REG_ID_TEMP_NTC_0;
 	mso->channel[0].enabled = true;
 
@@ -35,10 +33,10 @@ METHOD_DEINIT_IMPL(M_mso, mso)
 static int ch_data_index;
 
 METHOD_CALC_IMPL(M_mso, mso) {
-	for(int i = 0; i < MSO_MAX_CHANNEL_COUNT; i++) {
-		if(mso->channel[i].enabled && mso->channel[i].reg && mso->channel[i].ptr) {
-			if(mso->channel[i].reg->data) {
-				mso->channel[i].ptr[ch_data_index] = reg_valuel(mso->channel[i].reg);
+	for(int ch = 0; ch < MSO_MAX_CHANNEL_COUNT; ch++) {
+		if(mso->channel[ch].enabled && mso->channel[ch].reg && mso->channel[ch].ptr) {
+			if(mso->channel[ch].reg->data) {
+				mso->channel[ch].ptr[ch_data_index] = reg_valuel(mso->channel[ch].reg);
 			}
 		}
 	}
@@ -63,13 +61,13 @@ METHOD_IDLE_IMPL(M_mso, mso)
 	int ch_data_count = 0;
 	mso_data_t *ptr = mso->ptr;
 
-	for(int i = 0; i < MSO_MAX_CHANNEL_COUNT; i++) {
-		if(mso->channel[i].enabled) {
+	for(int ch = 0; ch < MSO_MAX_CHANNEL_COUNT; ch++) {
+		if(mso->channel[ch].enabled) {
 			ch_count++;
-			if(mso->channel[i].id_old != mso->channel[i].id) {
-				mso->channel[i].id_old = mso->channel[i].id;
-				reg = regs_find(mso->channel[i].id);
-				mso_channel_reg_set(mso, i, reg);
+			if(mso->channel[ch].id_old != mso->channel[ch].id) {
+				mso->channel[ch].id_old = mso->channel[ch].id;
+				reg = regs_find(mso->channel[ch].id);
+				mso_channel_reg_set(mso, ch, reg);
 			}
 		}
 	}
@@ -77,13 +75,13 @@ METHOD_IDLE_IMPL(M_mso, mso)
 	ch_data_count = MSO_DATA_COUNT/ch_count;
 
 	__disable_irq();
-	for(int i = 0; i < MSO_MAX_CHANNEL_COUNT; i++) {
-		if(mso->channel[i].enabled) {
-			mso->channel[i].ptr = ptr;
+	for(int ch = 0; ch < MSO_MAX_CHANNEL_COUNT; ch++) {
+		if(mso->channel[ch].enabled) {
+			mso->channel[ch].ptr = ptr;
 			ptr += ch_data_count;
 		} else {
-			mso->channel[i].reg = NULL;
-			mso->channel[i].ptr = NULL;
+			mso->channel[ch].reg = NULL;
+			mso->channel[ch].ptr = NULL;
 		}
 	}
 

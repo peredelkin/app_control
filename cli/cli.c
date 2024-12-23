@@ -82,6 +82,8 @@ int cli_mso_print(int argc, char* argv[]) {
 //		printf("MSO ch %i ptr: %u\n", i, (unsigned int)(mso.channel[i].ptr));
 //	}
 
+	printf("MSO ptr: %p\n", (void*)(mso.ptr));
+
 	float data = 0.0;
 
 	int first;
@@ -89,11 +91,12 @@ int cli_mso_print(int argc, char* argv[]) {
 	for(int index = 0; index < mso.ch_data_count; index++) {
 		first = 1;
 		for(int ch = 0; ch < MSO_MAX_CHANNEL_COUNT; ch++) {
-			if(mso.channel[ch].ptr != NULL) {
+			if(mso.channel[ch].enabled && mso.channel[ch].reg && mso.channel[ch].ptr) {
 				if(first == 0){
 					printf(", ");
+				} else {
+					first = 0;
 				}
-				first = 0;
 				data = mso.channel[ch].ptr[index]/32768.0;
 				printf("%f", data);
 			}
