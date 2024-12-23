@@ -5,9 +5,9 @@
  *      Author: ruslan
  */
 
+#include "gpio/init/gpio_init.h"
 #include "spi_settings.h"
 
-/*
 const CFG_REG_SPI_TypeDef spi_dac7562_cfg = SPI_CFG(
 		SPI_CPHA_SECOND,
 		SPI_CPOL_IDLE_LOW,
@@ -30,4 +30,3 @@ const CFG_REG_SPI_TypeDef spi_dac7562_cfg = SPI_CFG(
 		1,
 		1,
 		3);
-*/

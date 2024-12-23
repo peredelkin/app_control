@@ -101,14 +101,6 @@ int main(void)
 
 	system_counter_init(); //TIM2
 
-	gpio_rgb_led_cfg_setup(); //RGB Led
-
-	gpio_em_stop_cfg_setup(); //EmStop_App
-
-	gpio_ac_dc_lost_cfg_setup(); //AC DC Lost
-
-	gpio_relay_output_cfg_setup(); //Relay output
-
 	gpio_socket3_cfg_setup(); //OE_App
 	gpio_output_bit_setup(&GPO_OE_App, GPIO_STATE_OFF); //Socket 3 Enable
 
@@ -117,7 +109,10 @@ int main(void)
 	sys_counter_tv_print();
 	printf("UART6 initialized\n");
 
-	//spi2_nvic_init(4);
+	spi2_nvic_init(4);
+	spi2_bus_init(); //dac7562
+	sys_counter_tv_print();
+	printf("SPI2 initialized\n");
 
 	spi4_nvic_init(4);
 	spi4_bus_init(); //tic12400,ncv7608

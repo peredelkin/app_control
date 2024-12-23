@@ -3,7 +3,7 @@
 
 METHOD_INIT_IMPL(M_relay_output, relay)
 {
-
+	gpio_relay_output_cfg_setup(); //Relay output
 }
 
 METHOD_DEINIT_IMPL(M_relay_output, relay)

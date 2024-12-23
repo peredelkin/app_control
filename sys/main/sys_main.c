@@ -47,11 +47,8 @@ METHOD_INIT_IMPL(M_sys_main, sys)
 
     // Вычислительные модули.
     INIT(cli);
-    INIT(rgb_led);
     INIT(msdi);
     INIT(ntc_temp);
-    INIT(do_relay);
-    INIT(do_ncv7608);
     INIT(digital_in);
     INIT(digital_out);
     INIT(mso);
@@ -112,11 +109,8 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(ms_tim);
     DEINIT(conf);
     DEINIT(cli);
-    DEINIT(rgb_led);
     DEINIT(msdi);
     DEINIT(ntc_temp);
-    DEINIT(do_relay);
-    DEINIT(do_ncv7608);
     DEINIT(digital_in);
     DEINIT(digital_out);
     DEINIT(mso);
@@ -202,7 +196,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     // Вычислительные модули.
     can1_CO_process(co, 10000, NULL); //TODO: выделить для этой функции отдельный таймер
 
-    CALC(rgb_led);
+
     CALC(msdi);
     CALC(digital_in);
 
@@ -210,8 +204,6 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
     CALC(digital_out);
     CALC(ntc_temp);
-    CALC(do_relay);
-    CALC(do_ncv7608);
     CALC(mso);
 
     // Последний модуль - запись лога.

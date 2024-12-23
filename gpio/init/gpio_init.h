@@ -66,4 +66,12 @@ extern void gpio_relay_output_cfg_setup();
 extern const gpio_pin_t GPO_RGB_LED_App[];
 extern void gpio_rgb_led_cfg_setup();
 
+extern const gpio_pin_t GPO_nCLR_App;
+extern const gpio_pin_t GPO_OutDis_I_AO_App;
+extern const gpio_pin_t GPI_ErrorAO1_App;
+extern const gpio_pin_t GPI_ErrorAO2_App;
+extern const gpio_pin_t GPO_SYNCAO_App;
+extern const gpio_pin_t GPO_nLDAC_App;
+extern void gpio_dac7562_cfg_setup();
+
 #endif /* INC_GPIO_INIT_H_ */

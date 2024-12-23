@@ -1,3 +1,4 @@
+#include "gpio/init/gpio_init.h"
 #include "dac7562.h"
 
 #define DAC7562_ADDR_MASK	((uint8_t)0b111)
@@ -131,6 +132,7 @@ void dac7562_internal_ref_enable_gain_2(M_dac7562 *dac7562) {
 
 METHOD_INIT_IMPL(M_dac7562, dac7562)
 {
+	gpio_dac7562_cfg_setup();
 }
 
 METHOD_DEINIT_IMPL(M_dac7562, dac7562)

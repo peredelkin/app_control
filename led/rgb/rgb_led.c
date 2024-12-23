@@ -21,7 +21,7 @@ enum _Rgb_Led_Сolor {
 
 METHOD_INIT_IMPL(M_rgb_led, rgb_led)
 {
-
+	gpio_rgb_led_cfg_setup(); //RGB Led
 }
 
 METHOD_DEINIT_IMPL(M_rgb_led, rgb_led)

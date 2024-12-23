@@ -6,7 +6,7 @@
  */
 
 #include "gpio_init.h"
-
+//TODO: вынести panel detect
 #define RS485_PANEL_GPIO_COUNT 2
 
 const gpio_pin_t gpio_rs485_panel_detect = GPIO_PIN(GPIOH, GPIO_PIN_9); /*86, PH9, GPIO_Input, Panel_Detect_App*/
