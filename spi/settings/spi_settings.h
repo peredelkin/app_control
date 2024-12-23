@@ -13,7 +13,7 @@
 
 extern const CFG_REG_SPI_TypeDef spi_tic12400_cfg;
 extern const CFG_REG_SPI_TypeDef spi_ncv7608_cfg;
-//extern const CFG_REG_SPI_TypeDef spi_dac7562_cfg;
+extern const CFG_REG_SPI_TypeDef spi_dac7562_cfg;
 //extern const CFG_REG_SPI_TypeDef spi_spi5_cfg;
 
 #endif /* INC_SPI_SETTINGS_H_ */

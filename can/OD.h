@@ -75,6 +75,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H1A03 &OD->list[32]
 #define OD_ENTRY_H2000 &OD->list[33]
 #define OD_ENTRY_H2001 &OD->list[34]
+#define OD_ENTRY_H2002 &OD->list[35]
 
 
 // Object dictionary entries - shortcuts with names
@@ -113,6 +114,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H1A03_TPDOMappingParameter &OD->list[32]
 #define OD_ENTRY_H2000_temp &OD->list[33]
 #define OD_ENTRY_H2001_voltage &OD->list[34]
+#define OD_ENTRY_H2002_current &OD->list[35]
 
 
 // OD config structure

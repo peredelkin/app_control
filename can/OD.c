@@ -49,7 +49,8 @@ typedef struct {
     OD_obj_record_t o_1A02_TPDOMappingParameter[9];
     OD_obj_record_t o_1A03_TPDOMappingParameter[9];
     OD_obj_record_t o_2000_temp[7];
-    OD_obj_record_t o_2001_voltage[3];
+    OD_obj_record_t o_2001_voltage[2];
+    OD_obj_record_t o_2002_current[3];
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -973,12 +974,26 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .subIndex = 1,
     .attribute = ODA_SDO_R | ODA_MB,
     .dataLength = 4
+    }
+},
+.o_2002_current = {
+    {
+    .dataOrig = &CO_data.current.count,
+    .subIndex = 0,
+    .attribute = 0,
+    .dataLength = 1
     },
     {
-    .dataOrig = &msdi.ref,
+    .dataOrig = &ao_dac7562.in_a,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &ao_dac7562.in_b,
     .subIndex = 2,
-    .attribute = ODA_SDO_R | ODA_MB,
-    .dataLength = 4
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
     }
 }
 };
@@ -1018,7 +1033,8 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1a02, 0x09, ODT_REC, &ODObjs.o_1A02_TPDOMappingParameter, NULL},
     {0x1a03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
     {0x2000, 0x07, ODT_REC, &ODObjs.o_2000_temp, NULL},
-    {0x2001, 0x03, ODT_REC, &ODObjs.o_2001_voltage, NULL},
+    {0x2001, 0x02, ODT_REC, &ODObjs.o_2001_voltage, NULL},
+    {0x2002, 0x03, ODT_REC, &ODObjs.o_2002_current, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

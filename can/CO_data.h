@@ -263,6 +263,10 @@ struct _S_voltage {
     uint8_t count; /* Number of sub-entries */
 } voltage;
 
+struct _S_current {
+    uint8_t count; /* Number of sub-entries */
+} current;
+
 };
 extern struct _S_CO_data CO_data;
 

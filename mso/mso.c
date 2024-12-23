@@ -18,8 +18,8 @@ METHOD_INIT_IMPL(M_mso, mso)
 	mso->channel[2].id = REG_ID_TEMP_NTC_2;
 	mso->channel[2].enabled = true;
 
-	mso->channel[3].id = REG_ID_VOLTAGE_NTC_REF;
-	mso->channel[3].enabled = true;
+	//mso->channel[3].id = REG_ID_VOLTAGE_NTC_REF;
+	//mso->channel[3].enabled = true;
 
 	mso->channel[4].id = REG_ID_VOLTAGE_MSDI_VCC;
 	mso->channel[4].enabled = true;

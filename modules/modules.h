@@ -16,6 +16,7 @@
 #include "digital/output/relay/relay_output.h"
 #include "digital/output/digital_output.h"
 #include "digital/output/ncv7608/ncv7608.h"
+#include "analog/output/dac7562/dac7562.h"
 
 extern M_conf conf;
 extern M_sys_main sys;
@@ -31,5 +32,6 @@ extern M_ncv7608 do_ncv7608;
 extern M_digital_input digital_in;
 extern M_digital_output digital_out;
 extern M_mso mso;
+extern M_dac7562 ao_dac7562;
 
 #endif /* MODULES_H */

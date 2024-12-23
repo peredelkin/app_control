@@ -222,6 +222,9 @@ struct _S_CO_data CO_data = {
     .count = 6 /*  */
 },
 .voltage = {
+    .count = 1 /* Number of sub-entries */
+},
+.current = {
     .count = 2 /* Number of sub-entries */
 }
 };

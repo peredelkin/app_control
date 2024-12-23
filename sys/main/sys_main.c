@@ -51,6 +51,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(ntc_temp);
     INIT(digital_in);
     INIT(digital_out);
+    INIT(ao_dac7562);
     INIT(mso);
 
     // Таймеры.
@@ -113,6 +114,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(ntc_temp);
     DEINIT(digital_in);
     DEINIT(digital_out);
+    DEINIT(ao_dac7562);
     DEINIT(mso);
 
     // Вычислительные модули.
@@ -202,6 +204,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
     digital_out.in = digital_in.out;
 
+    CALC(ao_dac7562);
     CALC(digital_out);
     CALC(ntc_temp);
     CALC(mso);
