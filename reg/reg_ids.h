@@ -188,6 +188,7 @@
 #define REG_ID_TEMP_NTC_4 0x200005 /*  */
 #define REG_ID_TEMP_NTC_5 0x200006 /*  */
 #define REG_ID_VOLTAGE_MSDI_VCC 0x200101 /*  */
+#define REG_ID_VOLTAGE_NTC_VREF 0x200102 /*  */
 #define REG_ID_CURRENT_AO_A 0x200201 /*  */
 #define REG_ID_CURRENT_AO_B 0x200202 /*  */
 

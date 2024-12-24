@@ -146,9 +146,11 @@ int main(void)
 	int res;
 	if(fmc_init() == E_NO_ERROR) {
 		res = yaffs_start_up();
-		printf("yaffs_start_up: %d\n", res);
+		sys_counter_tv_print();
+		printf("YAFFS Start Up: %d\n", res);
 		res = yaffs_mount("/nand");
-		printf("yaffs_mount: %d\n", res);
+		sys_counter_tv_print();
+		printf("YAFFS Mount: %d\n", res);
 	}
 
 	//eth_init(); //отпаяно

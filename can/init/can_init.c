@@ -9,6 +9,7 @@
 
 #include "can_init.h"
 #include "gpio/init/gpio_init.h"
+#include "sys/counter/sys_counter.h"
 
 #include "CANopenNode/CANopen.h"
 #include "OD.h"
@@ -150,11 +151,13 @@ void can1_init(void) {
 	can1_pre_init();
 
 	int res = create_CO(&co);
+	sys_counter_tv_print();
 	if(res == -1 || co == NULL) {
 		printf("Error create CO!\n");
 	} else {
 		printf("CO created\n");
 		CO_ReturnError_t coerr = init_CO(co, &can1);
+		sys_counter_tv_print();
 		if(coerr != CO_ERROR_NO) {
 			printf("Error init CO (%d)!\n", (int)coerr);
 		} else {

@@ -37,9 +37,7 @@ err_t sram_32_test() {
 
 	//чтение
 	for(int i = 0; i < SRAM_WORDS_32; i++) {
-		sram_r_data = SRAM_DATA_32_SECTION[i];
-		if(sram_r_data != 0) return E_IO_ERROR;
-		sram_r_data = 1;
+		if(SRAM_DATA_32_SECTION[i] != 0) return E_IO_ERROR;
 	}
 
 	return E_NO_ERROR;
@@ -71,9 +69,7 @@ err_t sram_16_test() {
 
 	//чтение
 	for(int i = 0; i < SRAM_WORDS_16; i++) {
-		sram_r_data = SRAM_DATA_16_SECTION[i];
-		if(sram_r_data != 0) return E_IO_ERROR;
-		sram_r_data = 1;
+		if(SRAM_DATA_16_SECTION[i] != 0) return E_IO_ERROR;
 	}
 
 	return E_NO_ERROR;
@@ -105,9 +101,7 @@ err_t sram_8_test() {
 
 	//чтение
 	for(int i = 0; i < SRAM_WORDS_8; i++) {
-		sram_r_data = SRAM_DATA_8_SECTION[i];
-		if(sram_r_data != 0) return E_IO_ERROR;
-		sram_r_data = 1;
+		if(SRAM_DATA_8_SECTION[i] != 0) return E_IO_ERROR;
 	}
 
 	return E_NO_ERROR;
