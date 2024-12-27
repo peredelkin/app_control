@@ -130,37 +130,28 @@ CO_ReturnError_t CO_CANbitRate_set(void *CANptr, uint16_t CANbitRate) {
 
 	switch (CANbitRate) {
 	case 10:
-		//10	0.0000	250	18	15	2	88.9	 0x001e00f9
-		btr = 0x001e00f9;
+		btr = 0x001b0117;
 		break;
 	case 20:
-		//20	0.0000	125	18	15	2	88.9	 0x001e007c
-		btr = 0x001e007c;
+		btr = 0x001b008b;
 		break;
 	case 50:
-		//50	0.0000	50	18	15	2	88.9	 0x001e0031
-		btr = 0x001e0031;
-		break;
-	case 125:
-		//125	0.0000	20	18	15	2	88.9	 0x001e0013
-		btr = 0x001e0013;
-		break;
-	case 250:
-		//250	0.0000	10	18	15	2	88.9	 0x001e0009
-		btr = 0x001e0009;
-		break;
-	case 500:
-		//500	0.0000	5	18	15	2	88.9	 0x001e0004
-		btr = 0x001e0004;
-		break;
-	case 1000:
-		//1000	0.0000	3	15	12	2	86.7	 0x001b0002
-		btr = 0x001b0002;
+		btr = 0x001b0037;
 		break;
 	default:
-		//125	0.0000	20	18	15	2	88.9	 0x001e0013
-		btr = 0x001e0013;
 		error = CO_ERROR_ILLEGAL_BAUDRATE;
+		//no break
+	case 125:
+		btr = 0x001c0014;
+		break;
+	case 250:
+		btr = 0x001a000b;
+		break;
+	case 500:
+		btr = 0x001a0005;
+		break;
+	case 1000:
+		btr = 0x001a0002;
 		break;
 	}
 
