@@ -28,7 +28,7 @@ enum _E_Sys_Timer_Status {
 //! Период таймера в тиках.
 #define SYS_TIMER_TICKS_PERIOD_US (10000)
 //! Предделитель таймера.
-#define SYS_TIMER_PRESCALER 90
+#define SYS_TIMER_PRESCALER 84 //90
 
 
 typedef struct _S_sys_timer M_sys_timer;
