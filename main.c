@@ -19,6 +19,8 @@
 #include "yaffs2/yaffsfs.h"
 #include "yaffs2/yaffs_trace.h"
 
+#include "sdio/sdio.h"
+
 #include <malloc.h>
 #include <unistd.h>
 
@@ -138,6 +140,18 @@ int main(void)
 	can1_init();
 	sys_counter_tv_print();
 	printf("CAN1 initialized\n");
+
+	//SDIO!
+	gpio_sdio_cfg_setup();
+	sys_counter_tv_print();
+	if(gpio_input_bit_read(&GPI_SDIO_CD_App) == false) {
+		printf("SD Card Inserted\n");
+		gpio_output_bit_setup(&GPO_SDIO_PWR_App, DISABLE);
+		sys_counter_delay(0, 300000); // 300ms
+		RCC->APB2ENR |= RCC_APB2ENR_SDIOEN;
+	} else {
+		printf("SD Card Not Inserted\n");
+	}
 
 	//FMC, SRAM, NAND, YAFFS2
 	int res;

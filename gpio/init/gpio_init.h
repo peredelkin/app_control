@@ -74,4 +74,8 @@ extern const gpio_pin_t GPO_SYNCAO_App;
 extern const gpio_pin_t GPO_nLDAC_App;
 extern void gpio_dac7562_cfg_setup();
 
+extern const gpio_pin_t GPO_SDIO_PWR_App;
+extern const gpio_pin_t GPI_SDIO_CD_App;
+extern void gpio_sdio_cfg_setup();
+
 #endif /* INC_GPIO_INIT_H_ */
