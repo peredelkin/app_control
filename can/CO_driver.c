@@ -117,6 +117,7 @@ void CO_CANsetNormalMode(CO_CANmodule_t *CANmodule) {
 	CANmodule->CANnormal = true;
 }
 
+//for 168MHz
 CO_ReturnError_t CO_CANbitRate_set(void *CANptr, uint16_t CANbitRate) {
 	if (CANptr == NULL)
 		return CO_ERROR_ILLEGAL_ARGUMENT;
@@ -137,6 +138,9 @@ CO_ReturnError_t CO_CANbitRate_set(void *CANptr, uint16_t CANbitRate) {
 		break;
 	case 50:
 		btr = 0x001b0037;
+		break;
+	case 100:
+		btr = 0x001b001b;
 		break;
 	default:
 		error = CO_ERROR_ILLEGAL_BAUDRATE;
