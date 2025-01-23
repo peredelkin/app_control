@@ -17,6 +17,7 @@
 #include "digital/output/digital_output.h"
 #include "digital/output/ncv7608/ncv7608.h"
 #include "analog/output/dac7562/dac7562.h"
+#include "can/timer/can_timer.h"
 
 extern M_conf conf;
 extern M_sys_main sys;
@@ -33,5 +34,7 @@ extern M_digital_input digital_in;
 extern M_digital_output digital_out;
 extern M_mso mso;
 extern M_dac7562 ao_dac7562;
+
+extern M_can_timer can_tim;
 
 #endif /* MODULES_H */

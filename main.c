@@ -13,6 +13,7 @@
 #include "modbus/init/modbus_init.h"
 #include "eth/init/eth_init.h"
 #include "can/init/can_init.h"
+#include "can/timer/can_timer.h"
 #include "fmc/init/fmc_init.h"
 #include "fmc/sram/fmc_sram.h"
 #include "fmc/nand/fmc_nand.h"
@@ -42,9 +43,8 @@ void Default_Handler(void) {
 }
 */
 
-void SYS_TIM_IRQHANDLER(void)
-{
-	CALC(sys_tim);
+void SYS_CNT_IRQHANDLER(void) {
+	sys_counter_irq_handler();
 }
 
 void MS_TIM_IRQHANDLER(void)
@@ -52,8 +52,13 @@ void MS_TIM_IRQHANDLER(void)
 	CALC(ms_tim);
 }
 
-void SYS_CNT_IRQHANDLER(void) {
-	sys_counter_irq_handler();
+void SYS_TIM_IRQHANDLER(void)
+{
+	CALC(sys_tim);
+}
+
+void CAN_TIM_IRQHANDLER(void) {
+	CALC(can_tim);
 }
 
 //TODO: просмотреть все функции, в которых регистры модифицируются через битовые поля

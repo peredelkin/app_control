@@ -184,8 +184,6 @@ static void FSM_state(M_sys_main* sys)
 
 struct timeval sys_main_execution_time; //TODO: определить куда засунуть
 
-extern CO_t* co; //CANopen
-
 METHOD_CALC_IMPL(M_sys_main, sys)
 {
 	struct timeval tv_start; //время начала
@@ -196,9 +194,6 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     //CALC(conf); // conf не требует вычисления.
 
     // Вычислительные модули.
-    can1_CO_process(co, 10000, NULL); //TODO: выделить для этой функции отдельный таймер
-
-
     CALC(msdi);
     CALC(digital_in);
 

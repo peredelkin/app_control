@@ -16,3 +16,5 @@ M_digital_input digital_in = DIGITAL_INPUT_DEFAULTS;
 M_digital_output digital_out = DIGITAL_OUTPUT_DEFAULTS;
 M_mso mso = MSO_DEFAULTS;
 M_dac7562 ao_dac7562 = DAC7562_DEFAULTS;
+
+M_can_timer can_tim = CAN_TIMER_DEFAULTS;

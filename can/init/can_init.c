@@ -10,6 +10,7 @@
 #include "can_init.h"
 #include "gpio/init/gpio_init.h"
 #include "sys/counter/sys_counter.h"
+#include "modules/modules.h"
 
 #include "CANopenNode/CANopen.h"
 #include "OD.h"
@@ -139,7 +140,14 @@ CO_ReturnError_t init_CO(CO_t *co, can_bus_t *can_bus) {
 	return CO_ERROR_NO;
 }
 
+void can_tim_handler(void* arg) {
+	CO_t* co = (CO_t*)arg;
+	can1_CO_process(co, 1000, NULL);
+}
+
 void can1_init(void) {
+	sys_counter_tv_print();
+
 	can1_reset();
 
 	gpio_can1_cfg_setup();
@@ -151,21 +159,34 @@ void can1_init(void) {
 	can1_pre_init();
 
 	int res = create_CO(&co);
-	sys_counter_tv_print();
+
 	if(res == -1 || co == NULL) {
-		printf("Error create CO!\n");
+		printf("Error create CO\n");
 	} else {
 		printf("CO created\n");
 		CO_ReturnError_t coerr = init_CO(co, &can1);
-		sys_counter_tv_print();
+
 		if(coerr != CO_ERROR_NO) {
-			printf("Error init CO (%d)!\n", (int)coerr);
+			printf("Error init CO (%d)\n", (int)coerr);
 		} else {
-			printf("CO inited (%d)\n", (int)coerr);
-//			uint32_t id = 1;
-//			uint32_t dlc = 8;
-//			uint8_t data[8] = {1,2,3,4,5,6,7,8};
-//			can_tx_mailbox_write_and_request(can1.bus, id, dlc, data);
+			// CO_process таймер.
+			INIT(can_tim); //TIM5
+			CALLBACK_PROC(can_tim.on_timeout) = can_tim_handler;
+			CALLBACK_ARG(can_tim.on_timeout) = (void*)co;
+			if (can_tim.status & MS_TIMER_STATUS_ERROR) {
+				printf("CO timer init error(%lu)\n", can_tim.status);
+			} else {
+				printf("CO timer inited (%lu)\n", can_tim.status);
+				// Запуск CO_process таймера.
+
+				can_tim.control = MS_TIMER_CONTROL_ENABLE;
+				CONTROL(can_tim);
+				if (can_tim.status & MS_TIMER_STATUS_RUN) {
+					printf("CO timer started (%lu)\n", can_tim.status);
+				} else {
+					printf("CO timer start error (%lu)\n", can_tim.status);
+				}
+			}
 		}
 	}
 }
