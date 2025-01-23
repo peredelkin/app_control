@@ -1,0 +1,4 @@
+DMA1_Stream1 UART3_RX
+DMA1_Stream3 UART3_TX
+
+DMA2_Stream4 FMC NAND

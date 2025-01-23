@@ -8,46 +8,19 @@
 #include <stdint.h>
 #include <assert.h>
 
-
-//! Размер команды SD-карты.
-#define SDCARD_CMD_SIZE 6
-//! Размер команды SD-карты без поля контрольной суммы.
-#define SDCARD_CMD_SIZE_CRC 5
-
-// Поля команды.
-//! Стартовый бит команды.
-#define SDCARD_CMD_START_BIT 0x80
-//! Бит передачи команды.
-#define SDCARD_CMD_TRANSMISSION_BIT 0x40
-//! Индекс.
-#define SDCARD_CMD_INDEX_MASK 0x3f
-#define SDCARD_CMD_INDEX_OFFSET 0
-//! Контрольная сумма.
-#define SDCARD_CMD_CRC7_MASK 0xfe
-#define SDCARD_CMD_CRC7_OFFSET 1
-//! Стоповый бит.
-#define SDCARD_CMD_STOP_BIT 0x1
-
 //! Структура команды SD-карты.
 #pragma pack(push, 1)
 typedef struct _SD_Card_Cmd {
-    uint8_t index_sb_tb; //!< Стартовый бит, бит передачи, индекс команды.
+    uint8_t index; //!< Стартовый бит, бит передачи, индекс команды.
     uint32_t argument; //!< Аргумент команды.
-    uint8_t crc_eb; //!< Контрольная сумма, стоповый бит.
 } sdcard_cmd_t;
 #pragma pack(pop)
 
 //! Инициализация команды SD-карты по месту объявления.
-#define SDCARD_CMD_MAKE(index, arg, crc)\
-            {0x40 | ((index) & 0x3f),\
-            ((((arg) >> 24) & 0xff) <<  0)|\
-            ((((arg) >> 16) & 0xff) <<  8)|\
-            ((((arg) >>  8) & 0xff) << 16)|\
-            ((((arg) >>  0) & 0xff) << 24),\
-            (((crc) & 0x7f) << 1) | 0x1}
-
-static_assert(sizeof(sdcard_cmd_t) == SDCARD_CMD_SIZE, "Invalid size of sdcard cmd!");
-
+#define SDCARD_CMD_MAKE(cmd, arg) {\
+	.index = cmd,\
+	.argument = arg\
+}
 
 /*
  * Команды карты памяти.

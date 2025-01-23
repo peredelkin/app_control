@@ -3,10 +3,11 @@
 
 #include "module/base.h"
 #include "stm32f4xx.h"
+#include "interrupts/interrupt_priorities.h"
 
 #define SYS_TIM_TIM TIM3
 #define SYS_TIM_IRQN TIM3_IRQn
-#define SYS_TIM_IRQ_PRIO 7
+#define SYS_TIM_IRQ_PRIO TIM3_IRQ_PRIO
 #define SYS_TIM_IRQHANDLER TIM3_IRQHandler
 
 //! Перечисление возможных бит управления.

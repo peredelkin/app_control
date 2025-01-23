@@ -8,6 +8,8 @@
 #ifndef SDIO_SDIO_H_
 #define SDIO_SDIO_H_
 
+#include <assert.h>
+
 #include "stm32f4xx.h"
 
 #define SDIO_ACCESS_WIDTH 4

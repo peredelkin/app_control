@@ -5,15 +5,15 @@
 #ifndef SDCARD_H_
 #define SDCARD_H_
 
-#include <stm32f10x.h>
-#include "defs/defs.h"
-#include "spi/spi.h"
-#include "gpio/gpio.h"
-#include "errors/errors.h"
-#include "future/future.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+
+#include "defs/defs.h"
+#include "sdio/sdio.h"
+#include "gpio/gpio.h"
+#include "errors/errors.h"
+#include "future/future.h"
 #include "sdcard_cmd.h"
 #include "sdcard_reply.h"
 #include "sdcard_token.h"
@@ -118,10 +118,10 @@ typedef void (*sdcard_timeout_end_t)(void);
 
 //! Структура инициализации SD-карты.
 typedef struct _SD_Card_Init {
-    spi_bus_t* spi; //!< Шина SPI.
+    //spi_bus_t* spi; //!< Шина SPI.
     GPIO_TypeDef* gpio_cs; //!< Порт CS.
     gpio_pin_t pin_cs; //!< Пин CS.
-    spi_transfer_id_t transfer_id; //!< Идентификатор передачи SPI.
+    //spi_transfer_id_t transfer_id; //!< Идентификатор передачи SPI.
     sdcard_set_spi_speed_t set_spi_speed; //!< Функция установки скорости SPI.
     sdcard_timeout_begin_t timeout_begin; //!< Функция начала таймаута.
     sdcard_timeout_end_t timeout_end; //!< Функция завершения таймаута.
@@ -144,16 +144,16 @@ typedef enum _SD_Card_Type {
 
 //! Структура SD-карты.
 typedef struct _SD_Card {
-    spi_bus_t* spi; //!< Шина SPI.
-    GPIO_TypeDef* gpio_cs; //!< Порт CS.
-    gpio_pin_t pin_cs; //!< Пин CS.
-    spi_transfer_id_t transfer_id; //!< Идентификатор передачи SPI.
+    //spi_bus_t* spi; //!< Шина SPI.
+    //GPIO_TypeDef* gpio_cs; //!< Порт CS.
+    //gpio_pin_t pin_cs; //!< Пин CS.
+    //spi_transfer_id_t transfer_id; //!< Идентификатор передачи SPI.
     sdcard_type_t card_type; //!< Тип SD-карты.
-    sdcard_set_spi_speed_t set_spi_speed; //!< Функция установки скорости SPI.
-    sdcard_timeout_begin_t timeout_begin; //!< Функция начала таймаута.
-    sdcard_timeout_end_t timeout_end; //!< Функция завершения таймаута.
+    //sdcard_set_spi_speed_t set_spi_speed; //!< Функция установки скорости SPI.
+    //sdcard_timeout_begin_t timeout_begin; //!< Функция начала таймаута.
+    //sdcard_timeout_end_t timeout_end; //!< Функция завершения таймаута.
     future_t future; //!< Будущее.
-    spi_message_t messages[SDCARD_SPI_MESSAGES_COUNT]; //!< Сообщения SPI.
+    //spi_message_t messages[SDCARD_SPI_MESSAGES_COUNT]; //!< Сообщения SPI.
     bool timeout; //!< Флаг таймаута SD-карты.
     bool crc_enabled; //!< Флаг включения CRC.
     bool initialized; //!< Флаг инициализации SD-карты.

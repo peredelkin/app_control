@@ -5,6 +5,7 @@
 #include "defs/defs.h"
 
 #ifndef _DISKIO_DEFINED
+#include "fatfs/ff.h"
 #include "fatfs/diskio.h"
 #endif
 

@@ -18,6 +18,7 @@
 #include "fmc/nand/fmc_nand.h"
 #include "yaffs2/yaffsfs.h"
 #include "yaffs2/yaffs_trace.h"
+#include "interrupts/interrupt_priorities.h"
 
 #include "sdio/sdio.h"
 
@@ -68,13 +69,7 @@ void SYS_CNT_IRQHANDLER(void) {
 //__attribute__((section(".extsram"), used))
 //volatile int test_extsram;
 
-void system_counter_init(void) {
-	sys_counter_init(SYS_CNT_TIM);
-	sys_counter_irq_enable();
-	NVIC_SetPriority(SYS_CNT_IRQN, SYS_CNT_IRQ_PRIO);
-	NVIC_EnableIRQ(SYS_CNT_IRQN);
-	sys_counter_start();
-}
+
 
 
 void dma_rcc_init() {
@@ -102,23 +97,23 @@ int main(void)
 	gpio_socket3_cfg_setup(); //OE_App
 	gpio_output_bit_setup(&GPO_OE_App, GPIO_STATE_OFF); //Socket 3 Enable
 
-	usart6_nvic_init(5);
+	usart6_nvic_init(UART6_IRQ_PRIO);
 	usart6_init(); //Socket3
 	printf("SystemCoreClock: %luMHz\n", SystemCoreClock/1000000);
 	sys_counter_tv_print();
 	printf("UART6 initialized\n");
 
-	spi2_nvic_init(4);
+	spi2_nvic_init(SPI2_IRQ_PRIO);
 	spi2_bus_init(); //dac7562
 	sys_counter_tv_print();
 	printf("SPI2 initialized\n");
 
-	spi4_nvic_init(4);
+	spi4_nvic_init(SPI4_IRQ_PRIO);
 	spi4_bus_init(); //tic12400,ncv7608
 	sys_counter_tv_print();
 	printf("SPI4 initialized\n");
 
-	usart3_nvic_init(5);
+	usart3_nvic_init(UART3_IRQ_PRIO);
 	usart3_init(); //RS485_1
 	sys_counter_tv_print();
 	printf("UART3 initialized\n");
@@ -127,7 +122,7 @@ int main(void)
 	sys_counter_tv_print();
 	printf("MODBUS1 initialized\n");
 
-	uart7_nvic_init(5);
+	uart7_nvic_init(UART7_IRQ_PRIO);
 	uart7_init(); //RS485_Panel
 	sys_counter_tv_print();
 	printf("UART7 initialized\n");
@@ -136,7 +131,7 @@ int main(void)
 	sys_counter_tv_print();
 	printf("MODBUS Panel initialized\n");
 
-	can1_nvic_init(5);
+	can1_nvic_init(CAN1_IRQ_PRIO);
 	can1_init();
 	sys_counter_tv_print();
 	printf("CAN1 initialized\n");

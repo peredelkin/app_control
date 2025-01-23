@@ -1,6 +1,6 @@
 #include "sdcard.h"
 #include "utils/utils.h"
-#include "crc/crc16_ccitt.h"
+#include "lib/crc/crc16_ccitt.h"
 #include <string.h>
 
 
@@ -129,19 +129,19 @@ ALWAYS_INLINE static uint16_t sdcard_crc16_ccitt(const void* data, size_t size)
 /*
  * Предопределённые команды SD-карты.
  */
-static const sdcard_cmd_t sdcard_cmd0 = SDCARD_CMD_MAKE(SDCARD_CMD_GO_IDLE_STATE, 0, 0x4a);
-static const sdcard_cmd_t sdcard_cmd1 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_OP_COND, 0, 0x7c);
-static const sdcard_cmd_t sdcard_cmd8 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_IF_COND, SDCARD_SEND_IF_COND_CHECK, 0x43);
-static const sdcard_cmd_t sdcard_cmd9 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_CSD, 0, 0x57);
-static const sdcard_cmd_t sdcard_cmd10 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_CID, 0, 0xd);
-static const sdcard_cmd_t sdcard_cmd12 = SDCARD_CMD_MAKE(SDCARD_CMD_STOP_TRANSMISSION, 0, 0x30);
-static const sdcard_cmd_t sdcard_cmd13 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_STATUS, 0, 0x6);
-static const sdcard_cmd_t sdcard_cmd38 = SDCARD_CMD_MAKE(SDCARD_CMD_ERASE, 0, 0x52);
-static const sdcard_cmd_t sdcard_cmd55 = SDCARD_CMD_MAKE(SDCARD_CMD_APP_CMD, 0, 0x32);
-static const sdcard_cmd_t sdcard_cmd58 = SDCARD_CMD_MAKE(SDCARD_CMD_READ_OCR, 0, 0x7e);
-static const sdcard_cmd_t sdcard_acmd22 = SDCARD_CMD_MAKE(SDCARD_ACMD_SEND_NUM_WR_BLOCKS, 0, 0x21);
-static const sdcard_cmd_t sdcard_acmd41_hc = SDCARD_CMD_MAKE(SDCARD_ACMD_SD_SEND_OP_COND, SDCARD_ACMD_SD_SEND_OP_COND_HCS, 0x3b);
-static const sdcard_cmd_t sdcard_acmd41_sc = SDCARD_CMD_MAKE(SDCARD_ACMD_SD_SEND_OP_COND, 0, 0x72);
+static const sdcard_cmd_t sdcard_cmd0 = SDCARD_CMD_MAKE(SDCARD_CMD_GO_IDLE_STATE, 0);
+static const sdcard_cmd_t sdcard_cmd1 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_OP_COND, 0);
+static const sdcard_cmd_t sdcard_cmd8 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_IF_COND, SDCARD_SEND_IF_COND_CHECK);
+static const sdcard_cmd_t sdcard_cmd9 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_CSD, 0);
+static const sdcard_cmd_t sdcard_cmd10 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_CID, 0);
+static const sdcard_cmd_t sdcard_cmd12 = SDCARD_CMD_MAKE(SDCARD_CMD_STOP_TRANSMISSION, 0);
+static const sdcard_cmd_t sdcard_cmd13 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_STATUS, 0);
+static const sdcard_cmd_t sdcard_cmd38 = SDCARD_CMD_MAKE(SDCARD_CMD_ERASE, 0);
+static const sdcard_cmd_t sdcard_cmd55 = SDCARD_CMD_MAKE(SDCARD_CMD_APP_CMD, 0);
+static const sdcard_cmd_t sdcard_cmd58 = SDCARD_CMD_MAKE(SDCARD_CMD_READ_OCR, 0);
+static const sdcard_cmd_t sdcard_acmd22 = SDCARD_CMD_MAKE(SDCARD_ACMD_SEND_NUM_WR_BLOCKS, 0);
+static const sdcard_cmd_t sdcard_acmd41_hc = SDCARD_CMD_MAKE(SDCARD_ACMD_SD_SEND_OP_COND, SDCARD_ACMD_SD_SEND_OP_COND_HCS);
+static const sdcard_cmd_t sdcard_acmd41_sc = SDCARD_CMD_MAKE(SDCARD_ACMD_SD_SEND_OP_COND, 0);
 
 
 
@@ -157,19 +157,19 @@ static const sdcard_cmd_t sdcard_acmd41_sc = SDCARD_CMD_MAKE(SDCARD_ACMD_SD_SEND
  */
 ALWAYS_INLINE static bool sdcard_set_speed(sdcard_t* sdcard, sdcard_spi_speed_t speed)
 {
-    if(sdcard->set_spi_speed) return sdcard->set_spi_speed(speed);
+    //if(sdcard->set_spi_speed) return sdcard->set_spi_speed(speed);
     return true;
 }
 
 ALWAYS_INLINE static void sdcard_timeout_begin(sdcard_t* sdcard, sdcard_timeout_t timeout)
 {
     sdcard->timeout = false;
-    if(sdcard->timeout_begin) sdcard->timeout_begin(timeout);
+    //if(sdcard->timeout_begin) sdcard->timeout_begin(timeout);
 }
 
 ALWAYS_INLINE static void sdcard_timeout_end(sdcard_t* sdcard)
 {
-    if(sdcard->timeout_end) sdcard->timeout_end();
+    //if(sdcard->timeout_end) sdcard->timeout_end();
     sdcard->timeout = false;
 }
 
@@ -181,10 +181,10 @@ ALWAYS_INLINE static void sdcard_timeout_end(sdcard_t* sdcard)
 static bool sdcard_wait_current_op(sdcard_t* sdcard)
 {
     // Если шина занята, да ещё и не нами - возврат ошибки занятости.
-    if(spi_bus_busy(sdcard->spi) && spi_bus_transfer_id(sdcard->spi) != sdcard->transfer_id) return false;
+    //if(spi_bus_busy(sdcard->spi) && spi_bus_transfer_id(sdcard->spi) != sdcard->transfer_id) return false;
 
     future_wait(&sdcard->future);
-    spi_bus_wait(sdcard->spi);
+    //spi_bus_wait(sdcard->spi);
 
     return true;
 }
@@ -216,13 +216,13 @@ static void sdcard_end(sdcard_t* sdcard, err_t err)
  */
 static err_t sdcard_transfer(sdcard_t* sdcard, size_t messages_count)
 {
-    if(!spi_bus_set_transfer_id(sdcard->spi, sdcard->transfer_id)) return E_BUSY;
+    //if(!spi_bus_set_transfer_id(sdcard->spi, sdcard->transfer_id)) return E_BUSY;
 
-    spi_bus_set_tx_default_value(sdcard->spi, SDCARD_DEFAULT_DATA16);
+    //spi_bus_set_tx_default_value(sdcard->spi, SDCARD_DEFAULT_DATA16);
 
     sdcard_begin(sdcard);
 
-    err_t err = spi_bus_transfer(sdcard->spi, sdcard->messages, messages_count);
+    err_t err = 0; //spi_bus_transfer(sdcard->spi, sdcard->messages, messages_count);
 
     if(err != E_NO_ERROR){
         sdcard_end(sdcard, err);
@@ -245,36 +245,37 @@ static err_t sdcard_wait(sdcard_t* sdcard)
 
 err_t sdcard_init(sdcard_t* sdcard, sdcard_init_t* init)
 {
-    if(init->spi == NULL) return E_NULL_POINTER;
+    //if(init->spi == NULL) return E_NULL_POINTER;
     if(init->gpio_cs == NULL) return E_NULL_POINTER;
-    if(init->pin_cs == 0) return E_INVALID_VALUE;
+    //if(init->pin_cs == 0) return E_INVALID_VALUE;
 
     memset(sdcard, 0x0, sizeof(sdcard_t));
 
-    sdcard->spi = init->spi;
-    sdcard->transfer_id = init->transfer_id;
-    sdcard->gpio_cs = init->gpio_cs;
-    sdcard->pin_cs = init->pin_cs;
-    sdcard->set_spi_speed = init->set_spi_speed;
-    sdcard->timeout_begin = init->timeout_begin;
-    sdcard->timeout_end = init->timeout_end;
+    //sdcard->spi = init->spi;
+    //sdcard->transfer_id = init->transfer_id;
+    //sdcard->gpio_cs = init->gpio_cs;
+    //sdcard->pin_cs = init->pin_cs;
+    //sdcard->set_spi_speed = init->set_spi_speed;
+    //sdcard->timeout_begin = init->timeout_begin;
+    //sdcard->timeout_end = init->timeout_end;
 
     future_init(&sdcard->future);
 
-    gpio_set(sdcard->gpio_cs, sdcard->pin_cs);
+    //gpio_set(sdcard->gpio_cs, sdcard->pin_cs);
 
     return E_NO_ERROR;
 }
 
 bool sdcard_spi_callback(sdcard_t* sdcard)
 {
-    if(spi_bus_transfer_id(sdcard->spi) != sdcard->transfer_id) return false;
+    //if(spi_bus_transfer_id(sdcard->spi) != sdcard->transfer_id) return false;
     if(!future_running(&sdcard->future)) return false;
 
     err_t err = E_NO_ERROR;
 
-    spi_errors_t spi_errs = spi_bus_errors(sdcard->spi);
+    //spi_errors_t spi_errs = spi_bus_errors(sdcard->spi);
 
+    /*
     if(spi_errs != SPI_NO_ERROR){
         if(spi_errs & SPI_ERROR_CRC){
             err = E_CRC;
@@ -282,6 +283,7 @@ bool sdcard_spi_callback(sdcard_t* sdcard)
             err = E_IO_ERROR;
         }
     }
+    */
 
     sdcard_end(sdcard, err);
 
@@ -456,23 +458,8 @@ bool sdcard_misalign_block_write(sdcard_t* sdcard)
 
 void sdcard_cmd_setup(sdcard_cmd_t* cmd, uint8_t index, uint32_t argument)
 {
-    cmd->index_sb_tb = (0x40 | (index & 0x3f));
-    cmd->argument = __REV(argument);
-
-    uint8_t crc = crc7_sdcard(cmd, SDCARD_CMD_SIZE_CRC);
-
-    cmd->crc_eb = (crc << 1) | 0x1;
-}
-
-/**
- * Тактирует шину SPI одним байтом
- * данных по-умолчанию.
- * @param sdcard SD-карта.
- * @return Код ошибки.
- */
-ALWAYS_INLINE static err_t sdcard_nop(sdcard_t* sdcard)
-{
-    return spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, NULL);
+    cmd->index = index;
+    cmd->argument = argument;
 }
 
 /**
@@ -488,7 +475,7 @@ static err_t sdcard_recv_data(sdcard_t* sdcard, uint8_t* data)
     err_t err = E_NO_ERROR;
     uint16_t rx_data = SDCARD_DEFAULT_DATA8;
 
-    err = spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
+    err = 0; //spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
     if(err != E_NO_ERROR) return err;
 
     *data = rx_data;
@@ -514,7 +501,7 @@ static err_t sdcard_recv_valid_data(sdcard_t* sdcard, uint8_t* data)
     size_t wait_bytes = 0;
 
     for(;;) {
-        err = spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
+        err = 0; //spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
         if(err != E_NO_ERROR) return err;
 
         if(rx_data != SDCARD_NOREPLY_DATA) break;
@@ -541,7 +528,7 @@ static err_t sdcard_recv_data_token(sdcard_t* sdcard, sdcard_control_token_t* to
 
     sdcard_timeout_begin(sdcard, SDCARD_TIMEOUT_READ);
     for(;;) {
-        err = spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
+        err = 0; //spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
         if(err != E_NO_ERROR){
             sdcard_timeout_end(sdcard);
             return err;
@@ -573,7 +560,7 @@ static err_t sdcard_recv_data_token(sdcard_t* sdcard, sdcard_control_token_t* to
 
     sdcard_timeout_begin(sdcard, SDCARD_TIMEOUT_BUSY);
     for(;;) {
-        err = spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
+        err = 0; //spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &rx_data);
         if(err != E_NO_ERROR){
             sdcard_timeout_end(sdcard);
             return err;
@@ -657,7 +644,7 @@ static err_t sdcard_recv_reply(sdcard_t* sdcard, sdcard_reply_type_t reply_type,
         break;
 
     case SDCARD_REPLY_R3:
-        spi_message_setup(&sdcard->messages[0], SPI_READ, NULL, &reply->r3.data, sizeof(reply->r3.data));
+        //spi_message_setup(&sdcard->messages[0], SPI_READ, NULL, &reply->r3.data, sizeof(reply->r3.data));
 
         err = sdcard_transfer(sdcard, 1);
         if(err != E_NO_ERROR) break;
@@ -670,7 +657,7 @@ static err_t sdcard_recv_reply(sdcard_t* sdcard, sdcard_reply_type_t reply_type,
         break;
 
     case SDCARD_REPLY_R7:
-        spi_message_setup(&sdcard->messages[0], SPI_READ, NULL, &reply->r7.data, sizeof(reply->r7.data));
+        //spi_message_setup(&sdcard->messages[0], SPI_READ, NULL, &reply->r7.data, sizeof(reply->r7.data));
 
         err = sdcard_transfer(sdcard, 1);
         if(err != E_NO_ERROR) break;
@@ -836,7 +823,7 @@ static err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd,
     err = sdcard_wait_busy(sdcard);
     if(err != E_NO_ERROR) return err;
 
-    spi_message_setup(&sdcard->messages[0], SPI_WRITE, cmd, NULL, SDCARD_CMD_SIZE);
+    //spi_message_setup(&sdcard->messages[0], SPI_WRITE, cmd, NULL, SDCARD_CMD_SIZE);
 
     err = sdcard_transfer(sdcard, 1);
     if(err != E_NO_ERROR) return err;
@@ -917,7 +904,7 @@ err_t sdcard_cmd_stop_transmission(sdcard_t* sdcard, sdcard_reply_t* reply)
 {
     err_t err = E_NO_ERROR;
 
-    spi_message_setup(&sdcard->messages[0], SPI_WRITE, &sdcard_cmd12, NULL, SDCARD_CMD_SIZE);
+    //spi_message_setup(&sdcard->messages[0], SPI_WRITE, &sdcard_cmd12, NULL, SDCARD_CMD_SIZE);
 
     err = sdcard_transfer(sdcard, 1);
     if(err != E_NO_ERROR) return err;
@@ -926,7 +913,7 @@ err_t sdcard_cmd_stop_transmission(sdcard_t* sdcard, sdcard_reply_t* reply)
     if(err != E_NO_ERROR) return err;
 
     // Отбросим мусорный байт.
-    err = sdcard_nop(sdcard);
+    err = 0; //sdcard_nop(sdcard);
     if(err != E_NO_ERROR) return err;
 
     err = sdcard_recv_reply(sdcard, SDCARD_REPLY_R1b, reply);
@@ -949,7 +936,7 @@ static err_t sdcard_recv_data_block(sdcard_t* sdcard, void* data, size_t data_si
     // Принимаем заданное число байт данных
     // и два байта контрольной суммы.
 
-    spi_message_setup(&sdcard->messages[0], SPI_READ, NULL, data, data_size);
+    //spi_message_setup(&sdcard->messages[0], SPI_READ, NULL, data, data_size);
 
     err = sdcard_transfer(sdcard, 1);
     if(err != E_NO_ERROR) return err;
@@ -959,9 +946,9 @@ static err_t sdcard_recv_data_block(sdcard_t* sdcard, void* data, size_t data_si
 
     uint16_t crc_hi, crc_lo;
 
-    err = spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &crc_hi);
+    err = 0; //spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &crc_hi);
     if(err != E_NO_ERROR) return err;
-    err = spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &crc_lo);
+    err = 0; //spi_bus_transmit(sdcard->spi, SDCARD_DEFAULT_DATA8, &crc_lo);
     if(err != E_NO_ERROR) return err;
 
     // Если разрешён crc - вычислим контрольную сумму.
@@ -989,7 +976,7 @@ static err_t sdcard_send_data_block(sdcard_t* sdcard, const void* data, size_t d
     // Отправляем заданное число байт данных
     // и два байта контрольной суммы.
 
-    spi_message_setup(&sdcard->messages[0], SPI_WRITE, data, NULL, data_size);
+    //spi_message_setup(&sdcard->messages[0], SPI_WRITE, data, NULL, data_size);
 
     err = sdcard_transfer(sdcard, 1);
     if(err != E_NO_ERROR) return err;
@@ -1008,9 +995,9 @@ static err_t sdcard_send_data_block(sdcard_t* sdcard, const void* data, size_t d
     err = sdcard_wait(sdcard);
     if(err != E_NO_ERROR) return err;
 
-    err = spi_bus_transmit(sdcard->spi, crc_hi, NULL);
+    err = 0; //spi_bus_transmit(sdcard->spi, crc_hi, NULL);
     if(err != E_NO_ERROR) return err;
-    err = spi_bus_transmit(sdcard->spi, crc_lo, NULL);
+    err = 0; //spi_bus_transmit(sdcard->spi, crc_lo, NULL);
     if(err != E_NO_ERROR) return err;
 
     return E_NO_ERROR;
@@ -1192,11 +1179,11 @@ static err_t sdcard_write_data(sdcard_t* sdcard, sdcard_control_token_t token,
     sdcard_control_token_t resp_token;
 
     // Один пустой цикл.
-    err = sdcard_nop(sdcard);
+    err = 0; //sdcard_nop(sdcard);
     if(err != E_NO_ERROR) return err;
 
     // Отправим маркер начала данных.
-    err = spi_bus_transmit(sdcard->spi, token, NULL);
+    err = 0; //spi_bus_transmit(sdcard->spi, token, NULL);
     if(err != E_NO_ERROR) return err;
 
     // Отправим данные.
@@ -1332,15 +1319,15 @@ static err_t sdcard_write_multiple_data_block(sdcard_t* sdcard, uint32_t address
     if(written) *written = tx_count;
 
     // Один пустой цикл.
-    err = sdcard_nop(sdcard);
+    err = 0; //sdcard_nop(sdcard);
     if(err != E_NO_ERROR) return err;
 
     // Отправим маркер начала данных.
-    err = spi_bus_transmit(sdcard->spi, SDCARD_MBW_STOP_TRAN_TOKEN, NULL);
+    err = 0; //spi_bus_transmit(sdcard->spi, SDCARD_MBW_STOP_TRAN_TOKEN, NULL);
     if(err != E_NO_ERROR) return err;
 
     // Один пустой цикл.
-    err = sdcard_nop(sdcard);
+    err = 0; //sdcard_nop(sdcard);
     if(err != E_NO_ERROR) return err;
 
     // Ожидание окончания записи.
@@ -1365,16 +1352,16 @@ err_t sdcard_select(sdcard_t* sdcard)
 
 #if SDCARD_SELECT_BEFORE_BYTES != 0
     for(bytes_count = 0; bytes_count < SDCARD_SELECT_BEFORE_BYTES; bytes_count ++){
-        err = sdcard_nop(sdcard);
+        err = 0; //sdcard_nop(sdcard);
         if(err != E_NO_ERROR) break;
     }
 #endif
 
-    gpio_reset(sdcard->gpio_cs, sdcard->pin_cs);
+    //gpio_reset(sdcard->gpio_cs, sdcard->pin_cs);
 
 #if SDCARD_SELECT_AFTER_BYTES != 0
     for(bytes_count = 0; bytes_count < SDCARD_SELECT_AFTER_BYTES; bytes_count ++){
-        err = sdcard_nop(sdcard);
+        err = 0; //sdcard_nop(sdcard);
         if(err != E_NO_ERROR) break;
     }
 #endif
@@ -1391,16 +1378,16 @@ void sdcard_deselect(sdcard_t* sdcard)
 
 #if SDCARD_DESELECT_BEFORE_BYTES != 0
     for(bytes_count = 0; bytes_count < SDCARD_DESELECT_BEFORE_BYTES; bytes_count ++){
-        err = sdcard_nop(sdcard);
+        err = 0; //sdcard_nop(sdcard);
         if(err != E_NO_ERROR) break;
     }
 #endif
 
-    gpio_set(sdcard->gpio_cs, sdcard->pin_cs);
+    //gpio_set(sdcard->gpio_cs, sdcard->pin_cs);
 
 #if SDCARD_DESELECT_AFTER_BYTES != 0
     for(bytes_count = 0; bytes_count < SDCARD_DESELECT_AFTER_BYTES; bytes_count ++){
-        err = sdcard_nop(sdcard);
+        err = 0; //sdcard_nop(sdcard);
         if(err != E_NO_ERROR) break;
     }
 #endif
@@ -1413,9 +1400,9 @@ void sdcard_deselect(sdcard_t* sdcard)
  */
 static bool sdcard_init_begin_setup_spi(sdcard_t* sdcard)
 {
-    if(!spi_bus_set_enabled(sdcard->spi, false)) return false;
+    //if(!spi_bus_set_enabled(sdcard->spi, false)) return false;
     if(!sdcard_set_speed(sdcard, SDCARD_SPI_SPEED_LOW)) return false;
-    if(!spi_bus_set_enabled(sdcard->spi, true)) return false;
+    //if(!spi_bus_set_enabled(sdcard->spi, true)) return false;
 
     return true;
 }
@@ -1427,9 +1414,9 @@ static bool sdcard_init_begin_setup_spi(sdcard_t* sdcard)
  */
 static bool sdcard_init_end_setup_spi(sdcard_t* sdcard)
 {
-    if(!spi_bus_set_enabled(sdcard->spi, false)) return false;
+    //if(!spi_bus_set_enabled(sdcard->spi, false)) return false;
     if(!sdcard_set_speed(sdcard, SDCARD_SPI_SPEED_HIGH)) return false;
-    if(!spi_bus_set_enabled(sdcard->spi, true)) return false;
+    //if(!spi_bus_set_enabled(sdcard->spi, true)) return false;
 
     return true;
 }
@@ -1716,7 +1703,7 @@ err_t sdcard_init_card(sdcard_t* sdcard)
 
     // Отправим 80 циклов тактирования.
     for(i = 0; i < SDCARD_INIT_DUMMY_BYTES; i ++){
-        err = sdcard_nop(sdcard);
+        err = 0; //sdcard_nop(sdcard);
         if(err != E_NO_ERROR){
             sdcard_init_end_setup_spi(sdcard);
             return err;

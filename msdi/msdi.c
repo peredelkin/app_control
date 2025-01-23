@@ -70,7 +70,7 @@ void msdi_data_reset(M_msdi *msdi) {
 	}
 }
 
-uint8_t tic12400_addr_array[7] = {
+const uint8_t tic12400_addr_array[7] = {
 		TIC12400_INT_STAT,
 		TIC12400_IN_STAT_COMP,
 		TIC12400_ANA_STAT1,

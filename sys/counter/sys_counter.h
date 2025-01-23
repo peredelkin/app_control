@@ -9,10 +9,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <sys/time.h>
+#include "interrupts/interrupt_priorities.h"
 
 #define SYS_CNT_TIM TIM2
 #define SYS_CNT_IRQN TIM2_IRQn
-#define SYS_CNT_IRQ_PRIO 6
+#define SYS_CNT_IRQ_PRIO TIM2_IRQ_PRIO
 #define SYS_CNT_IRQHANDLER TIM2_IRQHandler
 
 // Параметры таймера.
@@ -114,6 +115,11 @@ extern void sys_counter_delay(uint32_t sec, uint32_t usec);
  * Функция вывода времени
  */
 extern void sys_counter_tv_print();
+
+/**
+ * Настраивает и запускает системный счетчик
+ */
+extern void system_counter_init(void);
 
 #endif /* SYSTEM_COUNTER_H */
 

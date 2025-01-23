@@ -157,3 +157,11 @@ void sys_counter_tv_print() {
 	printf("[%u.%06u] ", (unsigned)tv.tv_sec, (unsigned)tv.tv_usec);
 }
 
+void system_counter_init(void) {
+	sys_counter_init(SYS_CNT_TIM);
+	sys_counter_irq_enable();
+	NVIC_SetPriority(SYS_CNT_IRQN, SYS_CNT_IRQ_PRIO);
+	NVIC_EnableIRQ(SYS_CNT_IRQN);
+	sys_counter_start();
+}
+
