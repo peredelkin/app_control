@@ -57,95 +57,27 @@ static modbus_rtu_error_t modbus_panel_on_report_slave_id(modbus_rtu_slave_id_t*
 
 static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* value)
 {
-	switch(address) {
-	case 0: *value = digital_in.select[0];
-		break;
-	case 1: *value = digital_in.select[1];
-		break;
-	case 2: *value = digital_in.select[2];
-		break;
-	case 3: *value = digital_in.select[3];
-		break;
-	case 4: *value = digital_in.select[4];
-		break;
-	case 5: *value = digital_in.select[5];
-		break;
-	case 6: *value = digital_in.select[6];
-		break;
-	case 7: *value = digital_in.select[7];
-		break;
-	case 8: *value = digital_out.select[0];
-		break;
-	case 9: *value = digital_out.select[1];
-		break;
-	case 10: *value = digital_out.select[2];
-		break;
-	case 11: *value = digital_out.select[3];
-		break;
-	case 12: *value = digital_out.select[4];
-		break;
-	case 13: *value = digital_out.select[5];
-		break;
-	case 14: *value = digital_out.select[6];
-		break;
-	case 15: *value = digital_out.select[7];
-		break;
-	case 16: *value = digital_out.select[8];
-		break;
-	case 17: *value = digital_out.select[9];
-		break;
-	case 18: *value = digital_out.select[10];
-		break;
-	case 19: *value = digital_out.select[11];
-		break;
-	default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
-	}
+    switch(address) {
+    case 0: *value = ntc_temp.out_temp[0] >> 15;
+    	break;
+    case 1: *value = ntc_temp.out_temp[1] >> 15;
+    	break;
+    case 2: *value = ntc_temp.out_temp[2] >> 15;
+    	break;
+    case 3: *value = ntc_temp.out_temp[3] >> 15;
+    	break;
+    case 4: *value = ntc_temp.out_temp[4] >> 15;
+    	break;
+    case 5: *value = ntc_temp.out_temp[5] >> 15;
+    	break;
+    default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
+    }
 
     return MODBUS_RTU_ERROR_NONE;
 }
 
 static modbus_rtu_error_t modbus_on_write_hold_reg(uint16_t address, uint16_t value) {
 	switch(address) {
-	case 0: digital_in.select[0] = value;
-		break;
-	case 1: digital_in.select[1] = value;
-		break;
-	case 2: digital_in.select[2] = value;
-		break;
-	case 3: digital_in.select[3] = value;
-		break;
-	case 4: digital_in.select[4] = value;
-		break;
-	case 5: digital_in.select[5] = value;
-		break;
-	case 6: digital_in.select[6] = value;
-		break;
-	case 7: digital_in.select[7] = value;
-		break;
-	case 8: digital_out.select[0] = value;
-		break;
-	case 9: digital_out.select[1] = value;
-		break;
-	case 10: digital_out.select[2] = value;
-		break;
-	case 11: digital_out.select[3] = value;
-		break;
-	case 12: digital_out.select[4] = value;
-		break;
-	case 13: digital_out.select[5] = value;
-		break;
-	case 14: digital_out.select[6] = value;
-		break;
-	case 15: digital_out.select[7] = value;
-		break;
-	case 16: digital_out.select[8] = value;
-		break;
-	case 17: digital_out.select[9] = value;
-		break;
-	case 18: digital_out.select[10] = value;
-		break;
-	case 19: digital_out.select[11] = value;
-		break;
 	default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
 	}
 
