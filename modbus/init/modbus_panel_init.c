@@ -57,18 +57,21 @@ static modbus_rtu_error_t modbus_panel_on_report_slave_id(modbus_rtu_slave_id_t*
 
 static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* value)
 {
-    switch(address) {
-    case 0: *value = ntc_temp.out_temp[0] >> 15;
+	uint16_t addr_h = (address >> 1);
+	uint16_t addr_l = (address & 0x1);
+
+    switch(addr_h) {
+    case 0: *value = ((uint16_t*)&(ntc_temp.out_temp[0]))[addr_l];
     	break;
-    case 1: *value = ntc_temp.out_temp[1] >> 15;
+    case 1: *value = ((uint16_t*)&(ntc_temp.out_temp[1]))[addr_l];
     	break;
-    case 2: *value = ntc_temp.out_temp[2] >> 15;
+    case 2: *value = ((uint16_t*)&(ntc_temp.out_temp[2]))[addr_l];
     	break;
-    case 3: *value = ntc_temp.out_temp[3] >> 15;
+    case 3: *value = ((uint16_t*)&(ntc_temp.out_temp[3]))[addr_l];
     	break;
-    case 4: *value = ntc_temp.out_temp[4] >> 15;
+    case 4: *value = ((uint16_t*)&(ntc_temp.out_temp[4]))[addr_l];
     	break;
-    case 5: *value = ntc_temp.out_temp[5] >> 15;
+    case 5: *value = ((uint16_t*)&(ntc_temp.out_temp[5]))[addr_l];
     	break;
     default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
     }
