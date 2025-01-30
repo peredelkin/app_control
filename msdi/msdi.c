@@ -101,7 +101,7 @@ uint8_t M_msdi_rx_frame_status_handler(M_msdi *msdi) {
 
 		//"Switch State Change" or "Other Interrupt"
 		if(status.bit.ssc || status.bit.oi) {
-			msdi->status |= MSDI_STATUS_USER;
+			msdi->status |= MSDI_STATUS_INT;
 		}
 	}
 
