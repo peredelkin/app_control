@@ -14,18 +14,18 @@
 #include "lib/parity/parity.h"
 #include "spi/spi.h"
 
-typedef enum {
-	TIC_NO_STATE = 0,
-	TIC_RX_PAR_FAIL = 1,
-	TIC_OTHER_INT = 2,
-	TIC_TEMP_WARN = 4,
-	TIC_VS_THRES = 8,
-	TIC_SSC = 16,
-	TIC_TX_PAR_FAIL = 32,
-	TIC_SPI_FAIL = 64,
-	TIC_POR = 128,
-	TIC_ALL_STATE = 255
-} tic_status_t;
+//typedef enum {
+//	TIC_NO_STATE = 0,
+//	TIC_RX_PAR_FAIL = 1,
+//	TIC_OTHER_INT = 2,
+//	TIC_TEMP_WARN = 4,
+//	TIC_VS_THRES = 8,
+//	TIC_SSC = 16,
+//	TIC_TX_PAR_FAIL = 32,
+//	TIC_SPI_FAIL = 64,
+//	TIC_POR = 128,
+//	TIC_ALL_STATE = 255
+//} tic_status_t;
 
 //структура фрейма передачи
 typedef struct PACKED TIC12400_TX_BIT {
@@ -98,8 +98,9 @@ struct _tic12400_t{
 	SPI_BUS_TypeDef *spi_bus;
 	const CFG_REG_SPI_TypeDef *spi_cfg;
 	SPI_BUS_DATA_TypeDef spi_control;
-	TIC12400_TX_FRAME tx_frame;
-	TIC12400_RX_FRAME rx_frame;
+	TIC12400_TX_FRAME frame_tx;
+	TIC12400_RX_FRAME frame_rx;
+	TIC12400_STATUS status;
 	tic12400_sequential_t sequential;
 	volatile bool par_fail;
 	volatile bool done;
@@ -115,11 +116,7 @@ extern void tic12400_bus_free(tic12400_t *tic);
 
 extern void tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count);
 
-//extern void tic12400_reg_read_from_callback(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t count);
-
 extern void tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count);
-
-//extern void tic12400_reg_write_from_callback(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t count);
 
 
 #endif /* INC_TIC12400_H_ */

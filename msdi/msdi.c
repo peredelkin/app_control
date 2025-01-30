@@ -80,9 +80,40 @@ const uint8_t tic12400_addr_array[7] = {
 		TIC12400_ANA_STAT12
 };
 
+uint8_t M_msdi_rx_frame_status_handler(M_msdi *msdi) {
+	TIC12400_STATUS status = {
+		.all = msdi->tic12400.status.all,
+	};
+
+	//error calc rx frame parity
+	if(msdi->tic12400.par_fail) {
+		msdi->status |= MSDI_STATUS_ERROR;
+	} else {
+		//"Power-on Reset" or "VS Threshold Crossing" or "Temperature Event"
+		if(status.bit.por || status.bit.vs_th || status.bit.temp) {
+			msdi->status |= MSDI_STATUS_WARNING;
+		}
+
+		//"SPI Error" or "Parity Fail"
+		if(status.bit.spi_fail || status.bit.par_fail) {
+			msdi->status |= MSDI_STATUS_ERROR;
+		}
+
+		//"Switch State Change" or "Other Interrupt"
+		if(status.bit.ssc || status.bit.oi) {
+			msdi->status |= MSDI_STATUS_USER;
+		}
+	}
+
+	//сброс статусов RX фрейма
+	msdi->tic12400.status.all = 0;
+
+	return status.all;
+}
+
 METHOD_INIT_IMPL(M_msdi, msdi)
 {
-	gpio_tic12400_cfg_setup(); //TODO: вынести
+	gpio_tic12400_cfg_setup();
 	tic12400_init(&(msdi->tic12400), &SPI4_Bus, &spi_tic12400_cfg);
 
 	//Инит SPI
@@ -90,6 +121,13 @@ METHOD_INIT_IMPL(M_msdi, msdi)
 
 	//предварительная инициализация
 	tic12400_reg_write(&(msdi->tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0, TIC12400_SETTINGS_COUNT);
+
+	//статус RX фрейма
+	TIC12400_STATUS status;
+
+	//проверка статусов RX фрейма
+	status.all = M_msdi_rx_frame_status_handler(msdi);
+	//TODO: что-то сделать, в зависимости от полученных статусов
 
 	//Деинициализация SPI
 	spi_bus_close(msdi->tic12400.spi_bus);
@@ -105,9 +143,17 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	//Инит SPI
 	spi_bus_open(msdi->tic12400.spi_bus, msdi->tic12400.spi_cfg);
 
-	//чтение статуса
+	//статус RX фрейма
+	TIC12400_STATUS status;
+
+	//чтение "Interrupt Status Register"
 	tic12400_reg_read(&(msdi->tic12400), ((uint32_t*) &msdi->data), tic12400_addr_array, 0, 1);
-	//обработка статуса
+	//проверка статусов RX фрейма
+	status.all = M_msdi_rx_frame_status_handler(msdi);
+	//TODO: что-то сделать, в зависимости от полученных статусов
+
+
+	//обработка "Interrupt Status Register"
 	if(!(tic12400_wait(&msdi->tic12400))) {
 		msdi->int_stat.all |= msdi->data.INT_STAT.all;
 		if(msdi->int_stat.bit.por) {

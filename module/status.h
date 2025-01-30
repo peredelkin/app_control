@@ -8,13 +8,13 @@ typedef uint32_t status_t;
 
 //! Общие биты статуса.
 enum _E_Base_Status {
-    STATUS_NONE = 0x00, //!< Ничего.
-    STATUS_READY = 0x01, //!< Готовность.
-    STATUS_VALID = 0x02, //!< Правильность выходных данных.
-    STATUS_RUN = 0x04, //!< Работа.
-    STATUS_ERROR = 0x08, //!< Ошибка.
-    STATUS_WARNING = 0x08, //!< Предупреждение.
-    STATUS_USER = 0x10 //!< Статусы модулей.
+    STATUS_NONE = 0, //!< Ничего.
+    STATUS_READY =		(1 << 0),	//!< Готовность.
+    STATUS_VALID =		(1 << 1),	//!< Правильность выходных данных.
+    STATUS_RUN =		(1 << 2),	//!< Работа.
+    STATUS_ERROR =		(1 << 3),	//!< Ошибка.
+    STATUS_WARNING =	(1 << 4),	//!< Предупреждение.
+    STATUS_USER =		(1 << 5)	//!< Статусы модулей.
 };
 
 
