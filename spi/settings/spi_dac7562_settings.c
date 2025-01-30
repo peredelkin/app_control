@@ -5,14 +5,13 @@
  *      Author: ruslan
  */
 
-#include "gpio/init/gpio_init.h"
 #include "spi_settings.h"
 
 const CFG_REG_SPI_TypeDef spi_dac7562_cfg = SPI_CFG(
 		SPI_CPHA_SECOND,
 		SPI_CPOL_IDLE_LOW,
 		SPI_MSTR_MASTER,
-		SPI_BR_FPCLK_32,
+		DAC7562_SPI_BR_FPCLK,
 		SPI_LSBFIRST_MSB_FIRST,
 		SPI_SSI_NSEL,
 		SPI_SSM_ENA,
