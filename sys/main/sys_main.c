@@ -44,7 +44,6 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(conf);
 
     // Вычислительные модули.
-    INIT(rgb_led);
     INIT(cli);
     INIT(msdi);
     INIT(ntc_temp);
@@ -52,6 +51,8 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(digital_out);
     INIT(ao_dac7562);
     INIT(mso);
+    INIT(rgb_led);
+    INIT(panel_led);
 
     // Таймеры.
     // Системный таймер.
@@ -117,6 +118,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(digital_out);
     DEINIT(ao_dac7562);
     DEINIT(rgb_led);
+    DEINIT(panel_led);
 
     // Вычислительные модули.
 
@@ -199,9 +201,10 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
     digital_out.in = digital_in.out;
 
-    CALC(rgb_led);
     CALC(ao_dac7562);
     CALC(digital_out);
+    CALC(rgb_led);
+    CALC(panel_led);
 
     CALC(mso);
 
