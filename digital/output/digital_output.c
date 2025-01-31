@@ -5,16 +5,14 @@
 
 METHOD_INIT_IMPL(M_digital_output, output)
 {
-	INIT(rgb_led);
-    INIT(do_relay);
     INIT(do_ncv7608);
+    INIT(do_relay);
 }
 
 METHOD_DEINIT_IMPL(M_digital_output, output)
 {
-	DEINIT(rgb_led);
-    DEINIT(do_relay);
     DEINIT(do_ncv7608);
+    DEINIT(do_relay);
 }
 
 METHOD_CALC_IMPL(M_digital_output, output)
@@ -41,11 +39,10 @@ METHOD_CALC_IMPL(M_digital_output, output)
 		}
 	}
 
-	do_ncv7608.in.all = output->raw.bit.ncv;
+	do_ncv7608.in = output->raw.bit.ncv;
 
-	do_relay.in.all = output->raw.bit.relay;
+	do_relay.in = output->raw.bit.relay;
 
-	CALC(rgb_led);
-	CALC(do_relay);
 	CALC(do_ncv7608);
+	CALC(do_relay);
 }

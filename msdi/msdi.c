@@ -145,9 +145,9 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	spi_bus_open(msdi->tic12400.spi_bus, msdi->tic12400.spi_cfg);
 
 	//статус RX фрейма
-	TIC12400_STATUS status = {
-			.all = 0
-	};
+//	TIC12400_STATUS status = {
+//			.all = 0
+//	};
 
 	/*
 	 * Error:
@@ -172,7 +172,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		//ожидание конца обмена
 		tic12400_wait(&msdi->tic12400);
 		//проверка статусов RX фрейма
-		status.all = M_msdi_rx_frame_status_handler(msdi);
+		/*status.all = */M_msdi_rx_frame_status_handler(msdi);
 		//Деинициализация SPI и выход, если есть ошибки
 		if(msdi->status & MSDI_STATUS_ERROR) {
 			msdi->int_stat.all = 0;
@@ -197,7 +197,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		//ожидание конца обмена
 		tic12400_wait(&msdi->tic12400);
 		//проверка статусов RX фрейма
-		status.all = M_msdi_rx_frame_status_handler(msdi);
+		/*status.all = */M_msdi_rx_frame_status_handler(msdi);
 		//Деинициализация SPI и выход, если есть ошибки
 		if (msdi->status & (MSDI_STATUS_ERROR)) {
 			spi_bus_close(msdi->tic12400.spi_bus);
@@ -230,7 +230,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	//ожидание конца обмена
 	tic12400_wait(&msdi->tic12400);
 	//проверка статусов RX фрейма
-	status.all = M_msdi_rx_frame_status_handler(msdi);
+	/*status.all = */M_msdi_rx_frame_status_handler(msdi);
 	//TODO: определить условия сброса флага
 	msdi->status &= ~MSDI_STATUS_VALID;
 	//если нет ошибок и предупреждений

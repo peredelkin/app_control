@@ -23,14 +23,16 @@ METHOD_DEINIT_IMPL(M_ncv7608, ncv7608)
 
 METHOD_CALC_IMPL(M_ncv7608, ncv7608)
 {
-	ncv7608_tx.bit.driver_1_ena = ncv7608->in.bit.out_7;
-	ncv7608_tx.bit.driver_2_ena = ncv7608->in.bit.out_8;
-	ncv7608_tx.bit.driver_3_ena = ncv7608->in.bit.out_6;
-	ncv7608_tx.bit.driver_4_ena = ncv7608->in.bit.out_5;
-	ncv7608_tx.bit.driver_5_ena = ncv7608->in.bit.out_2;
-	ncv7608_tx.bit.driver_6_ena = ncv7608->in.bit.out_1;
-	ncv7608_tx.bit.driver_7_ena = ncv7608->in.bit.out_3;
-	ncv7608_tx.bit.driver_8_ena = ncv7608->in.bit.out_4;
+	ncv7608->raw.all = ncv7608->in;
+
+	ncv7608_tx.bit.driver_1_ena = ncv7608->raw.bit.out_7;
+	ncv7608_tx.bit.driver_2_ena = ncv7608->raw.bit.out_8;
+	ncv7608_tx.bit.driver_3_ena = ncv7608->raw.bit.out_6;
+	ncv7608_tx.bit.driver_4_ena = ncv7608->raw.bit.out_5;
+	ncv7608_tx.bit.driver_5_ena = ncv7608->raw.bit.out_2;
+	ncv7608_tx.bit.driver_6_ena = ncv7608->raw.bit.out_1;
+	ncv7608_tx.bit.driver_7_ena = ncv7608->raw.bit.out_3;
+	ncv7608_tx.bit.driver_8_ena = ncv7608->raw.bit.out_4;
 
 	//Инит SPI
 	spi_bus_open(&SPI4_Bus, &spi_ncv7608_cfg);

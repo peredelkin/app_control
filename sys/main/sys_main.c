@@ -43,9 +43,8 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     // Базовый конфиг.
     INIT(conf);
 
-    // Осциллограф.
-
     // Вычислительные модули.
+    INIT(rgb_led);
     INIT(cli);
     INIT(msdi);
     INIT(ntc_temp);
@@ -109,13 +108,15 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(sys_tim);
     DEINIT(ms_tim);
     DEINIT(conf);
+
+    DEINIT(mso);
     DEINIT(cli);
     DEINIT(msdi);
     DEINIT(ntc_temp);
     DEINIT(digital_in);
     DEINIT(digital_out);
     DEINIT(ao_dac7562);
-    DEINIT(mso);
+    DEINIT(rgb_led);
 
     // Вычислительные модули.
 
@@ -191,20 +192,18 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
     FSM_state(sys);
 
-    //CALC(conf); // conf не требует вычисления.
-
     // Вычислительные модули.
     CALC(msdi);
+    CALC(ntc_temp);
     CALC(digital_in);
 
     digital_out.in = digital_in.out;
 
+    CALC(rgb_led);
     CALC(ao_dac7562);
     CALC(digital_out);
-    CALC(ntc_temp);
-    CALC(mso);
 
-    // Последний модуль - запись лога.
+    CALC(mso);
 
     struct timeval tv_stop; //время конца
     sys_counter_value(&tv_stop);
@@ -216,6 +215,6 @@ METHOD_IDLE_IMPL(M_sys_main, sys)
 {
     IDLE(conf);
     IDLE(mso);
-    CALC(cli); //TODO: возможно, переобозвать
+    CALC(cli);
 }
 

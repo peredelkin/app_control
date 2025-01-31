@@ -41,7 +41,7 @@ struct _S_Ncv7608 {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    _ncv7608_reg_t in;
+    reg_u32_t in;
     // Выходные данные.
     // Параметры.
     // Регистры.
@@ -51,6 +51,7 @@ struct _S_Ncv7608 {
     METHOD_CALC(M_ncv7608);
     // Коллбэки.
     // Внутренние данные.
+    _ncv7608_reg_t raw;
 };
 
 EXTERN METHOD_INIT_PROTO(M_ncv7608);
@@ -62,7 +63,7 @@ EXTERN METHOD_CALC_PROTO(M_ncv7608);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
-		{0},\
+		0,\
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\
@@ -72,6 +73,7 @@ EXTERN METHOD_CALC_PROTO(M_ncv7608);
         METHOD_CALC_PTR(M_ncv7608),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		{0},\
     }
 
 #endif /* NCV7608_H */

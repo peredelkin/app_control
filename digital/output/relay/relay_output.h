@@ -38,7 +38,7 @@ struct _S_Relay_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    _relay_output_reg_t in;
+    reg_u32_t in;
     // Выходные данные.
     // Параметры.
     // Регистры.
@@ -48,6 +48,7 @@ struct _S_Relay_Output {
     METHOD_CALC(M_relay_output);
     // Коллбэки.
     // Внутренние данные.
+    _relay_output_reg_t raw;
 };
 
 EXTERN METHOD_INIT_PROTO(M_relay_output);
@@ -59,7 +60,7 @@ EXTERN METHOD_CALC_PROTO(M_relay_output);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
-		{0},\
+		0,\
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\
@@ -69,6 +70,7 @@ EXTERN METHOD_CALC_PROTO(M_relay_output);
         METHOD_CALC_PTR(M_relay_output),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		{0},\
     }
 
 #endif /* RELAY_OUTPUT_H */
