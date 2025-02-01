@@ -389,7 +389,8 @@ typedef struct _SPI_BUS_TypeDef {
 	SPI_BUS_FRAME_TypeDef *frame;
 	size_t frame_count;
 	size_t frame_n;
-	size_t data_n;
+	size_t data_tx_n;
+	size_t data_rx_n;
 	spi_bus_callback callback;
 	void *callback_argument;
 	volatile bool done;
