@@ -97,7 +97,7 @@ typedef void (*tic12400_callback)(tic12400_t*);
 struct _tic12400_t{
 	SPI_BUS_TypeDef *spi_bus;
 	const CFG_REG_SPI_TypeDef *spi_cfg;
-	SPI_BUS_DATA_TypeDef spi_control;
+	SPI_BUS_FRAME_TypeDef spi_control;
 	TIC12400_TX_FRAME frame_tx;
 	TIC12400_RX_FRAME frame_rx;
 	TIC12400_STATUS status;

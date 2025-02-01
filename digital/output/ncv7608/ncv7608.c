@@ -6,7 +6,7 @@
 
 NCV7608_TX_FRAME_REG ncv7608_tx;
 NCV7608_RX_FRAME_REG ncv7608_rx;
-SPI_BUS_DATA_TypeDef ncv7608_spi_control = {
+SPI_BUS_FRAME_TypeDef ncv7608_spi_control = {
 		.tx = (uint8_t*)&ncv7608_tx.all,
 		.rx = (uint8_t*)&ncv7608_rx.all,
 		.count = 2

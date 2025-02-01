@@ -7,9 +7,6 @@
 
 #include "spi.h"
 
-//объявление функций
-void spi_bus_transfer_start(SPI_BUS_TypeDef *bus);
-
 void spi_bus_enable(SPI_BUS_TypeDef *bus) {
 	bus->spi->CR1.bit.SPE = 1;
 }
@@ -38,11 +35,11 @@ void spi_bus_nss_on(SPI_BUS_TypeDef *bus) {
 
 //Ожидает освобождения шины
 void spi_bus_wait(SPI_BUS_TypeDef *bus) {
-	while(bus->done == false);
+	while (bus->done == false);
 }
 
 //Освобождение шины
-void spi_bus_free(SPI_BUS_TypeDef* bus) {
+void spi_bus_free(SPI_BUS_TypeDef *bus) {
 	bus->done = true;
 }
 
@@ -55,18 +52,11 @@ void spi_bus_struct_init(SPI_BUS_TypeDef *bus, SPI_TypeDef *spi) {
 	bus->nss.trailing_delay_usec = 0;
 	bus->nss.next_frame_delay_usec = 0;
 
-	bus->frame.data = NULL;
+	bus->frame = NULL;
 
-	bus->frame.service.tx.stub = 0;
-	bus->frame.service.tx.counter = 0;
-	bus->frame.service.tx.done = true;
-
-	bus->frame.service.rx.stub = 0;
-	bus->frame.service.rx.counter = 0;
-	bus->frame.service.rx.done = true;
-
-	bus->service.counter = 0;
-	bus->service.count = 0;
+	bus->frame_count = 0;
+	bus->frame_n = 0;
+	bus->data_n = 0;
 
 	bus->callback = NULL;
 	bus->callback_argument = NULL;
@@ -74,11 +64,35 @@ void spi_bus_struct_init(SPI_BUS_TypeDef *bus, SPI_TypeDef *spi) {
 	bus->done = true;
 }
 
+//включение прерываний
+void spi_bus_interrupt_enable(SPI_BUS_TypeDef *bus) {
+	//настройки SPI, содержащие биты разрешения прерываний
+	SPI_CR2_REG CR2;
+	//прочесть настройки
+	CR2.all = bus->spi->CR2.all;
+	//разрешить прерывание "буфер передачи пуст"
+	CR2.bit.TXEIE = 1;
+	//записать настройки
+	bus->spi->CR2.all = CR2.all;
+}
+
+//выключение прерываний
+void spi_bus_interrupt_disable(SPI_BUS_TypeDef *bus) {
+	//настройки SPI, содержащие биты разрешения прерываний
+	SPI_CR2_REG CR2;
+	//прочесть настройки
+	CR2.all = bus->spi->CR2.all;
+	//запретить прерывание "буфер передачи пуст"
+	CR2.bit.TXEIE = 0;
+	//записать настройки
+	bus->spi->CR2.all = CR2.all;
+}
+
 void spi_bus_open(SPI_BUS_TypeDef *bus, const CFG_REG_SPI_TypeDef *cfg) {
 	spi_bus_wait(bus);
 
 	//для отладки, если SPI не был выключен
-	while(bus->spi->CR1.all & SPI_CR1_SPE);
+	while (bus->spi->CR1.all & SPI_CR1_SPE);
 
 	//настройка SPI
 	bus->spi->CR1.all = cfg->CR1.all;
@@ -96,8 +110,8 @@ void spi_bus_close(SPI_BUS_TypeDef *bus) {
 	spi_bus_wait(bus);
 
 	//для отладки, если NSS не был поднят
-	if(bus->nss.pin != NULL) {
-		while(gpio_output_bit_read(bus->nss.pin) == GPIO_STATE_OFF);
+	if (bus->nss.pin != NULL) {
+		while (gpio_output_bit_read(bus->nss.pin) == GPIO_STATE_OFF);
 	}
 
 	//Сброс настроек SPI
@@ -112,222 +126,162 @@ void spi_bus_close(SPI_BUS_TypeDef *bus) {
 	bus->nss.next_frame_delay_usec = 0;
 
 	//Сброс указателя на данные приема/передачи
-	bus->frame.data = NULL;
-
-	//Сброс служебных данных передачи
-	bus->frame.service.tx.stub = 0;
-	bus->frame.service.tx.counter = 0;
-
-	//Сброс служебных данных приема
-	bus->frame.service.rx.stub = 0;
-	bus->frame.service.rx.counter = 0;
+	bus->frame = NULL;
 
 	//Сброс служебных данных
-	bus->service.counter = 0;
-	bus->service.count = 0;
+	bus->frame_count = 0;
+	bus->frame_n = 0;
+	bus->data_n = 0;
 
 	//Сброс колбека
 	bus->callback = NULL;
 	bus->callback_argument = NULL;
 }
 
-//Настройка SPI
-void spi_bus_configure(SPI_BUS_TypeDef *bus, const CFG_REG_SPI_TypeDef *cfg) {
-	//выключение SPI перед настройкой
-	bus->spi->CR1.bit.SPE = 0;
-
-	//настройка SPI
-	bus->spi->CR1.all = cfg->CR1.all;
-	bus->spi->CR2.all = cfg->CR2.all;
-
-	//настройка NSS и таймингов
-	bus->nss.pin = cfg->NSS;
-	bus->nss.leading_delay_usec = cfg->LD_USEC;
-	bus->nss.trailing_delay_usec = cfg->TD_USEC;
-	bus->nss.next_frame_delay_usec = cfg->NFD_USEC;
-
-	//включение SPI после настройки
-	bus->spi->CR1.bit.SPE = 1;
-}
-
 //Настройка и запуск приема/передачи
-void spi_bus_transfer(
-		SPI_BUS_TypeDef* bus,
-		SPI_BUS_DATA_TypeDef* frame_control_array_pointer,
-		size_t frame_control_array_amount,
-		spi_byte_order_t frame_byte_order,
-		spi_bus_callback callback,
-		void* callback_argument) {
+void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control_array_pointer, size_t frame_count,
+		spi_byte_order_t frame_byte_order, spi_bus_callback callback, void *callback_argument) {
 
 	spi_bus_wait(bus);
 	bus->done = false;
 
-	bus->frame.data = frame_control_array_pointer;
-	bus->service.count = frame_control_array_amount;
-	bus->service.counter = 0;
-	bus->frame.service.byte_order = frame_byte_order;
+	bus->byte_order = frame_byte_order;
+	bus->frame = frame_control_array_pointer;
+	bus->frame_count = frame_count;
+	bus->frame_n = 0;
+	bus->data_n = 0;
 
 	bus->callback = callback;
 	bus->callback_argument = callback_argument;
 
-	spi_bus_transfer_start(bus);
-}
-
-//Настройка и запуск приема/передачи из колбека
-void spi_bus_transfer_from_callback(
-		SPI_BUS_TypeDef* bus,
-		SPI_BUS_DATA_TypeDef* frame_control_array_pointer,
-		size_t frame_control_array_amount,
-		spi_byte_order_t frame_byte_order,
-		spi_bus_callback callback,
-		void* callback_argument) {
-
-	bus->frame.data = frame_control_array_pointer;
-	bus->service.count = frame_control_array_amount;
-	bus->service.counter = 0;
-	bus->frame.service.byte_order = frame_byte_order;
-
-	bus->callback = callback;
-	bus->callback_argument = callback_argument;
-
-	spi_bus_transfer_start(bus);
-}
-
-//разрешение прерываний
-void spi_bus_interrupt_enable(SPI_BUS_TypeDef *bus) {
-	//настройки SPI, содержащие биты разрешения прерываний
-	SPI_CR2_REG CR2;
-	//прочесть настройки
-	CR2.all = bus->spi->CR2.all;
-	//разрешить прерывание "буфер приема не пуст"
-	CR2.bit.RXNEIE = 1;
-	//разрешить прерывание "буфер передачи пуст"
-	CR2.bit.TXEIE = 1;
-	//записать настройки
-	bus->spi->CR2.all = CR2.all;
-}
-
-//сброс сервисных переменных для приема/передачи
-void spi_bus_transfer_frame_service_reset(SPI_BUS_SERVICE_TypeDef *service) {
-	service->stub = 0;
-	service->counter = 0;
-	service->done = false;
-}
-
-//старт приема/передачи фрейма
-void spi_bus_transfer_start(SPI_BUS_TypeDef *bus) {
-	spi_bus_transfer_frame_service_reset(&(bus->frame.service.tx));
-	spi_bus_transfer_frame_service_reset(&(bus->frame.service.rx));
 	spi_bus_nss_off(bus);
 	spi_bus_interrupt_enable(bus);
 }
 
-//стоп приема/передачи фрейма
-void spi_bus_transfer_stop(SPI_BUS_TypeDef *bus) {
-	spi_bus_nss_on(bus);
+//Настройка и запуск приема/передачи из колбека
+void spi_bus_transfer_from_callback(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
+		size_t frame_count, spi_byte_order_t frame_byte_order, spi_bus_callback callback, void *callback_argument) {
+
+	bus->byte_order = frame_byte_order;
+	bus->frame = frame_control_array_pointer;
+	bus->frame_count = frame_count;
+	bus->frame_n = 0;
+	bus->data_n = 0;
+
+	bus->callback = callback;
+	bus->callback_argument = callback_argument;
+
+	spi_bus_nss_off(bus);
+	spi_bus_interrupt_enable(bus);
 }
 
 //чтение в заглушку
 void spi_bus_read_to_stub(SPI_BUS_TypeDef *bus) {
-	bus->frame.service.rx.stub = (uint8_t) (bus->spi->DR.all);
+	__used static uint8_t data;
+	data = (bus->spi->DR.all);
 }
 
 //чтение во фрейм
-void spi_bus_read_to_frame_data(SPI_BUS_TypeDef *bus, size_t frame_n, size_t data_n) {
-	if(bus->frame.service.byte_order == SPI_BYTE_ORDER_REVERSE) {
-		size_t reverse_data_n = bus->frame.data[frame_n].count - (data_n + 1);
-		bus->frame.data[frame_n].rx[reverse_data_n] = bus->spi->DR.all;
+void spi_bus_read_to_frame_data(SPI_BUS_TypeDef *bus) {
+	if (bus->byte_order == SPI_BYTE_ORDER_REVERSE) {
+		size_t _data_n = bus->frame[bus->frame_n].count - (bus->data_n + 1);
+		bus->frame[bus->frame_n].rx[_data_n] = bus->spi->DR.all;
 	} else {
-		bus->frame.data[frame_n].rx[data_n] = bus->spi->DR.all;
+		bus->frame[bus->frame_n].rx[bus->data_n] = bus->spi->DR.all;
 	}
-}
-
-//чтение завершено
-void spi_bus_read_done(SPI_BUS_TypeDef *bus) {
-	bus->spi->CR2.bit.RXNEIE = 0;
-	bus->frame.service.rx.done = true;
 }
 
 //запись из заглушки
 void spi_bus_write_from_stub(SPI_BUS_TypeDef *bus) {
-	(bus->spi->DR.all) = (uint16_t) (bus->frame.service.tx.stub);
+	__used static uint8_t data = 0;
+	(bus->spi->DR.all) = data;
 }
 
 //запись из фрейма
-void spi_bus_write_from_frame_data(SPI_BUS_TypeDef *bus, size_t frame_n, size_t data_n) {
-	if(bus->frame.service.byte_order == SPI_BYTE_ORDER_REVERSE) {
-		size_t reverse_data_n = bus->frame.data[frame_n].count - (data_n + 1);
-		(bus->spi->DR.all) = bus->frame.data[frame_n].tx[reverse_data_n];
+void spi_bus_write_from_frame_data(SPI_BUS_TypeDef *bus) {
+	if (bus->byte_order == SPI_BYTE_ORDER_REVERSE) {
+		size_t _data_n = bus->frame[bus->frame_n].count - (bus->data_n + 1);
+		(bus->spi->DR.all) = bus->frame[bus->frame_n].tx[_data_n];
 	} else {
-		(bus->spi->DR.all) = bus->frame.data[frame_n].tx[data_n];
+		(bus->spi->DR.all) = bus->frame[bus->frame_n].tx[bus->data_n];
 	}
 }
 
-//запись завершена
-void spi_bus_write_done(SPI_BUS_TypeDef *bus) {
-	bus->spi->CR2.bit.TXEIE = 0;
-	bus->frame.service.tx.done = true;
+void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
+	//поднимем NSS
+	spi_bus_nss_on(bus);
+	//следующий фрейм
+	bus->frame_n++;
+	//если все фреймы переданы
+	if (bus->frame_n >= bus->frame_count) {
+		//выключим прерывание
+		spi_bus_interrupt_disable(bus);
+		//если колбек не задан
+		if (bus->callback == NULL) {
+			//освободим шину
+			spi_bus_free(bus);
+		} else {
+			//вызовем функцию колбека
+			bus->callback(bus->callback_argument);
+		}
+	} else {
+		//сбросим счетчик байт
+		bus->data_n = 0;
+		//опустим NSS
+		spi_bus_nss_off(bus);
+	}
 }
 
-void spi_bus_RXNE_handler(SPI_BUS_TypeDef *bus, SPI_SR_REG SR) {
+bool spi_bus_RXNE_handler(SPI_BUS_TypeDef *bus, SPI_SR_REG SR) {
+	//буфер приема не пуст
 	if (SR.bit.RXNE) {
-		if (bus->spi->CR2.bit.RXNEIE) {
-			if (bus->frame.data[bus->service.counter].rx == NULL) {
-				spi_bus_read_to_stub(bus);
-			} else {
-				spi_bus_read_to_frame_data(bus, bus->service.counter, bus->frame.service.rx.counter);
-			}
-			bus->frame.service.rx.counter++;
-			if (bus->frame.service.rx.counter >= bus->frame.data[bus->service.counter].count) {
-				spi_bus_read_done(bus);
-			}
+		//указатель NULL, куда будут прочитаны данные
+		if (bus->frame[bus->frame_n].rx == NULL) {
+			//прочитаем в заглушку
+			spi_bus_read_to_stub(bus);
+		} else {
+			//прочитаем по указателю
+			spi_bus_read_to_frame_data(bus);
 		}
+		//буфер приема не пуст
+		return true;
+	} else {
+		//буфер приема пуст
+		return false;
 	}
 }
 
 void spi_bus_TXE_handler(SPI_BUS_TypeDef *bus, SPI_SR_REG SR) {
+	//буфер передачи пуст
 	if (SR.bit.TXE) {
-		if (bus->spi->CR2.bit.TXEIE) {
-			if (bus->frame.data[bus->service.counter].tx == NULL) {
+		//буфер приема не пуст
+		if (spi_bus_RXNE_handler(bus, SR)) {
+			//следующий байт
+			bus->data_n++;
+		}
+		//если все байты фрейма переданы и приняты
+		if (bus->data_n >= bus->frame[bus->frame_n].count) {
+			//передача фрейма завершена
+			spi_bus_frame_done_handler(bus);
+		} else {
+			//указатель NULL, откуда будут записаны данные
+			if (bus->frame[bus->frame_n].tx == NULL) {
+				//запишем из заглушки
 				spi_bus_write_from_stub(bus);
 			} else {
-				spi_bus_write_from_frame_data(bus, bus->service.counter, bus->frame.service.tx.counter);
+				//запишем по указателю
+				spi_bus_write_from_frame_data(bus);
 			}
-			bus->frame.service.tx.counter++;
-			if (bus->frame.service.tx.counter >= bus->frame.data[bus->service.counter].count) {
-				spi_bus_write_done(bus);
-			}
-		}
-	}
-}
-
-void spi_bus_done_handler(SPI_BUS_TypeDef *bus) {
-	if ((bus->frame.service.rx.done) && (bus->frame.service.tx.done)) {
-		spi_bus_transfer_stop(bus);
-		bus->service.counter++;
-		if (bus->service.counter >= bus->service.count) {
-			if (bus->callback) {
-				bus->callback(bus->callback_argument);
-			} else {
-				spi_bus_free(bus);
-			}
-		} else {
-			spi_bus_transfer_start(bus);
 		}
 	}
 }
 
 //Обработчик прерывания SPI
 void SPI_BUS_IRQHandler(SPI_BUS_TypeDef *bus) {
-	//статус для обработчиков
 	SPI_SR_REG SR;
-	//чтение статус регистра
+	//сохраним статусы на входе в прерывание
 	SR.all = bus->spi->SR.all;
 
-	spi_bus_RXNE_handler(bus, SR);
-
 	spi_bus_TXE_handler(bus, SR);
-
-	spi_bus_done_handler(bus);
 }
 

@@ -377,28 +377,6 @@ typedef struct {
 	uint8_t *tx;
 	uint8_t *rx;
 	size_t count;
-} SPI_BUS_DATA_TypeDef;
-
-typedef struct {
-	uint8_t stub;
-	size_t counter;
-	volatile bool done;
-} SPI_BUS_SERVICE_TypeDef;
-
-typedef struct {
-	SPI_BUS_SERVICE_TypeDef tx;
-	SPI_BUS_SERVICE_TypeDef rx;
-	spi_byte_order_t byte_order;
-} SPI_BUS_DATA_SERVICE_TypeDef;
-
-typedef struct {
-	size_t counter;
-	size_t count;
-} SPI_BUS_FRAME_SERVICE_TypeDef;
-
-typedef struct {
-	SPI_BUS_DATA_TypeDef *data;
-	SPI_BUS_DATA_SERVICE_TypeDef service;
 } SPI_BUS_FRAME_TypeDef;
 
 typedef void (*spi_bus_callback)(void*);
@@ -407,8 +385,11 @@ typedef void (*spi_bus_callback)(void*);
 typedef struct _SPI_BUS_TypeDef {
 	BITS_SPI_TypeDef *spi;
 	SPI_BUS_NSS_TypeDef nss;
-	SPI_BUS_FRAME_TypeDef frame;
-	SPI_BUS_FRAME_SERVICE_TypeDef service;
+	spi_byte_order_t byte_order;
+	SPI_BUS_FRAME_TypeDef *frame;
+	size_t frame_count;
+	size_t frame_n;
+	size_t data_n;
 	spi_bus_callback callback;
 	void *callback_argument;
 	volatile bool done;
@@ -433,7 +414,7 @@ extern void SPI_BUS_IRQHandler(SPI_BUS_TypeDef *bus);
 //Запуск приема/передачи
 extern void spi_bus_transfer(
 		SPI_BUS_TypeDef *bus,
-		SPI_BUS_DATA_TypeDef *frame_control_array_pointer,
+		SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
 		size_t frame_control_array_amount,
 		spi_byte_order_t frame_byte_order,
 		spi_bus_callback callback,
@@ -442,7 +423,7 @@ extern void spi_bus_transfer(
 //Запуск приема/передачи из колбека
 extern void spi_bus_transfer_from_callback(
 		SPI_BUS_TypeDef *bus,
-		SPI_BUS_DATA_TypeDef *frame_control_array_pointer,
+		SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
 		size_t frame_control_array_amount,
 		spi_byte_order_t frame_byte_order,
 		spi_bus_callback callback,
