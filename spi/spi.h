@@ -384,15 +384,18 @@ typedef void (*spi_bus_callback)(void*);
 //структура SPI BUS
 typedef struct _SPI_BUS_TypeDef {
 	BITS_SPI_TypeDef *spi;
+	SPI_SR_REG SR;
 	SPI_BUS_NSS_TypeDef nss;
 	spi_byte_order_t byte_order;
 	SPI_BUS_FRAME_TypeDef *frame;
-	size_t frame_count;
-	size_t frame_n;
-	size_t data_tx_n;
-	size_t data_rx_n;
+	volatile size_t frame_count;
+	volatile size_t frame_n;
+	volatile size_t data_tx_n;
+	volatile size_t data_rx_n;
 	spi_bus_callback callback;
 	void *callback_argument;
+	volatile bool tx_done;
+	volatile bool rx_done;
 	volatile bool done;
 } SPI_BUS_TypeDef;
 

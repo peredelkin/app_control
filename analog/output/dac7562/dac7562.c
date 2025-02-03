@@ -135,6 +135,8 @@ void dac7562_internal_ref_enable_gain_2(uint8_t* frame) {
 SPI_BUS_FRAME_TypeDef dac7562_ab_spi_control[2];
 SPI_BUS_FRAME_TypeDef dac7562_ctrl_spi_control;
 
+uint8_t dac7562_rx_stub[3];
+
 METHOD_INIT_IMPL(M_dac7562, dac7562)
 {
 	dac7562->spi_bus = &SPI2_Bus;
@@ -147,7 +149,7 @@ METHOD_INIT_IMPL(M_dac7562, dac7562)
 	sys_counter_delay(0, 100);
 
 	dac7562_ctrl_spi_control.count = 3;
-	dac7562_ctrl_spi_control.rx = NULL;
+	dac7562_ctrl_spi_control.rx = dac7562_rx_stub;
 	dac7562_ctrl_spi_control.tx = dac7562->frame_ctrl;
 
 	spi_bus_open(dac7562->spi_bus, &spi_dac7562_cfg);
@@ -163,11 +165,11 @@ METHOD_INIT_IMPL(M_dac7562, dac7562)
 	spi_bus_close(dac7562->spi_bus);
 
 	dac7562_ab_spi_control[0].count = 3;
-	dac7562_ab_spi_control[0].rx = NULL;
+	dac7562_ab_spi_control[0].rx = dac7562_rx_stub;
 	dac7562_ab_spi_control[0].tx = dac7562->frame_a;
 
 	dac7562_ab_spi_control[1].count = 3;
-	dac7562_ab_spi_control[1].rx = NULL;
+	dac7562_ab_spi_control[1].rx = dac7562_rx_stub;
 	dac7562_ab_spi_control[1].tx = dac7562->frame_b;
 }
 
