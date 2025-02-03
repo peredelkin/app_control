@@ -15,7 +15,7 @@
 //SPI_BR_FPCLK_32 - tic12400	SCLK max 4MHz	SPI4 APB2 84MHz
 //SPI_BR_FPCLK_64 - ncv7608		SCLK max 2MHz	SPI4 APB2 84MHz
 
-//TODO: разобраться с зависанием SPI2 на SPI_BR_FPCLK_4 без костыля и SPI_BR_FPCLK_2 с костылём
+//TODO: разобраться с зависанием SPI2 на SPI_BR_FPCLK_2
 #define DAC7562_SPI_BR_FPCLK SPI_BR_FPCLK_4
 #define TIC12400_SPI_BR_FPCLK SPI_BR_FPCLK_32
 #define NCV7608_SPI_BR_FPCLK SPI_BR_FPCLK_64
