@@ -237,48 +237,41 @@ void spi_bus_write_from_frame_data(SPI_BUS_TypeDef *bus) {
 }
 
 void spi_bus_RXNE_handler(SPI_BUS_TypeDef *bus) {
-	//буфер приема не пуст
-	if (bus->SR.bit.RXNE) {
-		//прерывание включено
-		if (bus->spi->CR2.bit.RXNEIE) {
-			//указатель NULL, куда будут прочитаны данные
-			if (bus->frame[bus->frame_n].rx == NULL) {
-				//прочитаем в заглушку
-				spi_bus_read_to_stub(bus);
-			} else {
-				//прочитаем по указателю
-				spi_bus_read_to_frame_data(bus);
-			}
-			//следующий байт
-			bus->data_rx_n++;
-			//все байты получены
-			if (bus->data_rx_n >= bus->frame[bus->frame_n].count) {
-				spi_bus_rx_done(bus);
-			}
+	//буфер приема не пуст, прерывание включено
+	if (bus->SR.bit.RXNE && bus->spi->CR2.bit.RXNEIE) {
+		//указатель NULL, куда будут прочитаны данные
+		if (bus->frame[bus->frame_n].rx == NULL) {
+			//прочитаем в заглушку
+			spi_bus_read_to_stub(bus);
+		} else {
+			//прочитаем по указателю
+			spi_bus_read_to_frame_data(bus);
+		}
+		//следующий байт
+		bus->data_rx_n++;
+		//все байты получены
+		if (bus->data_rx_n >= bus->frame[bus->frame_n].count) {
+			spi_bus_rx_done(bus);
 		}
 	}
 }
 
 void spi_bus_TXE_handler(SPI_BUS_TypeDef *bus) {
-	//буфер передачи пуст
-	//TODO: костыль!
-	if ((bus->SR.bit.TXE == 1) && (bus->SR.bit.RXNE == 0)) {
-		//прерывание включено
-		if (bus->spi->CR2.bit.TXEIE) {
-			//указатель NULL, откуда будут записаны данные
-			if (bus->frame[bus->frame_n].tx == NULL) {
-				//запишем из заглушки
-				spi_bus_write_from_stub(bus);
-			} else {
-				//запишем по указателю
-				spi_bus_write_from_frame_data(bus);
-			}
-			//следующий байт
-			bus->data_tx_n++;
-			//все байты переданы
-			if (bus->data_tx_n >= bus->frame[bus->frame_n].count) {
-				spi_bus_tx_done(bus);
-			}
+	//буфер пуст, прерывание включено TODO: костыль!
+	if (bus->SR.bit.TXE && (bus->SR.bit.RXNE == 0) && bus->spi->CR2.bit.TXEIE) {
+		//указатель NULL, откуда будут записаны данные
+		if (bus->frame[bus->frame_n].tx == NULL) {
+			//запишем из заглушки
+			spi_bus_write_from_stub(bus);
+		} else {
+			//запишем по указателю
+			spi_bus_write_from_frame_data(bus);
+		}
+		//следующий байт
+		bus->data_tx_n++;
+		//все байты переданы
+		if (bus->data_tx_n >= bus->frame[bus->frame_n].count) {
+			spi_bus_tx_done(bus);
 		}
 	}
 }
