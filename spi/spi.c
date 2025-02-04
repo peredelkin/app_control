@@ -63,28 +63,7 @@ void spi_bus_interrupt_enable(SPI_BUS_TypeDef *bus) {
 	bus->spi->CR2.all = CR2.all;
 }
 
-void spi_bus_transfer_start(SPI_BUS_TypeDef *bus) {
-	bus->data_tx_n = 0;
-	bus->data_rx_n = 0;
-
-	bus->tx_done = true; //false
-	bus->rx_done = false;
-
-	spi_bus_nss_off(bus);
-
-	//указатель NULL, откуда будут записаны данные
-	if (bus->frame[bus->frame_n].tx == NULL) {
-		//запишем из заглушки
-		spi_bus_write_from_stub(bus);
-	} else {
-		//запишем по указателю
-		spi_bus_write_from_frame_data(bus, bus->data_rx_n);
-	}
-
-	spi_bus_interrupt_enable(bus);
-}
-
-inline void spi_bus_rx_done(SPI_BUS_TypeDef *bus) {
+void spi_bus_interrupt_distable(SPI_BUS_TypeDef *bus) {
 	//настройки SPI, содержащие биты разрешения прерываний
 	SPI_CR2_REG CR2;
 	//прочесть настройки
@@ -93,21 +72,30 @@ inline void spi_bus_rx_done(SPI_BUS_TypeDef *bus) {
 	CR2.bit.RXNEIE = 0;
 	//записать настройки
 	bus->spi->CR2.all = CR2.all;
-	//выставим флаг
-	bus->rx_done = true;
 }
 
-inline void spi_bus_tx_done(SPI_BUS_TypeDef *bus) {
-	//настройки SPI, содержащие биты разрешения прерываний
-	SPI_CR2_REG CR2;
-	//прочесть настройки
-	CR2.all = bus->spi->CR2.all;
-	//запретить прерывание "буфер передачи пуст"
-	CR2.bit.TXEIE = 0;
-	//записать настройки
-	bus->spi->CR2.all = CR2.all;
-	//выставим флаг
-	bus->tx_done = true;
+void spi_bus_transfer_start(SPI_BUS_TypeDef *bus) {
+	spi_bus_nss_off(bus);
+
+	bus->data_n = 0;
+
+	//указатель NULL, откуда будут записаны данные
+	if (bus->frame[bus->frame_n].tx == NULL) {
+		//запишем из заглушки
+		spi_bus_write_from_stub(bus);
+	} else {
+		//запишем по указателю
+		spi_bus_write_from_frame_data(bus, bus->data_n);
+	}
+
+	spi_bus_interrupt_enable(bus);
+}
+
+void spi_bus_transfer_stop(SPI_BUS_TypeDef *bus) {
+	//выключим прерывание
+	spi_bus_interrupt_distable(bus);
+	//поднимем NSS
+	spi_bus_nss_on(bus);
 }
 
 //Инициализация структуры SPI
@@ -118,6 +106,8 @@ void spi_bus_struct_init(SPI_BUS_TypeDef *bus, SPI_TypeDef *spi) {
 	bus->nss.leading_delay_usec = 0;
 	bus->nss.trailing_delay_usec = 0;
 	bus->nss.next_frame_delay_usec = 0;
+
+	bus->byte_order = SPI_BYTE_ORDER_NORMAL;
 
 	bus->frame = NULL;
 
@@ -166,12 +156,15 @@ void spi_bus_close(SPI_BUS_TypeDef *bus) {
 	bus->nss.trailing_delay_usec = 0;
 	bus->nss.next_frame_delay_usec = 0;
 
+	bus->byte_order = SPI_BYTE_ORDER_NORMAL;
+
 	//Сброс указателя на данные приема/передачи
 	bus->frame = NULL;
 
 	//Сброс служебных данных
 	bus->frame_count = 0;
 	bus->frame_n = 0;
+	bus->data_n = 0;
 
 	//Сброс колбека
 	bus->callback = NULL;
@@ -219,7 +212,7 @@ void spi_bus_read_to_stub(SPI_BUS_TypeDef *bus) {
 }
 
 //чтение во фрейм
-inline void spi_bus_read_to_frame_data(SPI_BUS_TypeDef *bus, size_t data_n) {
+void spi_bus_read_to_frame_data(SPI_BUS_TypeDef *bus, size_t data_n) {
 	if (bus->byte_order == SPI_BYTE_ORDER_REVERSE) {
 		size_t _data_n = bus->frame[bus->frame_n].count - (data_n + 1);
 		bus->frame[bus->frame_n].rx[_data_n] = bus->spi->DR.all;
@@ -235,7 +228,7 @@ void spi_bus_write_from_stub(SPI_BUS_TypeDef *bus) {
 }
 
 //запись из фрейма
-inline void spi_bus_write_from_frame_data(SPI_BUS_TypeDef *bus, size_t data_n) {
+void spi_bus_write_from_frame_data(SPI_BUS_TypeDef *bus, size_t data_n) {
 	if (bus->byte_order == SPI_BYTE_ORDER_REVERSE) {
 		size_t _data_n = bus->frame[bus->frame_n].count - (data_n + 1);
 		(bus->spi->DR.all) = bus->frame[bus->frame_n].tx[_data_n];
@@ -284,29 +277,27 @@ inline void spi_bus_write_from_frame_data(SPI_BUS_TypeDef *bus, size_t data_n) {
 //	}
 //}
 
-inline void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
-	if (bus->tx_done && bus->rx_done) {
-		//поднимем NSS
-		spi_bus_nss_on(bus);
-		//следующий фрейм
-		bus->frame_n++;
-		//если все фреймы переданы
-		if (bus->frame_n >= bus->frame_count) {
-			//если колбек не задан
-			if (bus->callback == NULL) {
-				//освободим шину
-				spi_bus_free(bus);
-			} else {
-				//вызовем функцию колбека
-				bus->callback(bus->callback_argument);
-			}
+void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
+	//выключим прерывание, поднимем NSS
+	spi_bus_transfer_stop(bus);
+	//следующий фрейм
+	bus->frame_n++;
+	//если все фреймы переданы
+	if (bus->frame_n >= bus->frame_count) {
+		//если колбек не задан
+		if (bus->callback == NULL) {
+			//освободим шину
+			spi_bus_free(bus);
 		} else {
-			spi_bus_transfer_start(bus);
+			//вызовем функцию колбека
+			bus->callback(bus->callback_argument);
 		}
+	} else {
+		spi_bus_transfer_start(bus);
 	}
 }
 
-inline void spi_bus_RXNE_TXE_handler(SPI_BUS_TypeDef *bus) {
+void spi_bus_RXNE_handler(SPI_BUS_TypeDef *bus) {
 	if (bus->SR.bit.RXNE /*&& bus->SR.bit.TXE*/ && bus->spi->CR2.bit.RXNEIE) {
 		//чтение
 		if (bus->frame[bus->frame_n].rx == NULL) {
@@ -314,13 +305,13 @@ inline void spi_bus_RXNE_TXE_handler(SPI_BUS_TypeDef *bus) {
 			spi_bus_read_to_stub(bus);
 		} else {
 			//прочитаем по указателю
-			spi_bus_read_to_frame_data(bus, bus->data_rx_n);
+			spi_bus_read_to_frame_data(bus, bus->data_n);
 		}
 		//следующий байт
-		bus->data_rx_n++;
+		bus->data_n++;
 		//все байты получены
-		if (bus->data_rx_n >= bus->frame[bus->frame_n].count) {
-			spi_bus_rx_done(bus);
+		if (bus->data_n >= bus->frame[bus->frame_n].count) {
+			spi_bus_frame_done_handler(bus);
 		} else {
 			//указатель NULL, откуда будут записаны данные
 			if (bus->frame[bus->frame_n].tx == NULL) {
@@ -328,7 +319,7 @@ inline void spi_bus_RXNE_TXE_handler(SPI_BUS_TypeDef *bus) {
 				spi_bus_write_from_stub(bus);
 			} else {
 				//запишем по указателю
-				spi_bus_write_from_frame_data(bus, bus->data_rx_n);
+				spi_bus_write_from_frame_data(bus, bus->data_n);
 			}
 		}
 	}
@@ -337,9 +328,6 @@ inline void spi_bus_RXNE_TXE_handler(SPI_BUS_TypeDef *bus) {
 //Обработчик прерывания SPI
 void SPI_BUS_IRQHandler(SPI_BUS_TypeDef *bus) {
 	bus->SR.all = bus->spi->SR.all;
-//	spi_bus_RXNE_handler(bus);
-//	spi_bus_TXE_handler(bus);
-	spi_bus_RXNE_TXE_handler(bus);
-	spi_bus_frame_done_handler(bus);
+	spi_bus_RXNE_handler(bus);
 }
 
