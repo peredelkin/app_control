@@ -73,7 +73,7 @@ static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* va
     	break;
     case 5: *value = ((uint16_t*)&(ntc_temp.out_temp[5]))[addr_l];
     	break;
-    case 6: *value = panel_led.out;
+    case 6: *value = panel_led.out_data;
     	break;
     default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
     }

@@ -21,27 +21,27 @@ METHOD_CALC_IMPL(M_digital_output, output)
 	uint32_t in_mask;
 	uint32_t invert_res;
 	for(int i = 0; i < DIGITAL_INPUT_COUNT; i++) {
-		raw_mask = (1 << output->select[i]);
+		raw_mask = (1 << output->p_select[i]);
 		in_mask = (1 << i);
-		invert_res = (in_mask & output->invert);
-		if(output->in & raw_mask) {
+		invert_res = (in_mask & output->p_invert);
+		if(output->in_data & raw_mask) {
 			if(invert_res) {
-				output->raw.all &= ~in_mask;
+				output->m_out_data.all &= ~in_mask;
 			} else {
-				output->raw.all |= in_mask;
+				output->m_out_data.all |= in_mask;
 			}
 		} else {
 			if(invert_res) {
-				output->raw.all |= in_mask;
+				output->m_out_data.all |= in_mask;
 			} else {
-				output->raw.all &= ~in_mask;
+				output->m_out_data.all &= ~in_mask;
 			}
 		}
 	}
 
-	do_ncv7608.in = output->raw.bit.ncv;
+	do_ncv7608.in_data = output->m_out_data.bit.ncv;
 
-	do_relay.in = output->raw.bit.relay;
+	do_relay.in_data = output->m_out_data.bit.relay;
 
 	CALC(do_ncv7608);
 	CALC(do_relay);

@@ -23,7 +23,7 @@ struct _S_Rgb_Led {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u16_t in;
+    reg_u16_t in_data;
     // Выходные данные.
     // Параметры.
     // Регистры.

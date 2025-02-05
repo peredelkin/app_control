@@ -22,8 +22,8 @@ struct _S_Dac7562 {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u16_t in_a;
-    reg_u16_t in_b;
+    reg_u16_t in_ch_a;
+    reg_u16_t in_ch_b;
     // Выходные данные.
     // Параметры.
     // Регистры.
@@ -33,10 +33,10 @@ struct _S_Dac7562 {
     METHOD_CALC(M_dac7562);
     // Коллбэки.
     // Внутренние данные.
-    SPI_BUS_TypeDef *spi_bus;
-    reg_u8_t frame_a[3];
-    reg_u8_t frame_b[3];
-    reg_u8_t frame_ctrl[3];
+    SPI_BUS_TypeDef *m_spi_bus;
+    reg_u8_t m_frame_ch_a[3];
+    reg_u8_t m_frame_ch_b[3];
+    reg_u8_t m_frame_ctrl[3];
 };
 
 EXTERN METHOD_INIT_PROTO(M_dac7562);

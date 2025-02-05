@@ -20,7 +20,7 @@ typedef enum _E_Args_Parse_State {
 
 int cli_line_parse(M_cli* args)
 {
-    char* str = (char*)(args->line);
+    char* str = (char*)(args->m_line);
 
     char* put = str;
     char* get = str;
@@ -99,10 +99,10 @@ int cli_line_parse(M_cli* args)
                 break;
             case ARGS_TOKEN:
                 if(has_token == false){
-                    if(args->argc >= CLI_ARGS_MAX) return -1;
+                    if(args->m_argc >= CLI_ARGS_MAX) return -1;
 
-                    args->argv[args->argc] = tkn;
-                    args->argc ++;
+                    args->m_argv[args->m_argc] = tkn;
+                    args->m_argc ++;
 
                     has_token = true;
                 }

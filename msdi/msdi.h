@@ -43,10 +43,10 @@ struct _S_Msdi {
     status_t status; //!< Слово состояния.
     // Входные данные.
     // Выходные данные.
-    reg_u32_t out_di;
-    reg_u16_t out_ai[MSDI_AI_COUNT];
-    reg_iq15_t ref;
-    reg_iq15_t vcc;
+    reg_u32_t out_digital;
+    reg_u16_t out_analog[MSDI_AI_COUNT];
+    reg_iq15_t out_ref;
+    reg_iq15_t out_vcc;
     // Параметры.
     // Регистры.
     // Методы.
@@ -55,10 +55,9 @@ struct _S_Msdi {
     METHOD_CALC(M_msdi);
     // Коллбэки.
     // Внутренние данные.
-    tic12400_t tic12400;
-    TIC12400_INT_STAT_REG int_stat;
-    tic12400_data_t data;
-    volatile bool done;
+    tic12400_t m_tic12400;
+    TIC12400_INT_STAT_REG m_int_stat;
+    tic12400_data_t m_data;
 };
 
 EXTERN METHOD_INIT_PROTO(M_msdi);
@@ -86,7 +85,6 @@ EXTERN METHOD_CALC_PROTO(M_msdi);
 		{0},\
 		{0},\
 		{{0}},\
-		0,\
     }
 
 #endif /* MSDI_H */

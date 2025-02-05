@@ -13,10 +13,10 @@ METHOD_DEINIT_IMPL(M_relay_output, relay)
 
 METHOD_CALC_IMPL(M_relay_output, relay)
 {
-	relay->raw.all = relay->in;
+	relay->m_out_data.all = relay->in_data;
 
-	gpio_output_bit_setup(&GPO_Relay_DO_App[0], relay->raw.bit.relay_1);
-	gpio_output_bit_setup(&GPO_Relay_DO_App[1], relay->raw.bit.relay_2);
-	gpio_output_bit_setup(&GPO_Relay_DO_App[2], relay->raw.bit.relay_3);
-	gpio_output_bit_setup(&GPO_Relay_DO_App[3], relay->raw.bit.relay_4);
+	gpio_output_bit_setup(&GPO_Relay_DO_App[0], relay->m_out_data.bit.relay_1);
+	gpio_output_bit_setup(&GPO_Relay_DO_App[1], relay->m_out_data.bit.relay_2);
+	gpio_output_bit_setup(&GPO_Relay_DO_App[2], relay->m_out_data.bit.relay_3);
+	gpio_output_bit_setup(&GPO_Relay_DO_App[3], relay->m_out_data.bit.relay_4);
 }

@@ -199,7 +199,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(ntc_temp);
     CALC(digital_in);
 
-    digital_out.in = digital_in.out;
+    digital_out.in_data = digital_in.out_data;
 
     CALC(ao_dac7562);
     CALC(digital_out);

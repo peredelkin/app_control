@@ -43,6 +43,7 @@ struct _S_Mso {
     // Выходные данные.
     // Параметры.
     // Регистры.
+    mso_channel_t r_channel[MSO_MAX_CHANNEL_COUNT];
     // Методы.
     METHOD_INIT(M_mso);
     METHOD_DEINIT(M_mso);
@@ -50,10 +51,9 @@ struct _S_Mso {
     METHOD_IDLE(M_mso);
     // Коллбэки.
     // Внутренние данные.
-    mso_channel_t channel[MSO_MAX_CHANNEL_COUNT];
-    int ch_count;
-    int ch_data_count;
-    mso_data_t *ptr;
+    int m_ch_count;
+    int m_ch_data_count;
+    mso_data_t *m_ptr;
 };
 
 EXTERN METHOD_INIT_PROTO(M_mso);
@@ -69,6 +69,7 @@ EXTERN METHOD_IDLE_PROTO(M_mso);
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\
+		{{0}},\
         /* Методы */\
         METHOD_INIT_PTR(M_mso),\
         METHOD_DEINIT_PTR(M_mso),\
@@ -76,7 +77,6 @@ EXTERN METHOD_IDLE_PROTO(M_mso);
 		METHOD_IDLE_PTR(M_mso),\
         /* Коллбэки */\
         /* Внутренние данные */\
-		{{0}},\
 		0,\
 		0,\
 		0,\

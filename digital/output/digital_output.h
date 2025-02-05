@@ -39,11 +39,11 @@ struct _S_Digital_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u32_t in;
+    reg_u32_t in_data;
     // Выходные данные.
     // Параметры.
-    reg_u32_t invert;
-    reg_u8_t select[DIGITAL_OUTPUT_COUNT];
+    reg_u32_t p_invert;
+    reg_u8_t p_select[DIGITAL_OUTPUT_COUNT];
     // Регистры.
     // Методы.
     METHOD_INIT(M_digital_output);
@@ -51,7 +51,7 @@ struct _S_Digital_Output {
     METHOD_CALC(M_digital_output);
     // Коллбэки.
     // Внутренние данные.
-    _digital_output_reg_t raw;
+    _digital_output_reg_t m_out_data;
 };
 
 EXTERN METHOD_INIT_PROTO(M_digital_output);

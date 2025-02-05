@@ -30,7 +30,7 @@ METHOD_DEINIT_IMPL(M_rgb_led, rgb_led)
 
 METHOD_CALC_IMPL(M_rgb_led, rgb_led)
 {
-	switch(rgb_led->in) {
+	switch(rgb_led->in_data) {
 	case RGB_LED_COLOR_BLACK: rgb_led_set(0,0,0); //0R 0G 0B
 		break;
 	case RGB_LED_COLOR_VIOLET: rgb_led_set(1,0,1); //1R 0G 1B

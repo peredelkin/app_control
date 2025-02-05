@@ -42,16 +42,16 @@ struct _S_Cli {
     // Выходные данные.
     // Параметры.
     // Регистры.
-    int read_point;
-    uint8_t line[CLI_LINE_ARRAY];
-    int argc;
-    char* argv[CLI_ARGS_ARRAY];
     // Методы.
     METHOD_INIT(M_cli);
     METHOD_DEINIT(M_cli);
     METHOD_CALC(M_cli);
     // Коллбэки.
     // Внутренние данные.
+    int m_read_point;
+    uint8_t m_line[CLI_LINE_ARRAY];
+    int m_argc;
+    char* m_argv[CLI_ARGS_ARRAY];
 };
 
 EXTERN METHOD_INIT_PROTO(M_cli);
@@ -66,16 +66,16 @@ EXTERN METHOD_CALC_PROTO(M_cli);
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\
-		0,/* read_point */\
-		{0},/* data[] */\
-		0,/* argc */\
-		{0},/* argv */\
         /* Методы */\
         METHOD_INIT_PTR(M_cli),\
         METHOD_DEINIT_PTR(M_cli),\
         METHOD_CALC_PTR(M_cli),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		0,/* read_point */\
+		{0},/* data[] */\
+		0,/* argc */\
+		{0},/* argv */\
     }
 
 #endif /* CLI_H */

@@ -139,7 +139,7 @@ uint8_t dac7562_rx_stub[3];
 
 METHOD_INIT_IMPL(M_dac7562, dac7562)
 {
-	dac7562->spi_bus = &SPI2_Bus;
+	dac7562->m_spi_bus = &SPI2_Bus;
 
 	gpio_dac7562_cfg_setup();
 
@@ -150,27 +150,27 @@ METHOD_INIT_IMPL(M_dac7562, dac7562)
 
 	dac7562_ctrl_spi_control.count = 3;
 	dac7562_ctrl_spi_control.rx = dac7562_rx_stub;
-	dac7562_ctrl_spi_control.tx = dac7562->frame_ctrl;
+	dac7562_ctrl_spi_control.tx = dac7562->m_frame_ctrl;
 
-	spi_bus_open(dac7562->spi_bus, &spi_dac7562_cfg);
+	spi_bus_open(dac7562->m_spi_bus, &spi_dac7562_cfg);
 
-	dac7562_internal_ref_enable_gain_2(dac7562->frame_ctrl);
-	spi_bus_transfer(dac7562->spi_bus, &dac7562_ctrl_spi_control, 1, SPI_BYTE_ORDER_REVERSE, NULL, NULL);
-	spi_bus_wait(dac7562->spi_bus);
+	dac7562_internal_ref_enable_gain_2(dac7562->m_frame_ctrl);
+	spi_bus_transfer(dac7562->m_spi_bus, &dac7562_ctrl_spi_control, 1, SPI_BYTE_ORDER_REVERSE, NULL, NULL);
+	spi_bus_wait(dac7562->m_spi_bus);
 
-	dac7562_gain_b1_a1(dac7562->frame_ctrl);
-	spi_bus_transfer(dac7562->spi_bus, &dac7562_ctrl_spi_control, 1, SPI_BYTE_ORDER_REVERSE, NULL, NULL);
-	spi_bus_wait(dac7562->spi_bus);
+	dac7562_gain_b1_a1(dac7562->m_frame_ctrl);
+	spi_bus_transfer(dac7562->m_spi_bus, &dac7562_ctrl_spi_control, 1, SPI_BYTE_ORDER_REVERSE, NULL, NULL);
+	spi_bus_wait(dac7562->m_spi_bus);
 
-	spi_bus_close(dac7562->spi_bus);
+	spi_bus_close(dac7562->m_spi_bus);
 
 	dac7562_ab_spi_control[0].count = 3;
 	dac7562_ab_spi_control[0].rx = dac7562_rx_stub;
-	dac7562_ab_spi_control[0].tx = dac7562->frame_a;
+	dac7562_ab_spi_control[0].tx = dac7562->m_frame_ch_a;
 
 	dac7562_ab_spi_control[1].count = 3;
 	dac7562_ab_spi_control[1].rx = dac7562_rx_stub;
-	dac7562_ab_spi_control[1].tx = dac7562->frame_b;
+	dac7562_ab_spi_control[1].tx = dac7562->m_frame_ch_b;
 }
 
 METHOD_DEINIT_IMPL(M_dac7562, dac7562)
@@ -179,11 +179,11 @@ METHOD_DEINIT_IMPL(M_dac7562, dac7562)
 
 METHOD_CALC_IMPL(M_dac7562, dac7562)
 {
-	dac7562_write_input_a_update_a(dac7562->frame_a, dac7562->in_a);
-	dac7562_write_input_b_update_b(dac7562->frame_b, dac7562->in_b);
+	dac7562_write_input_a_update_a(dac7562->m_frame_ch_a, dac7562->in_ch_a);
+	dac7562_write_input_b_update_b(dac7562->m_frame_ch_b, dac7562->in_ch_b);
 
-	spi_bus_open(dac7562->spi_bus, &spi_dac7562_cfg);
-	spi_bus_transfer(dac7562->spi_bus, dac7562_ab_spi_control, 2, SPI_BYTE_ORDER_REVERSE, NULL, NULL);
-	spi_bus_close(dac7562->spi_bus);
+	spi_bus_open(dac7562->m_spi_bus, &spi_dac7562_cfg);
+	spi_bus_transfer(dac7562->m_spi_bus, dac7562_ab_spi_control, 2, SPI_BYTE_ORDER_REVERSE, NULL, NULL);
+	spi_bus_close(dac7562->m_spi_bus);
 }
 

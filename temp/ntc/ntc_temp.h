@@ -34,8 +34,8 @@ struct _S_Ntc_Temp {
     METHOD_CALC(M_ntc_temp);
     // Коллбэки.
     // Внутренние данные.
-    reg_u16_t *ai;
-    reg_u16_t index;
+    reg_u16_t *m_in_array;
+    reg_u16_t m_in_array_index;
 };
 
 EXTERN METHOD_INIT_PROTO(M_ntc_temp);

@@ -42,7 +42,7 @@ struct _S_Panel_Led {
     status_t status; //!< Слово состояния.
     // Входные данные.
     // Выходные данные.
-    reg_u16_t out;
+    reg_u16_t out_data;
     // Параметры.
     // Регистры.
     // Методы.
@@ -51,7 +51,7 @@ struct _S_Panel_Led {
     METHOD_CALC(M_panel_led);
     // Коллбэки.
     // Внутренние данные.
-    _panel_led_reg_t raw;
+    _panel_led_reg_t m_out_data;
 };
 
 EXTERN METHOD_INIT_PROTO(M_panel_led);

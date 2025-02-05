@@ -6,20 +6,22 @@
 
 #define DIGITAL_INPUT_COUNT 32
 
-typedef struct _digital_input_bit {
+typedef struct _digital_input_in_bit {
+	unsigned const_0 :1;
+	unsigned const_1 :1;
 	unsigned msdi :10;
 	unsigned em_stop :1;
 	unsigned ac_lost :1;
 	unsigned dc_lost :1;
 	unsigned panel :1;
-	unsigned reserved :18;
-} _digital_input_bit_t;
-static_assert(sizeof(_digital_input_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
+	unsigned reserved :16;
+} _digital_input_in_bit_t;
+static_assert(sizeof(_digital_input_in_bit_t) == 4, "Invalid size of _digital_input_in_bit_t!");
 
-typedef union _digital_input_reg {
+typedef union _digital_input_in_reg {
 	uint32_t all;
-	struct _digital_input_bit bit;
-} _digital_input_reg_t;
+	struct _digital_input_in_bit bit;
+} _digital_input_in_reg_t;
 
 //! Перечисление возможных бит управления.
 enum _E_Digital_Input_Control {
@@ -41,10 +43,10 @@ struct _S_Digital_Input {
     status_t status; //!< Слово состояния.
     // Входные данные.
     // Выходные данные.
-    volatile reg_u32_t out;
+    volatile reg_u32_t out_data;
     // Параметры.
-    reg_u32_t invert;
-    reg_u8_t select[DIGITAL_INPUT_COUNT];
+    reg_u32_t p_invert;
+    reg_u8_t p_select[DIGITAL_INPUT_COUNT];
     // Регистры.
     // Методы.
     METHOD_INIT(M_digital_input);
@@ -52,7 +54,7 @@ struct _S_Digital_Input {
     METHOD_CALC(M_digital_input);
     // Коллбэки.
     // Внутренние данные.
-    _digital_input_reg_t raw;
+    _digital_input_in_reg_t m_in_data;
 };
 
 EXTERN METHOD_INIT_PROTO(M_digital_input);

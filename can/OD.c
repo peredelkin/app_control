@@ -970,13 +970,13 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 1
     },
     {
-    .dataOrig = &msdi.ref,
+    .dataOrig = &msdi.out_ref,
     .subIndex = 1,
     .attribute = ODA_SDO_R | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = &msdi.vcc,
+    .dataOrig = &msdi.out_vcc,
     .subIndex = 2,
     .attribute = ODA_SDO_R | ODA_MB,
     .dataLength = 4
@@ -990,13 +990,13 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 1
     },
     {
-    .dataOrig = &ao_dac7562.in_a,
+    .dataOrig = &ao_dac7562.in_ch_a,
     .subIndex = 1,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 2
     },
     {
-    .dataOrig = &ao_dac7562.in_b,
+    .dataOrig = &ao_dac7562.in_ch_b,
     .subIndex = 2,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 2
