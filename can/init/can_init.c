@@ -140,6 +140,25 @@ CO_ReturnError_t init_CO(CO_t *co, can_bus_t *can_bus) {
 	return CO_ERROR_NO;
 }
 
+void can1_CO_process(CO_t *co, uint32_t timeDifference_us, uint32_t* timerNext_us) {
+
+	if(co == NULL) return;
+
+	CO_NMT_reset_cmd_t reset_cmd = CO_RESET_NOT;
+
+	reset_cmd = CO_process(co, false, timeDifference_us, timerNext_us);
+
+	if (reset_cmd == CO_RESET_NOT) {
+		//printf("CO_NMT_NO_COMMAND");
+	} else if (reset_cmd == CO_RESET_COMM) {
+		printf("CO_RESET_COMM");
+	} else if (reset_cmd == CO_RESET_APP) {
+		printf("CO_RESET_APP");
+	} else if (reset_cmd == CO_RESET_QUIT) {
+		printf("CO_RESET_QUIT");
+	}
+}
+
 void can_tim_handler(void* arg) {
 	CO_t* co = (CO_t*)arg;
 	can1_CO_process(co, 1000, NULL);
@@ -188,24 +207,5 @@ void can1_init(void) {
 				}
 			}
 		}
-	}
-}
-
-void can1_CO_process(CO_t *co, uint32_t timeDifference_us, uint32_t* timerNext_us) {
-
-	if(co == NULL) return;
-
-	CO_NMT_reset_cmd_t reset_cmd = CO_RESET_NOT;
-
-	reset_cmd = CO_process(co, false, timeDifference_us, timerNext_us);
-
-	if (reset_cmd == CO_RESET_NOT) {
-		//printf("CO_NMT_NO_COMMAND");
-	} else if (reset_cmd == CO_RESET_COMM) {
-		printf("CO_RESET_COMM");
-	} else if (reset_cmd == CO_RESET_APP) {
-		printf("CO_RESET_APP");
-	} else if (reset_cmd == CO_RESET_QUIT) {
-		printf("CO_RESET_QUIT");
 	}
 }

@@ -8,6 +8,7 @@
 #ifndef CAN_CO_CLI_DRIVER_H_
 #define CAN_CO_CLI_DRIVER_H_
 
+#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 
