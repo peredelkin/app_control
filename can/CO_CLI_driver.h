@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "can/CANopenNode/CANopen.h"
+
 typedef enum {
 	CO_SDO_CLI_Type_NONE = 0,
 	CO_SDO_CLI_Type_UPLOAD = 1,
@@ -57,5 +59,17 @@ typedef struct {
     size_t m_dataTransfered;
     size_t m_dataBuffered;
 } CO_SDO_CLI_Queue;
+
+typedef struct {
+	CO_SDOclient_t *sdo_cli;
+	bool m_SDOclientBlockTransfer;
+	uint32_t m_cobidClientToServer;
+	uint32_t m_cobidServerToClient;
+	int m_defaultTimeout;
+	CO_SDO_CLI_Queue *queue;
+	size_t queue_size;
+	size_t queue_head;
+	size_t queue_tail;
+} CO_SDO_CLI_Driver_t;
 
 #endif /* CAN_CO_CLI_DRIVER_H_ */

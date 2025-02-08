@@ -9,26 +9,79 @@
 #include "can/CANopenNode/CANopen.h"
 #include "lib/utils/utils.h"
 
+//Type
 CO_SDO_CLI_Type CO_SDO_CLI_type(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_type;
 }
 
+void CO_SDO_CLI_setType(CO_SDO_CLI_Queue* ptr, CO_SDO_CLI_Type newType)
+{
+	ptr->m_type = newType;
+}
+
+//NodeId
 uint8_t CO_SDO_CLI_nodeId(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_nodeId;
 }
 
+void CO_SDO_CLI_setNodeId(CO_SDO_CLI_Queue* ptr, uint8_t newNodeId)
+{
+	ptr->m_nodeId = newNodeId;
+}
+
+//Index
 uint16_t CO_SDO_CLI_index(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_index;
 }
 
+void CO_SDO_CLI_setIndex(CO_SDO_CLI_Queue* ptr, uint16_t newIndex)
+{
+	ptr->m_index = newIndex;
+}
+
+//SubIndex
 uint8_t CO_SDO_CLI_subIndex(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_subIndex;
 }
 
+void CO_SDO_CLI_setSubIndex(CO_SDO_CLI_Queue* ptr, uint8_t newSubIndex)
+{
+	ptr->m_subIndex = newSubIndex;
+}
+
+//Data
+void* CO_SDO_CLI_data(CO_SDO_CLI_Queue* ptr)
+{
+    return ptr->m_data;
+}
+
+void CO_SDO_CLI_setData(CO_SDO_CLI_Queue* ptr, void* newData)
+{
+	ptr->m_data = newData;
+}
+
+//DataSize
+size_t CO_SDO_CLI_dataSize(CO_SDO_CLI_Queue* ptr)
+{
+    return ptr->m_dataSize;
+}
+
+void CO_SDO_CLI_setDataSize(CO_SDO_CLI_Queue* ptr, size_t newSize)
+{
+	ptr->m_dataSize = newSize;
+}
+
+//Timeout
 int CO_SDO_CLI_timeout(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_timeout;
 }
 
+void CO_SDO_CLI_setTimeout(CO_SDO_CLI_Queue* ptr, int newTimeout)
+{
+	ptr->m_timeout = newTimeout;
+}
+
+//State
 CO_SDO_CLI_State CO_SDO_CLI_state(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_state;
 }
@@ -37,18 +90,37 @@ void CO_SDO_CLI_setState(CO_SDO_CLI_Queue* ptr, CO_SDO_CLI_State newState) {
 	ptr->m_state = newState;
 }
 
+//Error
+CO_SDO_CLI_Error CO_SDO_CLI_error(CO_SDO_CLI_Queue* ptr)
+{
+    return ptr->m_error;
+}
+
 void CO_SDO_CLI_setError(CO_SDO_CLI_Queue* ptr, CO_SDO_CLI_Error newError) {
 	ptr->m_error = newError;
 }
 
+//Cancel
 bool CO_SDO_CLI_cancelled(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_cancel;
 }
 
+void CO_SDO_CLI_setCancel(CO_SDO_CLI_Queue* ptr, bool newCancel)
+{
+	ptr->m_cancel = newCancel;
+}
+
+//TransferSize
 size_t CO_SDO_CLI_transferSize(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_transferSize;
 }
 
+void CO_SDO_CLI_setTransferSize(CO_SDO_CLI_Queue* ptr, size_t newTransferSize)
+{
+	ptr->m_transferSize = newTransferSize;
+}
+
+//DataTransfered
 size_t CO_SDO_CLI_transferedDataSize(CO_SDO_CLI_Queue* ptr) {
 	return ptr->m_dataTransfered;
 }
@@ -83,6 +155,7 @@ void* CO_SDO_CLI_dataToTransfer(CO_SDO_CLI_Queue *ptr) {
 	    return &ptr_data[ptr->m_dataTransfered];
 }
 
+//DataBuffered
 size_t CO_SDO_CLI_bufferedDataSize(CO_SDO_CLI_Queue *ptr) {
 	return ptr->m_dataBuffered;
 }
@@ -119,23 +192,19 @@ void* CO_SDO_CLI_dataToBuffering(CO_SDO_CLI_Queue *ptr) {
 	return &ptr_data[ptr->m_dataBuffered];
 }
 
-bool CO_SDO_CLI_process(uint32_t dt) {
+CO_SDO_CLI_Error CO_SDO_CLI_sdoCommError(CO_SDO_abortCode_t code);
+
+bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 	//if(m_sdoComms.isEmpty()) return false;
 
-	//TODO: не забыть убрать заглушки
 	CO_SDO_CLI_Queue *head = NULL; //m_sdoComms.head();
-	CO_t *co = NULL;
-	bool m_SDOclientBlockTransfer = true;
-	uint32_t m_cobidClientToServer = 0;
-	uint32_t m_cobidServerToClient = 0;
-	int m_defaultTimeout = 0;
 
-	int timeout = (CO_SDO_CLI_timeout(head) == 0 ? m_defaultTimeout : CO_SDO_CLI_timeout(head));
+	int timeout = (CO_SDO_CLI_timeout(head) == 0 ? drv->m_defaultTimeout : CO_SDO_CLI_timeout(head));
 	int timeout_min = MIN(timeout, UINT16_MAX);
 
 	size_t size_ret = 0;
 	size_t size_to_ret = 0;
-	CO_SDOclient_t *sdo_cli = co->SDOclient;
+	CO_SDOclient_t *sdo_cli = drv->sdo_cli;
 	CO_SDO_return_t sdo_ret = CO_SDO_RT_ok_communicationEnd;
 	CO_SDO_abortCode_t sdo_abort_ret = CO_SDO_AB_NONE;
 
@@ -143,8 +212,8 @@ bool CO_SDO_CLI_process(uint32_t dt) {
 
 		switch (CO_SDO_CLI_state(head)) {
 		case CO_SDO_CLI_State_QUEUED: {
-			uint32_t cobidCliToSrv = m_cobidClientToServer + CO_SDO_CLI_nodeId(head);
-			uint32_t cobidSrvToCli = m_cobidServerToClient + CO_SDO_CLI_nodeId(head);
+			uint32_t cobidCliToSrv = drv->m_cobidClientToServer + CO_SDO_CLI_nodeId(head);
+			uint32_t cobidSrvToCli = drv->m_cobidServerToClient + CO_SDO_CLI_nodeId(head);
 			sdo_ret = CO_SDOclient_setup(sdo_cli, cobidCliToSrv, cobidSrvToCli, CO_SDO_CLI_nodeId(head));
 			if (sdo_ret != CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DONE);
@@ -157,7 +226,7 @@ bool CO_SDO_CLI_process(uint32_t dt) {
 			//no break
 		case CO_SDO_CLI_State_INIT:
 			sdo_ret = CO_SDOclientDownloadInitiate(sdo_cli, CO_SDO_CLI_index(head), CO_SDO_CLI_subIndex(head),
-					CO_SDO_CLI_transferSize(head), timeout_min, m_SDOclientBlockTransfer);
+					CO_SDO_CLI_transferSize(head), timeout_min, drv->m_SDOclientBlockTransfer);
 			if (sdo_ret < CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head,CO_SDO_CLI_Error_IO);
@@ -190,8 +259,7 @@ bool CO_SDO_CLI_process(uint32_t dt) {
 				}
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DONE);
 			} else if (sdo_ret < 0) {
-				//qDebug() << size_ret << Qt::hex << sdo_abort_ret;
-				CO_SDO_CLI_Error finish_err = 0; //sdoCommError(sdo_abort_ret); //TODO: заглушка!
+				CO_SDO_CLI_Error finish_err = CO_SDO_CLI_sdoCommError(sdo_abort_ret);
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head,finish_err);
 			} else {
@@ -208,12 +276,13 @@ bool CO_SDO_CLI_process(uint32_t dt) {
 			//head->finish();
 			return true;
 		}
-	} else { // sdoc->type() == SDOCommunication::UPLOAD
+
+	} else if(CO_SDO_CLI_type(head) == CO_SDO_CLI_Type_UPLOAD) {
 
 		switch (CO_SDO_CLI_state(head)) {
 		case CO_SDO_CLI_State_QUEUED: {
-			uint32_t cobidCliToSrv = m_cobidClientToServer + CO_SDO_CLI_nodeId(head);
-			uint32_t cobidSrvToCli = m_cobidServerToClient + CO_SDO_CLI_nodeId(head);
+			uint32_t cobidCliToSrv = drv->m_cobidClientToServer + CO_SDO_CLI_nodeId(head);
+			uint32_t cobidSrvToCli = drv->m_cobidServerToClient + CO_SDO_CLI_nodeId(head);
 			sdo_ret = CO_SDOclient_setup(sdo_cli, cobidCliToSrv, cobidSrvToCli, CO_SDO_CLI_nodeId(head));
 			if (sdo_ret != CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DONE);
@@ -226,7 +295,7 @@ bool CO_SDO_CLI_process(uint32_t dt) {
 			//no break
 		case CO_SDO_CLI_State_INIT:
 			sdo_ret = CO_SDOclientUploadInitiate(sdo_cli, CO_SDO_CLI_index(head), CO_SDO_CLI_subIndex(head),
-					timeout_min, m_SDOclientBlockTransfer);
+					timeout_min, drv->m_SDOclientBlockTransfer);
 			if (sdo_ret < CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head,CO_SDO_CLI_Error_IO);
@@ -251,8 +320,7 @@ bool CO_SDO_CLI_process(uint32_t dt) {
 				}
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DATA);
 			} else if (sdo_ret < 0) {
-				//qDebug() << size_ret << Qt::hex << sdo_abort_ret;
-				CO_SDO_CLI_Error finish_err = 0; //sdoCommError(sdo_abort_ret); TODO: заглушка!
+				CO_SDO_CLI_Error finish_err = CO_SDO_CLI_sdoCommError(sdo_abort_ret);
 				CO_SDO_CLI_setState(head,CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head,finish_err);
 				return true;
@@ -311,3 +379,171 @@ bool CO_SDO_CLI_process(uint32_t dt) {
 
 	return false;
 }
+
+CO_SDO_CLI_Error CO_SDO_CLI_sdoCommError(CO_SDO_abortCode_t code) {
+	switch (code) {
+	default:
+		break;
+	case CO_SDO_AB_NONE:
+		return CO_SDO_CLI_Error_NONE;
+		//case CO_SDO_AB_TOGGLE_BIT:
+	case CO_SDO_AB_TIMEOUT:
+		return CO_SDO_CLI_Error_TIMEOUT;
+	case CO_SDO_AB_CMD:
+	case CO_SDO_AB_BLOCK_SIZE:
+	case CO_SDO_AB_SEQ_NUM:
+	case CO_SDO_AB_CRC:
+		return CO_SDO_CLI_Error_IO;
+	case CO_SDO_AB_OUT_OF_MEM:
+		return CO_SDO_CLI_Error_OUT_OF_MEM;
+	case CO_SDO_AB_UNSUPPORTED_ACCESS:
+	case CO_SDO_AB_WRITEONLY:
+	case CO_SDO_AB_READONLY:
+		return CO_SDO_CLI_Error_ACCESS;
+	case CO_SDO_AB_NOT_EXIST:
+		return CO_SDO_CLI_Error_NOT_FOUND;
+	case CO_SDO_AB_NO_MAP:
+	case CO_SDO_AB_MAP_LEN:
+		return CO_SDO_CLI_Error_INVALID_VALUE;
+	case CO_SDO_AB_PRAM_INCOMPAT:
+	case CO_SDO_AB_DEVICE_INCOMPAT:
+		return CO_SDO_CLI_Error_GENERAL;
+	case CO_SDO_AB_HW:
+		return CO_SDO_CLI_Error_IO;
+	case CO_SDO_AB_TYPE_MISMATCH:
+	case CO_SDO_AB_DATA_LONG:
+	case CO_SDO_AB_DATA_SHORT:
+		return CO_SDO_CLI_Error_INVALID_SIZE;
+	case CO_SDO_AB_SUB_UNKNOWN:
+		return CO_SDO_CLI_Error_NOT_FOUND;
+	case CO_SDO_AB_INVALID_VALUE:
+	case CO_SDO_AB_VALUE_HIGH:
+	case CO_SDO_AB_VALUE_LOW:
+	case CO_SDO_AB_MAX_LESS_MIN:
+		return CO_SDO_CLI_Error_INVALID_VALUE;
+	case CO_SDO_AB_NO_RESOURCE:
+		return CO_SDO_CLI_Error_IO;
+	case CO_SDO_AB_GENERAL:
+		return CO_SDO_CLI_Error_GENERAL;
+		//case CO_SDO_AB_DATA_TRANSF:
+		//case CO_SDO_AB_DATA_LOC_CTRL:
+		//case CO_SDO_AB_DATA_DEV_STATE:
+	case CO_SDO_AB_DATA_OD:
+	case CO_SDO_AB_NO_DATA:
+		return CO_SDO_CLI_Error_NO_DATA;
+	}
+
+	return CO_SDO_CLI_Error_UNKNOWN;
+}
+
+bool CO_SDO_CLI_setRead(CO_SDO_CLI_Queue* ptr)
+{
+    if(ptr == NULL) return false;
+    if(CO_SDO_CLI_dataSize(ptr) == 0) return false;
+    if(CO_SDO_CLI_data(ptr) == NULL) return false;
+
+    CO_SDO_CLI_resetTransferedSize(ptr);
+    CO_SDO_CLI_resetBufferedSize(ptr);
+    CO_SDO_CLI_setError(ptr, CO_SDO_CLI_Error_NONE);
+    CO_SDO_CLI_setCancel(ptr, false);
+    CO_SDO_CLI_setType(ptr, CO_SDO_CLI_Type_UPLOAD);
+    CO_SDO_CLI_setState(ptr, CO_SDO_CLI_State_QUEUED);
+    //TODO: поставить в очередь
+
+    return true;
+}
+
+bool CO_SDO_CLI_read(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint16_t dataIndex, uint8_t dataSubIndex, void* data, size_t dataSize, int timeout)
+{
+    if(data == NULL || dataSize == 0) return false;
+    if(devId < 1 || devId > 127) return false;
+
+    CO_SDO_CLI_Queue* ptr = NULL; //TODO: заглушка! здесь нужно получить указатель на хвост
+
+    CO_SDO_CLI_setNodeId(ptr, devId);
+    CO_SDO_CLI_setIndex(ptr, dataIndex);
+    CO_SDO_CLI_setSubIndex(ptr, dataSubIndex);
+    CO_SDO_CLI_setData(ptr, data);
+    if(CO_SDO_CLI_dataSize(ptr) < dataSize){
+    	CO_SDO_CLI_setDataSize(ptr, dataSize);
+    }
+    CO_SDO_CLI_setTransferSize(ptr, dataSize);
+    CO_SDO_CLI_setTimeout(ptr, (timeout == 0) ? drv->m_defaultTimeout : timeout);
+
+    return CO_SDO_CLI_setRead(ptr);
+}
+
+//CO_SDO_CLI_Queue* CO_SDO_CLI_write(uint8_t devId, uint16_t dataIndex, uint8_t dataSubIndex, const void* data, size_t dataSize, SDOComm* sdocomm, int timeout)
+//{
+//    if(!isConnected()) return nullptr;
+//
+//    if(data == nullptr || dataSize == 0) return nullptr;
+//    if(devId < 1 || devId > 127) return nullptr;
+//
+//    SDOComm* sdoc = sdocomm;
+//    if(sdoc == nullptr){
+//        sdoc = new SDOComm();
+//    }
+//    sdoc->setNodeId(devId);
+//    sdoc->setIndex(dataIndex);
+//    sdoc->setSubIndex(dataSubIndex);
+//    sdoc->setData(const_cast<void*>(data));
+//    if(sdoc->dataSize() < dataSize){
+//        sdoc->setDataSize(dataSize);
+//    }
+//    sdoc->setTransferSize(dataSize);
+//    sdoc->setTimeout((timeout == 0) ? m_defaultTimeout : timeout);
+//
+//    if(!write(sdoc)){
+//        if(sdocomm == nullptr) delete sdoc;
+//        return nullptr;
+//    }
+//
+//    return sdoc;
+//}
+//
+//
+//bool SLCanOpenNode::write(SDOComm* sdocom)
+//{
+//    if(!isConnected()) return false;
+//
+//    if(sdocom == nullptr) return false;
+//    if(sdocom->dataSize() == 0) return false;
+//    if(sdocom->data() == nullptr) return false;
+//
+//    sdocom->resetTransferedSize();
+//    sdocom->resetBufferedSize();
+//    sdocom->setError(SDOComm::ERROR_NONE);
+//    sdocom->setCancel(false);
+//    sdocom->setType(SDOComm::DOWNLOAD);
+//    sdocom->setState(SDOComm::QUEUED);
+//    m_sdoComms.enqueue(sdocom);
+//
+//    return true;
+//}
+//
+//bool SLCanOpenNode::cancel(SDOComm* sdoc)
+//{
+//    if(sdoc == nullptr) return true;
+//
+//    auto it = std::find(m_sdoComms.begin(), m_sdoComms.end(), sdoc);
+//
+//    if(it == m_sdoComms.end()) return true;
+//
+//    if(isConnected() && it == m_sdoComms.begin()){
+//        sdoc->cancel();
+//        return false;
+//    }
+//
+//    m_sdoComms.erase(it);
+//
+//    return true;
+//}
+//
+//void SLCanOpenNode::cancelAllSDOComms()
+//{
+//    while(!m_sdoComms.isEmpty()){
+//        auto sdoc = m_sdoComms.dequeue();
+//        sdoc->finish(SDOComm::ERROR_CANCEL);
+//    }
+//}
