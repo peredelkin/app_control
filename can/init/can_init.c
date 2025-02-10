@@ -12,6 +12,8 @@
 #include "sys/counter/sys_counter.h"
 #include "modules/modules.h"
 
+#include "CO_CLI_driver.h"
+
 #include "CANopenNode/CANopen.h"
 #include "OD.h"
 
@@ -32,6 +34,9 @@ can_bus_t can1 = {
 
 CO_t* co = NULL;
 
+CO_SDO_CLI_Queue can1_cli_Queue[16];
+
+CO_SDO_CLI_Driver_t can1_cli_driver;
 
 void CAN1_TX_IRQHandler() {
 	CO_TX_IRQHandler(co->CANmodule);
@@ -164,6 +169,18 @@ void can_tim_handler(void* arg) {
 	can1_CO_process(co, 1000, NULL);
 }
 
+void can1_cli_init(void) {
+	can1_cli_driver.sdo_cli = co->SDOclient;
+	can1_cli_driver.m_SDOclientBlockTransfer = SDO_CLIENT_BLOCK_TRANSFER;
+	can1_cli_driver.m_cobidClientToServer = 0x600;
+	can1_cli_driver.m_cobidServerToClient = 0x580;
+	can1_cli_driver.m_defaultTimeout = 20;
+	can1_cli_driver.queue = can1_cli_Queue;
+	can1_cli_driver.queue_size = 16;
+	can1_cli_driver.queue_head = 0;
+	can1_cli_driver.queue_tail = 0;
+}
+
 void can1_init(void) {
 	sys_counter_tv_print();
 
@@ -188,7 +205,9 @@ void can1_init(void) {
 		if(coerr != CO_ERROR_NO) {
 			printf("Error init CO (%d)\n", (int)coerr);
 		} else {
-			// CO_process таймер.
+			//Настройка клиента
+			can1_cli_init();
+			//Настройка CO_process таймера.
 			INIT(can_tim); //TIM5
 			CALLBACK_PROC(can_tim.on_timeout) = can_tim_handler;
 			CALLBACK_ARG(can_tim.on_timeout) = (void*)co;
@@ -197,7 +216,6 @@ void can1_init(void) {
 			} else {
 				printf("CO timer inited (%lu)\n", can_tim.status);
 				// Запуск CO_process таймера.
-
 				can_tim.control = MS_TIMER_CONTROL_ENABLE;
 				CONTROL(can_tim);
 				if (can_tim.status & MS_TIMER_STATUS_RUN) {
@@ -209,3 +227,6 @@ void can1_init(void) {
 		}
 	}
 }
+
+
+

@@ -246,7 +246,7 @@ CO_SDO_CLI_Queue* CO_SDO_CLI_Queue_head(CO_SDO_CLI_Driver_t *drv) {
 	return &(drv->queue[drv->queue_head]);
 }
 
-bool CO_SDO_CLI_Queue_headNext(CO_SDO_CLI_Driver_t *drv) {
+bool CO_SDO_CLI_Queue_dequeue(CO_SDO_CLI_Driver_t *drv) {
 	if (drv->queue_head == drv->queue_tail) return false; //empty
 	size_t new_head = drv->queue_head + 1;
 	if (new_head >= drv->queue_size) new_head = 0;
@@ -258,7 +258,14 @@ CO_SDO_CLI_Queue* CO_SDO_CLI_Queue_tail(CO_SDO_CLI_Driver_t *drv) {
 	return &(drv->queue[drv->queue_tail]);
 }
 
-bool CO_SDO_CLI_Queue_tailNext(CO_SDO_CLI_Driver_t *drv) {
+bool CO_SDO_CLI_Queue_can_enqueue(CO_SDO_CLI_Driver_t *drv) {
+	size_t new_tail = drv->queue_tail + 1;
+	if (new_tail >= drv->queue_size) new_tail = 0;
+	if (new_tail == drv->queue_head) return false; //ovf
+	return true;
+}
+
+bool CO_SDO_CLI_Queue_enqueue(CO_SDO_CLI_Driver_t *drv) {
 	size_t new_tail = drv->queue_tail + 1;
 	if (new_tail >= drv->queue_size) new_tail = 0;
 	if (new_tail == drv->queue_head) return false; //ovf
@@ -287,7 +294,8 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 		case CO_SDO_CLI_State_QUEUED: {
 			uint32_t cobidCliToSrv = drv->m_cobidClientToServer + CO_SDO_CLI_nodeId(head);
 			uint32_t cobidSrvToCli = drv->m_cobidServerToClient + CO_SDO_CLI_nodeId(head);
-			sdo_ret = CO_SDOclient_setup(sdo_cli, cobidCliToSrv, cobidSrvToCli, CO_SDO_CLI_nodeId(head));
+			sdo_ret = CO_SDOclient_setup(sdo_cli, cobidCliToSrv, cobidSrvToCli,
+					CO_SDO_CLI_nodeId(head));
 			if (sdo_ret != CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head, CO_SDO_CLI_Error_IO);
@@ -298,8 +306,9 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 
 			//no break
 		case CO_SDO_CLI_State_INIT:
-			sdo_ret = CO_SDOclientDownloadInitiate(sdo_cli, CO_SDO_CLI_index(head), CO_SDO_CLI_subIndex(head),
-					CO_SDO_CLI_transferSize(head), timeout_min, drv->m_SDOclientBlockTransfer);
+			sdo_ret = CO_SDOclientDownloadInitiate(sdo_cli, CO_SDO_CLI_index(head),
+					CO_SDO_CLI_subIndex(head), CO_SDO_CLI_transferSize(head), timeout_min,
+					drv->m_SDOclientBlockTransfer);
 			if (sdo_ret < CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head, CO_SDO_CLI_Error_IO);
@@ -321,8 +330,8 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 
 			//no break
 		case CO_SDO_CLI_State_RUN:
-			sdo_ret = CO_SDOclientDownload(sdo_cli, dt, CO_SDO_CLI_cancelled(head), !CO_SDO_CLI_dataBufferingDone(head),
-					&sdo_abort_ret, &size_ret, NULL);
+			sdo_ret = CO_SDOclientDownload(sdo_cli, dt, CO_SDO_CLI_cancelled(head),
+					!CO_SDO_CLI_dataBufferingDone(head), &sdo_abort_ret, &size_ret, NULL);
 			CO_SDO_CLI_setDataTransfered(head, size_ret);
 			if (sdo_ret == 0) {
 				if (CO_SDO_CLI_cancelled(head)) {
@@ -345,7 +354,7 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 
 			//no break
 		case CO_SDO_CLI_State_IDLE:
-			CO_SDO_CLI_Queue_headNext(drv);
+			CO_SDO_CLI_Queue_dequeue(drv);
 			CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DONE);
 			return true;
 		}
@@ -356,7 +365,8 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 		case CO_SDO_CLI_State_QUEUED: {
 			uint32_t cobidCliToSrv = drv->m_cobidClientToServer + CO_SDO_CLI_nodeId(head);
 			uint32_t cobidSrvToCli = drv->m_cobidServerToClient + CO_SDO_CLI_nodeId(head);
-			sdo_ret = CO_SDOclient_setup(sdo_cli, cobidCliToSrv, cobidSrvToCli, CO_SDO_CLI_nodeId(head));
+			sdo_ret = CO_SDOclient_setup(sdo_cli, cobidCliToSrv, cobidSrvToCli,
+					CO_SDO_CLI_nodeId(head));
 			if (sdo_ret != CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head, CO_SDO_CLI_Error_IO);
@@ -367,8 +377,8 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 
 			//no break
 		case CO_SDO_CLI_State_INIT:
-			sdo_ret = CO_SDOclientUploadInitiate(sdo_cli, CO_SDO_CLI_index(head), CO_SDO_CLI_subIndex(head),
-					timeout_min, drv->m_SDOclientBlockTransfer);
+			sdo_ret = CO_SDOclientUploadInitiate(sdo_cli, CO_SDO_CLI_index(head),
+					CO_SDO_CLI_subIndex(head), timeout_min, drv->m_SDOclientBlockTransfer);
 			if (sdo_ret < CO_SDO_RT_ok_communicationEnd) {
 				CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DONE);
 				CO_SDO_CLI_setError(head, CO_SDO_CLI_Error_IO);
@@ -381,8 +391,8 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 
 			//no break
 		case CO_SDO_CLI_State_RUN:
-			sdo_ret = CO_SDOclientUpload(sdo_cli, dt, CO_SDO_CLI_cancelled(head), &sdo_abort_ret, &size_to_ret,
-					&size_ret,
+			sdo_ret = CO_SDOclientUpload(sdo_cli, dt, CO_SDO_CLI_cancelled(head), &sdo_abort_ret,
+					&size_to_ret, &size_ret,
 					NULL);
 			CO_SDO_CLI_setDataBuffered(head, size_ret);
 			if (sdo_ret == 0) {
@@ -444,7 +454,7 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 
 			//no break
 		case CO_SDO_CLI_State_IDLE:
-			CO_SDO_CLI_Queue_headNext(drv);
+			CO_SDO_CLI_Queue_dequeue(drv);
 			CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DONE);
 			return true;
 		}
@@ -457,6 +467,7 @@ bool CO_SDO_CLI_setRead(CO_SDO_CLI_Driver_t *drv, CO_SDO_CLI_Queue *ptr) {
 	if (ptr == NULL) return false;
 	if (CO_SDO_CLI_dataSize(ptr) == 0) return false;
 	if (CO_SDO_CLI_data(ptr) == NULL) return false;
+	if (CO_SDO_CLI_Queue_can_enqueue == false) return false;
 
 	CO_SDO_CLI_resetTransferedSize(ptr);
 	CO_SDO_CLI_resetBufferedSize(ptr);
@@ -465,13 +476,14 @@ bool CO_SDO_CLI_setRead(CO_SDO_CLI_Driver_t *drv, CO_SDO_CLI_Queue *ptr) {
 	CO_SDO_CLI_setType(ptr, CO_SDO_CLI_Type_UPLOAD);
 	CO_SDO_CLI_setState(ptr, CO_SDO_CLI_State_QUEUED);
 
-	return CO_SDO_CLI_Queue_tailNext(drv);
+	return CO_SDO_CLI_Queue_enqueue(drv);
 }
 
-bool CO_SDO_CLI_read(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint16_t dataIndex, uint8_t dataSubIndex, void *data,
-		size_t dataSize, int timeout) {
-	if (data == NULL || dataSize == 0) return false;
-	if (devId < 1 || devId > 127) return false;
+CO_SDO_CLI_Queue* CO_SDO_CLI_read(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint16_t dataIndex,
+		uint8_t dataSubIndex, void *data, size_t dataSize, int timeout) {
+	if (data == NULL || dataSize == 0) return NULL;
+	if (devId < 1 || devId > 127) return NULL;
+	if (CO_SDO_CLI_Queue_can_enqueue == false) return NULL;
 
 	CO_SDO_CLI_Queue *ptr = CO_SDO_CLI_Queue_tail(drv);
 
@@ -485,13 +497,18 @@ bool CO_SDO_CLI_read(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint16_t dataIndex
 	CO_SDO_CLI_setTransferSize(ptr, dataSize);
 	CO_SDO_CLI_setTimeout(ptr, (timeout == 0) ? drv->m_defaultTimeout : timeout);
 
-	return CO_SDO_CLI_setRead(drv, ptr);
+	if (CO_SDO_CLI_setRead(drv, ptr)) {
+		return ptr;
+	} else {
+		return NULL;
+	}
 }
 
 bool CO_SDO_CLI_setWrite(CO_SDO_CLI_Driver_t *drv, CO_SDO_CLI_Queue *ptr) {
 	if (ptr == NULL) return false;
 	if (CO_SDO_CLI_dataSize(ptr) == 0) return false;
 	if (CO_SDO_CLI_data(ptr) == NULL) return false;
+	if (CO_SDO_CLI_Queue_can_enqueue == false) return false;
 
 	CO_SDO_CLI_resetTransferedSize(ptr);
 	CO_SDO_CLI_resetBufferedSize(ptr);
@@ -500,13 +517,14 @@ bool CO_SDO_CLI_setWrite(CO_SDO_CLI_Driver_t *drv, CO_SDO_CLI_Queue *ptr) {
 	CO_SDO_CLI_setType(ptr, CO_SDO_CLI_Type_DOWNLOAD);
 	CO_SDO_CLI_setState(ptr, CO_SDO_CLI_State_QUEUED);
 
-	return CO_SDO_CLI_Queue_tailNext(drv);
+	return CO_SDO_CLI_Queue_enqueue(drv);
 }
 
-bool CO_SDO_CLI_write(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint16_t dataIndex, uint8_t dataSubIndex, void *data,
-		size_t dataSize, int timeout) {
-	if (data == NULL || dataSize == 0) return false;
-	if (devId < 1 || devId > 127) return false;
+CO_SDO_CLI_Queue* CO_SDO_CLI_write(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint16_t dataIndex,
+		uint8_t dataSubIndex, void *data, size_t dataSize, int timeout) {
+	if (data == NULL || dataSize == 0) return NULL;
+	if (devId < 1 || devId > 127) return NULL;
+	if (CO_SDO_CLI_Queue_can_enqueue == false) return NULL;
 
 	CO_SDO_CLI_Queue *ptr = CO_SDO_CLI_Queue_tail(drv);
 
@@ -520,7 +538,11 @@ bool CO_SDO_CLI_write(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint16_t dataInde
 	CO_SDO_CLI_setTransferSize(ptr, dataSize);
 	CO_SDO_CLI_setTimeout(ptr, (timeout == 0) ? drv->m_defaultTimeout : timeout);
 
-	return CO_SDO_CLI_setWrite(drv, ptr);
+	if(CO_SDO_CLI_setWrite(drv, ptr)) {
+		return ptr;
+	} else {
+		return NULL;
+	}
 }
 
 void CO_SDO_CLI_cancel(CO_SDO_CLI_Queue *ptr) {
