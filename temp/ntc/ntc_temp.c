@@ -34,7 +34,7 @@ METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
 	wheit = IQ_N_TO_M(msdi.out_analog[ntc_counter], ntc_4901_data_shift, 15);
 	wheit = iq15_fract(iq15_abs(wheit));
 
-	ntc_temp->out_temp[ntc_counter] = iq15_lerp(temp_1, temp_2, wheit);
+	ntc_temp->out_temp[ntc_counter] += (iq15_lerp(temp_1, temp_2, wheit) - ntc_temp->out_temp[ntc_counter])/32; //TODO: приделать нормальный фильтр
 
 	if (ntc_counter >= (NTC_TEMP_COUNT - 1)) {
 		ntc_counter = 0;

@@ -82,7 +82,7 @@
                         CO_CONFIG_FIFO_CRC16_CCITT)
 
 // Node Id.
-#define NODE_ID 1
+#define NODE_ID 2
 
 
 #undef CO_CONFIG_STORAGE_ENABLE // We don't need Storage option, implement based on your use case and remove this line from here

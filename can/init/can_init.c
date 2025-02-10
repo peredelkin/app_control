@@ -164,12 +164,20 @@ void can1_CO_process(CO_t *co, uint32_t timeDifference_us, uint32_t* timerNext_u
 	}
 }
 
+void can1_CO_sdo_cli_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
+	if((drv == NULL) || (drv->sdo_cli == NULL) || (drv->queue == NULL)) return;
+
+	CO_SDO_CLI_process(drv, dt);
+}
+
 void can_tim_handler(void* arg) {
 	CO_t* co = (CO_t*)arg;
 	can1_CO_process(co, 1000, NULL);
+	can1_CO_sdo_cli_process(&can1_cli_driver, 1000);
 }
 
-void can1_cli_init(void) {
+void can1_sdo_cli_init(void) {
+	if(co == NULL) return;
 	can1_cli_driver.sdo_cli = co->SDOclient;
 	can1_cli_driver.m_SDOclientBlockTransfer = SDO_CLIENT_BLOCK_TRANSFER;
 	can1_cli_driver.m_cobidClientToServer = 0x600;
@@ -206,7 +214,7 @@ void can1_init(void) {
 			printf("Error init CO (%d)\n", (int)coerr);
 		} else {
 			//Настройка клиента
-			can1_cli_init();
+			can1_sdo_cli_init();
 			//Настройка CO_process таймера.
 			INIT(can_tim); //TIM5
 			CALLBACK_PROC(can_tim.on_timeout) = can_tim_handler;

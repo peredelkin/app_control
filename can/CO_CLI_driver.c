@@ -99,6 +99,10 @@ void CO_SDO_CLI_setCancel(CO_SDO_CLI_Queue *ptr, bool newCancel) {
 	ptr->m_cancel = newCancel;
 }
 
+void CO_SDO_CLI_cancel(CO_SDO_CLI_Queue *ptr) {
+	CO_SDO_CLI_setCancel(ptr, true);
+}
+
 //TransferSize
 size_t CO_SDO_CLI_transferSize(CO_SDO_CLI_Queue *ptr) {
 	return ptr->m_transferSize;
@@ -317,7 +321,7 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 				break;
 			}
 			CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DATA);
-			dt = 0;
+			//dt = 0;
 
 			//no break
 		case CO_SDO_CLI_State_DATA:
@@ -387,7 +391,7 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 				break;
 			}
 			CO_SDO_CLI_setState(head, CO_SDO_CLI_State_RUN);
-			dt = 0;
+			//dt = 0;
 
 			//no break
 		case CO_SDO_CLI_State_RUN:
@@ -467,7 +471,7 @@ bool CO_SDO_CLI_setRead(CO_SDO_CLI_Driver_t *drv, CO_SDO_CLI_Queue *ptr) {
 	if (ptr == NULL) return false;
 	if (CO_SDO_CLI_dataSize(ptr) == 0) return false;
 	if (CO_SDO_CLI_data(ptr) == NULL) return false;
-	if (CO_SDO_CLI_Queue_can_enqueue == false) return false;
+	if (CO_SDO_CLI_Queue_can_enqueue(drv) == false) return false;
 
 	CO_SDO_CLI_resetTransferedSize(ptr);
 	CO_SDO_CLI_resetBufferedSize(ptr);
@@ -483,7 +487,7 @@ CO_SDO_CLI_Queue* CO_SDO_CLI_read(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint1
 		uint8_t dataSubIndex, void *data, size_t dataSize, int timeout) {
 	if (data == NULL || dataSize == 0) return NULL;
 	if (devId < 1 || devId > 127) return NULL;
-	if (CO_SDO_CLI_Queue_can_enqueue == false) return NULL;
+	if (CO_SDO_CLI_Queue_can_enqueue(drv) == false) return NULL;
 
 	CO_SDO_CLI_Queue *ptr = CO_SDO_CLI_Queue_tail(drv);
 
@@ -508,7 +512,7 @@ bool CO_SDO_CLI_setWrite(CO_SDO_CLI_Driver_t *drv, CO_SDO_CLI_Queue *ptr) {
 	if (ptr == NULL) return false;
 	if (CO_SDO_CLI_dataSize(ptr) == 0) return false;
 	if (CO_SDO_CLI_data(ptr) == NULL) return false;
-	if (CO_SDO_CLI_Queue_can_enqueue == false) return false;
+	if (CO_SDO_CLI_Queue_can_enqueue(drv) == false) return false;
 
 	CO_SDO_CLI_resetTransferedSize(ptr);
 	CO_SDO_CLI_resetBufferedSize(ptr);
@@ -524,7 +528,7 @@ CO_SDO_CLI_Queue* CO_SDO_CLI_write(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint
 		uint8_t dataSubIndex, void *data, size_t dataSize, int timeout) {
 	if (data == NULL || dataSize == 0) return NULL;
 	if (devId < 1 || devId > 127) return NULL;
-	if (CO_SDO_CLI_Queue_can_enqueue == false) return NULL;
+	if (CO_SDO_CLI_Queue_can_enqueue(drv) == false) return NULL;
 
 	CO_SDO_CLI_Queue *ptr = CO_SDO_CLI_Queue_tail(drv);
 
@@ -543,8 +547,4 @@ CO_SDO_CLI_Queue* CO_SDO_CLI_write(CO_SDO_CLI_Driver_t *drv, uint8_t devId, uint
 	} else {
 		return NULL;
 	}
-}
-
-void CO_SDO_CLI_cancel(CO_SDO_CLI_Queue *ptr) {
-	CO_SDO_CLI_setCancel(ptr, true);
 }

@@ -8,10 +8,6 @@
 #include <stdio.h>
 #include "init/init.h"
 
-#include "gpio/init/gpio_init.h" //TODO: убрать (для rs485_panel_detect)
-
-#include "can/init/can_init.h" //CANopen
-
 static void sys_tim_handler(void* arg)
 {
     M_sys_main* sys = (M_sys_main*)arg;
@@ -185,6 +181,13 @@ static void FSM_state(M_sys_main* sys)
     }
 }
 
+#include "can/init/can_init.h" //CANopen
+#include "CO_CLI_driver.h"
+extern CO_SDO_CLI_Driver_t can1_cli_driver; //TODO: тест CANopen SDO CLI
+CO_SDO_CLI_Queue* co_cli_test = NULL; //TODO: тест CANopen SDO CLI
+reg_iq24_t pid_i_out_value; //TODO: тест CANopen SDO CLI
+reg_iq24_t pid_i_out_value_buffered; //TODO: тест CANopen SDO CLI
+
 struct timeval sys_main_execution_time; //TODO: определить куда засунуть
 
 METHOD_CALC_IMPL(M_sys_main, sys)
@@ -198,6 +201,16 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(msdi);
     CALC(ntc_temp);
     CALC(digital_in);
+
+    //TODO: тест CANopen SDO CLI
+    if(co_cli_test == NULL) {
+    	co_cli_test = CO_SDO_CLI_read(&can1_cli_driver, 1, 0x2730, 5, &pid_i_out_value, 4, 20);
+    } else {
+    	if(co_cli_test->m_state == CO_SDO_CLI_State_DONE) {
+    		pid_i_out_value_buffered = pid_i_out_value;
+    		co_cli_test = NULL;
+    	}
+    }
 
     digital_out.in_data = digital_in.out_data;
 

@@ -55,6 +55,8 @@ static modbus_rtu_error_t modbus_panel_on_report_slave_id(modbus_rtu_slave_id_t*
     return MODBUS_RTU_ERROR_NONE;
 }
 
+extern reg_iq24_t pid_i_out_value_buffered; //TODO: тест CANopen SDO CLI
+
 static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* value)
 {
 	uint16_t addr_h = (address >> 1);
@@ -71,7 +73,7 @@ static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* va
     	break;
     case 4: *value = ((uint16_t*)&(ntc_temp.out_temp[4]))[addr_l];
     	break;
-    case 5: *value = ((uint16_t*)&(ntc_temp.out_temp[5]))[addr_l];
+    case 5: *value = ((uint16_t*)&(pid_i_out_value_buffered))[addr_l];
     	break;
     case 6: *value = panel_led.out_data;
     	break;

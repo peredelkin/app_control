@@ -72,4 +72,12 @@ typedef struct {
 	size_t queue_tail;
 } CO_SDO_CLI_Driver_t;
 
+extern bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt);
+
+extern CO_SDO_CLI_Queue* CO_SDO_CLI_read(CO_SDO_CLI_Driver_t *drv, uint8_t devId,
+		uint16_t dataIndex, uint8_t dataSubIndex, void *data, size_t dataSize, int timeout);
+
+extern CO_SDO_CLI_Queue* CO_SDO_CLI_write(CO_SDO_CLI_Driver_t *drv, uint8_t devId,
+		uint16_t dataIndex, uint8_t dataSubIndex, void *data, size_t dataSize, int timeout);
+
 #endif /* CAN_CO_CLI_DRIVER_H_ */
