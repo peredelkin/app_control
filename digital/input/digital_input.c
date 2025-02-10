@@ -6,6 +6,18 @@ METHOD_INIT_IMPL(M_digital_input, input)
 {
 	gpio_em_stop_cfg_setup(); //EmStop_App
 	gpio_ac_dc_lost_cfg_setup(); //AC DC Lost
+
+	//TODO: тестовые настройки!
+	input->p_select[0] = 2;
+	input->p_select[1] = 3;
+	input->p_select[2] = 4;
+	input->p_select[3] = 5;
+	input->p_select[4] = 6;
+	input->p_select[5] = 7;
+	input->p_select[6] = 8;
+	input->p_select[7] = 9;
+	input->p_select[8] = 10;
+	input->p_select[9] = 11;
 }
 
 METHOD_DEINIT_IMPL(M_digital_input, input)

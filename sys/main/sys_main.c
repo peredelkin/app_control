@@ -184,9 +184,13 @@ static void FSM_state(M_sys_main* sys)
 #include "can/init/can_init.h" //CANopen
 #include "CO_CLI_driver.h"
 extern CO_SDO_CLI_Driver_t can1_cli_driver; //TODO: тест CANopen SDO CLI
-CO_SDO_CLI_Queue* co_cli_test = NULL; //TODO: тест CANopen SDO CLI
+
+CO_SDO_CLI_Queue* mc_pid_i_ptr = NULL; //TODO: тест CANopen SDO CLI
 reg_iq24_t pid_i_out_value; //TODO: тест CANopen SDO CLI
 reg_iq24_t pid_i_out_value_buffered; //TODO: тест CANopen SDO CLI
+
+CO_SDO_CLI_Queue* mc_cmd_ptr = NULL; //TODO: тест CANopen SDO CLI
+volatile uint32_t mc_cmd; //TODO: тест CANopen SDO CLI
 
 struct timeval sys_main_execution_time; //TODO: определить куда засунуть
 
@@ -203,16 +207,29 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(digital_in);
 
     //TODO: тест CANopen SDO CLI
-    if(co_cli_test == NULL) {
-    	co_cli_test = CO_SDO_CLI_read(&can1_cli_driver, 1, 0x2730, 5, &pid_i_out_value, 4, 20);
+    if(mc_pid_i_ptr == NULL) {
+    	mc_pid_i_ptr = CO_SDO_CLI_read(&can1_cli_driver, 1, 0x2740, 5, &pid_i_out_value, 4, 20);
     } else {
-    	if(co_cli_test->m_state == CO_SDO_CLI_State_DONE) {
-    		pid_i_out_value_buffered = pid_i_out_value;
-    		co_cli_test = NULL;
+    	if(mc_pid_i_ptr->m_state == CO_SDO_CLI_State_DONE) {
+    		pid_i_out_value_buffered = pid_i_out_value/256;
+    		mc_pid_i_ptr = NULL;
     	}
     }
 
-    digital_out.in_data = digital_in.out_data;
+    if(mc_cmd_ptr == NULL) {
+    	mc_cmd_ptr = CO_SDO_CLI_write(&can1_cli_driver, 1, 0x2010, 3, &mc_cmd, 4, 20);
+    } else {
+		if (mc_cmd_ptr->m_state == CO_SDO_CLI_State_DONE) {
+			if((digital_in.out_data & 0b1) == 0b1) {
+				mc_cmd = 1;
+			} else {
+				mc_cmd = 2;
+			}
+			mc_cmd_ptr = NULL;
+		}
+    }
+
+    //digital_out.in_data = digital_in.out_data; //TODO: тут должна быть логика MC
 
     CALC(ao_dac7562);
     CALC(digital_out);
