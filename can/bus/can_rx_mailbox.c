@@ -108,11 +108,11 @@ void can_RFR_FULL_clear(CAN_TypeDef* CAN, int fifo) {
 void can_RFR_FOVR_clear(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
 	case CAN_RX_FIFO_0:
-		CAN->RF0R = CAN_RFR_FULL;
+		CAN->RF0R = CAN_RFR_FOVR;
 		break;
 
 	case CAN_RX_FIFO_1:
-		CAN->RF1R = CAN_RFR_FULL;
+		CAN->RF1R = CAN_RFR_FOVR;
 		break;
 
 	default:

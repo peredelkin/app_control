@@ -16,8 +16,8 @@
 
 //FIFO 0 INTERRUPT
 #define CAN1_FMPIE0		true
-#define CAN1_FFIE0		true
-#define CAN1_FOVIE0		true
+#define CAN1_FFIE0		false
+#define CAN1_FOVIE0		false
 
 //FIFO 1 INTERRUPT
 #define CAN1_FMPIE1		false
@@ -475,9 +475,9 @@ void CO_TSR_RQCP_Handler(CO_CANmodule_t *CANmodule, uint32_t TSR) {
 				} /* end of for loop */
 
 				/* Clear counter if no more messages */
-//				if (message_index == 0U) {
-//					CANmodule->CANtxCount = 0U;
-//				}
+				if (message_index == 0U) {
+					CANmodule->CANtxCount = 0U;
+				}
 			} else {
 				can_TSR_RQCP_clear(can_device->bus, mailbox); //TODO: определить условие сброса фалага и место вызова
 			}
@@ -496,8 +496,7 @@ void CO_TX_IRQHandler(CO_CANmodule_t *CANmodule) {
 	}
 }
 
-void CO_RX_IRQHandler(CO_CANmodule_t *CANmodule, int fifo) {
-
+void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
 	can_bus_t *can_device = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
 
 	err_t err = E_NO_ERROR;
@@ -508,70 +507,81 @@ void CO_RX_IRQHandler(CO_CANmodule_t *CANmodule, int fifo) {
 
 	CO_CANrxMsg_t rcvMsg = { 0 };
 
+	err = can_rx_mailbox_read_and_release(can_device->bus, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
+			rcvMsg.data);
+
+	switch(err) {
+	case E_NO_ERROR:
+		buffer = &CANmodule->rxArray[index];
+		break;
+	default:
+		break;
+	}
+
+	/* Call specific function, which will process the message */
+	if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
+		buffer->pCANrx_callback(buffer->object, (void*) &rcvMsg);
+	}
+}
+
+void CO_RX_IRQHandler(CO_CANmodule_t *CANmodule, int fifo) {
+
+	can_bus_t *can_device = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
+
 	uint32_t RFR = can_RFR_read(can_device->bus, fifo);
-
-	//FOVIE0: FIFO overrun interrupt enabled
-	if (can_IER_FOVIE_read(can_device->bus, fifo)) {
-		//FOVR: FIFO overrun
-		if (can_RFR_FOVR_read(RFR)) {
-			switch (fifo) {
-			case CAN_RX_MAILBOX_0:
-				can_device->error |= CAN_ERROR_RX0_OVERRUN;
-				break;
-
-			case CAN_RX_MAILBOX_1:
-				can_device->error |= CAN_ERROR_RX1_OVERRUN;
-				break;
-
-			default:
-				break;
-			}
-
-			can_RFR_FOVR_clear(can_device->bus, fifo);
-		}
-	}
-
-	//FFIE0: FIFO full interrupt enabled
-	if (can_IER_FFIE_read(can_device->bus, fifo)) {
-		//FULL: FIFO full
-		if (can_RFR_FULL_read(RFR)) {
-			switch (fifo) {
-			case CAN_RX_MAILBOX_0:
-				can_device->error |= CAN_ERROR_RX0_FULL;
-				break;
-
-			case CAN_RX_MAILBOX_1:
-				can_device->error |= CAN_ERROR_RX1_FULL;
-				break;
-
-			default:
-				break;
-			}
-
-			can_RFR_FULL_clear(can_device->bus, fifo);
-		}
-	}
 
 	//FMPIE0: FIFO message pending interrupt enabled
 	if (can_IER_FMPIE_read(can_device->bus, fifo)) {
 		//FIFO 0 message pending
 		if (can_RFR_FMP_read(RFR)) {
-			err = can_rx_mailbox_read_and_release(can_device->bus, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
-					rcvMsg.data);
-
-			switch(err) {
-			case E_NO_ERROR:
-				buffer = &CANmodule->rxArray[index];
-				break;
-			default:
-				break;
-			}
-
-			/* Call specific function, which will process the message */
-			if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
-				buffer->pCANrx_callback(buffer->object, (void*) &rcvMsg);
-			}
+			CO_can_rx_mailbox_read_and_release(CANmodule, fifo);
 		}
+	}
+
+	//FULL: FIFO full
+	if (can_RFR_FULL_read(RFR)) {
+		switch (fifo) {
+		case CAN_RX_MAILBOX_0:
+			can_device->error |= CAN_ERROR_RX0_FULL;
+			break;
+
+		case CAN_RX_MAILBOX_1:
+			can_device->error |= CAN_ERROR_RX1_FULL;
+			break;
+
+		default:
+			break;
+		}
+
+		//FFIE0: FIFO full interrupt enabled
+		if (can_IER_FFIE_read(can_device->bus, fifo)) {
+
+		}
+
+		can_RFR_FULL_clear(can_device->bus, fifo);
+	}
+
+	//FOVR: FIFO overrun
+	if (can_RFR_FOVR_read(RFR)) {
+		switch (fifo) {
+		case CAN_RX_MAILBOX_0:
+			can_device->error |= CAN_ERROR_RX0_OVERRUN;
+			break;
+
+		case CAN_RX_MAILBOX_1:
+			can_device->error |= CAN_ERROR_RX1_OVERRUN;
+			break;
+
+		default:
+			break;
+		}
+
+		//FOVIE0: FIFO overrun interrupt enabled
+		if (can_IER_FOVIE_read(can_device->bus, fifo)) {
+
+		}
+
+		can_RFR_FOVR_clear(can_device->bus, fifo);
 	}
 }
 
