@@ -190,7 +190,10 @@ reg_iq24_t pid_i_out_value; //TODO: тест CANopen SDO CLI
 reg_iq24_t pid_i_out_value_buffered; //TODO: тест CANopen SDO CLI
 
 CO_SDO_CLI_Queue* mc_cmd_ptr = NULL; //TODO: тест CANopen SDO CLI
-volatile uint32_t mc_cmd; //TODO: тест CANopen SDO CLI
+uint32_t mc_cmd; //TODO: тест CANopen SDO CLI
+
+CO_SDO_CLI_Queue* mc_mot_pot_ptr = NULL; //TODO: тест CANopen SDO CLI
+reg_iq24_t mc_mot_pot;
 
 struct timeval sys_main_execution_time; //TODO: определить куда засунуть
 
@@ -228,6 +231,15 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 			mc_cmd_ptr = NULL;
 		}
     }
+
+	if (mc_mot_pot_ptr == NULL) {
+		mc_mot_pot_ptr = CO_SDO_CLI_write(&can1_cli_driver, 1, 0x2720, 8, &mc_mot_pot, 4, 20);
+	} else {
+		if (mc_mot_pot_ptr->m_state == CO_SDO_CLI_State_DONE) {
+			mc_mot_pot = ao_dac7562.in_ch_a * 256;
+			mc_mot_pot_ptr = NULL;
+		}
+	}
 
     //digital_out.in_data = digital_in.out_data; //TODO: тут должна быть логика MC
 

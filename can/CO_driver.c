@@ -238,7 +238,7 @@ CO_ReturnError_t CO_CANrxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, u
 
 	CAN_TypeDef *can_bus = (CAN_TypeDef*) (((can_bus_t*) CANmodule->CANptr)->bus);
 
-	err = can_filter_bank_set(can_bus, index, can_id, can_mask);
+	err = can_filter_32b_bank_set(can_bus, index, can_id, can_mask);
 	if (err == E_INVALID_VALUE || err == E_OUT_OF_RANGE)
 		return CO_ERROR_ILLEGAL_ARGUMENT;
 
