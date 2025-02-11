@@ -140,22 +140,16 @@ err_t can_filter_32b_bank_set(CAN_TypeDef *CAN, int filter, uint32_t id, uint32_
 	if (filter < 0) return E_INVALID_VALUE;
 	if (filter > 27) return E_OUT_OF_RANGE;
 
-	//err_t err = E_NO_ERROR;
+	can_filter_set_inactive(CAN, filter);
 
-	/*err = */can_filter_set_inactive(CAN, filter);
-	//if(err) return err;
+	can_filter_set_mask_mode(CAN, filter);
 
-	/*err = */can_filter_set_mask_mode(CAN, filter);
-	//if(err) return err;
-
-	/*err = */can_filter_set_single_scale(CAN, filter);
-	//if(err) return err;
+	can_filter_set_single_scale(CAN, filter);
 
 	CAN->sFilterRegister[filter].FR1 = id;
 	CAN->sFilterRegister[filter].FR2 = mask;
 
-	/*err = */can_filter_set_active(CAN, filter);
-	//if(err) return err;
+	can_filter_set_active(CAN, filter);
 
 	return E_NO_ERROR;
 }
@@ -193,7 +187,7 @@ err_t can_filter_16b_bank_set(CAN_TypeDef *CAN, int filter, uint32_t id, uint32_
 	int filter_index = (filter >> 1);
 	int filter_subindex = (filter & 0b1);
 
-	err_t err = E_NO_ERROR;
+	if (filter_index > 27) return E_OUT_OF_RANGE;
 
 	bool filter_was_active = false;
 	bool filter_was_single = false;
@@ -206,19 +200,16 @@ err_t can_filter_16b_bank_set(CAN_TypeDef *CAN, int filter, uint32_t id, uint32_
 
 	can_filter_16b_t new_16b[2];
 
-	err = can_filter_is_active(CAN, filter_index, &filter_was_active);
-	if (err) return err;
+	can_filter_is_active(CAN, filter_index, &filter_was_active);
 
-	err = can_filter_is_single_scale(CAN, filter_index, &filter_was_single);
-	if (err) return err;
+	can_filter_is_single_scale(CAN, filter_index, &filter_was_single);
 
-	err = can_filter_set_inactive(CAN, filter_index);
-	if (err) return err;
+	can_filter_set_inactive(CAN, filter_index);
 
-	err = can_filter_set_mask_mode(CAN, filter_index);
-	if (err) return err;
+	can_filter_set_mask_mode(CAN, filter_index);
 
 	if (filter_subindex) {
+		//фильтры должны быть настроены последовательно!
 		if(filter_was_active == false || filter_was_single == false) return E_INVALID_OPERATION;
 
 		prev_32b_id.all = CAN->sFilterRegister[filter_index].FR1;
@@ -249,21 +240,18 @@ err_t can_filter_16b_bank_set(CAN_TypeDef *CAN, int filter, uint32_t id, uint32_
 		new_16b[1].bit.mask_rtr = next_32b_mask.bit.rtr;
 		new_16b[1].bit.mask_stid_0_10 = next_32b_mask.bit.stid_0_10;
 
-		err = can_filter_set_dual_scale(CAN, filter_index);
-		if (err) return err;
+		can_filter_set_dual_scale(CAN, filter_index);
 
 		CAN->sFilterRegister[filter_index].FR1 = new_16b[0].all;
 		CAN->sFilterRegister[filter_index].FR2 = new_16b[1].all;
 	} else {
-		err = can_filter_set_single_scale(CAN, filter_index);
-		if (err) return err;
+		can_filter_set_single_scale(CAN, filter_index);
 
 		CAN->sFilterRegister[filter_index].FR1 = id;
 		CAN->sFilterRegister[filter_index].FR2 = mask;
 	}
 
-	err = can_filter_set_active(CAN, filter_index);
-	if (err) return err;
+	can_filter_set_active(CAN, filter_index);
 
 	return E_NO_ERROR;
 }
