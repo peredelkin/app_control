@@ -148,6 +148,7 @@ extern void can_filter_init_mode(CAN_TypeDef *CAN);
 extern void can_filter_active_mode(CAN_TypeDef *CAN);
 extern err_t can2_filter_start_bank_set(CAN_TypeDef *CAN, int CAN2SB);
 extern err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
+extern err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
 
 extern err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, uint8_t* dlc, uint8_t* index, uint8_t* data);
 extern err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dlc, uint8_t* data);
