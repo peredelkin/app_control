@@ -5,38 +5,44 @@
  *      Author: Ruslan
  */
 
-#include "can_filter.h"
+#include <bus/can_master_filter.h>
 
 err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, uint32_t mask) {
 	if (filter_bank < 0) return E_INVALID_VALUE;
 	if (filter_bank > 27) return E_OUT_OF_RANGE;
 
+	CAN_TypeDef* can_master = bus->can_ptr[0];
+
 	int fifo_n = (filter_bank & 0x1);
 	int fifo_index = (filter_bank >> 1);
 
-	can_filter_set_inactive(bus->can, filter_bank);
+	can_master_filter_init_mode(can_master);
 
-	can_filter_set_mask_mode(bus->can, filter_bank);
+	can_master_filter_set_inactive(can_master, filter_bank);
 
-	can_filter_set_single_scale(bus->can, filter_bank);
+	can_master_filter_set_mask_mode(can_master, filter_bank);
+
+	can_master_filter_set_single_scale(can_master, filter_bank);
 
 	switch (fifo_n) {
 	case 0:
-		can_filter_assigned_to_fifo_0(bus->can, filter_bank);
+		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
 		bus->fifo_0_filter[fifo_index] = filter_bank;
 		break;
 	case 1:
-		can_filter_assigned_to_fifo_1(bus->can, filter_bank);
+		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
 		bus->fifo_1_filter[fifo_index] = filter_bank;
 		break;
 	default:
 		return E_INVALID_VALUE;
 	}
 
-	bus->can->sFilterRegister[filter_bank].FR1 = id;
-	bus->can->sFilterRegister[filter_bank].FR2 = mask;
+	can_master->sFilterRegister[filter_bank].FR1 = id;
+	can_master->sFilterRegister[filter_bank].FR2 = mask;
 
-	can_filter_set_active(bus->can, filter_bank);
+	can_master_filter_set_active(can_master, filter_bank);
+
+	can_master_filter_active_mode(can_master);
 
 	return E_NO_ERROR;
 }
@@ -71,6 +77,8 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	if (filter < 0) return E_INVALID_VALUE;
 	if (filter > 55) return E_OUT_OF_RANGE;
 
+	CAN_TypeDef* can_master = bus->can_ptr[0];
+
 	int filter_bank = (filter >> 1);
 	int filter_bank_subindex = (filter & 0b1);
 
@@ -90,21 +98,23 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 
 	can_filter_16b_t new_16b[2];
 
-	can_filter_is_active(bus->can, filter_bank, &filter_was_active);
+	can_master_filter_is_active(can_master, filter_bank, &filter_was_active);
 
-	can_filter_is_single_scale(bus->can, filter_bank, &filter_was_single);
+	can_master_filter_is_single_scale(can_master, filter_bank, &filter_was_single);
 
-	can_filter_set_inactive(bus->can, filter_bank);
+	can_master_filter_init_mode(can_master);
 
-	can_filter_set_mask_mode(bus->can, filter_bank);
+	can_master_filter_set_inactive(can_master, filter_bank);
+
+	can_master_filter_set_mask_mode(can_master, filter_bank);
 
 	switch (fifo_n) {
 	case 0:
-		can_filter_assigned_to_fifo_0(bus->can, filter_bank);
+		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
 		bus->fifo_0_filter[fifo_index] = filter;
 		break;
 	case 1:
-		can_filter_assigned_to_fifo_1(bus->can, filter_bank);
+		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
 		bus->fifo_1_filter[fifo_index] = filter;
 		break;
 	default:
@@ -115,8 +125,8 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 		//фильтры должны быть настроены последовательно!
 		if(filter_was_active == false || filter_was_single == false) return E_INVALID_OPERATION;
 
-		prev_32b_id.all = bus->can->sFilterRegister[filter_bank].FR1;
-		prev_32b_mask.all = bus->can->sFilterRegister[filter_bank].FR2;
+		prev_32b_id.all = can_master->sFilterRegister[filter_bank].FR1;
+		prev_32b_mask.all = can_master->sFilterRegister[filter_bank].FR2;
 
 		next_32b_id.all = id;
 		next_32b_mask.all = mask;
@@ -143,18 +153,20 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 		new_16b[1].bit.mask_rtr = next_32b_mask.bit.rtr;
 		new_16b[1].bit.mask_stid_0_10 = next_32b_mask.bit.stid_0_10;
 
-		can_filter_set_dual_scale(bus->can, filter_bank);
+		can_master_filter_set_dual_scale(can_master, filter_bank);
 
-		bus->can->sFilterRegister[filter_bank].FR1 = new_16b[0].all;
-		bus->can->sFilterRegister[filter_bank].FR2 = new_16b[1].all;
+		can_master->sFilterRegister[filter_bank].FR1 = new_16b[0].all;
+		can_master->sFilterRegister[filter_bank].FR2 = new_16b[1].all;
 	} else {
-		can_filter_set_single_scale(bus->can, filter_bank);
+		can_master_filter_set_single_scale(can_master, filter_bank);
 
-		bus->can->sFilterRegister[filter_bank].FR1 = id;
-		bus->can->sFilterRegister[filter_bank].FR2 = mask;
+		can_master->sFilterRegister[filter_bank].FR1 = id;
+		can_master->sFilterRegister[filter_bank].FR2 = mask;
 	}
 
-	can_filter_set_active(bus->can, filter_bank);
+	can_master_filter_set_active(can_master, filter_bank);
+
+	can_master_filter_active_mode(can_master);
 
 	return E_NO_ERROR;
 }

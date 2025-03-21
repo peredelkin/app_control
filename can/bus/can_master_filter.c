@@ -5,17 +5,17 @@
  *      Author: Ruslan
  */
 
-#include "can_filter.h"
+#include "can_master_filter.h"
 
-void can_filter_init_mode(CAN_TypeDef *CAN) {
+void can_master_filter_init_mode(CAN_TypeDef *CAN) {
 	CAN->FMR |= CAN_FMR_FINIT;
 }
 
-void can_filter_active_mode(CAN_TypeDef *CAN) {
+void can_master_filter_active_mode(CAN_TypeDef *CAN) {
 	CAN->FMR &= ~CAN_FMR_FINIT;
 }
 
-err_t can2_filter_start_bank_set(CAN_TypeDef *CAN, int CAN2SB) {
+err_t can_master_can2_filter_start_bank_set(CAN_TypeDef *CAN, int CAN2SB) {
 	if (CAN2SB < 0) return E_INVALID_VALUE;
 	if (CAN2SB > 27) return E_OUT_OF_RANGE;
 
@@ -25,7 +25,7 @@ err_t can2_filter_start_bank_set(CAN_TypeDef *CAN, int CAN2SB) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_set_mask_mode(CAN_TypeDef *CAN, int FBM) {
+err_t can_master_filter_set_mask_mode(CAN_TypeDef *CAN, int FBM) {
 	if (FBM < 0) return E_INVALID_VALUE;
 	if (FBM > 27) return E_OUT_OF_RANGE;
 
@@ -34,7 +34,7 @@ err_t can_filter_set_mask_mode(CAN_TypeDef *CAN, int FBM) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_set_list_mode(CAN_TypeDef *CAN, int FBM) {
+err_t can_master_filter_set_list_mode(CAN_TypeDef *CAN, int FBM) {
 	if (FBM < 0) return E_INVALID_VALUE;
 	if (FBM > 27) return E_OUT_OF_RANGE;
 
@@ -43,7 +43,7 @@ err_t can_filter_set_list_mode(CAN_TypeDef *CAN, int FBM) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_is_list_mode(CAN_TypeDef *CAN, int FBM, bool *list_mode) {
+err_t can_master_filter_is_list_mode(CAN_TypeDef *CAN, int FBM, bool *list_mode) {
 	if (FBM < 0) return E_INVALID_VALUE;
 	if (FBM > 27) return E_OUT_OF_RANGE;
 
@@ -56,7 +56,7 @@ err_t can_filter_is_list_mode(CAN_TypeDef *CAN, int FBM, bool *list_mode) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_set_dual_scale(CAN_TypeDef *CAN, int FSC) {
+err_t can_master_filter_set_dual_scale(CAN_TypeDef *CAN, int FSC) {
 	if (FSC < 0) return E_INVALID_VALUE;
 	if (FSC > 27) return E_OUT_OF_RANGE;
 
@@ -65,7 +65,7 @@ err_t can_filter_set_dual_scale(CAN_TypeDef *CAN, int FSC) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_set_single_scale(CAN_TypeDef *CAN, int FSC) {
+err_t can_master_filter_set_single_scale(CAN_TypeDef *CAN, int FSC) {
 	if (FSC < 0) return E_INVALID_VALUE;
 	if (FSC > 27) return E_OUT_OF_RANGE;
 
@@ -74,7 +74,7 @@ err_t can_filter_set_single_scale(CAN_TypeDef *CAN, int FSC) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_is_single_scale(CAN_TypeDef *CAN, int FSC, bool *single_scale) {
+err_t can_master_filter_is_single_scale(CAN_TypeDef *CAN, int FSC, bool *single_scale) {
 	if (FSC < 0) return E_INVALID_VALUE;
 	if (FSC > 27) return E_OUT_OF_RANGE;
 
@@ -87,7 +87,7 @@ err_t can_filter_is_single_scale(CAN_TypeDef *CAN, int FSC, bool *single_scale) 
 	return E_NO_ERROR;
 }
 
-err_t can_filter_assigned_to_fifo_0(CAN_TypeDef *CAN, int FFA) {
+err_t can_master_filter_assigned_to_fifo_0(CAN_TypeDef *CAN, int FFA) {
 	if (FFA < 0) return E_INVALID_VALUE;
 	if (FFA > 27) return E_OUT_OF_RANGE;
 
@@ -96,7 +96,7 @@ err_t can_filter_assigned_to_fifo_0(CAN_TypeDef *CAN, int FFA) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_assigned_to_fifo_1(CAN_TypeDef *CAN, int FFA) {
+err_t can_master_filter_assigned_to_fifo_1(CAN_TypeDef *CAN, int FFA) {
 	if (FFA < 0) return E_INVALID_VALUE;
 	if (FFA > 27) return E_OUT_OF_RANGE;
 
@@ -105,7 +105,7 @@ err_t can_filter_assigned_to_fifo_1(CAN_TypeDef *CAN, int FFA) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_is_active(CAN_TypeDef *CAN, int FACT, bool *is_active) {
+err_t can_master_filter_is_active(CAN_TypeDef *CAN, int FACT, bool *is_active) {
 	if (FACT < 0) return E_INVALID_VALUE;
 	if (FACT > 27) return E_OUT_OF_RANGE;
 
@@ -118,7 +118,7 @@ err_t can_filter_is_active(CAN_TypeDef *CAN, int FACT, bool *is_active) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_set_inactive(CAN_TypeDef *CAN, int FACT) {
+err_t can_master_filter_set_inactive(CAN_TypeDef *CAN, int FACT) {
 	if (FACT < 0) return E_INVALID_VALUE;
 	if (FACT > 27) return E_OUT_OF_RANGE;
 
@@ -127,7 +127,7 @@ err_t can_filter_set_inactive(CAN_TypeDef *CAN, int FACT) {
 	return E_NO_ERROR;
 }
 
-err_t can_filter_set_active(CAN_TypeDef *CAN, int FACT) {
+err_t can_master_filter_set_active(CAN_TypeDef *CAN, int FACT) {
 	if (FACT < 0) return E_INVALID_VALUE;
 	if (FACT > 27) return E_OUT_OF_RANGE;
 

@@ -25,7 +25,19 @@
 
 
 can_bus_t can_bus_1 = {
-		.can = CAN1,
+		.can_ptr[0] = CAN1,
+		.can_ptr[1] = CAN2,
+		.can_n = 0,
+		.error = 0,
+		.tx_error_counter  = 0,
+		.rx_error_counter = 0,
+		.last_error_code  = 0
+};
+
+can_bus_t can_bus_2 = {
+		.can_ptr[0] = CAN1,
+		.can_ptr[1] = CAN2,
+		.can_n = 1,
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
@@ -78,20 +90,27 @@ void can1_rcc_init(void) {
 }
 
 void can1_pre_init(can_bus_t* bus) {
-	can_software_master_reset(bus->can);	//Force a master reset of the bxCAN
+	while(bus == NULL);
 
-	can_bus_initialization_request(bus->can);
+	CAN_TypeDef* can_master = bus->can_ptr[0];
+	CAN_TypeDef* can = bus->can_ptr[bus->can_n];
 
-	can_MCR_TXFP_set(bus->can, true);		//Priority driven by the request order (chronologically)
-	can_MCR_RFLM_set(bus->can, true);		//Receive FIFO locked against overrun.
-	can_MCR_NART_set(bus->can,false);		//The CAN hardware will automatically retransmit the message
-	can_MCR_AWUM_set(bus->can,false);		//The Sleep mode is left on software request
-	can_MCR_ABOM_set(bus->can, true);		//The Bus-Off state is left automatically by hardware
-	can_MCR_TTCM_set(bus->can,false);		//Time Triggered Communication mode disabled
-	can_MCR_DBF_set(bus->can, true);		//CAN reception/transmission frozen during debug
+	while(can == NULL);
 
-	can_filter_init_mode(bus->can);			//Initialization mode for the filters
-	can2_filter_start_bank_set(bus->can, 28); //28d, all the filters to CAN1 can be used
+	can_software_master_reset(can);	//Force a master reset of the bxCAN
+
+	can_bus_initialization_request(can);
+
+	can_MCR_TXFP_set(can, true);		//Priority driven by the request order (chronologically)
+	can_MCR_RFLM_set(can, true);		//Receive FIFO locked against overrun.
+	can_MCR_NART_set(can,false);		//The CAN hardware will automatically retransmit the message
+	can_MCR_AWUM_set(can,false);		//The Sleep mode is left on software request
+	can_MCR_ABOM_set(can, true);		//The Bus-Off state is left automatically by hardware
+	can_MCR_TTCM_set(can,false);		//Time Triggered Communication mode disabled
+	can_MCR_DBF_set(can, true);			//CAN reception/transmission frozen during debug
+
+	can_master_filter_init_mode(can_master);			//Initialization mode for the filters
+	can_master_can2_filter_start_bank_set(can_master, 28); //28d, all the filters to CAN1 can be used
 }
 
 int create_CO(CO_t** co)
@@ -197,8 +216,6 @@ void can1_init(void) {
 	gpio_can1_cfg_setup();
 
 	can1_rcc_init();
-
-	while(can_bus_1.can == NULL);
 
 	can1_pre_init(&can_bus_1);
 
