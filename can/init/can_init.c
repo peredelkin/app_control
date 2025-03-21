@@ -24,8 +24,8 @@
 //CAN1_SCE_IRQHandler               /* CAN1 SCE                     */
 
 
-can_bus_t can1 = {
-		.bus = CAN1,
+can_bus_t can_bus_1 = {
+		.can = CAN1,
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
@@ -77,21 +77,21 @@ void can1_rcc_init(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
 }
 
-void can1_pre_init(void) {
-	can_software_master_reset(can1.bus);	//Force a master reset of the bxCAN
+void can1_pre_init(can_bus_t* bus) {
+	can_software_master_reset(bus->can);	//Force a master reset of the bxCAN
 
-	can_bus_initialization_request(can1.bus);
+	can_bus_initialization_request(bus->can);
 
-	can_MCR_TXFP_set(can1.bus, true);		//Priority driven by the request order (chronologically)
-	can_MCR_RFLM_set(can1.bus, true);		//Receive FIFO locked against overrun.
-	can_MCR_NART_set(can1.bus,false);		//The CAN hardware will automatically retransmit the message
-	can_MCR_AWUM_set(can1.bus,false);		//The Sleep mode is left on software request
-	can_MCR_ABOM_set(can1.bus, true);		//The Bus-Off state is left automatically by hardware
-	can_MCR_TTCM_set(can1.bus,false);		//Time Triggered Communication mode disabled
-	can_MCR_DBF_set(can1.bus, true);		//CAN reception/transmission frozen during debug
+	can_MCR_TXFP_set(bus->can, true);		//Priority driven by the request order (chronologically)
+	can_MCR_RFLM_set(bus->can, true);		//Receive FIFO locked against overrun.
+	can_MCR_NART_set(bus->can,false);		//The CAN hardware will automatically retransmit the message
+	can_MCR_AWUM_set(bus->can,false);		//The Sleep mode is left on software request
+	can_MCR_ABOM_set(bus->can, true);		//The Bus-Off state is left automatically by hardware
+	can_MCR_TTCM_set(bus->can,false);		//Time Triggered Communication mode disabled
+	can_MCR_DBF_set(bus->can, true);		//CAN reception/transmission frozen during debug
 
-	can_filter_init_mode(can1.bus);			//Initialization mode for the filters
-	can2_filter_start_bank_set(can1.bus, 28); //28d, all the filters to CAN1 can be used
+	can_filter_init_mode(bus->can);			//Initialization mode for the filters
+	can2_filter_start_bank_set(bus->can, 28); //28d, all the filters to CAN1 can be used
 }
 
 int create_CO(CO_t** co)
@@ -198,9 +198,9 @@ void can1_init(void) {
 
 	can1_rcc_init();
 
-	while(can1.bus == NULL);
+	while(can_bus_1.can == NULL);
 
-	can1_pre_init();
+	can1_pre_init(&can_bus_1);
 
 	int res = create_CO(&co);
 
@@ -208,7 +208,7 @@ void can1_init(void) {
 		printf("Error create CO\n");
 	} else {
 		printf("CO created\n");
-		CO_ReturnError_t coerr = init_CO(co, &can1);
+		CO_ReturnError_t coerr = init_CO(co, &can_bus_1);
 
 		if(coerr != CO_ERROR_NO) {
 			printf("Error init CO (%d)\n", (int)coerr);

@@ -20,6 +20,7 @@ enum {
 	CAN_RX_MAILBOX_1
 };
 
+#define CAN_FILTER_MAX_COUNT	112	//28*4
 
 #define CAN_ERROR_RX_WARNING	((uint32_t)BIT(0))
 #define CAN_ERROR_TX_WARNING	((uint32_t)BIT(1))
@@ -48,7 +49,9 @@ enum {
 
 
 typedef struct {
-	CAN_TypeDef *bus;
+	CAN_TypeDef *can;
+	uint8_t fifo_0_filter[CAN_FILTER_MAX_COUNT];
+	uint8_t fifo_1_filter[CAN_FILTER_MAX_COUNT];
 	uint32_t error;
 	uint32_t tx_error_counter;
 	uint32_t rx_error_counter;
@@ -141,11 +144,10 @@ extern uint32_t can_ESR_EWGF_read(uint32_t ESR);
 extern void can_BTR_set(CAN_TypeDef* can, uint32_t btr);
 
 //Address offset: 0x200
-extern void can_filter_init_mode(CAN_TypeDef* CAN);
-extern void can_filter_active_mode(CAN_TypeDef* CAN);
-err_t can2_filter_start_bank_set(CAN_TypeDef* CAN, int CAN2SB);
-extern err_t can_filter_32b_bank_set(CAN_TypeDef* CAN, int filter, uint32_t id, uint32_t mask);
-extern err_t can_filter_16b_bank_set(CAN_TypeDef *CAN, int filter, uint32_t id, uint32_t mask);
+extern void can_filter_init_mode(CAN_TypeDef *CAN);
+extern void can_filter_active_mode(CAN_TypeDef *CAN);
+extern err_t can2_filter_start_bank_set(CAN_TypeDef *CAN, int CAN2SB);
+extern err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
 
 extern err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, uint8_t* dlc, uint8_t* index, uint8_t* data);
 extern err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dlc, uint8_t* data);
