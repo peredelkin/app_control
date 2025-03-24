@@ -7,11 +7,6 @@
 
 #include "can_IER.h"
 
-enum {
-	CAN_RX_MAILBOX_0 = 0,
-	CAN_RX_MAILBOX_1
-};
-
 //SLKIE: Sleep interrupt enable
 void can_IER_SLKIE_set(CAN_TypeDef* can, bool state) {
 	if(state) {
@@ -106,7 +101,7 @@ uint32_t can_IER_EWGIE_read(CAN_TypeDef* can) {
 //FOVIE: FIFO overrun interrupt enable
 void can_IER_FOVIE_set(CAN_TypeDef* can, int fifo, bool state) {
 	switch(fifo) {
-	case CAN_RX_MAILBOX_0:
+	case 0:
 		if(state) {
 			can->IER |= CAN_IER_FOVIE0;
 		} else {
@@ -114,7 +109,7 @@ void can_IER_FOVIE_set(CAN_TypeDef* can, int fifo, bool state) {
 		}
 		break;
 
-	case CAN_RX_MAILBOX_1:
+	case 1:
 		if(state) {
 			can->IER |= CAN_IER_FOVIE1;
 		} else {
@@ -128,8 +123,8 @@ void can_IER_FOVIE_set(CAN_TypeDef* can, int fifo, bool state) {
 
 uint32_t can_IER_FOVIE_read(CAN_TypeDef* can, int fifo) {
 	switch(fifo) {
-	case CAN_RX_MAILBOX_0: return can->IER & CAN_IER_FOVIE0;
-	case CAN_RX_MAILBOX_1: return can->IER & CAN_IER_FOVIE1;
+	case 0: return can->IER & CAN_IER_FOVIE0;
+	case 1: return can->IER & CAN_IER_FOVIE1;
 	default: return 0;
 	}
 }
@@ -137,7 +132,7 @@ uint32_t can_IER_FOVIE_read(CAN_TypeDef* can, int fifo) {
 //FFIE: FIFO full interrupt enable
 void can_IER_FFIE_set(CAN_TypeDef* can, int fifo, bool state) {
 	switch(fifo) {
-	case CAN_RX_MAILBOX_0:
+	case 0:
 		if(state) {
 			can->IER |= CAN_IER_FFIE0;
 		} else {
@@ -145,7 +140,7 @@ void can_IER_FFIE_set(CAN_TypeDef* can, int fifo, bool state) {
 		}
 		break;
 
-	case CAN_RX_MAILBOX_1:
+	case 1:
 		if(state) {
 			can->IER |= CAN_IER_FFIE1;
 		} else {
@@ -159,8 +154,8 @@ void can_IER_FFIE_set(CAN_TypeDef* can, int fifo, bool state) {
 
 uint32_t can_IER_FFIE_read(CAN_TypeDef* can, int fifo) {
 	switch(fifo) {
-	case CAN_RX_MAILBOX_0: return can->IER & CAN_IER_FFIE0;
-	case CAN_RX_MAILBOX_1: return can->IER & CAN_IER_FFIE1;
+	case 0: return can->IER & CAN_IER_FFIE0;
+	case 1: return can->IER & CAN_IER_FFIE1;
 	default: return 0;
 	}
 }
@@ -169,7 +164,7 @@ uint32_t can_IER_FFIE_read(CAN_TypeDef* can, int fifo) {
 void can_IER_FMPIE_set(CAN_TypeDef* can, int fifo, bool state) {
 	switch(fifo) {
 
-	case CAN_RX_MAILBOX_0:
+	case 0:
 		if(state)
 		{
 			can->IER |= CAN_IER_FMPIE0;
@@ -178,7 +173,7 @@ void can_IER_FMPIE_set(CAN_TypeDef* can, int fifo, bool state) {
 		}
 		break;
 
-	case CAN_RX_MAILBOX_1:
+	case 1:
 		if(state) {
 			can->IER |= CAN_IER_FMPIE1;
 		} else {
@@ -192,8 +187,8 @@ void can_IER_FMPIE_set(CAN_TypeDef* can, int fifo, bool state) {
 
 uint32_t can_IER_FMPIE_read(CAN_TypeDef* can, int fifo) {
 	switch(fifo) {
-	case CAN_RX_MAILBOX_0: return can->IER & CAN_IER_FMPIE0;
-	case CAN_RX_MAILBOX_1: return can->IER & CAN_IER_FMPIE1;
+	case 0: return can->IER & CAN_IER_FMPIE0;
+	case 1: return can->IER & CAN_IER_FMPIE1;
 	default: return 0;
 	}
 }

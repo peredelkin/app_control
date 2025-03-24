@@ -9,18 +9,13 @@
 #include "can_rx_mailbox.h"
 #include "can_reg.h"
 
-enum {
-	CAN_RX_FIFO_0 = 0,
-	CAN_RX_FIFO_1
-};
-
 uint32_t can_RIR_read(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_0].RIR;
+	case 0:
+		return CAN->sFIFOMailBox[0].RIR;
 
-	case CAN_RX_FIFO_1:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_1].RIR;
+	case 1:
+		return CAN->sFIFOMailBox[1].RIR;
 
 	default:
 		return 0;
@@ -29,11 +24,11 @@ uint32_t can_RIR_read(CAN_TypeDef* CAN, int fifo) {
 
 uint32_t can_RDTR_read(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_0].RDTR;
+	case 0:
+		return CAN->sFIFOMailBox[0].RDTR;
 
-	case CAN_RX_FIFO_1:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_1].RDTR;
+	case 1:
+		return CAN->sFIFOMailBox[1].RDTR;
 
 	default:
 		return 0;
@@ -42,11 +37,11 @@ uint32_t can_RDTR_read(CAN_TypeDef* CAN, int fifo) {
 
 uint32_t can_RDLR_read(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_0].RDLR;
+	case 0:
+		return CAN->sFIFOMailBox[0].RDLR;
 
-	case CAN_RX_FIFO_1:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_1].RDLR;
+	case 1:
+		return CAN->sFIFOMailBox[1].RDLR;
 
 	default:
 		return 0;
@@ -55,11 +50,11 @@ uint32_t can_RDLR_read(CAN_TypeDef* CAN, int fifo) {
 
 uint32_t can_RDHR_read(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_0].RDHR;
+	case 0:
+		return CAN->sFIFOMailBox[0].RDHR;
 
-	case CAN_RX_FIFO_1:
-		return CAN->sFIFOMailBox[CAN_RX_FIFO_1].RDHR;
+	case 1:
+		return CAN->sFIFOMailBox[1].RDHR;
 
 	default:
 		return 0;
@@ -68,10 +63,10 @@ uint32_t can_RDHR_read(CAN_TypeDef* CAN, int fifo) {
 
 uint32_t can_RFR_read(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
+	case 0:
 		return CAN->RF0R;
 
-	case CAN_RX_FIFO_1:
+	case 1:
 		return CAN->RF1R;
 
 	default:
@@ -93,11 +88,11 @@ uint32_t can_RFR_FOVR_read(uint32_t RFR) {
 
 void can_RFR_FULL_clear(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
+	case 0:
 		CAN->RF0R = CAN_RFR_FULL;
 		break;
 
-	case CAN_RX_FIFO_1:
+	case 1:
 		CAN->RF1R = CAN_RFR_FULL;
 		break;
 
@@ -108,11 +103,11 @@ void can_RFR_FULL_clear(CAN_TypeDef* CAN, int fifo) {
 
 void can_RFR_FOVR_clear(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
+	case 0:
 		CAN->RF0R = CAN_RFR_FOVR;
 		break;
 
-	case CAN_RX_FIFO_1:
+	case 1:
 		CAN->RF1R = CAN_RFR_FOVR;
 		break;
 
@@ -123,11 +118,11 @@ void can_RFR_FOVR_clear(CAN_TypeDef* CAN, int fifo) {
 
 void can_RFR_RFOM_set(CAN_TypeDef* CAN, int fifo) {
 	switch(fifo) {
-	case CAN_RX_FIFO_0:
+	case 0:
 		CAN->RF0R = CAN_RFR_RFOM;
 		break;
 
-	case CAN_RX_FIFO_1:
+	case 1:
 		CAN->RF1R = CAN_RFR_RFOM;
 		break;
 
