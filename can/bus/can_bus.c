@@ -5,7 +5,8 @@
  *      Author: Ruslan
  */
 
-#include <bus/can_master_filter.h>
+#include "can_bus.h"
+#include "can_master_filter.h"
 
 err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, uint32_t mask) {
 	if (filter_bank < 0) return E_INVALID_VALUE;

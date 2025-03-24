@@ -6,6 +6,7 @@
  */
 
 #include "can_master_filter.h"
+#include "can_reg.h"
 
 void can_master_filter_init_mode(CAN_TypeDef *CAN) {
 	CAN->FMR |= CAN_FMR_FINIT;

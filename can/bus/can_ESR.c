@@ -5,7 +5,8 @@
  *      Author: Ruslan
  */
 
-#include "can_bus.h"
+#include "can_ESR.h"
+#include "can_reg.h"
 
 uint32_t can_ESR_read(CAN_TypeDef *can) {
 	return can->ESR;

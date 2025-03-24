@@ -8,7 +8,9 @@
 #ifndef CAN_BUS_CAN_MASTER_FILTER_H_
 #define CAN_BUS_CAN_MASTER_FILTER_H_
 
-#include "can_bus.h"
+#include <stdbool.h>
+#include "lib/errors/errors.h"
+#include "lib/stm32f4xx/stm32f4xx.h"
 
 extern void can_master_filter_init_mode(CAN_TypeDef *CAN);
 extern void can_master_filter_active_mode(CAN_TypeDef *CAN);

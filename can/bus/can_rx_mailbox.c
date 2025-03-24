@@ -6,7 +6,8 @@
  */
 
 #include <string.h>
-#include "can_bus.h"
+#include "can_rx_mailbox.h"
+#include "can_reg.h"
 
 enum {
 	CAN_RX_FIFO_0 = 0,

@@ -5,7 +5,8 @@
  *      Author: Ruslan
  */
 
-#include "can_bus.h"
+#include "can_TSR.h"
+#include "can_reg.h"
 
 uint32_t can_TSR_read(CAN_TypeDef* can) {
 	return can->TSR;

@@ -5,7 +5,7 @@
  *      Author: Ruslan
  */
 
-#include "can_bus.h"
+#include "can_BTR.h"
 
 void can_BTR_SJW_set(CAN_TypeDef* can, uint32_t btr) {
 	can->BTR &= ~CAN_BTR_SJW;
