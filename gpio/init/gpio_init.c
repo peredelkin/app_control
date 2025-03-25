@@ -37,7 +37,7 @@ const gpio_pin_t GPO_CS_PTC_App = GPIO_PIN(GPIOC, GPIO_PIN_13); /*8, PC13, GPIO_
 //
 //
 //
-const gpio_pin_t GPI_Dip1_App = GPIO_PIN(GPIOC, GPIO_PIN_0); /*32, PC0, GPIO_Input, Dip1_App*/
+//
 //
 
 
