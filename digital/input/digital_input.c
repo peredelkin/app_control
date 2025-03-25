@@ -4,6 +4,8 @@
 
 METHOD_INIT_IMPL(M_digital_input, input)
 {
+	INIT(msdi);
+
 	gpio_em_stop_cfg_setup(); //EmStop_App
 	gpio_ac_dc_lost_cfg_setup(); //AC DC Lost
 
@@ -22,10 +24,13 @@ METHOD_INIT_IMPL(M_digital_input, input)
 
 METHOD_DEINIT_IMPL(M_digital_input, input)
 {
+	DEINIT(msdi);
 }
 
 METHOD_CALC_IMPL(M_digital_input, input)
 {
+	CALC(msdi);
+
 	input->m_in_data.bit.const_0 = 0;
 
 	input->m_in_data.bit.const_1 = 1;
