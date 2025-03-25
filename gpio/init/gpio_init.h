@@ -15,13 +15,19 @@ extern void gpio_rcc_init();
 extern const gpio_pin_t GPO_OE_App;
 extern void gpio_socket3_cfg_setup();
 
+extern void gpio_spi1_cfg_setup();
+
 extern void gpio_spi2_cfg_setup();
 
 extern void gpio_spi4_cfg_setup();
 
 extern void gpio_spi5_cfg_setup();
 
+extern void gpio_uart1_cfg_setup();
+
 extern void gpio_uart3_cfg_setup();
+
+extern void gpio_uart4_cfg_setup();
 
 extern void gpio_uart6_cfg_setup();
 
@@ -43,6 +49,10 @@ extern void gpio_rs485_panel_cfg_setup();
 extern void rs485_1_set_out();
 extern void rs485_1_set_in();
 extern void gpio_rs485_1_cfg_setup();
+
+extern void rs485_2_set_out();
+extern void rs485_2_set_in();
+extern void gpio_rs485_2_cfg_setup();
 
 extern const gpio_pin_t GPO_CS_DI_App;
 extern const gpio_pin_t GPO_Reset_DI_App;
