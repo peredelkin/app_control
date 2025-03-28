@@ -2,8 +2,9 @@
 #define BASE_REG_TYPES_H
 
 #include <stdint.h>
-#include "lib/iqmath/iq24.h"
-#include "lib/iqmath/iq15.h"
+#include "iqmath/iq24.h"
+#include "iqmath/iq15.h"
+#include "iqmath/iq7.h"
 
 
 // Перечисление типов.
@@ -24,14 +25,14 @@ typedef enum _E_Reg_Type {
 // Целочисленные типы.
 //! int8.
 typedef int8_t reg_i8_t;
-//! uint8.
-typedef uint8_t reg_u8_t;
 //! int16.
 typedef int16_t reg_i16_t;
-//! uint16.
-typedef uint16_t reg_u16_t;
 //! int32.
 typedef int32_t reg_i32_t;
+//! unt8.
+typedef uint8_t reg_u8_t;
+//! unt16.
+typedef uint16_t reg_u16_t;
 //! uint32.
 typedef uint32_t reg_u32_t;
 
@@ -41,7 +42,13 @@ typedef iq24_t reg_iq24_t;
 //! iq15.
 typedef iq15_t reg_iq15_t;
 //! iq7.
+typedef iq7_t reg_iq7_t;
 
+// Дополнительные типы.
+//! str.
+typedef const char* reg_str_t;
+//! mem.
+typedef void* reg_mem_t;
 
 
 #endif /* BASE_REG_TYPES_H */

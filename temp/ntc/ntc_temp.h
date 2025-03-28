@@ -26,6 +26,7 @@ struct _S_Ntc_Temp {
     // Входные данные.
     // Выходные данные.
     reg_iq15_t out_temp[NTC_TEMP_COUNT];
+    reg_iq15_t out_ohm[NTC_TEMP_COUNT];
     // Параметры.
     // Регистры.
     // Методы.
@@ -34,8 +35,9 @@ struct _S_Ntc_Temp {
     METHOD_CALC(M_ntc_temp);
     // Коллбэки.
     // Внутренние данные.
-    reg_u16_t *m_in_array;
-    reg_u16_t m_in_array_index;
+    reg_iq15_t m_R_ref;
+    reg_iq15_t m_R_in_min;
+    reg_iq15_t m_R_in_max;
 };
 
 EXTERN METHOD_INIT_PROTO(M_ntc_temp);
@@ -49,6 +51,7 @@ EXTERN METHOD_CALC_PROTO(M_ntc_temp);
         /* Входные данные */\
         /* Выходные данные */\
 		{0},\
+		{0},\
         /* Параметры */\
         /* Регистры */\
         /* Методы */\
@@ -57,6 +60,7 @@ EXTERN METHOD_CALC_PROTO(M_ntc_temp);
         METHOD_CALC_PTR(M_ntc_temp),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		0,\
 		0,\
 		0,\
     }

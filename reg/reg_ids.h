@@ -180,16 +180,188 @@
 #define REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_6 0x1a0306 /*  */
 #define REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_7 0x1a0307 /*  */
 #define REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_8 0x1a0308 /*  */
-#define REG_ID_TEMP_COUNT 0x200000 /*  */
-#define REG_ID_TEMP_NTC_0 0x200001 /*  */
-#define REG_ID_TEMP_NTC_1 0x200002 /*  */
-#define REG_ID_TEMP_NTC_2 0x200003 /*  */
-#define REG_ID_TEMP_NTC_3 0x200004 /*  */
-#define REG_ID_TEMP_NTC_4 0x200005 /*  */
-#define REG_ID_TEMP_NTC_5 0x200006 /*  */
-#define REG_ID_VOLTAGE_MSDI_VCC 0x200101 /*  */
-#define REG_ID_VOLTAGE_NTC_VREF 0x200102 /*  */
-#define REG_ID_CURRENT_AO_A 0x200201 /*  */
-#define REG_ID_CURRENT_AO_B 0x200202 /*  */
+#define REG_ID_CONF_COUNT 0x200000 /* Number of sub entries count */
+#define REG_ID_CONF_CONTROL 0x200001 /* Слово управления. */
+#define REG_ID_CONF_STATUS 0x200002 /* Слово состояния. */
+#define REG_ID_SYS_COUNT 0x201000 /* Number of sub entries count */
+#define REG_ID_SYS_CONTROL 0x201001 /* Слово управления. */
+#define REG_ID_SYS_STATUS 0x201002 /* Слово состояния. */
+#define REG_ID_SYS_ERRORS 0x201003 /* Ошибки. */
+#define REG_ID_SYS_WARNINGS 0x201004 /* Предупреждения. */
+#define REG_ID_SYS_STATE 0x201005 /* Состояние. */
+#define REG_ID_SYS_TIM_COUNT 0x202000 /* Number of sub entries count */
+#define REG_ID_SYS_TIM_CONTROL 0x202001 /* Слово управления. */
+#define REG_ID_SYS_TIM_STATUS 0x202002 /* Слово состояния. */
+#define REG_ID_SYS_TIM_OUT_COUNTER 0x202003 /* Счётчик тиков. */
+#define REG_ID_MS_TIM_COUNT 0x203000 /* Number of sub entries count */
+#define REG_ID_MS_TIM_CONTROL 0x203001 /* Слово управления. */
+#define REG_ID_MS_TIM_STATUS 0x203002 /* Слово состояния. */
+#define REG_ID_MS_TIM_OUT_COUNTER 0x203003 /* Счётчик тиков. */
+#define REG_ID_CLI_COUNT 0x204000 /* Number of sub entries count */
+#define REG_ID_CLI_CONTROL 0x204001 /* Слово управления. */
+#define REG_ID_CLI_STATUS 0x204002 /* Слово состояния. */
+#define REG_ID_RGB_LED_COUNT 0x205000 /* Number of sub entries count */
+#define REG_ID_RGB_LED_CONTROL 0x205001 /* Слово управления. */
+#define REG_ID_RGB_LED_STATUS 0x205002 /* Слово состояния. */
+#define REG_ID_RGB_LED_IN_DATA 0x205003 /*  */
+#define REG_ID_MSDI_COUNT 0x206000 /* Number of sub entries count */
+#define REG_ID_MSDI_CONTROL 0x206001 /* Слово управления. */
+#define REG_ID_MSDI_STATUS 0x206002 /* Слово состояния. */
+#define REG_ID_MSDI_OUT_DIGITAL 0x206003 /*  */
+#define REG_ID_MSDI_OUT_ANALOG0 0x206004 /*  */
+#define REG_ID_MSDI_OUT_ANALOG1 0x206005 /*  */
+#define REG_ID_MSDI_OUT_ANALOG2 0x206006 /*  */
+#define REG_ID_MSDI_OUT_ANALOG3 0x206007 /*  */
+#define REG_ID_MSDI_OUT_ANALOG4 0x206008 /*  */
+#define REG_ID_MSDI_OUT_ANALOG5 0x206009 /*  */
+#define REG_ID_MSDI_OUT_ANALOG6 0x20600a /*  */
+#define REG_ID_MSDI_OUT_ANALOG7 0x20600b /*  */
+#define REG_ID_MSDI_OUT_REF 0x20600c /*  */
+#define REG_ID_MSDI_OUT_VCC 0x20600d /*  */
+#define REG_ID_NTC_TEMP_COUNT 0x207000 /* Number of sub entries count */
+#define REG_ID_NTC_TEMP_CONTROL 0x207001 /* Слово управления. */
+#define REG_ID_NTC_TEMP_STATUS 0x207002 /* Слово состояния. */
+#define REG_ID_NTC_TEMP_OUT_TEMP0 0x207003 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP1 0x207004 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP2 0x207005 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP3 0x207006 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP4 0x207007 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP5 0x207008 /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM0 0x207009 /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM1 0x20700a /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM2 0x20700b /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM3 0x20700c /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM4 0x20700d /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM5 0x20700e /*  */
+#define REG_ID_DO_RELAY_COUNT 0x208000 /* Number of sub entries count */
+#define REG_ID_DO_RELAY_CONTROL 0x208001 /* Слово управления. */
+#define REG_ID_DO_RELAY_STATUS 0x208002 /* Слово состояния. */
+#define REG_ID_DO_RELAY_IN_DATA 0x208003 /*  */
+#define REG_ID_DO_NCV7608_COUNT 0x209000 /* Number of sub entries count */
+#define REG_ID_DO_NCV7608_CONTROL 0x209001 /* Слово управления. */
+#define REG_ID_DO_NCV7608_STATUS 0x209002 /* Слово состояния. */
+#define REG_ID_DO_NCV7608_IN_DATA 0x209003 /*  */
+#define REG_ID_DIGITAL_IN_COUNT 0x20a000 /* Number of sub entries count */
+#define REG_ID_DIGITAL_IN_CONTROL 0x20a001 /* Слово управления. */
+#define REG_ID_DIGITAL_IN_STATUS 0x20a002 /* Слово состояния. */
+#define REG_ID_DIGITAL_IN_OUT_DATA 0x20a003 /*  */
+#define REG_ID_DIGITAL_IN_INVERT 0x20a004 /*  */
+#define REG_ID_DIGITAL_IN_SELECT0 0x20a005 /*  */
+#define REG_ID_DIGITAL_IN_SELECT1 0x20a006 /*  */
+#define REG_ID_DIGITAL_IN_SELECT2 0x20a007 /*  */
+#define REG_ID_DIGITAL_IN_SELECT3 0x20a008 /*  */
+#define REG_ID_DIGITAL_IN_SELECT4 0x20a009 /*  */
+#define REG_ID_DIGITAL_IN_SELECT5 0x20a00a /*  */
+#define REG_ID_DIGITAL_IN_SELECT6 0x20a00b /*  */
+#define REG_ID_DIGITAL_IN_SELECT7 0x20a00c /*  */
+#define REG_ID_DIGITAL_IN_SELECT8 0x20a00d /*  */
+#define REG_ID_DIGITAL_IN_SELECT9 0x20a00e /*  */
+#define REG_ID_DIGITAL_IN_SELECT10 0x20a00f /*  */
+#define REG_ID_DIGITAL_IN_SELECT11 0x20a010 /*  */
+#define REG_ID_DIGITAL_IN_SELECT12 0x20a011 /*  */
+#define REG_ID_DIGITAL_IN_SELECT13 0x20a012 /*  */
+#define REG_ID_DIGITAL_IN_SELECT14 0x20a013 /*  */
+#define REG_ID_DIGITAL_IN_SELECT15 0x20a014 /*  */
+#define REG_ID_DIGITAL_IN_SELECT16 0x20a015 /*  */
+#define REG_ID_DIGITAL_IN_SELECT17 0x20a016 /*  */
+#define REG_ID_DIGITAL_IN_SELECT18 0x20a017 /*  */
+#define REG_ID_DIGITAL_IN_SELECT19 0x20a018 /*  */
+#define REG_ID_DIGITAL_IN_SELECT20 0x20a019 /*  */
+#define REG_ID_DIGITAL_IN_SELECT21 0x20a01a /*  */
+#define REG_ID_DIGITAL_IN_SELECT22 0x20a01b /*  */
+#define REG_ID_DIGITAL_IN_SELECT23 0x20a01c /*  */
+#define REG_ID_DIGITAL_IN_SELECT24 0x20a01d /*  */
+#define REG_ID_DIGITAL_IN_SELECT25 0x20a01e /*  */
+#define REG_ID_DIGITAL_IN_SELECT26 0x20a01f /*  */
+#define REG_ID_DIGITAL_IN_SELECT27 0x20a020 /*  */
+#define REG_ID_DIGITAL_IN_SELECT28 0x20a021 /*  */
+#define REG_ID_DIGITAL_IN_SELECT29 0x20a022 /*  */
+#define REG_ID_DIGITAL_IN_SELECT30 0x20a023 /*  */
+#define REG_ID_DIGITAL_IN_SELECT31 0x20a024 /*  */
+#define REG_ID_DIGITAL_OUT_COUNT 0x20b000 /* Number of sub entries count */
+#define REG_ID_DIGITAL_OUT_CONTROL 0x20b001 /* Слово управления. */
+#define REG_ID_DIGITAL_OUT_STATUS 0x20b002 /* Слово состояния. */
+#define REG_ID_DIGITAL_OUT_IN_DATA 0x20b003 /*  */
+#define REG_ID_DIGITAL_OUT_INVERT 0x20b004 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT0 0x20b005 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT1 0x20b006 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT2 0x20b007 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT3 0x20b008 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT4 0x20b009 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT5 0x20b00a /*  */
+#define REG_ID_DIGITAL_OUT_SELECT6 0x20b00b /*  */
+#define REG_ID_DIGITAL_OUT_SELECT7 0x20b00c /*  */
+#define REG_ID_DIGITAL_OUT_SELECT8 0x20b00d /*  */
+#define REG_ID_DIGITAL_OUT_SELECT9 0x20b00e /*  */
+#define REG_ID_DIGITAL_OUT_SELECT10 0x20b00f /*  */
+#define REG_ID_DIGITAL_OUT_SELECT11 0x20b010 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT12 0x20b011 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT13 0x20b012 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT14 0x20b013 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT15 0x20b014 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT16 0x20b015 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT17 0x20b016 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT18 0x20b017 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT19 0x20b018 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT20 0x20b019 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT21 0x20b01a /*  */
+#define REG_ID_DIGITAL_OUT_SELECT22 0x20b01b /*  */
+#define REG_ID_DIGITAL_OUT_SELECT23 0x20b01c /*  */
+#define REG_ID_DIGITAL_OUT_SELECT24 0x20b01d /*  */
+#define REG_ID_DIGITAL_OUT_SELECT25 0x20b01e /*  */
+#define REG_ID_DIGITAL_OUT_SELECT26 0x20b01f /*  */
+#define REG_ID_DIGITAL_OUT_SELECT27 0x20b020 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT28 0x20b021 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT29 0x20b022 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT30 0x20b023 /*  */
+#define REG_ID_DIGITAL_OUT_SELECT31 0x20b024 /*  */
+#define REG_ID_MSO_COUNT 0x20c000 /* Number of sub entries count */
+#define REG_ID_MSO_CONTROL 0x20c001 /* Слово управления. */
+#define REG_ID_MSO_STATUS 0x20c002 /* Слово состояния. */
+#define REG_ID_MSO_CHANNEL0 0x20c003 /*  */
+#define REG_ID_MSO_CHANNEL1 0x20c004 /*  */
+#define REG_ID_MSO_CHANNEL2 0x20c005 /*  */
+#define REG_ID_MSO_CHANNEL3 0x20c006 /*  */
+#define REG_ID_MSO_CHANNEL4 0x20c007 /*  */
+#define REG_ID_MSO_CHANNEL5 0x20c008 /*  */
+#define REG_ID_MSO_CHANNEL6 0x20c009 /*  */
+#define REG_ID_MSO_CHANNEL7 0x20c00a /*  */
+#define REG_ID_MSO_CHANNEL8 0x20c00b /*  */
+#define REG_ID_MSO_CHANNEL9 0x20c00c /*  */
+#define REG_ID_MSO_CHANNEL10 0x20c00d /*  */
+#define REG_ID_MSO_CHANNEL11 0x20c00e /*  */
+#define REG_ID_MSO_CHANNEL12 0x20c00f /*  */
+#define REG_ID_MSO_CHANNEL13 0x20c010 /*  */
+#define REG_ID_MSO_CHANNEL14 0x20c011 /*  */
+#define REG_ID_MSO_CHANNEL15 0x20c012 /*  */
+#define REG_ID_MSO_CHANNEL16 0x20c013 /*  */
+#define REG_ID_MSO_CHANNEL17 0x20c014 /*  */
+#define REG_ID_MSO_CHANNEL18 0x20c015 /*  */
+#define REG_ID_MSO_CHANNEL19 0x20c016 /*  */
+#define REG_ID_MSO_CHANNEL20 0x20c017 /*  */
+#define REG_ID_MSO_CHANNEL21 0x20c018 /*  */
+#define REG_ID_MSO_CHANNEL22 0x20c019 /*  */
+#define REG_ID_MSO_CHANNEL23 0x20c01a /*  */
+#define REG_ID_MSO_CHANNEL24 0x20c01b /*  */
+#define REG_ID_MSO_CHANNEL25 0x20c01c /*  */
+#define REG_ID_MSO_CHANNEL26 0x20c01d /*  */
+#define REG_ID_MSO_CHANNEL27 0x20c01e /*  */
+#define REG_ID_MSO_CHANNEL28 0x20c01f /*  */
+#define REG_ID_MSO_CHANNEL29 0x20c020 /*  */
+#define REG_ID_MSO_CHANNEL30 0x20c021 /*  */
+#define REG_ID_MSO_CHANNEL31 0x20c022 /*  */
+#define REG_ID_AO_DAC7562_COUNT 0x20d000 /* Number of sub entries count */
+#define REG_ID_AO_DAC7562_CONTROL 0x20d001 /* Слово управления. */
+#define REG_ID_AO_DAC7562_STATUS 0x20d002 /* Слово состояния. */
+#define REG_ID_AO_DAC7562_IN_CH_A 0x20d003 /*  */
+#define REG_ID_AO_DAC7562_IN_CH_B 0x20d004 /*  */
+#define REG_ID_PANEL_LED_COUNT 0x20e000 /* Number of sub entries count */
+#define REG_ID_PANEL_LED_CONTROL 0x20e001 /* Слово управления. */
+#define REG_ID_PANEL_LED_STATUS 0x20e002 /* Слово состояния. */
+#define REG_ID_PANEL_LED_OUT_DATA 0x20e003 /*  */
+#define REG_ID_CAN_TIM_COUNT 0x20f000 /* Number of sub entries count */
+#define REG_ID_CAN_TIM_CONTROL 0x20f001 /* Слово управления. */
+#define REG_ID_CAN_TIM_STATUS 0x20f002 /* Слово состояния. */
+#define REG_ID_CAN_TIM_OUT_COUNTER 0x20f003 /* Счётчик тиков. */
 
 #endif /* REG_IDS_H */

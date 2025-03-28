@@ -43,7 +43,7 @@ struct _S_Digital_Input {
     status_t status; //!< Слово состояния.
     // Входные данные.
     // Выходные данные.
-    volatile reg_u32_t out_data;
+    reg_u32_t out_data;
     // Параметры.
     reg_u32_t p_invert;
     reg_u8_t p_select[DIGITAL_INPUT_COUNT];
