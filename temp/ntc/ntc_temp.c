@@ -18,12 +18,8 @@ METHOD_DEINIT_IMPL(M_ntc_temp, ntc_temp)
 }
 
 int bsearch_ohm_comparator(const void* ptr1, const void* ptr2) {
-	float R_in = *((float*)ptr1);
-	//a > b
-	float R_a = ((ntc_point_t*)ptr2)[0].kohm;
-	float R_b = ((ntc_point_t*)ptr2)[1].kohm;
-	if(R_in > R_a) return -1;
-	if(R_in < R_b) return 1;
+	if(*((float*)ptr1) > ((ntc_point_t*)ptr2)[0].kohm) return -1;
+	if(*((float*)ptr1) < ((ntc_point_t*)ptr2)[1].kohm) return 1;
 	return 0;
 }
 
@@ -58,15 +54,8 @@ METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
 			&bsearch_ohm_comparator);
 
 	if (ntc_ptr != NULL) {
-		float R_a = ntc_ptr[0].kohm;
-		float Temp_a = ntc_ptr[0].temp;
-
-		float R_b = ntc_ptr[1].kohm;
-		float Temp_b = ntc_ptr[1].temp;
-
-		float Temp = Temp_a + ((Temp_b - Temp_a) * (R_a - float_R_in)) / (R_a - R_b);
-
-		ntc_temp->out_temp[ntc_counter] = (iq15_t) (Temp * IQ15_BASE);
+		float Temp = ntc_ptr[0].temp + ((ntc_ptr[1].temp - ntc_ptr[0].temp) * (ntc_ptr[0].kohm - float_R_in)) / (ntc_ptr[0].kohm - ntc_ptr[1].kohm);
+		ntc_temp->out_temp[ntc_counter] += (((iq15_t)(Temp * IQ15_BASE)) - ntc_temp->out_temp[ntc_counter])/16;
 	} else {
 		ntc_temp->out_temp[ntc_counter] = IQ15_MAX;
 	}
