@@ -161,11 +161,12 @@ static_assert(sizeof(sdcard_reply_r7_t) == SDCARD_REPLY_R7_SIZE, "Invalid size o
 
 //! Перечисления типа ответа SD-карты.
 typedef enum _SD_Card_Reply_Type {
-    SDCARD_REPLY_R1 = 0, //!< Ответ R1.
-    SDCARD_REPLY_R1b = 1, //!< Ответ R1 с ожиданием busy.
-    SDCARD_REPLY_R2 = 2, //!< Ответ R2.
-    SDCARD_REPLY_R3 = 3, //!< Ответ R3.
-    SDCARD_REPLY_R7 = 4, //!< Ответ R7.
+	SDCARD_REPLY_NO = 0, //!<Нет ответа
+    SDCARD_REPLY_R1 = 1, //!< Ответ R1.
+    SDCARD_REPLY_R1b = 2, //!< Ответ R1 с ожиданием busy.
+    SDCARD_REPLY_R2 = 3, //!< Ответ R2.
+    SDCARD_REPLY_R3 = 4, //!< Ответ R3.
+    SDCARD_REPLY_R7 = 5, //!< Ответ R7.
 } sdcard_reply_type_t;
 
 //! Общий ответ SD-карты.

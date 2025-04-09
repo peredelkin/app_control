@@ -5,11 +5,8 @@
  *      Author: ruslan
  */
 
-#include <stdbool.h>
-#include <assert.h>
-#include "lib/errors/errors.h"
-
 #include "sdio.h"
+#include "stm32f4xx.h"
 
 void sdio_power_control(sdio_pwrctrl_t pwrctrl) {
 	_sdio_power_reg_t power;
@@ -68,6 +65,51 @@ void sdio_command(
 	SDIO->ARG = argument;
 
 	SDIO->CMD = cmd.all;
+}
+
+err_t sdio_data_wait() {
+	while (SDIO->STA & (SDIO_STA_RXACT | SDIO_STA_TXACT));
+	if (SDIO->STA & SDIO_STA_DTIMEOUT) {
+		SDIO->ICR = SDIO_ICR_DTIMEOUTC;
+		return E_TIME_OUT;
+	}
+	return E_NO_ERROR;
+}
+
+err_t sdio_cmd_wait(sdcard_reply_type_t reply_type) {
+	while (SDIO->STA & SDIO_STA_CMDACT);
+
+	if (SDIO->STA & SDIO_STA_CMDREND) {
+		SDIO->ICR = SDIO_ICR_CMDRENDC;
+		return E_NO_ERROR;
+	}
+
+	/*
+	 * If the response does not contain a CRC, the device driver must ignore the CRC failed status.
+	 */
+	if (SDIO->STA & SDIO_STA_CCRCFAIL) {
+		SDIO->ICR = SDIO_ICR_CCRCFAILC;
+		switch(reply_type) {
+		case SDCARD_REPLY_R2:
+			return E_NO_ERROR;
+		case SDCARD_REPLY_R3:
+			return E_NO_ERROR;
+		default:
+			return E_CRC;
+		}
+	}
+
+	if (SDIO->STA & SDIO_STA_CMDSENT) {
+		SDIO->ICR = SDIO_ICR_CMDSENTC;
+		return E_NO_ERROR;
+	}
+
+	if (SDIO->STA & SDIO_STA_CTIMEOUT) {
+		SDIO->ICR = SDIO_ICR_CTIMEOUTC;
+		return E_TIME_OUT;
+	}
+
+	return E_NOT_IMPLEMENTED;
 }
 
 

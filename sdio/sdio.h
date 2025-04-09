@@ -10,7 +10,8 @@
 
 #include <assert.h>
 
-#include "stm32f4xx.h"
+#include "lib/errors/errors.h"
+#include "sdcard/sdcard_reply.h"
 
 #define SDIO_ACCESS_WIDTH 4
 
@@ -145,5 +146,10 @@ typedef union _sdio_cmd_reg {
 
 extern void sdio_power_control(sdio_pwrctrl_t pwrctrl);
 extern void sdio_clock_control(uint8_t clkdiv, sdio_clken_t clken, sdio_pwrsav_t pwrsav, sdio_bypass_t bypass);
+extern void sdio_command(uint32_t argument, int cmd_index, sdio_respwait_t respwait, sdio_resptype_t resptype,
+		sdio_intwait_t intwait, sdio_pendwait_t pendwait, sdio_cpsmen_t cpsmen, sdio_suspend_t suspend,
+		sdio_cmdcompl_t cmdcompl, sdio_nien_t nien, sdio_atacmd_t atacmd);
+extern err_t sdio_data_wait();
+extern err_t sdio_cmd_wait(sdcard_reply_type_t reply_type);
 
 #endif /* SDIO_SDIO_H_ */

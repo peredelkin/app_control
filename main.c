@@ -141,18 +141,6 @@ int main(void)
 	sys_counter_tv_print();
 	printf("CAN1 initialized\n");
 
-	//SDIO!
-	gpio_sdio_cfg_setup();
-	sys_counter_tv_print();
-	if(gpio_input_bit_read(&GPI_SDIO_CD_App) == false) {
-		printf("SD Card Inserted\n");
-		gpio_output_bit_setup(&GPO_SDIO_PWR_App, DISABLE);
-		sys_counter_delay(0, 300000); // 300ms
-		RCC->APB2ENR |= RCC_APB2ENR_SDIOEN;
-	} else {
-		printf("SD Card Not Inserted\n");
-	}
-
 	//FMC, SRAM, NAND, YAFFS2
 	int res;
 	if(fmc_init() == E_NO_ERROR) {
@@ -162,6 +150,43 @@ int main(void)
 		res = yaffs_mount("/nand");
 		sys_counter_tv_print();
 		printf("YAFFS Mount: %d\n", res);
+	}
+
+	//SDIO!
+	err_t sdio_err = E_NO_ERROR;
+	gpio_sdio_cfg_setup();
+	sys_counter_tv_print();
+	if (gpio_input_bit_read(&GPI_SDIO_CD_App) == false) {
+		printf("SD Card Inserted\n");
+		gpio_output_bit_setup(&GPO_SDIO_PWR_App, DISABLE);
+		sys_counter_delay(0, 300000); // 300ms
+
+		RCC->APB2ENR |= RCC_APB2ENR_SDIOEN;
+		sdio_clock_control(126, SDIO_CLKCR_CLK_EN, SDIO_CLKCR_PWRSAV_ENA, SDIO_CLKCR_BYP_DIS);
+		sdio_power_control(SDIO_POWER_PWRCTRL_ON);
+
+		sdio_command(0, 0, SDIO_RESP_WAIT_DIS, SDIO_RESP_TYPE_SHORT, SDIO_INT_WAIT_DIS, SDIO_PEND_WAIT_DIS,
+				SDIO_CPSM_EN, SDIO_SUSPEND_DIS, SDIO_CMD_COMPLETION_DIS, SDIO_nIEN_DIS, SDIO_ATACMD_DIS);
+
+		sdio_err = sdio_cmd_wait(SDCARD_REPLY_NO);
+		if(sdio_err != E_NO_ERROR) {
+			printf("CMD error: %d\n", sdio_err);
+		}
+
+		sdio_command(0, 8, SDIO_RESP_WAIT_ENA, SDIO_RESP_TYPE_SHORT, SDIO_INT_WAIT_DIS, SDIO_PEND_WAIT_DIS,
+				SDIO_CPSM_EN, SDIO_SUSPEND_DIS, SDIO_CMD_COMPLETION_DIS, SDIO_nIEN_DIS, SDIO_ATACMD_DIS);
+
+		sdio_err = sdio_cmd_wait(SDCARD_REPLY_R1);
+		if (sdio_err != E_NO_ERROR) {
+			printf("CMD error: %d\n", sdio_err);
+		} else {
+			printf("CMDREND CMD: %lu\n", SDIO->RESPCMD);
+			printf("CMDREND RESP1: %lu\n", SDIO->RESP1);
+		}
+
+
+	} else {
+		printf("SD Card Not Inserted\n");
 	}
 
 	//eth_init(); //отпаяно
