@@ -146,7 +146,7 @@ typedef union _sdio_cmd_reg {
 
 typedef enum {
 	SDIO_RESP_CRC_NOT_INCLUDE = 0b0,
-	SDIO_RESP_CRC_INCLUDE = 0b1
+	SDIO_RESP_CRC_INCLUDED = 0b1
 } sdio_resp_crc_include_t;
 
 extern void sdio_power_control(sdio_pwrctrl_t pwrctrl);
