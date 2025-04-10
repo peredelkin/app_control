@@ -125,26 +125,6 @@ ALWAYS_INLINE static uint16_t sdcard_crc16_ccitt(const void* data, size_t size)
     return crc16_ccitt_initial(data, size, 0x0000);
 }
 
-
-/*
- * Предопределённые команды SD-карты.
- */
-static const sdcard_cmd_t sdcard_cmd0 = SDCARD_CMD_MAKE(SDCARD_CMD_GO_IDLE_STATE, 0, 0x4a);
-static const sdcard_cmd_t sdcard_cmd1 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_OP_COND, 0, 0x7c);
-static const sdcard_cmd_t sdcard_cmd8 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_IF_COND, SDCARD_SEND_IF_COND_CHECK, 0x43);
-static const sdcard_cmd_t sdcard_cmd9 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_CSD, 0, 0x57);
-static const sdcard_cmd_t sdcard_cmd10 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_CID, 0, 0xd);
-static const sdcard_cmd_t sdcard_cmd12 = SDCARD_CMD_MAKE(SDCARD_CMD_STOP_TRANSMISSION, 0, 0x30);
-static const sdcard_cmd_t sdcard_cmd13 = SDCARD_CMD_MAKE(SDCARD_CMD_SEND_STATUS, 0, 0x6);
-static const sdcard_cmd_t sdcard_cmd38 = SDCARD_CMD_MAKE(SDCARD_CMD_ERASE, 0, 0x52);
-static const sdcard_cmd_t sdcard_cmd55 = SDCARD_CMD_MAKE(SDCARD_CMD_APP_CMD, 0, 0x32);
-static const sdcard_cmd_t sdcard_cmd58 = SDCARD_CMD_MAKE(SDCARD_CMD_READ_OCR, 0, 0x7e);
-static const sdcard_cmd_t sdcard_acmd22 = SDCARD_CMD_MAKE(SDCARD_ACMD_SEND_NUM_WR_BLOCKS, 0, 0x21);
-static const sdcard_cmd_t sdcard_acmd41_hc = SDCARD_CMD_MAKE(SDCARD_ACMD_SD_SEND_OP_COND, SDCARD_ACMD_SD_SEND_OP_COND_HCS, 0x3b);
-static const sdcard_cmd_t sdcard_acmd41_sc = SDCARD_CMD_MAKE(SDCARD_ACMD_SD_SEND_OP_COND, 0, 0x72);
-
-
-
 /*
  * SD card.
  */

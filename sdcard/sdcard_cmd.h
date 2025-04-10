@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 #include <assert.h>
+#include "sdio/sdio.h"
+#include "sdcard_reply.h"
 
 
 //! Размер команды SD-карты.
@@ -29,132 +31,67 @@
 #define SDCARD_CMD_STOP_BIT 0x1
 
 //! Структура команды SD-карты.
-#pragma pack(push, 1)
 typedef struct _SD_Card_Cmd {
-//    uint8_t index_sb_tb; //!< Стартовый бит, бит передачи, индекс команды. SPI
-	uint8_t index; //!< Индекс команды.
-    uint32_t argument; //!< Аргумент команды.
-//    uint8_t crc_eb; //!< Контрольная сумма, стоповый бит. SPI
+	sdcard_cmd_list_t index; //!< Индекс команды.
+	sdcard_reply_type_t response_type; //!< Тип ответа
+	sdio_resptype_t response_long; //!< Длинный или короткий ответ
+	sdio_resp_crc_include_t response_include_crc; //!< Есть ли CRC в ответе
 } sdcard_cmd_t;
-#pragma pack(pop)
-
-//! Инициализация команды SD-карты по месту объявления. SPI
-//#define SDCARD_CMD_MAKE(index, arg, crc)\
-//            {0x40 | ((index) & 0x3f),\
-//            ((((arg) >> 24) & 0xff) <<  0)|\
-//            ((((arg) >> 16) & 0xff) <<  8)|\
-//            ((((arg) >>  8) & 0xff) << 16)|\
-//            ((((arg) >>  0) & 0xff) << 24),\
-//            (((crc) & 0x7f) << 1) | 0x1}
 
 //! Инициализация команды SD-карты по месту объявления. SDIO
-#define SDCARD_CMD_MAKE(cmd, arg, crc)\
+#define SDCARD_CMD_MAKE(ind, resp, resp_long, resp_include_crc)\
 		{\
-		    .index = (cmd & 0x1F),\
-		    .argument = arg,\
+		    .index = ind,\
+			.response_type = resp,\
+			.response_long = resp_long,\
+			.response_include_crc = resp_include_crc,\
 		}
-
-static_assert(sizeof(sdcard_cmd_t) == SDCARD_CMD_SIZE, "Invalid size of sdcard cmd!");
 
 
 /*
  * Команды карты памяти.
  */
-//! Программный сброс.
-#define SDCARD_CMD_GO_IDLE_STATE 0
 
-//! Инициализация карты MMC.
-#define SDCARD_CMD_SEND_OP_COND 1
+typedef enum {
+	SDCARD_CMD_GO_IDLE_STATE = 0,				//! Программный сброс карты.
+	SDCARD_CMD_SEND_OP_COND,					//! Инициализация карты MMC.
+	SDCARD_CMD_ALL_SEND_CID,					//! Запрашивает у любой карты послать номер CID
+	SDCARD_CMD_SEND_RELATIVE_ADDR,				//! Запрашивает карту опубликовать новый относительный адрес
+	SDCARD_CMD_SET_DSR,							//! Программирует DSP у всех карт.
 
-//! Проверка поддержки напряжения.
-#define SDCARD_CMD_SEND_IF_COND 8
+	SDCARD_CMD_SELECT_DESELECT_CARD = 7,		//! Переключает между Standby и Transfer или Programming и Disconnect.
+	SDCARD_CMD_SEND_IF_COND,					//! Посылается информация об интерфейсе и запрашивается - может ли она работать от этого напряжения.
+	SDCARD_CMD_SEND_CSD,						//! Адресованная карта пошлет свои специфические данные (CSD)
+	SDCARD_CMD_SEND_CID,						//! Адресованная карта пошлет свои идентификационные данные (CID)
 
-//! Отправка регистра CSD.
-#define SDCARD_CMD_SEND_CSD 9
+	SDCARD_CMD_STOP_TRANSMISSION = 12,			//! Остановка передачи данных.
+	SDCARD_CMD_SEND_STATUS,						//! Запрашивает выбранную карту послать её регистр статуса.
 
-//! Отправка регистра CID.
-#define SDCARD_CMD_SEND_CID 10
+	SDCARD_CMD_GO_INACTIVE_STATE = 15,			//! Переводит адресованную карту в неактивное состояние
+	SDCARD_CMD_SET_BLOCKLEN,					//! Устанавливает размер блока для карт SDSC. Размер блока карт SDHC равен 512 байт.
+	SDCARD_CMD_READ_SINGLE_BLOCK,				//! Чтение блока. В аргументе передается адрес байта для SDSC или блока для SDHC.
+	SDCARD_CMD_READ_MULTIPLE_BLOCK,				//! Чтение нескольких блоков. В аргументе передается адрес байта для SDSC или блока для SDHC.
 
-//! Остановка передачи.
-#define SDCARD_CMD_STOP_TRANSMISSION 12
+	SDCARD_ACMD_SEND_NUM_WR_BLOCKS = 22,		//! Получения числа успешно записанных блоков.
+	SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT,			//! Установка числа записываемых блоков для стирания.
+	SDCARD_CMD_WRITE_SINGLE_BLOCK,				//! Запись блока. В аргументе передается адрес байта для SDSC или блока для SDHC.
+	SDCARD_CMD_WRITE_MULTIPLE_BLOCK,			//! Запись нескольких блоков. В аргументе передается адрес байта для SDSC или блока для SDHC.
 
-//! Отправка состояния.
-#define SDCARD_CMD_SEND_STATUS 13
+	SDCARD_CMD_ERASE_WR_BLK_START_ADDR = 32,	//! Стирание блока. В аргументе передается адрес начального байта для SDSC или блока для SDHC.
+	SDCARD_CMD_ERASE_WR_BLK_END_ADDR,			//! Стирание блока. В аргументе передается адрес конечного байта для SDSC или блока для SDHC.
 
-//! Установка размера блока.
-#define SDCARD_CMD_SET_BLOCKLEN 16
+	SDCARD_CMD_MMC_TAG_ERASE_GROUP_START = 35,	//! Стирание групп блоков MMS. В аргументе передается номер начальной групы MMS.
+	SDCARD_CMD_MMC_TAG_ERASE_GROUP_END,			//! Стирание групп блоков MMS. В аргументе передается номер конечной группы MMS.
 
-//! Чтение одного блока.
-#define SDCARD_CMD_READ_SINGLE_BLOCK 17
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_READ_SINGLE_BLOCK_ADDRESS 0xffffffff
+	SDCARD_CMD_ERASE = 38,						//! Стирает выбранные блоки.
 
-//! Чтение нескольких блоков.
-#define SDCARD_CMD_READ_MULTIPLE_BLOCK 18
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_READ_MULTIPLE_BLOCK_ADDRESS 0xffffffff
+	SDCARD_ACMD_SD_SEND_OP_COND = 41,			//! Инициализация карты.
+	SDCARD_ACMD_SET_CLR_CARD_DETECT,			//! Управление 50 кОм подтяжкой на пину CardDetect карты.
 
-//! Запись одного блока.
-#define SDCARD_CMD_WRITE_SINGLE_BLOCK 24
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_WRITE_SINGLE_BLOCK_ADDRESS 0xffffffff
+	SDCARD_CMD_APP_CMD = 55,					//! Установка следующей команды приложения.
 
-//! Запись нескольких блоков.
-#define SDCARD_CMD_WRITE_MULTIPLE_BLOCK 25
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_WRITE_MULTIPLE_BLOCK_ADDRESS 0xffffffff
-
-//! Установка начального адреса стирания блоков карты SD.
-#define SDCARD_CMD_ERASE_WR_BLK_START_ADDR 32
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_ERASE_WR_BLK_START_ADDR_ADDRESS 0xffffffff
-
-//! Установка конечного адреса стирания блоков карты SD.
-#define SDCARD_CMD_ERASE_WR_BLK_END_ADDR 33
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_ERASE_WR_BLK_END_ADDR_ADDRESS 0xffffffff
-
-//! Установка начального адреса стирания групп блоков карты MMC.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_START 35
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_START_ADDRESS 0xffffffff
-
-//! Установка конечного адреса стирания групп блоков карты MMC.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_END 36
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_END_ADDRESS 0xffffffff
-
-//! Стирания блоков.
-#define SDCARD_CMD_ERASE 38
-
-//! Установка следующей команды приложения.
-#define SDCARD_CMD_APP_CMD 55
-
-//! Чтение регистра OCR.
-#define SDCARD_CMD_READ_OCR 58
-
-//! Включение/выключение проверки CRC.
-#define SDCARD_CMD_CRC_ON_OFF 59
-//! Аргумент - бит CRC option.
-#define SDCARD_CMD_CRC_ON_OFF_CRC_OPTION 0x1
-
-//! Получения числа успешно записанных блоков.
-//! Данные ответа - 32 бит число.
-#define SDCARD_ACMD_SEND_NUM_WR_BLOCKS 22
-
-//! Установка число записываемых блоков для стирания.
-#define SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT 23
-//! Аргумент - 23 битное число записываемых блоков.
-#define SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT_NUMBER 0x7FFFFF
-
-//! Инициализация карты.
-#define SDCARD_ACMD_SD_SEND_OP_COND 41
-//! Аргумент - бит HCS.
-#define SDCARD_ACMD_SD_SEND_OP_COND_HCS 0x40000000
-
-//! Управление 50 кОм подтяжкой на пину CardDetect карты.
-#define SDCARD_ACMD_SET_CLR_CARD_DETECT 42
-//! Аргумент - подключение подтяжки.
-#define SDCARD_ACMD_SET_CLR_CARD_DETECT_SET_CD 0x1
+	SDCARD_CMD_READ_OCR = 58,					//! Чтение регистра OCR.
+	SDCARD_CMD_CRC_ON_OFF,						//! Включение/выключение проверки CRC.
+} sdcard_cmd_list_t;
 
 #endif /* SDCARD_CMD_H_ */

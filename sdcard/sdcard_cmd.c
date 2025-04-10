@@ -1,0 +1,166 @@
+/*
+ * sdcard_cmd.c
+ *
+ *  Created on: 10 апр. 2025 г.
+ *      Author: Ruslan
+ */
+
+#include "sdcard_cmd.h"
+
+/*
+ * Предопределённые команды SD-карты.
+ */
+const sdcard_cmd_t sdcard_cmd0 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_GO_IDLE_STATE,
+				SDCARD_REPLY_NO,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_NOT_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd1 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SEND_OP_COND,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd2 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_ALL_SEND_CID,
+				SDCARD_REPLY_R2,
+				SDIO_RESP_TYPE_LONG,
+				SDIO_RESP_CRC_NOT_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd3 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SEND_RELATIVE_ADDR,
+				SDCARD_REPLY_R6,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd4 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SET_DSR,
+				SDCARD_REPLY_NO,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_NOT_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd7 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SELECT_DESELECT_CARD,
+				SDCARD_REPLY_R1b,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd8 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SEND_IF_COND,
+				SDCARD_REPLY_R7,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd9 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SEND_CSD,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd10 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SEND_CID,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd12 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_STOP_TRANSMISSION,
+				SDCARD_REPLY_R1b,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd13 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SEND_STATUS,
+				SDCARD_REPLY_R2,
+				SDIO_RESP_TYPE_LONG,
+				SDIO_RESP_CRC_NOT_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd15 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_GO_INACTIVE_STATE,
+				SDCARD_REPLY_NO,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_NOT_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd16 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SET_BLOCKLEN,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd17 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_READ_SINGLE_BLOCK,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd18 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_READ_MULTIPLE_BLOCK,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd24 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_WRITE_SINGLE_BLOCK,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd25 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_WRITE_MULTIPLE_BLOCK,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd38 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_ERASE,
+				SDCARD_REPLY_R1b,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd55 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_APP_CMD,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_cmd58 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_READ_OCR,
+				SDCARD_REPLY_R3,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_NOT_INCLUDE);
+
+const sdcard_cmd_t sdcard_acmd22 =
+		SDCARD_CMD_MAKE(
+				SDCARD_ACMD_SEND_NUM_WR_BLOCKS,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+
+const sdcard_cmd_t sdcard_acmd41 =
+		SDCARD_CMD_MAKE(
+				SDCARD_ACMD_SD_SEND_OP_COND,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDE);
+

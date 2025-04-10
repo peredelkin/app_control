@@ -144,6 +144,11 @@ typedef union _sdio_cmd_reg {
 	struct _sdio_cmd_bit bit;
 } _sdio_cmd_reg_t;
 
+typedef enum {
+	SDIO_RESP_CRC_NOT_INCLUDE = 0b0,
+	SDIO_RESP_CRC_INCLUDE = 0b1
+} sdio_resp_crc_include_t;
+
 extern void sdio_power_control(sdio_pwrctrl_t pwrctrl);
 extern void sdio_clock_control(uint8_t clkdiv, sdio_clken_t clken, sdio_pwrsav_t pwrsav, sdio_bypass_t bypass);
 extern void sdio_command(uint32_t argument, int cmd_index, sdio_respwait_t respwait, sdio_resptype_t resptype,
