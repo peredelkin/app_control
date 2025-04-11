@@ -145,7 +145,7 @@ typedef union _sdio_cmd_reg {
 } _sdio_cmd_reg_t;
 
 typedef enum {
-	SDIO_RESP_CRC_NOT_INCLUDE = 0b0,
+	SDIO_RESP_CRC_NOT_INCLUDED = 0b0,
 	SDIO_RESP_CRC_INCLUDED = 0b1
 } sdio_resp_crc_include_t;
 

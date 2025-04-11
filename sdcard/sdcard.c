@@ -1214,7 +1214,7 @@ static err_t sdcard_write_single_data_block(sdcard_t* sdcard, uint32_t address,
 
     if(written) *written = 0;
 
-    sdcard_cmd_setup(&cmd, SDCARD_CMD_WRITE_SINGLE_BLOCK, address);
+    sdcard_cmd_setup(&cmd, SDCARD_CMD_WRITE_BLOCK, address);
 
     // Отправим команду.
     err = sdcard_cmd(sdcard, &cmd, SDCARD_REPLY_R1, &reply);
@@ -1275,7 +1275,7 @@ static err_t sdcard_write_multiple_data_block(sdcard_t* sdcard, uint32_t address
             blocks_count = data_size / sdcard->rw_block_size;
         }
 
-        sdcard_cmd_setup(&cmd_count, SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT,
+        sdcard_cmd_setup(&cmd_count, SDCARD_CMD_SET_BLOCK_COUNT,
                          blocks_count & SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT_NUMBER);
 
         // Отправим команду количества блоков.
@@ -2100,8 +2100,8 @@ err_t sdcard_erase(sdcard_t* sdcard, uint32_t address_start, uint32_t address_en
     // конечного адреса стирания.
     // SD-карта.
     if(sdcard->card_type != SDCARD_TYPE_MMC){
-        cmd_start_addr_index = SDCARD_CMD_ERASE_WR_BLK_START_ADDR;
-        cmd_end_addr_index = SDCARD_CMD_ERASE_WR_BLK_END_ADDR;
+        cmd_start_addr_index = SDCARD_CMD_ERASE_WR_BLK;
+        cmd_end_addr_index = SDCARD_CMD_ERASE_WR_BLK_END;
     }// MMC-карта.
     else{
         cmd_start_addr_index = SDCARD_CMD_MMC_TAG_ERASE_GROUP_START;
