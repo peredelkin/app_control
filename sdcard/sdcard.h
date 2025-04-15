@@ -16,6 +16,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include "sdcard_cmd.h"
+#include "sdcard_state.h"
 #include "sdcard_reply.h"
 #include "sdcard_token.h"
 #include "sdcard_reg.h"
@@ -87,48 +88,6 @@
 //! Ошибка параметра.
 #define E_SDCARD_PARAM_ERROR (E_SDCARD_STATUS + 14)
 
-
-//! Идентификатор передачи SPI.
-#define SDCARD_DEFAULT_TRANSFER_ID 0xCD //mmC sD CarD.
-
-
-//! Перечисление скоростей SPI.
-typedef enum _SD_Card_Spi_Speed {
-    SDCARD_SPI_SPEED_LOW = 0, //!< Низкая скорость.
-    SDCARD_SPI_SPEED_HIGH = 1 //!< Высокая скорость.
-} sdcard_spi_speed_t;
-
-
-//! Каллбэк установки скорости SPI.
-//! Возвращает флаг установки скорости.
-typedef bool (*sdcard_set_spi_speed_t)(sdcard_spi_speed_t speed);
-
-
-//! Тип тайм-аута для работы с SD-картой.
-typedef enum _SD_Card_Time_Out {
-    SDCARD_TIMEOUT_INIT = 0, //!< Время ожидания инициализации карты.
-    SDCARD_TIMEOUT_BUSY = 1, //!< Время ожидания занятости карты.
-    SDCARD_TIMEOUT_READ = 2 //!< Время ожидания чтения данных картой.
-} sdcard_timeout_t;
-
-//! Каллбэк начала тайм-аута ожидания SD-карты.
-typedef void (*sdcard_timeout_begin_t)(sdcard_timeout_t timeout);
-//! Каллбэк окончания тайм-аута ожидания SD-карты.
-typedef void (*sdcard_timeout_end_t)(void);
-
-
-//! Структура инициализации SD-карты.
-typedef struct _SD_Card_Init {
-//    spi_bus_t* spi; //!< Шина SPI.
-    GPIO_TypeDef* gpio_cs; //!< Порт CS.
-    gpio_pin_t pin_cs; //!< Пин CS.
-//    spi_transfer_id_t transfer_id; //!< Идентификатор передачи SPI.
-    sdcard_set_spi_speed_t set_spi_speed; //!< Функция установки скорости SPI.
-    sdcard_timeout_begin_t timeout_begin; //!< Функция начала таймаута.
-    sdcard_timeout_end_t timeout_end; //!< Функция завершения таймаута.
-} sdcard_init_t;
-
-
 //! Перечисление типа SD-карты.
 typedef enum _SD_Card_Type {
     SDCARD_TYPE_UNKNOWN = 0, //!< Неизвестный тип карты.
@@ -139,52 +98,14 @@ typedef enum _SD_Card_Type {
 } sdcard_type_t;
 
 
-//! Число сообщений SPI.
-#define SDCARD_SPI_MESSAGES_COUNT 1
-
-
 //! Структура SD-карты.
 typedef struct _SD_Card {
-//    spi_bus_t* spi; //!< Шина SPI.
-    GPIO_TypeDef* gpio_cs; //!< Порт CS.
-    gpio_pin_t pin_cs; //!< Пин CS.
-//    spi_transfer_id_t transfer_id; //!< Идентификатор передачи SPI.
+	sdcard_state_t current_state; //!< Текущее состояние карты.
     sdcard_type_t card_type; //!< Тип SD-карты.
-    sdcard_set_spi_speed_t set_spi_speed; //!< Функция установки скорости SPI.
-    sdcard_timeout_begin_t timeout_begin; //!< Функция начала таймаута.
-    sdcard_timeout_end_t timeout_end; //!< Функция завершения таймаута.
     future_t future; //!< Будущее.
-//    spi_message_t messages[SDCARD_SPI_MESSAGES_COUNT]; //!< Сообщения SPI.
-    bool timeout; //!< Флаг таймаута SD-карты.
-    bool crc_enabled; //!< Флаг включения CRC.
-    bool initialized; //!< Флаг инициализации SD-карты.
     sdcard_cid_t cid; //!< Регистр идентификации карты.
     sdcard_csd_t csd; //!< Регистр со специфичными для карты данными.
-    uint16_t rw_block_size; //!< Размер читаемого/записываемого блока.
-    uint16_t er_block_size; //!< Размер стираемого блока.
 } sdcard_t;
-
-
-/**
- * Инициализирует экземпляр структуры SD-памяти.
- * @param sdcard SD-карта.
- * @param init Данные для инициализации.
- * @return Код ошибки.
- */
-EXTERN err_t sdcard_init(sdcard_t* sdcard, sdcard_init_t* init);
-
-/**
- * Функция обратного вызова шины SPI.
- * @param sdcard SD-карта.
- * @return Флаг обработки.
- */
-EXTERN bool sdcard_spi_callback(sdcard_t* sdcard);
-
-/**
- * Функция обработки таймаута SD-карты.
- * @param sdcard SD-карта.
- */
-EXTERN void sdcard_timeout(sdcard_t* sdcard);
 
 /**
  * Получает флаг идентификации SD-карты.
