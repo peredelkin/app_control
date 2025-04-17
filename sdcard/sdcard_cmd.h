@@ -84,12 +84,28 @@ typedef enum {
 
 } sdcard_acmd_list_t;
 
+typedef enum {
+	SDCARD_STATE_ILLEGAL = -1,
+	SDCARD_STATE_IDLE,
+	SDCARD_STATE_READY,
+	SDCARD_STATE_IDENT,
+	SDCARD_STATE_STBY,
+	SDCARD_STATE_TRAN,
+	SDCARD_STATE_DATA,
+	SDCARD_STATE_RCV,
+	SDCARD_STATE_PRG,
+	SDCARD_STATE_DIS,
+	SDCARD_STATE_INA,
+	SDCARD_STATE_COUNT
+} sdcard_state_t;
+
 //! Структура команды SD-карты.
 typedef struct _SD_Card_Cmd {
 	sdcard_cmd_list_t index; //!< Индекс команды.
 	sdcard_reply_type_t response_type; //!< Тип ответа
 	sdio_resptype_t response_long; //!< Длинный или короткий ответ
 	sdio_resp_crc_include_t response_include_crc; //!< Есть ли CRC в ответе
+	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
 } sdcard_cmd_t;
 
 typedef struct _SD_Card_ACmd {
@@ -97,15 +113,26 @@ typedef struct _SD_Card_ACmd {
 	sdcard_reply_type_t response_type; //!< Тип ответа
 	sdio_resptype_t response_long; //!< Длинный или короткий ответ
 	sdio_resp_crc_include_t response_include_crc; //!< Есть ли CRC в ответе
+	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
 } sdcard_acmd_t;
 
 //! Инициализация команды SD-карты по месту объявления. SDIO
-#define SDCARD_CMD_MAKE(ind, resp, resp_long, resp_include_crc)\
+#define SDCARD_CMD_MAKE(ind, resp, resp_long, resp_include_crc, idle, ready, ident, stby, train, data, rcv, prg, dis, ina)\
 		{\
 		    .index = ind,\
 			.response_type = resp,\
 			.response_long = resp_long,\
 			.response_include_crc = resp_include_crc,\
+			.state_array[0] = idle,\
+			.state_array[1] = ready,\
+			.state_array[2] = ident,\
+			.state_array[3] = stby,\
+			.state_array[4] = train,\
+			.state_array[5] = data,\
+			.state_array[6] = rcv,\
+			.state_array[7] = prg,\
+			.state_array[8] = dis,\
+			.state_array[9] = ina,\
 		}
 
 #endif /* SDCARD_CMD_H_ */

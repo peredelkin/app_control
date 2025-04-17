@@ -19,36 +19,66 @@
  * Resets all cards to idle state.
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD0 =
+const sdcard_cmd_t sdcard_Class0_CMD0 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_GO_IDLE_STATE,
 				SDCARD_REPLY_NO,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_NOT_INCLUDED);
+				SDIO_RESP_CRC_NOT_INCLUDED,
+				SDCARD_STATE_IDLE,      //idle
+				SDCARD_STATE_IDLE,      //ready
+				SDCARD_STATE_IDLE,      //ident
+				SDCARD_STATE_IDLE,      //stby
+				SDCARD_STATE_IDLE,      //tran
+				SDCARD_STATE_IDLE,      //data
+				SDCARD_STATE_IDLE,      //rcv
+				SDCARD_STATE_IDLE,      //prg
+				SDCARD_STATE_IDLE,      //dis
+				SDCARD_STATE_ILLEGAL);  //ina
 
 /*
  * Asks any card to send the CID numbers on the CMD line.
  *
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD2 =
+const sdcard_cmd_t sdcard_Class0_CMD2 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ALL_SEND_CID,
 				SDCARD_REPLY_R2,
 				SDIO_RESP_TYPE_LONG,
-				SDIO_RESP_CRC_NOT_INCLUDED);
+				SDIO_RESP_CRC_NOT_INCLUDED,
+				SDCARD_STATE_ILLEGAL,   //idle
+				SDCARD_STATE_IDENT,     //ready
+				SDCARD_STATE_ILLEGAL,   //ident
+				SDCARD_STATE_ILLEGAL,   //stby
+				SDCARD_STATE_ILLEGAL,   //tran
+				SDCARD_STATE_ILLEGAL,   //data
+				SDCARD_STATE_ILLEGAL,   //rcv
+				SDCARD_STATE_ILLEGAL,   //prg
+				SDCARD_STATE_ILLEGAL,   //dis
+				SDCARD_STATE_ILLEGAL);  //ina
 
 /*
  * Ask the card to publish a new relative address (RCA).
  *
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD3 =
+const sdcard_cmd_t sdcard_Class0_CMD3 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_RELATIVE_ADDR,
 				SDCARD_REPLY_R6,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_STBY,		//ident
+				SDCARD_STATE_STBY,		//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Programs the DSR of all cards.
@@ -56,12 +86,22 @@ const sdcard_cmd_t sdcard_CMD3 =
  * [31:16] DSR
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD4 =
+const sdcard_cmd_t sdcard_Class0_CMD4 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_DSR,
 				SDCARD_REPLY_NO,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_NOT_INCLUDED);
+				SDIO_RESP_CRC_NOT_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_STBY,		//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Checks switchable function (mode 0)
@@ -78,12 +118,22 @@ const sdcard_cmd_t sdcard_CMD4 =
  * [7:4] function group 2 for Command System
  * [3:0] function group 1 for Access Mode
  */
-const sdcard_cmd_t sdcard_CMD6 =
+const sdcard_cmd_t sdcard_Class10_CMD6 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SWITCH_FUNC,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Command toggles a card between the stand-by
@@ -93,12 +143,39 @@ const sdcard_cmd_t sdcard_CMD6 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD7 =
+const sdcard_cmd_t sdcard_Class0_CMD7_adressed =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SELECT_DESELECT_CARD,
 				SDCARD_REPLY_R1b,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_TRAN,		//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_PRG,		//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
+
+const sdcard_cmd_t sdcard_Class0_CMD7_not_adressed =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SELECT_DESELECT_CARD,
+				SDCARD_REPLY_R1b,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_STBY,		//stby
+				SDCARD_STATE_STBY,		//tran
+				SDCARD_STATE_STBY,		//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_DIS,		//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Sends SD Memory Card interface condition,
@@ -109,12 +186,22 @@ const sdcard_cmd_t sdcard_CMD7 =
  * [11:8]supply voltage(VHS)
  * [7:0]check pattern
  */
-const sdcard_cmd_t sdcard_CMD8 =
+const sdcard_cmd_t sdcard_Class0_CMD8 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_IF_COND,
 				SDCARD_REPLY_R7,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_IDLE,		//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Addressed card sends its
@@ -123,12 +210,22 @@ const sdcard_cmd_t sdcard_CMD8 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD9 =
+const sdcard_cmd_t sdcard_Class0_CMD9 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_CSD,
 				SDCARD_REPLY_R2,
 				SDIO_RESP_TYPE_LONG,
-				SDIO_RESP_CRC_NOT_INCLUDED);
+				SDIO_RESP_CRC_NOT_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_STBY,		//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Addressed card sends its card
@@ -137,36 +234,66 @@ const sdcard_cmd_t sdcard_CMD9 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD10 =
+const sdcard_cmd_t sdcard_Class0_CMD10 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_CID,
 				SDCARD_REPLY_R2,
 				SDIO_RESP_TYPE_LONG,
-				SDIO_RESP_CRC_NOT_INCLUDED);
+				SDIO_RESP_CRC_NOT_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_STBY,		//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Switch to 1.8V bus signaling level.
  *
  * [31:0] reserved bits (all 0)
  */
-const sdcard_cmd_t sdcard_CMD11 =
+const sdcard_cmd_t sdcard_Class0_CMD11 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_VOLTAGE_SWITCH,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_READY,		//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Forces the card to stop transmission.
  *
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD12 =
+const sdcard_cmd_t sdcard_Class0_CMD12 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_STOP_TRANSMISSION,
 				SDCARD_REPLY_R1b,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran (for SDUC only)
+				SDCARD_STATE_TRAN,		//data
+				SDCARD_STATE_PRG,		//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * if CQ not enabled:
@@ -179,12 +306,22 @@ const sdcard_cmd_t sdcard_CMD12 =
  * [15] Send Task Status Register
  * [14:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD13 =
+const sdcard_cmd_t sdcard_Class0_CMD13 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_STATUS,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_STBY,		//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_DATA,		//data
+				SDCARD_STATE_RCV,		//rcv
+				SDCARD_STATE_PRG,		//prg
+				SDCARD_STATE_DIS,		//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Sends an addressed card into the
@@ -192,12 +329,22 @@ const sdcard_cmd_t sdcard_CMD13 =
  * [31:16] RCA
  * [15:0] reserved bits
  */
-const sdcard_cmd_t sdcard_CMD15 =
+const sdcard_cmd_t sdcard_Class0_CMD15 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_GO_INACTIVE_STATE,
 				SDCARD_REPLY_NO,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_NOT_INCLUDED);
+				SDIO_RESP_CRC_NOT_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_INA,		//stby
+				SDCARD_STATE_INA,		//tran
+				SDCARD_STATE_INA,		//data
+				SDCARD_STATE_INA,		//rcv
+				SDCARD_STATE_INA,		//prg
+				SDCARD_STATE_INA,		//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * In the case of a Standard Capacity SD
@@ -207,12 +354,22 @@ const sdcard_cmd_t sdcard_CMD15 =
  *
  * [31:0] block length
  */
-const sdcard_cmd_t sdcard_CMD16 =
+const sdcard_cmd_t sdcard_Class2_CMD16 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCKLEN,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * In the case of a Standard Capacity SD
@@ -222,12 +379,22 @@ const sdcard_cmd_t sdcard_CMD16 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_CMD17 =
+const sdcard_cmd_t sdcard_Class2_CMD17 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_READ_SINGLE_BLOCK,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Continuously transfers data blocks from
@@ -238,24 +405,44 @@ const sdcard_cmd_t sdcard_CMD17 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_CMD18 =
+const sdcard_cmd_t sdcard_Class2_CMD18 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_READ_MULTIPLE_BLOCK,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * 64 bytes tuning pattern is sent for SDR50 and SDR104.
  *
  * [31:0] reserved bits (all 0)
  */
-const sdcard_cmd_t sdcard_CMD19 =
+const sdcard_cmd_t sdcard_Class2_CMD19 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_TUNING_BLOCK,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Speed Class control command.
@@ -263,12 +450,22 @@ const sdcard_cmd_t sdcard_CMD19 =
  * [31:28]Speed Class Control
  * [27:0]See command description
  */
-const sdcard_cmd_t sdcard_CMD20 =
+const sdcard_cmd_t sdcard_Class2_CMD20 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SPEED_CLASS_CONTROL,
 				SDCARD_REPLY_R1b,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_PRG,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Address extension for SDUC cards.
@@ -276,24 +473,137 @@ const sdcard_cmd_t sdcard_CMD20 =
  * [31:6] reserved bits (all 0)
  * [5:0] extended address
  */
-const sdcard_cmd_t sdcard_CMD22 =
+const sdcard_cmd_t sdcard_Class2_CMD22 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ADDRESS_EXTENSION,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran (for SDUC only)
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Specify block count for CMD18 and CMD25.
  *
  * [31:0] Block Count
  */
-const sdcard_cmd_t sdcard_CMD23 =
+const sdcard_cmd_t sdcard_Class2_CMD23 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCK_COUNT,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
+
+/*
+ * In the case of a Standard Capacity SD
+ * Memory Card, this command sets the
+ * block length (in bytes) for all following
+ * block commands (read, write, lock).
+ *
+ * [31:0] block length
+ */
+const sdcard_cmd_t sdcard_Class4_CMD16 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SET_BLOCKLEN,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
+
+/*
+ * Speed Class control command.
+ *
+ * [31:28]Speed Class Control
+ * [27:0]See command description
+ */
+const sdcard_cmd_t sdcard_Class4_CMD20 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SPEED_CLASS_CONTROL,
+				SDCARD_REPLY_R1b,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_PRG,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
+
+/*
+ * Address extension for SDUC cards.
+ *
+ * [31:6] reserved bits (all 0)
+ * [5:0] extended address
+ */
+const sdcard_cmd_t sdcard_Class4_CMD22 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_ADDRESS_EXTENSION,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran (for SDUC only)
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
+
+/*
+ * Specify block count for CMD18 and CMD25.
+ *
+ * [31:0] Block Count
+ */
+const sdcard_cmd_t sdcard_Class4_CMD23 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_SET_BLOCK_COUNT,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * In case of SDSC Card, block length is
@@ -301,12 +611,22 @@ const sdcard_cmd_t sdcard_CMD23 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_CMD24 =
+const sdcard_cmd_t sdcard_Class4_CMD24 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_WRITE_BLOCK,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_RCV,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Continuously writes blocks of data until
@@ -316,12 +636,43 @@ const sdcard_cmd_t sdcard_CMD24 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_CMD25 =
+const sdcard_cmd_t sdcard_Class4_CMD25 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_WRITE_MULTIPLE_BLOCK,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_RCV,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
+
+/*
+ * Programming of the programmable
+ * bits of the CSD.
+ */
+const sdcard_cmd_t sdcard_Class4_CMD27 =
+		SDCARD_CMD_MAKE(
+				SDCARD_CMD_PROGRAM_CSD,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_RCV,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Sets the address of the first write
@@ -329,12 +680,22 @@ const sdcard_cmd_t sdcard_CMD25 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_CMD32 =
+const sdcard_cmd_t sdcard_Class5_CMD32 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE_WR_BLK_START,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Sets the address of the last write
@@ -343,12 +704,22 @@ const sdcard_cmd_t sdcard_CMD32 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_CMD33 =
+const sdcard_cmd_t sdcard_Class5_CMD33 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE_WR_BLK_END,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Erase Function:
@@ -358,12 +729,22 @@ const sdcard_cmd_t sdcard_CMD33 =
  *
  * [31:0] Erase Function
  */
-const sdcard_cmd_t sdcard_CMD38 =
+const sdcard_cmd_t sdcard_Class5_CMD38 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE,
 				SDCARD_REPLY_R1b,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_PRG,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Select an active partition.
@@ -371,12 +752,12 @@ const sdcard_cmd_t sdcard_CMD38 =
  * [31:24] Partition ID
  * [23:0] Reserved
  */
-const sdcard_cmd_t sdcard_CMD39 =
-		SDCARD_CMD_MAKE(
-				SDCARD_CMD_SELECT_CARD_PARTITION,
-				SDCARD_REPLY_R1b,
-				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+//const sdcard_cmd_t sdcard_CMD39 =
+//		SDCARD_CMD_MAKE(
+//				SDCARD_CMD_SELECT_CARD_PARTITION,
+//				SDCARD_REPLY_R1b,
+//				SDIO_RESP_TYPE_SHORT,
+//				SDIO_RESP_CRC_INCLUDED);
 
 /*
  * Indicates to the card that the next
@@ -387,12 +768,22 @@ const sdcard_cmd_t sdcard_CMD39 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_CMD55 =
+const sdcard_cmd_t sdcard_Class8_CMD55 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_APP_CMD,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_IDLE,		//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_STBY,		//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_DATA,		//data
+				SDCARD_STATE_RCV,		//rcv
+				SDCARD_STATE_PRG,		//prg
+				SDCARD_STATE_DIS,		//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Defines the data bus width ('00'=1bit
@@ -403,24 +794,44 @@ const sdcard_cmd_t sdcard_CMD55 =
  * [31:2] stuff bits
  * [1:0]bus width
  */
-const sdcard_acmd_t sdcard_ACMD6 =
+const sdcard_acmd_t sdcard_Class8_ACMD6 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_BUS_WIDTH,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Send the SD Status.
  *
  * [31:0] stuff bits
  */
-const sdcard_acmd_t sdcard_ACMD13 =
+const sdcard_acmd_t sdcard_Class8_ACMD13 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SD_STATUS,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Send the number of the written (with-
@@ -440,7 +851,17 @@ const sdcard_acmd_t sdcard_ACMD22 =
 				SDCARD_ACMD_SEND_NUM_WR_BLOCKS,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Set the number of write blocks to be
@@ -457,7 +878,17 @@ const sdcard_acmd_t sdcard_ACMD23 =
 				SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Sends host capacity support
@@ -479,7 +910,17 @@ const sdcard_acmd_t sdcard_ACMD41 =
 				SDCARD_ACMD_SD_SEND_OP_COND,
 				SDCARD_REPLY_R3,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_NOT_INCLUDED);
+				SDIO_RESP_CRC_NOT_INCLUDED,
+				SDCARD_STATE_READY,		//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_ILLEGAL,	//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Connect[1]/Disconnect[0] the 50
@@ -494,7 +935,17 @@ const sdcard_acmd_t sdcard_ACMD42 =
 				SDCARD_ACMD_SET_CLR_CARD_DETECT,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_TRAN,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Reads the SD Configuration Register (SCR).
@@ -506,7 +957,17 @@ const sdcard_acmd_t sdcard_ACMD51 =
 				SDCARD_ACMD_SEND_SCR,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 /*
  * Continuously transfers data blocks
@@ -527,7 +988,48 @@ const sdcard_acmd_t sdcard_ACMD53 =
 				SDCARD_ACMD_SECURE_RECEIVE,
 				SDCARD_REPLY_R1,
 				SDIO_RESP_TYPE_SHORT,
-				SDIO_RESP_CRC_INCLUDED);
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_DATA,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
+
+/*
+ * Continuously transfers data blocks
+ * from host to device. 3
+ * Bus timing of this command is
+ * equivalent to a multi-block write
+ * command, but the maximum busy
+ * length to write by ACMD54 is 1
+ * second.
+ *
+ * [31:24] Security Protocol
+ * [23:16] Security Protocol Specific 1 (SPSP1)
+ * [15:8] Security Protocol Specific 0 (SPSP0)
+ * [7:0] SD Security Specific Field (SSSF)
+ */
+const sdcard_acmd_t sdcard_ACMD54 =
+		SDCARD_CMD_MAKE(
+				SDCARD_ACMD_SECURE_SEND,
+				SDCARD_REPLY_R1,
+				SDIO_RESP_TYPE_SHORT,
+				SDIO_RESP_CRC_INCLUDED,
+				SDCARD_STATE_ILLEGAL,	//idle
+				SDCARD_STATE_ILLEGAL,	//ready
+				SDCARD_STATE_ILLEGAL,	//ident
+				SDCARD_STATE_ILLEGAL,	//stby
+				SDCARD_STATE_RCV,		//tran
+				SDCARD_STATE_ILLEGAL,	//data
+				SDCARD_STATE_ILLEGAL,	//rcv
+				SDCARD_STATE_ILLEGAL,	//prg
+				SDCARD_STATE_ILLEGAL,	//dis
+				SDCARD_STATE_ILLEGAL);	//ina
 
 
 
