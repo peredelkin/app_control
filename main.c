@@ -168,7 +168,7 @@ int main(void)
 		sdio_command(0, 0, SDIO_RESP_WAIT_DIS, SDIO_RESP_TYPE_SHORT, SDIO_INT_WAIT_DIS, SDIO_PEND_WAIT_DIS,
 				SDIO_CPSM_EN, SDIO_SUSPEND_DIS, SDIO_CMD_COMPLETION_DIS, SDIO_nIEN_DIS, SDIO_ATACMD_DIS);
 
-		sdio_err = sdio_cmd_wait(SDCARD_REPLY_NO);
+		sdio_err = sdio_cmd_wait(SDCARD_RESPONSE_NO);
 		if(sdio_err != E_NO_ERROR) {
 			printf("CMD error: %d\n", sdio_err);
 		}
@@ -176,7 +176,7 @@ int main(void)
 		sdio_command(0, 8, SDIO_RESP_WAIT_ENA, SDIO_RESP_TYPE_SHORT, SDIO_INT_WAIT_DIS, SDIO_PEND_WAIT_DIS,
 				SDIO_CPSM_EN, SDIO_SUSPEND_DIS, SDIO_CMD_COMPLETION_DIS, SDIO_nIEN_DIS, SDIO_ATACMD_DIS);
 
-		sdio_err = sdio_cmd_wait(SDCARD_REPLY_R1);
+		sdio_err = sdio_cmd_wait(SDCARD_RESPONSE_R1);
 		if (sdio_err != E_NO_ERROR) {
 			printf("CMD error: %d\n", sdio_err);
 		} else {

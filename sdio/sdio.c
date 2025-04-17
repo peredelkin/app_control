@@ -90,9 +90,9 @@ err_t sdio_cmd_wait(sdcard_reply_type_t reply_type) {
 	if (SDIO->STA & SDIO_STA_CCRCFAIL) {
 		SDIO->ICR = SDIO_ICR_CCRCFAILC;
 		switch(reply_type) {
-		case SDCARD_REPLY_R2:
+		case SDCARD_RESPONSE_R2:
 			return E_NO_ERROR;
-		case SDCARD_REPLY_R3:
+		case SDCARD_RESPONSE_R3:
 			return E_NO_ERROR;
 		default:
 			return E_CRC;

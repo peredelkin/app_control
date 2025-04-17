@@ -7,8 +7,9 @@
 
 #include <stdint.h>
 #include <assert.h>
+#include "sdcard.h"
 #include "sdio/sdio.h"
-#include "sdcard_reply.h"
+#include "sdcard_response.h"
 
 typedef enum {
 	SDCARD_CMD_GO_IDLE_STATE = 0,

@@ -16,8 +16,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include "sdcard_cmd.h"
-#include "sdcard_state.h"
-#include "sdcard_reply.h"
+#include "sdcard_response.h"
 #include "sdcard_token.h"
 #include "sdcard_reg.h"
 
@@ -100,6 +99,7 @@ typedef enum _SD_Card_Type {
 
 //! Структура SD-карты.
 typedef struct _SD_Card {
+	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
 	sdcard_state_t current_state; //!< Текущее состояние карты.
     sdcard_type_t card_type; //!< Тип SD-карты.
     future_t future; //!< Будущее.
