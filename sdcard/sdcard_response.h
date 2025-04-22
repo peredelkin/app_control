@@ -60,7 +60,23 @@ typedef union {
 // [39:8] Argument field
 typedef union {
 	struct {
-		unsigned OCR :32;
+		unsigned RESERVED_0_14			:15;
+		unsigned VDD_2v7_2v8			:1;	//15
+		unsigned VDD_2v8_2v9			:1;	//16
+		unsigned VDD_2v9_3v0			:1;	//17
+		unsigned VDD_3v0_3v1			:1;	//18
+		unsigned VDD_3v1_3v2			:1;	//19
+		unsigned VDD_3v2_3v3			:1;	//20
+		unsigned VDD_3v3_3v4			:1;	//21
+		unsigned VDD_3v4_3v5			:1;	//22
+		unsigned VDD_3v5_3v6			:1; //23
+		unsigned SWITCH_1v8_ACCEPTED	:1; //24
+		unsigned RESERVED_25_26			:2;
+		unsigned OVER_2TB_SUPPORT		:1; //27
+		unsigned RESERVED_28			:1;
+		unsigned UHS_2_CARD_STATUS		:1; //29
+		unsigned CARD_CAPACITY_STATUS	:1; //30
+		unsigned CARD_POWER_UP_STATUS	:1; //31
 	} bit;
 	uint32_t all;
 } sdcard_response_R3_t;
