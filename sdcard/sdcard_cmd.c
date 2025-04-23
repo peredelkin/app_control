@@ -1038,7 +1038,7 @@ err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argume
 
 	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
 
-	sdcard->cmd = cmd;
+	sdcard->cmd = (sdcard_cmd_t*) cmd;
 
 	sdio_command(
 			argument,
