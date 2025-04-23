@@ -7,7 +7,6 @@
 
 #include <stdint.h>
 #include <assert.h>
-#include "sdcard.h"
 #include "sdio/sdio.h"
 #include "sdcard_response.h"
 
@@ -103,7 +102,7 @@ typedef enum {
 //! Структура команды SD-карты.
 typedef struct _SD_Card_Cmd {
 	sdcard_cmd_list_t index; //!< Индекс команды.
-	sdcard_reply_type_t response_type; //!< Тип ответа
+	sdcard_response_type_t response_type; //!< Тип ответа
 	sdio_resptype_t response_long; //!< Длинный или короткий ответ
 	sdio_resp_crc_include_t response_include_crc; //!< Есть ли CRC в ответе
 	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
@@ -111,7 +110,7 @@ typedef struct _SD_Card_Cmd {
 
 typedef struct _SD_Card_ACmd {
 	sdcard_acmd_list_t index; //!< Индекс команды.
-	sdcard_reply_type_t response_type; //!< Тип ответа
+	sdcard_response_type_t response_type; //!< Тип ответа
 	sdio_resptype_t response_long; //!< Длинный или короткий ответ
 	sdio_resp_crc_include_t response_include_crc; //!< Есть ли CRC в ответе
 	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
@@ -124,16 +123,16 @@ typedef struct _SD_Card_ACmd {
 			.response_type = resp,\
 			.response_long = resp_long,\
 			.response_include_crc = resp_include_crc,\
-			.state_array[0] = idle,\
-			.state_array[1] = ready,\
-			.state_array[2] = ident,\
-			.state_array[3] = stby,\
-			.state_array[4] = train,\
-			.state_array[5] = data,\
-			.state_array[6] = rcv,\
-			.state_array[7] = prg,\
-			.state_array[8] = dis,\
-			.state_array[9] = ina,\
+			.state[0] = idle,\
+			.state[1] = ready,\
+			.state[2] = ident,\
+			.state[3] = stby,\
+			.state[4] = train,\
+			.state[5] = data,\
+			.state[6] = rcv,\
+			.state[7] = prg,\
+			.state[8] = dis,\
+			.state[9] = ina,\
 		}
 
 #endif /* SDCARD_CMD_H_ */

@@ -6,6 +6,7 @@
  */
 
 #include "sdcard_cmd.h"
+#include "sdcard.h"
 
 /*
  * Detailed Command Description
@@ -911,7 +912,7 @@ const sdcard_acmd_t sdcard_ACMD41 =
 				SDCARD_RESPONSE_R3,
 				SDIO_RESP_TYPE_SHORT,
 				SDIO_RESP_CRC_NOT_INCLUDED,
-				SDCARD_STATE_READY,		//idle
+				SDCARD_STATE_READY,		//idle (ready if OCR check is OK and card is not busy)
 				SDCARD_STATE_ILLEGAL,	//ready
 				SDCARD_STATE_ILLEGAL,	//ident
 				SDCARD_STATE_ILLEGAL,	//stby
@@ -1032,7 +1033,7 @@ const sdcard_acmd_t sdcard_ACMD54 =
 				SDCARD_STATE_ILLEGAL);	//ina
 
 
-err_t sdcard_send_cmd(sdcard_t* sdcard, sdcard_cmd_t* cmd, uint32_t argument) {
+err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
 	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
@@ -1051,6 +1052,8 @@ err_t sdcard_send_cmd(sdcard_t* sdcard, sdcard_cmd_t* cmd, uint32_t argument) {
 			SDIO_CMD_COMPLETION_DIS,
 			SDIO_nIEN_DIS,
 			SDIO_ATACMD_DIS);
+
+	return E_NO_ERROR;
 }
 
 

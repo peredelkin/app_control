@@ -21,7 +21,7 @@
 #include "yaffs2/yaffs_trace.h"
 #include "interrupts/interrupt_priorities.h"
 
-#include "sdio/sdio.h"
+#include "sdcard/sdcard.h"
 
 #include <malloc.h>
 #include <unistd.h>
@@ -75,7 +75,7 @@ void CAN_TIM_IRQHANDLER(void) {
 //volatile int test_extsram;
 
 
-
+sdcard_t sdcard; //TODO: не забыть убрать
 
 void dma_rcc_init() {
 	//DMA
@@ -153,7 +153,6 @@ int main(void)
 	}
 
 	//SDIO!
-	err_t sdio_err = E_NO_ERROR;
 	gpio_sdio_cfg_setup();
 	sys_counter_tv_print();
 	if (gpio_input_bit_read(&GPI_SDIO_CD_App) == false) {
@@ -165,25 +164,27 @@ int main(void)
 		sdio_clock_control(126, SDIO_CLKCR_CLK_EN, SDIO_CLKCR_PWRSAV_ENA, SDIO_CLKCR_BYP_DIS);
 		sdio_power_control(SDIO_POWER_PWRCTRL_ON);
 
-		sdio_command(0, 0, SDIO_RESP_WAIT_DIS, SDIO_RESP_TYPE_SHORT, SDIO_INT_WAIT_DIS, SDIO_PEND_WAIT_DIS,
-				SDIO_CPSM_EN, SDIO_SUSPEND_DIS, SDIO_CMD_COMPLETION_DIS, SDIO_nIEN_DIS, SDIO_ATACMD_DIS);
+		err_t sdio_err = E_NO_ERROR;
+		//инициализация структуры sdcard
+		sdcard.cmd = NULL;
+		sdcard.current_state = SDCARD_STATE_IDLE;
 
-		sdio_err = sdio_cmd_wait(SDCARD_RESPONSE_NO);
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD0, 0);
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD error: %d\n", sdio_err);
-		}
-
-		sdio_command(0, 8, SDIO_RESP_WAIT_ENA, SDIO_RESP_TYPE_SHORT, SDIO_INT_WAIT_DIS, SDIO_PEND_WAIT_DIS,
-				SDIO_CPSM_EN, SDIO_SUSPEND_DIS, SDIO_CMD_COMPLETION_DIS, SDIO_nIEN_DIS, SDIO_ATACMD_DIS);
-
-		sdio_err = sdio_cmd_wait(SDCARD_RESPONSE_R1);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD error: %d\n", sdio_err);
+			printf("CMD0 Err: %d\n", sdio_err);
 		} else {
-			printf("CMDREND CMD: %lu\n", SDIO->RESPCMD);
-			printf("CMDREND RESP1: %lu\n", SDIO->RESP1);
+			sdio_err = sdcard_response_rcv(&sdcard);
+			printf("RESP0 Err: %d\n", sdio_err);
 		}
 
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD8, 0);
+		if(sdio_err != E_NO_ERROR) {
+			printf("CMD8 Err: %d\n", sdio_err);
+		} else {
+			sdio_err = sdcard_response_rcv(&sdcard);
+			if(sdio_err != E_NO_ERROR) printf("RESP8 Err: %d\n", sdio_err);
+			else printf("RESP8 OK: %d\n", sdcard.response.r7.bit.VOLTAGE);
+		}
 
 	} else {
 		printf("SD Card Not Inserted\n");

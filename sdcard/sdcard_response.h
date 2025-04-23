@@ -49,12 +49,9 @@ typedef union {
 	uint32_t all;
 } sdcard_response_R1_t;
 
-// [127:96] Argument field
+//TODO: должен содержать все 4 32 битных слова
 typedef union {
-	struct {
-		unsigned CID_CSD :32;
-	} bit;
-	uint32_t all;
+	uint32_t all[4];
 } sdcard_response_R2_t;
 
 // [39:8] Argument field
@@ -94,7 +91,7 @@ typedef union {
 // [39:8] Argument field
 typedef union {
 	struct {
-		unsigned OCR :24;
+		unsigned OCR :24; //?
 		unsigned STUFF :3; //?
 		unsigned PRESENT_MEMORY :1;
 		unsigned NUMBER_OF_IO_FUNC :3;
@@ -157,7 +154,7 @@ typedef enum _SD_Card_Reply_Type {
 	SDCARD_RESPONSE_R5,		//!< Ответ R5.
 	SDCARD_RESPONSE_R6,		//!< Ответ R6.
     SDCARD_RESPONSE_R7,		//!< Ответ R7.
-} sdcard_reply_type_t;
+} sdcard_response_type_t;
 
 //! Общий ответ SD-карты.
 typedef union _SD_Card_Reply {
@@ -170,7 +167,7 @@ typedef union _SD_Card_Reply {
 	sdcard_response_R5_t r5;	//!< Ответ R5.
 	sdcard_response_R6_t r6;	//!< Ответ R6.
 	sdcard_response_R7_t r7;	//!< Ответ R7.
-} sdcard_reply_t;
+} sdcard_response_t;
 
 
 //! Проверка отсутствия данных кроме r1 в ответе SD-карты.
