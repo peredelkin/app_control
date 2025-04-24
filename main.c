@@ -238,82 +238,85 @@ int main(void)
 
 		printf("VOLTAGE: %d\n", sdcard.response.r7.bit.VOLTAGE);
 
-		//CMD55
-		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
-		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 55 Err: %d\n", sdio_err);
+		//ACMD41
+		do {
+			sys_counter_tv_print();
+			printf("ACMD 41 with 3.2-3.4v\n");
+			sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
+			if (sdio_err != E_NO_ERROR) {
+				printf("CMD 55 Err: %d\n", sdio_err);
+				goto exit_sdcard_init;
+			}
+
+			sdio_err = sdcard_response_rcv(&sdcard);
+			if (sdio_err != E_NO_ERROR) {
+				printf("RESP 55 Err: %d\n", sdio_err);
+				goto exit_sdcard_init;
+			}
+
+			sdio_err = sdcard_change_current_state(&sdcard);
+			if (sdio_err != E_NO_ERROR) {
+				printf("STATE 55 Err: %d\n", sdio_err);
+				goto exit_sdcard_init;
+			}
+
+			if (sdcard.response.r1.bit.ERROR) {
+				printf("CMD 55 ERROR: %lu\n", sdcard.response.r1.all);
+				goto exit_sdcard_init;
+			}
+
+			if (sdcard.response.r1.bit.APP_CMD == 0) {
+				printf("CMD 55 APP_CMD == 0\n");
+				goto exit_sdcard_init;
+			}
+
+			sdio_err = sdcard_acmd_send(&sdcard, &sdcard_ACMD41, (0b11 << 20));
+			if (sdio_err != E_NO_ERROR) {
+				printf("ACMD 41 Err: %d\n", sdio_err);
+				goto exit_sdcard_init;
+			}
+
+			sdio_err = sdcard_response_rcv(&sdcard);
+			if (sdio_err != E_NO_ERROR) {
+				printf("RESP 41 Err: %d\n", sdio_err);
+				goto exit_sdcard_init;
+			}
+
+			sys_counter_delay(0, 100000); // 100ms
+
+		} while (sdcard.response.r3.bit.CARD_POWER_UP_STATUS == 0);
+
+		printf("Initialization Complete\n");
+
+		sdcard.current_state = SDCARD_STATE_READY;
+
+		printf("ACMD 41 STATE: %d\n", sdcard.current_state);
+
+		//CMD2
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD2, 0);
+		if (sdio_err != E_NO_ERROR) {
+			printf("CMD 2 Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
 		sdio_err = sdcard_response_rcv(&sdcard);
-		if(sdio_err != E_NO_ERROR) {
-			printf("RESP 55 Err: %d\n", sdio_err);
+		if (sdio_err != E_NO_ERROR) {
+			printf("RESP 2 Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
 		sdio_err = sdcard_change_current_state(&sdcard);
-		if(sdio_err != E_NO_ERROR) {
-			printf("STATE 55 Err: %d\n", sdio_err);
+		if (sdio_err != E_NO_ERROR) {
+			printf("STATE 2 Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
-		if(sdcard.response.r1.bit.ERROR) {
-			printf("CMD 55 ERROR: %lu\n", sdcard.response.r1.all);
-			goto exit_sdcard_init;
-		}
+		printf("CMD 2 STATE: %d\n", sdcard.current_state);
 
-		printf("CMD 55 STATE: %d\n", sdcard.current_state);
-
-		//ACMD41
-		if (sdcard.response.r1.bit.APP_CMD) {
-			for (;;) {
-				sdio_err = sdcard_acmd_send(&sdcard, &sdcard_ACMD41, (0b111111111 << 15));
-				if (sdio_err != E_NO_ERROR) {
-					printf("ACMD 41 Err: %d\n", sdio_err);
-					goto exit_sdcard_init;
-				}
-
-				sdio_err = sdcard_response_rcv(&sdcard);
-				if (sdio_err != E_NO_ERROR) {
-					printf("RESP 41 Err: %d\n", sdio_err);
-					goto exit_sdcard_init;
-				}
-
-				if (sdcard.response.r3.bit.CARD_POWER_UP_STATUS) {
-					printf("Initialization Complete\n");
-					goto exit_sdcard_init;
-				}
-
-
-				sys_counter_delay(0, 100000); // 50ms
-				sys_counter_tv_print();
-				printf("ACMD 41\n");
-
-				sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
-				if(sdio_err != E_NO_ERROR) {
-					printf("CMD 55 Err: %d\n", sdio_err);
-					goto exit_sdcard_init;
-				}
-
-				sdio_err = sdcard_response_rcv(&sdcard);
-				if(sdio_err != E_NO_ERROR) {
-					printf("RESP 55 Err: %d\n", sdio_err);
-					goto exit_sdcard_init;
-				}
-
-				sdio_err = sdcard_change_current_state(&sdcard);
-				if(sdio_err != E_NO_ERROR) {
-					printf("STATE 55 Err: %d\n", sdio_err);
-					goto exit_sdcard_init;
-				}
-
-				if(sdcard.response.r1.bit.ERROR) {
-					printf("CMD 55 ERROR: %lu\n", sdcard.response.r1.all);
-					goto exit_sdcard_init;
-				}
-
-			}
-		}
+		printf("CMD 2 R2_4: %lu\n", sdcard.response.r2.all[3]);
+		printf("CMD 2 R2_3: %lu\n", sdcard.response.r2.all[2]);
+		printf("CMD 2 R2_2: %lu\n", sdcard.response.r2.all[1]);
+		printf("CMD 2 R2_1: %lu\n", sdcard.response.r2.all[0]);
 
 	} else {
 		printf("SD Card Not Inserted\n");
