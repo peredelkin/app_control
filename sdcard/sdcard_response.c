@@ -17,7 +17,6 @@ static err_t sdcard_response_index_compare(sdcard_t* sdcard, uint32_t cmd) {
 	return E_INVALID_VALUE;
 }
 
-//TODO: добавить определение текущего состояния в ответах, которые не содержат поля текущего состояния
 err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
 

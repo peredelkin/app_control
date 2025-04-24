@@ -57,7 +57,15 @@ typedef union {
 // [39:8] Argument field
 typedef union {
 	struct {
-		unsigned RESERVED_0_14			:15;
+		unsigned RESERVED_0_6			:7;
+		unsigned LOW_VOLTAGE			:1; //7
+		unsigned VDD_2v0_2v1			:1; //8
+		unsigned VDD_2v1_2v2			:1; //9
+		unsigned VDD_2v2_2v3			:1; //10
+		unsigned VDD_2v3_2v4			:1; //11
+		unsigned VDD_2v4_2v5			:1; //12
+		unsigned VDD_2v5_2v6			:1; //13
+		unsigned VDD_2v6_2v7			:1; //14
 		unsigned VDD_2v7_2v8			:1;	//15
 		unsigned VDD_2v8_2v9			:1;	//16
 		unsigned VDD_2v9_3v0			:1;	//17

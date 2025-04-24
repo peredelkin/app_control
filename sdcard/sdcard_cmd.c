@@ -1056,6 +1056,29 @@ err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argume
 	return E_NO_ERROR;
 }
 
+err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
+	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
+
+	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
+
+	sdcard->cmd = (sdcard_cmd_t*) cmd;
+
+	sdio_command(
+			argument,
+			sdcard->cmd->index,
+			((sdcard->cmd->response_type == SDCARD_RESPONSE_NO) ? SDIO_RESP_WAIT_DIS : SDIO_RESP_WAIT_ENA),
+			sdcard->cmd->response_long,
+			SDIO_INT_WAIT_DIS,
+			SDIO_PEND_WAIT_DIS,
+			SDIO_CPSM_EN,
+			SDIO_SUSPEND_DIS,
+			SDIO_CMD_COMPLETION_DIS,
+			SDIO_nIEN_DIS,
+			SDIO_ATACMD_DIS);
+
+	return E_NO_ERROR;
+}
+
 
 
 

@@ -75,6 +75,31 @@ void CAN_TIM_IRQHANDLER(void) {
 //volatile int test_extsram;
 
 
+err_t sdcard_change_current_state(sdcard_t* sdcard) {
+	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
+
+	switch (sdcard->cmd->response_type) {
+	case SDCARD_RESPONSE_R1:
+		sdcard->current_state = sdcard->response.r1.bit.CURRENT_STATE;
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R1b:
+		sdcard->current_state = sdcard->response.r1b.bit.CURRENT_STATE;
+		return E_NO_ERROR;
+
+	default:
+		break;
+	}
+
+	//такой ситуации не должно возникать, если команда была принята
+	if (sdcard->cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
+
+	//изменить текущее состояние через состояние команды
+	sdcard->current_state = sdcard->cmd->state[sdcard->current_state];
+
+	return E_NO_ERROR;
+}
+
 sdcard_t sdcard; //TODO: не забыть убрать
 
 void dma_rcc_init() {
@@ -169,26 +194,132 @@ int main(void)
 		sdcard.cmd = NULL;
 		sdcard.current_state = SDCARD_STATE_IDLE;
 
+		//CMD0
 		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD0, 0);
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD0 Err: %d\n", sdio_err);
-		} else {
-			sdio_err = sdcard_response_rcv(&sdcard);
-			printf("RESP0 Err: %d\n", sdio_err);
+			printf("CMD 0 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
 		}
 
+		sdio_err = sdcard_response_rcv(&sdcard);
+		if(sdio_err != E_NO_ERROR) {
+			printf("RESP 0 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_change_current_state(&sdcard);
+		if(sdio_err != E_NO_ERROR) {
+			printf("STATE 0 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("CMD 0 STATE: %d\n", sdcard.current_state);
+
+		//CMD8
 		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD8, 0);
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD8 Err: %d\n", sdio_err);
-		} else {
-			sdio_err = sdcard_response_rcv(&sdcard);
-			if(sdio_err != E_NO_ERROR) printf("RESP8 Err: %d\n", sdio_err);
-			else printf("RESP8 OK: %d\n", sdcard.response.r7.bit.VOLTAGE);
+			printf("CMD 8 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_response_rcv(&sdcard);
+		if(sdio_err != E_NO_ERROR) {
+			printf("RESP 8 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_change_current_state(&sdcard);
+		if(sdio_err != E_NO_ERROR) {
+			printf("STATE 8 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("CMD 8 STATE: %d\n", sdcard.current_state);
+
+		printf("VOLTAGE: %d\n", sdcard.response.r7.bit.VOLTAGE);
+
+		//CMD55
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
+		if(sdio_err != E_NO_ERROR) {
+			printf("CMD 55 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_response_rcv(&sdcard);
+		if(sdio_err != E_NO_ERROR) {
+			printf("RESP 55 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_change_current_state(&sdcard);
+		if(sdio_err != E_NO_ERROR) {
+			printf("STATE 55 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		if(sdcard.response.r1.bit.ERROR) {
+			printf("CMD 55 ERROR: %lu\n", sdcard.response.r1.all);
+			goto exit_sdcard_init;
+		}
+
+		printf("CMD 55 STATE: %d\n", sdcard.current_state);
+
+		//ACMD41
+		if (sdcard.response.r1.bit.APP_CMD) {
+			for (;;) {
+				sdio_err = sdcard_acmd_send(&sdcard, &sdcard_ACMD41, (0b111111111 << 15));
+				if (sdio_err != E_NO_ERROR) {
+					printf("ACMD 41 Err: %d\n", sdio_err);
+					goto exit_sdcard_init;
+				}
+
+				sdio_err = sdcard_response_rcv(&sdcard);
+				if (sdio_err != E_NO_ERROR) {
+					printf("RESP 41 Err: %d\n", sdio_err);
+					goto exit_sdcard_init;
+				}
+
+				if (sdcard.response.r3.bit.CARD_POWER_UP_STATUS) {
+					printf("Initialization Complete\n");
+					goto exit_sdcard_init;
+				}
+
+
+				sys_counter_delay(0, 100000); // 50ms
+				sys_counter_tv_print();
+				printf("ACMD 41\n");
+
+				sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
+				if(sdio_err != E_NO_ERROR) {
+					printf("CMD 55 Err: %d\n", sdio_err);
+					goto exit_sdcard_init;
+				}
+
+				sdio_err = sdcard_response_rcv(&sdcard);
+				if(sdio_err != E_NO_ERROR) {
+					printf("RESP 55 Err: %d\n", sdio_err);
+					goto exit_sdcard_init;
+				}
+
+				sdio_err = sdcard_change_current_state(&sdcard);
+				if(sdio_err != E_NO_ERROR) {
+					printf("STATE 55 Err: %d\n", sdio_err);
+					goto exit_sdcard_init;
+				}
+
+				if(sdcard.response.r1.bit.ERROR) {
+					printf("CMD 55 ERROR: %lu\n", sdcard.response.r1.all);
+					goto exit_sdcard_init;
+				}
+
+			}
 		}
 
 	} else {
 		printf("SD Card Not Inserted\n");
 	}
+
+	exit_sdcard_init: ;
 
 	//eth_init(); //отпаяно
 
