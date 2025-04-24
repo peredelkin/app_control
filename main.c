@@ -288,7 +288,11 @@ int main(void)
 
 		printf("Initialization Complete\n");
 
-		sdcard.current_state = SDCARD_STATE_READY;
+		sdio_err = sdcard_change_current_state(&sdcard);
+		if (sdio_err != E_NO_ERROR) {
+			printf("STATE 41 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
 
 		printf("ACMD 41 STATE: %d\n", sdcard.current_state);
 
