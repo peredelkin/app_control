@@ -9,16 +9,27 @@
 #define SDCARD_SDCARD_REG_H_
 
 #include <stdint.h>
+#include <assert.h>
 
+#define SDCARD_CID_SIZE 16
+
+#pragma pack(push, 1)
 typedef union {
 	struct {
-		unsigned TRAN_SPEED		:8;
-		unsigned NSAC			:8;
-		unsigned TAAC			:8;
-		unsigned RESERVED		:6;
-		unsigned CSD_STRUCTURE	:2;
+	    unsigned NOT_USED	:1;
+	    unsigned CRC7		:7;
+	    unsigned MDT		:12;
+	    unsigned RESERVED	:4;
+	    uint8_t PSN[4];
+	    uint8_t PRV;
+	    uint8_t PNM[5];
+	    uint8_t OID[2];
+	    uint8_t MID;
 	} bit;
-	uint32_t all;
-} sdcard_reg_CSD_R2_t;
+	uint32_t all[4];
+} sdcard_reg_CID_R2_t;
+#pragma pack(pop)
+
+static_assert(sizeof(sdcard_reg_CID_R2_t) == SDCARD_CID_SIZE, "Invalid size of sdcard CID!");
 
 #endif /* SDCARD_SDCARD_REG_H_ */

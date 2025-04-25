@@ -216,7 +216,7 @@ int main(void)
 		printf("CMD 0 STATE: %d\n", sdcard.current_state);
 
 		//CMD8
-		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD8, 0);
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD8, (0b1 << 8));
 		if(sdio_err != E_NO_ERROR) {
 			printf("CMD 8 Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
@@ -236,12 +236,84 @@ int main(void)
 
 		printf("CMD 8 STATE: %d\n", sdcard.current_state);
 
+		printf("ECHO: %d\n", sdcard.response.r7.bit.ECHO);
+
 		printf("VOLTAGE: %d\n", sdcard.response.r7.bit.VOLTAGE);
 
-		//ACMD41
+		//ACMD41 without argument
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
+		if (sdio_err != E_NO_ERROR) {
+			printf("CMD 55 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_response_rcv(&sdcard);
+		if (sdio_err != E_NO_ERROR) {
+			printf("RESP 55 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_change_current_state(&sdcard);
+		if (sdio_err != E_NO_ERROR) {
+			printf("STATE 55 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		if (sdcard.response.r1.bit.ERROR) {
+			printf("CMD 55 ERROR: %lu\n", sdcard.response.r1.all);
+			goto exit_sdcard_init;
+		}
+
+		if (sdcard.response.r1.bit.APP_CMD == 0) {
+			printf("CMD 55 APP_CMD == 0\n");
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_acmd_send(&sdcard, &sdcard_ACMD41, 0);
+		if (sdio_err != E_NO_ERROR) {
+			printf("ACMD 41 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		sdio_err = sdcard_response_rcv(&sdcard);
+		if (sdio_err != E_NO_ERROR) {
+			printf("RESP 41 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		if(sdcard.response.r3.bit.VDD_3v2_3v3 == 0 || sdcard.response.r3.bit.VDD_3v3_3v4 == 0) {
+			printf("VDD_3v2_3v4 not supported\n");
+			goto exit_sdcard_init;
+		}
+
+		printf("R3 VDD_2v0_2v1: %d\n", sdcard.response.r3.bit.VDD_2v0_2v1);
+		printf("R3 VDD_2v1_2v2: %d\n", sdcard.response.r3.bit.VDD_2v1_2v2);
+		printf("R3 VDD_2v2_2v3: %d\n", sdcard.response.r3.bit.VDD_2v2_2v3);
+		printf("R3 VDD_2v3_2v4: %d\n", sdcard.response.r3.bit.VDD_2v3_2v4);
+		printf("R3 VDD_2v4_2v5: %d\n", sdcard.response.r3.bit.VDD_2v4_2v5);
+		printf("R3 VDD_2v5_2v6: %d\n", sdcard.response.r3.bit.VDD_2v5_2v6);
+		printf("R3 VDD_2v6_2v7: %d\n", sdcard.response.r3.bit.VDD_2v6_2v7);
+		printf("R3 VDD_2v7_2v8: %d\n", sdcard.response.r3.bit.VDD_2v7_2v8);
+		printf("R3 VDD_2v8_2v9: %d\n", sdcard.response.r3.bit.VDD_2v8_2v9);
+		printf("R3 VDD_2v9_3v0: %d\n", sdcard.response.r3.bit.VDD_2v9_3v0);
+		printf("R3 VDD_3v0_3v1: %d\n", sdcard.response.r3.bit.VDD_3v0_3v1);
+		printf("R3 VDD_3v1_3v2: %d\n", sdcard.response.r3.bit.VDD_3v1_3v2);
+		printf("R3 VDD_3v2_3v3: %d\n", sdcard.response.r3.bit.VDD_3v2_3v3);
+		printf("R3 VDD_3v3_3v4: %d\n", sdcard.response.r3.bit.VDD_3v3_3v4);
+		printf("R3 VDD_3v4_3v5: %d\n", sdcard.response.r3.bit.VDD_3v4_3v5);
+		printf("R3 VDD_3v5_3v6: %d\n", sdcard.response.r3.bit.VDD_3v5_3v6);
+		printf("R3 SWITCH_1v8_ACCEPTED: %d\n", sdcard.response.r3.bit.SWITCH_1v8_ACCEPTED);
+		printf("R3 OVER_2TB_SUPPORT: %d\n", sdcard.response.r3.bit.OVER_2TB_SUPPORT);
+		printf("R3 UHS_2_CARD_STATUS: %d\n", sdcard.response.r3.bit.UHS_2_CARD_STATUS);
+		printf("R3 CARD_CAPACITY_STATUS: %d\n", sdcard.response.r3.bit.CARD_CAPACITY_STATUS);
+		printf("R3 CARD_POWER_UP_STATUS: %d\n", sdcard.response.r3.bit.CARD_POWER_UP_STATUS);
+
+		//ACMD41 with argument
+		uint8_t acmd41_timeout = 11; //11 * 100ms
+		sys_counter_tv_print();
+		printf("ACMD 41 with 3.2-3.3v\n");
 		do {
-			sys_counter_tv_print();
-			printf("ACMD 41 with 3.2-3.4v\n");
+
 			sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
 			if (sdio_err != E_NO_ERROR) {
 				printf("CMD 55 Err: %d\n", sdio_err);
@@ -270,7 +342,7 @@ int main(void)
 				goto exit_sdcard_init;
 			}
 
-			sdio_err = sdcard_acmd_send(&sdcard, &sdcard_ACMD41, (0b11 << 20));
+			sdio_err = sdcard_acmd_send(&sdcard, &sdcard_ACMD41, ((0b1 << 30) | (0b11 << 20)));
 			if (sdio_err != E_NO_ERROR) {
 				printf("ACMD 41 Err: %d\n", sdio_err);
 				goto exit_sdcard_init;
@@ -284,7 +356,16 @@ int main(void)
 
 			sys_counter_delay(0, 100000); // 100ms
 
-		} while (sdcard.response.r3.bit.CARD_POWER_UP_STATUS == 0);
+			acmd41_timeout--;
+
+		} while (sdcard.response.r3.bit.CARD_POWER_UP_STATUS == 0 && acmd41_timeout);
+
+		sys_counter_tv_print();
+
+		if(acmd41_timeout == 0) {
+			printf("ACMD 41 TIMEOUT\n");
+			goto exit_sdcard_init;
+		}
 
 		printf("Initialization Complete\n");
 
@@ -316,11 +397,6 @@ int main(void)
 		}
 
 		printf("CMD 2 STATE: %d\n", sdcard.current_state);
-
-		printf("CMD 2 R2_4: %lu\n", sdcard.response.r2.all[3]);
-		printf("CMD 2 R2_3: %lu\n", sdcard.response.r2.all[2]);
-		printf("CMD 2 R2_2: %lu\n", sdcard.response.r2.all[1]);
-		printf("CMD 2 R2_1: %lu\n", sdcard.response.r2.all[0]);
 
 	} else {
 		printf("SD Card Not Inserted\n");

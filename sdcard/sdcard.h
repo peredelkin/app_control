@@ -101,8 +101,7 @@ typedef struct _SD_Card {
 	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
 	sdcard_state_t current_state; //!< Текущее состояние карты.
 	sdcard_response_t response;
-    //sdcard_type_t card_type; //!< Тип SD-карты.
-    //future_t future; //!< Будущее.
+	sdcard_reg_CID_R2_t CID;
 } sdcard_t;
 
 
