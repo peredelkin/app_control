@@ -114,6 +114,8 @@ extern const sdcard_cmd_t sdcard_Class8_CMD55;
 extern const sdcard_acmd_t sdcard_ACMD41;
 extern const sdcard_cmd_t sdcard_Class0_CMD2;
 extern const sdcard_cmd_t sdcard_Class0_CMD3;
+extern const sdcard_cmd_t sdcard_Class0_CMD7_adressed;
+extern const sdcard_cmd_t sdcard_Class0_CMD13;
 
 extern err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);
 extern err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument);
