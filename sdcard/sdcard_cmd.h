@@ -109,8 +109,6 @@ typedef struct _SD_Card_Cmd {
 typedef struct _SD_Card_ACmd {
 	sdcard_acmd_list_t index; //!< Индекс команды.
 	sdcard_response_type_t response_type; //!< Тип ответа
-	sdio_resptype_t response_long; //!< Длинный или короткий ответ
-	sdio_resp_crc_include_t response_include_crc; //!< Есть ли CRC в ответе
 	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
 } sdcard_acmd_t;
 
