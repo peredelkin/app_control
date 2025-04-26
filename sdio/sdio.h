@@ -155,7 +155,7 @@ extern void sdio_command(uint32_t argument, int cmd_index, sdio_respwait_t respw
 		sdio_intwait_t intwait, sdio_pendwait_t pendwait, sdio_cpsmen_t cpsmen, sdio_suspend_t suspend,
 		sdio_cmdcompl_t cmdcompl, sdio_nien_t nien, sdio_atacmd_t atacmd);
 extern err_t sdio_data_wait();
-extern err_t sdio_cmd_wait(sdcard_response_type_t reply_type);
+extern err_t sdio_cmd_wait();
 extern void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp);
 
 #endif /* SDIO_SDIO_H_ */

@@ -103,8 +103,6 @@ typedef enum {
 typedef struct _SD_Card_Cmd {
 	sdcard_cmd_list_t index; //!< Индекс команды.
 	sdcard_response_type_t response_type; //!< Тип ответа
-	sdio_resptype_t response_long; //!< Длинный или короткий ответ
-	sdio_resp_crc_include_t response_include_crc; //!< Есть ли CRC в ответе
 	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
 } sdcard_cmd_t;
 
@@ -117,12 +115,10 @@ typedef struct _SD_Card_ACmd {
 } sdcard_acmd_t;
 
 //! Инициализация команды SD-карты по месту объявления. SDIO
-#define SDCARD_CMD_MAKE(ind, resp, resp_long, resp_include_crc, idle, ready, ident, stby, train, data, rcv, prg, dis, ina)\
+#define SDCARD_CMD_MAKE(ind, resp, idle, ready, ident, stby, train, data, rcv, prg, dis, ina)\
 		{\
 		    .index = ind,\
 			.response_type = resp,\
-			.response_long = resp_long,\
-			.response_include_crc = resp_include_crc,\
 			.state[0] = idle,\
 			.state[1] = ready,\
 			.state[2] = ident,\

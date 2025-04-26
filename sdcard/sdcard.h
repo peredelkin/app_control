@@ -98,8 +98,11 @@ typedef enum _SD_Card_Type {
 
 //! Структура SD-карты.
 typedef struct _SD_Card {
-	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
 	sdcard_state_t current_state; //!< Текущее состояние карты.
+	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
+	sdio_respwait_t resp_wait;
+	sdio_resptype_t resp_long;
+	sdio_resp_crc_include_t resp_crc;
 	sdcard_response_t response;
 	sdcard_reg_CID_R2_t CID;
 } sdcard_t;

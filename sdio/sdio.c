@@ -76,7 +76,7 @@ err_t sdio_data_wait() {
 	return E_NO_ERROR;
 }
 
-err_t sdio_cmd_wait(sdcard_response_type_t response_type) {
+err_t sdio_cmd_wait() {
 	while (SDIO->STA & SDIO_STA_CMDACT);
 
 	if (SDIO->STA & SDIO_STA_CMDREND) {
@@ -89,14 +89,7 @@ err_t sdio_cmd_wait(sdcard_response_type_t response_type) {
 	 */
 	if (SDIO->STA & SDIO_STA_CCRCFAIL) {
 		SDIO->ICR = SDIO_ICR_CCRCFAILC;
-		switch(response_type) {
-		case SDCARD_RESPONSE_R2:
-			return E_NO_ERROR;
-		case SDCARD_RESPONSE_R3:
-			return E_NO_ERROR;
-		default:
-			return E_CRC;
-		}
+		return E_CRC;
 	}
 
 	if (SDIO->STA & SDIO_STA_CMDSENT) {

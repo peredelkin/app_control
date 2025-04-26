@@ -20,15 +20,25 @@ static err_t sdcard_response_index_compare(sdcard_t* sdcard, uint32_t cmd) {
 err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
 
-	err_t err = sdio_cmd_wait(sdcard->cmd->response_type);
-	if(err != E_NO_ERROR) return err;
+	err_t err = sdio_cmd_wait();
+	//есть ошибка
+	if(err != E_NO_ERROR) {
+		//ошибка CRC
+		if(err == E_CRC) {
+			//CRC должен быть в ответе
+			if (sdcard->resp_crc == SDIO_RESP_CRC_INCLUDED) return err;
+		} else {
+			//другая ошибка
+			return err;
+		}
+	}
 
-	if(sdcard->cmd->response_type == SDCARD_RESPONSE_NO) return E_NO_ERROR;
+	if(sdcard->resp_wait == SDIO_RESP_WAIT_DIS) return E_NO_ERROR;
 
 	uint32_t cmd;
 	uint32_t resp[4];
 
-	sdio_response_read(sdcard->cmd->response_long, &cmd, resp);
+	sdio_response_read(sdcard->resp_long, &cmd, resp);
 
 	cmd = cmd & SDIO_COMMAND_INDEX_MASK; //отбрасываем мусор
 
