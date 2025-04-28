@@ -104,6 +104,7 @@ typedef struct _SD_Card {
 	sdio_resptype_t resp_long;
 	sdio_resp_crc_include_t resp_crc;
 	sdcard_response_t response;
+	uint32_t RCA;
 	sdcard_reg_CID_R2_t CID;
 } sdcard_t;
 

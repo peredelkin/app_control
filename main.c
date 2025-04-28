@@ -240,10 +240,6 @@ int main(void)
 
 		printf("CMD 8 STATE: %d\n", sdcard.current_state);
 
-		printf("ECHO: %d\n", sdcard.response.r7.bit.ECHO);
-
-		printf("VOLTAGE: %d\n", sdcard.response.r7.bit.VOLTAGE);
-
 		//ACMD41 without argument
 		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class8_CMD55, 0);
 		if (sdio_err != E_NO_ERROR) {
@@ -292,7 +288,6 @@ int main(void)
 
 		//ACMD41 with argument
 		uint8_t acmd41_timeout = 11; //11 * 100ms
-		sys_counter_tv_print();
 		printf("ACMD 41 with 3.2-3.3v\n");
 		do {
 
@@ -341,8 +336,6 @@ int main(void)
 			acmd41_timeout--;
 
 		} while (sdcard.response.r3.bit.CARD_POWER_UP_STATUS == 0 && acmd41_timeout);
-
-		sys_counter_tv_print();
 
 		if(acmd41_timeout == 0) {
 			printf("ACMD 41 TIMEOUT\n");
@@ -413,10 +406,10 @@ int main(void)
 		printf("CMD 3 STATE: %d\n", sdcard.current_state);
 
 		//NEW_RCA
-		uint32_t SDCARD_RCA = sdcard.response.r6.all & 0xFFFF0000;
+		sdcard.RCA = sdcard.response.r6.all & 0xFFFF0000;
 
 		//CMD7
-		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD7_adressed, SDCARD_RCA);
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD7_adressed, sdcard.RCA);
 		if (sdio_err != E_NO_ERROR) {
 			printf("CMD 7 Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
@@ -439,7 +432,7 @@ int main(void)
 		printf("CMD 7 STATE: %d\n", sdcard.current_state);
 
 		//CMD13
-		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD13, SDCARD_RCA);
+		sdio_err = sdcard_cmd_send(&sdcard, &sdcard_Class0_CMD13, sdcard.RCA);
 		if (sdio_err != E_NO_ERROR) {
 			printf("CMD 13 Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
