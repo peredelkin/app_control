@@ -18,7 +18,8 @@ typedef union {
 	struct {
 	    unsigned NOT_USED	:1;
 	    unsigned CRC7		:7;
-	    unsigned MDT		:12;
+	    unsigned MDT_M		:4;
+	    unsigned MDT_Y		:8;
 	    unsigned RESERVED	:4;
 	    uint8_t PSN[4];
 	    uint8_t PRV;

@@ -290,28 +290,6 @@ int main(void)
 			goto exit_sdcard_init;
 		}
 
-		printf("R3 VDD_2v0_2v1: %d\n", sdcard.response.r3.bit.VDD_2v0_2v1);
-		printf("R3 VDD_2v1_2v2: %d\n", sdcard.response.r3.bit.VDD_2v1_2v2);
-		printf("R3 VDD_2v2_2v3: %d\n", sdcard.response.r3.bit.VDD_2v2_2v3);
-		printf("R3 VDD_2v3_2v4: %d\n", sdcard.response.r3.bit.VDD_2v3_2v4);
-		printf("R3 VDD_2v4_2v5: %d\n", sdcard.response.r3.bit.VDD_2v4_2v5);
-		printf("R3 VDD_2v5_2v6: %d\n", sdcard.response.r3.bit.VDD_2v5_2v6);
-		printf("R3 VDD_2v6_2v7: %d\n", sdcard.response.r3.bit.VDD_2v6_2v7);
-		printf("R3 VDD_2v7_2v8: %d\n", sdcard.response.r3.bit.VDD_2v7_2v8);
-		printf("R3 VDD_2v8_2v9: %d\n", sdcard.response.r3.bit.VDD_2v8_2v9);
-		printf("R3 VDD_2v9_3v0: %d\n", sdcard.response.r3.bit.VDD_2v9_3v0);
-		printf("R3 VDD_3v0_3v1: %d\n", sdcard.response.r3.bit.VDD_3v0_3v1);
-		printf("R3 VDD_3v1_3v2: %d\n", sdcard.response.r3.bit.VDD_3v1_3v2);
-		printf("R3 VDD_3v2_3v3: %d\n", sdcard.response.r3.bit.VDD_3v2_3v3);
-		printf("R3 VDD_3v3_3v4: %d\n", sdcard.response.r3.bit.VDD_3v3_3v4);
-		printf("R3 VDD_3v4_3v5: %d\n", sdcard.response.r3.bit.VDD_3v4_3v5);
-		printf("R3 VDD_3v5_3v6: %d\n", sdcard.response.r3.bit.VDD_3v5_3v6);
-		printf("R3 SWITCH_1v8_ACCEPTED: %d\n", sdcard.response.r3.bit.SWITCH_1v8_ACCEPTED);
-		printf("R3 OVER_2TB_SUPPORT: %d\n", sdcard.response.r3.bit.OVER_2TB_SUPPORT);
-		printf("R3 UHS_2_CARD_STATUS: %d\n", sdcard.response.r3.bit.UHS_2_CARD_STATUS);
-		printf("R3 CARD_CAPACITY_STATUS: %d\n", sdcard.response.r3.bit.CARD_CAPACITY_STATUS);
-		printf("R3 CARD_POWER_UP_STATUS: %d\n", sdcard.response.r3.bit.CARD_POWER_UP_STATUS);
-
 		//ACMD41 with argument
 		uint8_t acmd41_timeout = 11; //11 * 100ms
 		sys_counter_tv_print();
@@ -399,6 +377,14 @@ int main(void)
 			printf("STATE 2 Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
 		}
+
+		sdcard.CID.all[0] = sdcard.response.r2.all[0];
+		sdcard.CID.all[1] = sdcard.response.r2.all[1];
+		sdcard.CID.all[2] = sdcard.response.r2.all[2];
+		sdcard.CID.all[3] = sdcard.response.r2.all[3];
+
+		printf("MID: %d\n", sdcard.CID.bit.MID);
+		printf("MDT_M: %d, MDT_Y: %d\n", sdcard.CID.bit.MDT_M, sdcard.CID.bit.MDT_Y);
 
 		printf("CMD 2 STATE: %d\n", sdcard.current_state);
 
