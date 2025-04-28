@@ -29,9 +29,9 @@ typedef union {
 	    uint8_t MID;
 	} bit;
 	uint32_t all[4];
-} sdcard_reg_CID_R2_t;
+} sdcard_reg_CID_t;
 #pragma pack(pop)
-static_assert(sizeof(sdcard_reg_CID_R2_t) == SDCARD_CID_SIZE, "Invalid size of sdcard CID!");
+static_assert(sizeof(sdcard_reg_CID_t) == SDCARD_CID_SIZE, "Invalid size of sdcard CID!");
 
 
 #pragma pack(push, 1)

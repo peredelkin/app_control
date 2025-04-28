@@ -779,7 +779,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD13 =
  *
  * [31:0] stuff bits
  */
-const sdcard_acmd_t sdcard_ACMD22 =
+const sdcard_acmd_t sdcard_Class8_ACMD22 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SEND_NUM_WR_BLOCKS,
 				SDCARD_RESPONSE_R1,
@@ -804,7 +804,7 @@ const sdcard_acmd_t sdcard_ACMD22 =
  * [31:23] stuff bits
  * [22:0] Number of blocks
  */
-const sdcard_acmd_t sdcard_ACMD23 =
+const sdcard_acmd_t sdcard_Class8_ACMD23 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT,
 				SDCARD_RESPONSE_R1,
@@ -834,7 +834,7 @@ const sdcard_acmd_t sdcard_ACMD23 =
  * [24] S18R
  * [23:0] VDD Voltage Window(OCR[23:0])
  */
-const sdcard_acmd_t sdcard_ACMD41 =
+const sdcard_acmd_t sdcard_Class8_ACMD41 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SD_SEND_OP_COND,
 				SDCARD_RESPONSE_R3,
@@ -857,7 +857,7 @@ const sdcard_acmd_t sdcard_ACMD41 =
  * [31:1] stuff bits
  * [0] set_cd
  */
-const sdcard_acmd_t sdcard_ACMD42 =
+const sdcard_acmd_t sdcard_Class8_ACMD42 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_CLR_CARD_DETECT,
 				SDCARD_RESPONSE_R1,
@@ -877,7 +877,7 @@ const sdcard_acmd_t sdcard_ACMD42 =
  *
  * [31:0] stuff bits
  */
-const sdcard_acmd_t sdcard_ACMD51 =
+const sdcard_acmd_t sdcard_Class8_ACMD51 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SEND_SCR,
 				SDCARD_RESPONSE_R1,
@@ -906,7 +906,7 @@ const sdcard_acmd_t sdcard_ACMD51 =
  * [15:8] Security Protocol Specific 0 (SPSP0)
  * [7:0] SD Security Specific Field (SSSF)
  */
-const sdcard_acmd_t sdcard_ACMD53 =
+const sdcard_acmd_t sdcard_Class8_ACMD53 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SECURE_RECEIVE,
 				SDCARD_RESPONSE_R1,
@@ -935,7 +935,7 @@ const sdcard_acmd_t sdcard_ACMD53 =
  * [15:8] Security Protocol Specific 0 (SPSP0)
  * [7:0] SD Security Specific Field (SSSF)
  */
-const sdcard_acmd_t sdcard_ACMD54 =
+const sdcard_acmd_t sdcard_Class8_ACMD54 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SECURE_SEND,
 				SDCARD_RESPONSE_R1,
