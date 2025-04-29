@@ -79,7 +79,6 @@ static void sdcard_resp_setup(sdcard_t* sdcard) {
 
 
 static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
-	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
 	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
 
@@ -104,7 +103,6 @@ static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t
 }
 
 static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
-	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
 	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
 
@@ -219,15 +217,50 @@ static err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	return E_NOT_IMPLEMENTED;
 }
 
+//TODO: расставить нужный порядок проверки ошибок
+static err_t sdcard_status_error_check(sdcard_t* sdcard) {
+	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
+
+	switch (sdcard->cmd->response_type) {
+	case SDCARD_RESPONSE_R1b:
+		//no break
+	case SDCARD_RESPONSE_R1:
+		if(sdcard->response.r1.bit.AKE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.WP_ERASE_SKIP) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.CID_CSD_OVERWRITE) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.CC_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.CARD_ECC_FAILED) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.ILLEGAL_COMMAND) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.COM_CRC_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.LOCK_UNLOCK_FAILED) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.WP_VIOLATION) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.ERASE_PARAM) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.ERASE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.BLOCK_LEN_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.ADDRESS_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.OUT_OF_RANGE) return E_NOT_IMPLEMENTED;
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R6:
+		if(sdcard->response.r6.bit.AKE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r6.bit.ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r6.bit.ILLEGAL_COMMAND) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r6.bit.COM_CRC_ERROR) return E_NOT_IMPLEMENTED;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
 err_t sdcard_change_current_state(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
 
 	//проверка состояния в ответе
 	switch (sdcard->cmd->response_type) {
-	case SDCARD_RESPONSE_R1:
+	case SDCARD_RESPONSE_R1b:
 		//no break
 
-	case SDCARD_RESPONSE_R1b:
+	case SDCARD_RESPONSE_R1:
 		if (sdcard->current_state != sdcard->response.r1.bit.CURRENT_STATE) return E_INVALID_VALUE;
 		break;
 
@@ -249,6 +282,8 @@ err_t sdcard_change_current_state(sdcard_t* sdcard) {
 }
 
 err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
+	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
+
 	err_t err = E_NO_ERROR;
 
 	err = sdcard_cmd_send(sdcard, cmd, argument);
@@ -264,6 +299,8 @@ err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 }
 
 err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
+	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
+
 	err_t err = E_NO_ERROR;
 
 	err = sdcard_cmd(sdcard, &sdcard_Class8_CMD55, 0);

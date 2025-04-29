@@ -19,32 +19,32 @@ typedef union {
 		unsigned RESERVED_0				:1;
 		unsigned RESERVED_1				:1;
 		unsigned RESERVED_2				:1;
-		unsigned AKE_SEQ_ERROR			:1;
+		unsigned AKE_SEQ_ERROR			:1;	//E R
 		unsigned RESERVED_4				:1;
-		unsigned APP_CMD				:1;
-		unsigned RESERVED_6				:1;
-		unsigned SWITCH_ERROR			:1;
-		unsigned READY_FOR_DATA			:1;
-		unsigned CURRENT_STATE			:4;
-		unsigned ERASE_RESET			:1;
-		unsigned CARD_ECC_DISABLED		:1;
-		unsigned WP_ERASE_SKIP			:1;
-		unsigned CID_CSD_OVERWRITE		:1;
+		unsigned APP_CMD				:1;	//S R
+		unsigned FX_EVENT				:1;	//S X
+		unsigned RESERVED_7				:1;
+		unsigned READY_FOR_DATA			:1;	//S X
+		unsigned CURRENT_STATE			:4;	//S X
+		unsigned ERASE_RESET			:1;	//S R
+		unsigned CARD_ECC_DISABLED		:1;	//S X
+		unsigned WP_ERASE_SKIP			:1;	//E R X
+		unsigned CID_CSD_OVERWRITE		:1;	//E R X
 		unsigned RESERVED_17			:1;
 		unsigned RESERVED_18			:1;
-		unsigned ERROR					:1;
-		unsigned CC_ERROR				:1;
-		unsigned CARD_ECC_FAILED		:1;
-		unsigned ILLEGAL_COMMAND		:1;
-		unsigned COM_CRC_ERROR			:1;
-		unsigned LOCK_UNLOCK_FAILED		:1;
-		unsigned CARD_IS_LOCKED			:1;
-		unsigned WP_VIOLATION			:1;
-		unsigned ERASE_PARAM			:1;
-		unsigned ERASE_SEQ_ERROR		:1;
-		unsigned BLOCK_LEN_ERROR		:1;
-		unsigned ADDRESS_MISALIGN		:1;
-		unsigned ADDRESS_OUT_OF_RANGE	:1;
+		unsigned ERROR					:1;	//E R X
+		unsigned CC_ERROR				:1;	//E R X
+		unsigned CARD_ECC_FAILED		:1;	//E R X
+		unsigned ILLEGAL_COMMAND		:1;	//E R
+		unsigned COM_CRC_ERROR			:1;	//E R
+		unsigned LOCK_UNLOCK_FAILED		:1;	//E R X
+		unsigned CARD_IS_LOCKED			:1;	//S X
+		unsigned WP_VIOLATION			:1;	//E R X
+		unsigned ERASE_PARAM			:1;	//E R X
+		unsigned ERASE_SEQ_ERROR		:1;	//E R
+		unsigned BLOCK_LEN_ERROR		:1;	//E R X
+		unsigned ADDRESS_ERROR			:1;	//E R X
+		unsigned OUT_OF_RANGE			:1;	//E R X
 	} bit;
 	uint32_t all;
 } sdcard_response_R1_t;
