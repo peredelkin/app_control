@@ -1,4 +1,5 @@
 #include "sdcard.h"
+#include "sdcard_cmd.h"
 #include "utils/utils.h"
 #include "crc/crc16_ccitt.h"
 #include <string.h>
@@ -49,6 +50,174 @@ typedef enum {
 	SDCARD_INIT_POWER_CYCLE,
 	SDCARD_INIT_UNUSABLE_CARD
 } sdcard_init_state_t;
+
+static void sdcard_resp_setup(sdcard_t* sdcard) {
+	sdcard->resp_wait = SDIO_RESP_WAIT_ENA;
+	sdcard->resp_long = SDIO_RESP_TYPE_SHORT;
+	sdcard->resp_crc = SDIO_RESP_CRC_INCLUDED;
+
+	switch (sdcard->cmd->response_type) {
+	case SDCARD_RESPONSE_NO:
+		sdcard->resp_wait = SDIO_RESP_WAIT_DIS;
+		break;
+
+	case SDCARD_RESPONSE_R2:
+		sdcard->resp_long = SDIO_RESP_TYPE_LONG;
+		//no break
+
+	case SDCARD_RESPONSE_R3:
+		//no break
+
+	case SDCARD_RESPONSE_R4b:
+		sdcard->resp_crc = SDIO_RESP_CRC_NOT_INCLUDED;
+		break;
+
+	default:
+		break;
+	}
+}
+
+
+static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
+	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
+
+	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
+
+	sdcard->cmd = (sdcard_cmd_t*) cmd;
+
+	sdcard_resp_setup(sdcard);
+
+	sdio_command(
+			argument,
+			sdcard->cmd->index,
+			sdcard->resp_wait,
+			sdcard->resp_long,
+			SDIO_INT_WAIT_DIS,
+			SDIO_PEND_WAIT_DIS,
+			SDIO_CPSM_EN,
+			SDIO_SUSPEND_DIS,
+			SDIO_CMD_COMPLETION_DIS,
+			SDIO_nIEN_DIS,
+			SDIO_ATACMD_DIS);
+
+	return E_NO_ERROR;
+}
+
+static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
+	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
+
+	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
+
+	sdcard->cmd = (sdcard_cmd_t*) cmd;
+
+	sdcard_resp_setup(sdcard);
+
+	sdio_command(
+			argument,
+			sdcard->cmd->index,
+			sdcard->resp_wait,
+			sdcard->resp_long,
+			SDIO_INT_WAIT_DIS,
+			SDIO_PEND_WAIT_DIS,
+			SDIO_CPSM_EN,
+			SDIO_SUSPEND_DIS,
+			SDIO_CMD_COMPLETION_DIS,
+			SDIO_nIEN_DIS,
+			SDIO_ATACMD_DIS);
+
+	return E_NO_ERROR;
+}
+
+#define SDIO_COMMAND_INDEX_MASK 0b111111
+
+//TODO: проверить, все ли ответы, где используется функция, имеют корректный индекс
+static err_t sdcard_response_index_compare(sdcard_t* sdcard, uint32_t cmd) {
+	if(sdcard->cmd->index == cmd) return E_NO_ERROR;
+	return E_INVALID_VALUE;
+}
+
+static err_t sdcard_response_rcv(sdcard_t* sdcard) {
+	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
+
+	err_t err = sdio_cmd_wait();
+	//есть ошибка
+	if(err != E_NO_ERROR) {
+		//ошибка CRC
+		if(err == E_CRC) {
+			//CRC должен быть в ответе
+			if (sdcard->resp_crc == SDIO_RESP_CRC_INCLUDED) return err;
+		} else {
+			//другая ошибка
+			return err;
+		}
+	}
+
+	if(sdcard->resp_wait == SDIO_RESP_WAIT_DIS) return E_NO_ERROR;
+
+	uint32_t cmd;
+	uint32_t resp[4];
+
+	sdio_response_read(sdcard->resp_long, &cmd, resp);
+
+	cmd = cmd & SDIO_COMMAND_INDEX_MASK; //отбрасываем мусор
+
+	if(sdcard)
+
+	switch (sdcard->cmd->response_type) {
+
+	case SDCARD_RESPONSE_R1b:
+		//TODO: сюда нужна функция проверки состояния I/O с таймаутом. или не сюда.
+		//no break
+
+	case SDCARD_RESPONSE_R1:
+		if (sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
+		sdcard->response.r1.all = resp[0];
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R2:
+		if(cmd != SDIO_COMMAND_INDEX_MASK) return E_INVALID_VALUE;
+		sdcard->response.r2.all[0] = resp[3];
+		sdcard->response.r2.all[1] = resp[2];
+		sdcard->response.r2.all[2] = resp[1];
+		sdcard->response.r2.all[3] = resp[0];
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R3:
+		if(cmd != SDIO_COMMAND_INDEX_MASK) return E_INVALID_VALUE;
+		sdcard->response.r3.all = resp[0];
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R4:
+		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
+		sdcard->response.r4.all = resp[0];
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R4b:
+		sdcard->response.r4b.all = resp[0];
+		//TODO: сюда нужна функция проверки состояния I/O с таймаутом. или не сюда.
+		return E_NOT_IMPLEMENTED;
+
+	case SDCARD_RESPONSE_R5:
+		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
+		sdcard->response.r5.all = resp[0];
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R6:
+		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
+		sdcard->response.r6.all = resp[0];
+		return E_NO_ERROR;
+
+	case SDCARD_RESPONSE_R7:
+		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
+		sdcard->response.r7.all = resp[0];
+		return E_NO_ERROR;
+
+	default:
+		break;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
 
 err_t sdcard_change_current_state(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;

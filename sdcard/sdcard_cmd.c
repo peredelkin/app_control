@@ -6,7 +6,6 @@
  */
 
 #include "sdcard_cmd.h"
-#include "sdcard.h"
 
 /*
  * Detailed Command Description
@@ -949,86 +948,6 @@ const sdcard_acmd_t sdcard_Class8_ACMD54 =
 				SDCARD_STATE_ILLEGAL,	//prg
 				SDCARD_STATE_ILLEGAL,	//dis
 				SDCARD_STATE_ILLEGAL);	//ina
-
-
-static void sdcard_resp_setup(sdcard_t* sdcard) {
-	sdcard->resp_wait = SDIO_RESP_WAIT_ENA;
-	sdcard->resp_long = SDIO_RESP_TYPE_SHORT;
-	sdcard->resp_crc = SDIO_RESP_CRC_INCLUDED;
-
-	switch (sdcard->cmd->response_type) {
-	case SDCARD_RESPONSE_NO:
-		sdcard->resp_wait = SDIO_RESP_WAIT_DIS;
-		break;
-
-	case SDCARD_RESPONSE_R2:
-		sdcard->resp_long = SDIO_RESP_TYPE_LONG;
-		//no break
-
-	case SDCARD_RESPONSE_R3:
-		//no break
-
-	case SDCARD_RESPONSE_R4b:
-		sdcard->resp_crc = SDIO_RESP_CRC_NOT_INCLUDED;
-		break;
-
-	default:
-		break;
-	}
-}
-
-
-err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
-	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
-
-	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
-
-	sdcard->cmd = (sdcard_cmd_t*) cmd;
-
-	sdcard_resp_setup(sdcard);
-
-	sdio_command(
-			argument,
-			sdcard->cmd->index,
-			sdcard->resp_wait,
-			sdcard->resp_long,
-			SDIO_INT_WAIT_DIS,
-			SDIO_PEND_WAIT_DIS,
-			SDIO_CPSM_EN,
-			SDIO_SUSPEND_DIS,
-			SDIO_CMD_COMPLETION_DIS,
-			SDIO_nIEN_DIS,
-			SDIO_ATACMD_DIS);
-
-	return E_NO_ERROR;
-}
-
-err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
-	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
-
-	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
-
-	sdcard->cmd = (sdcard_cmd_t*) cmd;
-
-	sdcard_resp_setup(sdcard);
-
-	sdio_command(
-			argument,
-			sdcard->cmd->index,
-			sdcard->resp_wait,
-			sdcard->resp_long,
-			SDIO_INT_WAIT_DIS,
-			SDIO_PEND_WAIT_DIS,
-			SDIO_CPSM_EN,
-			SDIO_SUSPEND_DIS,
-			SDIO_CMD_COMPLETION_DIS,
-			SDIO_nIEN_DIS,
-			SDIO_ATACMD_DIS);
-
-	return E_NO_ERROR;
-}
-
-
 
 
 
