@@ -56,11 +56,10 @@ err_t sdcard_change_current_state(sdcard_t* sdcard) {
 	//проверка состояния в ответе
 	switch (sdcard->cmd->response_type) {
 	case SDCARD_RESPONSE_R1:
-		if (sdcard->current_state != sdcard->response.r1.bit.CURRENT_STATE) return E_INVALID_VALUE;
-		break;
+		//no break
 
 	case SDCARD_RESPONSE_R1b:
-		if (sdcard->current_state != sdcard->response.r1b.bit.CURRENT_STATE) return E_INVALID_VALUE;
+		if (sdcard->current_state != sdcard->response.r1.bit.CURRENT_STATE) return E_INVALID_VALUE;
 		break;
 
 	case SDCARD_RESPONSE_R6:

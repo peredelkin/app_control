@@ -45,16 +45,15 @@ err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	if(sdcard)
 
 	switch (sdcard->cmd->response_type) {
-	case SDCARD_RESPONSE_R1:
-		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
-		sdcard->response.r1.all = resp[0];
-		return E_NO_ERROR;
 
 	case SDCARD_RESPONSE_R1b:
-		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
-		sdcard->response.r1b.all = resp[0];
 		//TODO: сюда нужна функция проверки состояния I/O с таймаутом. или не сюда.
-		return E_NO_ERROR; //E_NOT_IMPLEMENTED
+		//no break
+
+	case SDCARD_RESPONSE_R1:
+		if (sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
+		sdcard->response.r1.all = resp[0];
+		return E_NO_ERROR;
 
 	case SDCARD_RESPONSE_R2:
 		if(cmd != SDIO_COMMAND_INDEX_MASK) return E_INVALID_VALUE;

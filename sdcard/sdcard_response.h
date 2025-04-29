@@ -167,7 +167,6 @@ typedef enum _SD_Card_Reply_Type {
 //! Общий ответ SD-карты.
 typedef union _SD_Card_Reply {
 	sdcard_response_R1_t r1;	//!< Ответ R1.
-	sdcard_response_R1_t r1b;	//!< Ответ R1b.
 	sdcard_response_R2_t r2;	//!< Ответ R2.
 	sdcard_response_R3_t r3;	//!< Ответ R3.
 	sdcard_response_R4_t r4;	//!< Ответ R4.
