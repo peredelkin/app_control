@@ -127,9 +127,15 @@ extern const sdcard_cmd_t sdcard_Class0_CMD13;
 extern const sdcard_cmd_t sdcard_Class8_CMD55;
 extern const sdcard_acmd_t sdcard_Class8_ACMD41;
 
+//базовые функции команд
 extern err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);
 extern err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument);
 extern err_t sdcard_response_rcv(sdcard_t* sdcard);
+extern err_t sdcard_change_current_state(sdcard_t* sdcard);
+
+//функции отправки команд
+extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);
+extern err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument);
 
 
 /*
