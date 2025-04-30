@@ -217,7 +217,7 @@ static err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	return E_NOT_IMPLEMENTED;
 }
 
-//TODO: расставить нужный порядок проверки ошибок
+
 static err_t sdcard_status_error_check(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
 
@@ -226,30 +226,34 @@ static err_t sdcard_status_error_check(sdcard_t* sdcard) {
 		//no break
 	case SDCARD_RESPONSE_R1:
 		if(sdcard->response.r1.bit.AKE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.WP_ERASE_SKIP) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.CID_CSD_OVERWRITE) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.CC_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.CARD_ECC_FAILED) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.ILLEGAL_COMMAND) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.COM_CRC_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.LOCK_UNLOCK_FAILED) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.WP_VIOLATION) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.ERASE_PARAM) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.ERASE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.WP_ERASE_SKIP) return E_SDCARD_WP_ERASE_SKIP;
+		if(sdcard->response.r1.bit.CSD_OVERWRITE) return E_SDCARD_CSD_OVERWRITE;
+		if(sdcard->response.r1.bit.ERROR) return E_SDCARD_ERROR;
+		if(sdcard->response.r1.bit.CC_ERROR) return E_SDCARD_CC_ERROR;
+		if(sdcard->response.r1.bit.CARD_ECC_FAILED) return E_SDCARD_CARD_ECC_FAILED;
+		if(sdcard->response.r1.bit.ILLEGAL_COMMAND) return E_SDCARD_ILLEGAL_COMMAND;
+		if(sdcard->response.r1.bit.COM_CRC_ERROR) return E_SDCARD_COM_CRC_ERROR;
+		if(sdcard->response.r1.bit.LOCK_UNLOCK_FAILED) return E_SDCARD_LOCK_UNLOCK_CMD_FAILED;
+		if(sdcard->response.r1.bit.WP_VIOLATION) return E_SDCARD_WP_VIOLATION;
+		if(sdcard->response.r1.bit.ERASE_PARAM) return E_SDCARD_ERASE_PARAM;
+		if(sdcard->response.r1.bit.ERASE_SEQ_ERROR) return E_SDCARD_ERASE_SEQ_ERROR;
 		if(sdcard->response.r1.bit.BLOCK_LEN_ERROR) return E_NOT_IMPLEMENTED;
 		if(sdcard->response.r1.bit.ADDRESS_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.OUT_OF_RANGE) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r1.bit.OUT_OF_RANGE) return E_SDCARD_OUT_OF_RANGE;
 		return E_NO_ERROR;
 
 	case SDCARD_RESPONSE_R6:
 		if(sdcard->response.r6.bit.AKE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r6.bit.ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r6.bit.ILLEGAL_COMMAND) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r6.bit.COM_CRC_ERROR) return E_NOT_IMPLEMENTED;
+		if(sdcard->response.r6.bit.ERROR) return E_SDCARD_ERROR;
+		if(sdcard->response.r6.bit.ILLEGAL_COMMAND) return E_SDCARD_ILLEGAL_COMMAND;
+		if(sdcard->response.r6.bit.COM_CRC_ERROR) return E_SDCARD_COM_CRC_ERROR;
+		return E_NO_ERROR;
+
+	default:
+		break;
 	}
 
-	return E_NOT_IMPLEMENTED;
+	return E_NO_ERROR;
 }
 
 err_t sdcard_change_current_state(sdcard_t* sdcard) {
@@ -292,11 +296,15 @@ err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 	err = sdcard_response_rcv(sdcard);
 	if(err != E_NO_ERROR) return err;
 
+	err = sdcard_status_error_check(sdcard);
+	if(err != E_NO_ERROR) return err;
+
 	err = sdcard_change_current_state(sdcard);
 	if(err != E_NO_ERROR) return err;
 
 	return err;
 }
+
 
 err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
@@ -306,13 +314,22 @@ err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument)
 	err = sdcard_cmd(sdcard, &sdcard_Class8_CMD55, 0);
 	if(err != E_NO_ERROR) return err;
 
-	//TODO: тут нужна проверка R1 на CMD55
+	if (sdcard->response.r1.bit.APP_CMD == 0) return E_INVALID_OPERATION;
 
 	err = sdcard_acmd_send(sdcard, cmd, argument);
 	if(err != E_NO_ERROR) return err;
 
 	err = sdcard_response_rcv(sdcard);
 	if(err != E_NO_ERROR) return err;
+
+	err = sdcard_status_error_check(sdcard);
+	if(err != E_NO_ERROR) return err;
+
+	/*
+	 * Менять состояние после выполнения
+	 * других ACMD необходимо вручную
+	 * из-за условия смены состояния ACMD41
+	 */
 
 	return err;
 }

@@ -29,7 +29,7 @@ typedef union {
 		unsigned ERASE_RESET			:1;	//S R
 		unsigned CARD_ECC_DISABLED		:1;	//S X
 		unsigned WP_ERASE_SKIP			:1;	//E R X
-		unsigned CID_CSD_OVERWRITE		:1;	//E R X
+		unsigned CSD_OVERWRITE			:1;	//E R X
 		unsigned RESERVED_17			:1;
 		unsigned RESERVED_18			:1;
 		unsigned ERROR					:1;	//E R X
