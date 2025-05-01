@@ -334,6 +334,175 @@ err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument)
 	return err;
 }
 
+
+//CSD calc
+
+enum {
+	SDCARD_CSD_VERSION_1 = 0,
+	SDCARD_CSD_VERSION_2,
+	SDCARD_CSD_VERSION_3
+};
+
+static const float taac_unit[8] = {
+		1e-9,	/* 1ns		*/
+		10e-9,	/* 10ns		*/
+		100e-9,	/* 100ns	*/
+		1e-6,	/* 1us		*/
+		10e-6,	/* 10us		*/
+		100e-6,	/* 100us	*/
+		1e-3,	/* 1ms		*/
+		10e-3	/* 10ms		*/
+};
+
+static const float taac_value[16] = {
+		0.0f, 1.0f, 1.2f, 1.3f, 1.5f, 2.0f, 2.5f, 3.0f, 3.5f, 4.0f, 4.5f, 5.0f, 5.5f, 6.0f, 7.0f, 8.0f
+};
+
+err_t sdcard_CSD_TAAC_calc(sdcard_t* sdcard, uint8_t csd_version, float* taac) {
+
+	switch (csd_version) {
+
+	case SDCARD_CSD_VERSION_1:
+		*taac = taac_value[sdcard->CSD_v1.bit.TAAC_VALUE] * taac_unit[sdcard->CSD_v1.bit.TAAC_UNIT];
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_2:
+		/*
+		 * This field is fixed to 0Eh, which indicates 1 ms.
+		 * The host should not use TAAC, NSAC, and R2W_FACTOR
+		 * to calculate timeout and should uses fixed timeout values
+		 * for read and write operations (See 4.6.2).
+		 */
+		*taac = taac_value[sdcard->CSD_v2.bit.TAAC_VALUE] * taac_unit[sdcard->CSD_v2.bit.TAAC_UNIT];
+		return E_CANCELED;
+
+	case SDCARD_CSD_VERSION_3:
+		/*
+		 * Definition of this field is same as in CSD Version2.0.
+		 */
+		*taac = taac_value[sdcard->CSD_v3.bit.TAAC_VALUE] * taac_unit[sdcard->CSD_v3.bit.TAAC_UNIT];
+		return E_CANCELED;
+
+	default:
+		break;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
+err_t sdcard_CSD_NSAC_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* nsac) {
+
+	switch (csd_version) {
+
+	case SDCARD_CSD_VERSION_1:
+		*nsac = 100 * sdcard->CSD_v1.bit.NSAC;
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_2:
+		/*
+		 * This field is fixed to 00h. NSAC should not be used to calculate time-out values.
+		 */
+		*nsac = 100 * sdcard->CSD_v2.bit.NSAC;
+		return E_CANCELED;
+
+	case SDCARD_CSD_VERSION_3:
+		/*
+		 * Definition of this field is same as in CSD Version2.0.
+		 */
+		*nsac = 100 * sdcard->CSD_v3.bit.NSAC;
+		return E_CANCELED;
+
+	default:
+		break;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
+static const float tran_speed_unit[8] = {
+		100e3,	/* 100kbit/s	*/
+		1e6,	/* 1Mbit/s		*/
+		10e6,	/* 10Mbit/s		*/
+		100e6,	/* 100Mbit/s	*/
+		0,		/*4*/
+		0,		/*5*/
+		0,		/*6*/
+		0,		/*7*/
+};
+
+static const float tran_speed_value[16] = {
+		0.0f, 1.0f, 1.2f, 1.3f, 1.5f, 2.0f, 2.5f, 3.0f, 3.5f, 4.0f, 4.5f, 5.0f, 5.5f, 6.0f, 7.0f, 8.0f
+};
+
+err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *tran_speed) {
+
+	switch (csd_version) {
+
+	case SDCARD_CSD_VERSION_1:
+		*tran_speed = tran_speed_value[sdcard->CSD_v1.bit.TRAN_SPEED_VALUE]
+									   * tran_speed_unit[sdcard->CSD_v1.bit.TRAN_SPEED_UNIT];
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_2:
+		/*
+		 *  This field shall be set to 0Bh (100Mbit/sec) in both SDR50 and DDR50 mode,
+		 *  and shall be set to 2Bh (200Mbit/sec) in SDR104 mode.
+		 */
+		*tran_speed = tran_speed_value[sdcard->CSD_v2.bit.TRAN_SPEED_VALUE]
+									   * tran_speed_unit[sdcard->CSD_v2.bit.TRAN_SPEED_UNIT];
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_3:
+		/*
+		 * Definition of this field is same as in CSD Version2.0.
+		 */
+		*tran_speed = tran_speed_value[sdcard->CSD_v3.bit.TRAN_SPEED_VALUE]
+									   * tran_speed_unit[sdcard->CSD_v3.bit.TRAN_SPEED_UNIT];
+		return E_NO_ERROR;
+
+	default:
+		break;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
+static const uint32_t read_bl_len_value[16] = {
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 512, 1024, 2048, 0, 0, 0, 0
+};
+
+err_t sdcard_CSD_READ_BL_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* read_bl_len) {
+
+	switch (csd_version) {
+
+	case SDCARD_CSD_VERSION_1:
+		/*
+		 * Note that in an SD Memory Card the WRITE_BL_LEN is always equal to READ_BL_LEN
+		 */
+		*read_bl_len = read_bl_len_value[sdcard->CSD_v1.bit.READ_BL_LEN];
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_2:
+		/*
+		 * This field is fixed to 9h, which indicates READ_BL_LEN=512 Byte
+		 */
+		*read_bl_len = read_bl_len_value[sdcard->CSD_v2.bit.READ_BL_LEN];
+		return E_CANCELED;
+
+	case SDCARD_CSD_VERSION_3:
+		/*
+		 * Definition of this field is same as in CSD Version2.0.
+		 */
+		*read_bl_len = read_bl_len_value[sdcard->CSD_v3.bit.READ_BL_LEN];
+		return E_CANCELED;
+
+	default:
+		break;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
 ///*
 // * CRC.
 // */

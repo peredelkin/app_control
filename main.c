@@ -265,7 +265,6 @@ int main(void)
 		sdcard.CSD_v3.all[2] = sdcard.response.r2.all[2];
 		sdcard.CSD_v3.all[3] = sdcard.response.r2.all[3];
 
-		printf("TAAC: %d\n", sdcard.CSD_v1.bit.TAAC);
 		printf("CSD Version: %d\n", sdcard.CSD_v1.bit.CSD_STRUCTURE);
 
 		printf("CMD 9 STATE: %d\n", sdcard.current_state);

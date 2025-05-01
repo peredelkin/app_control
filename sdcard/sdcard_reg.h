@@ -67,10 +67,25 @@ typedef union {
 		unsigned WRITE_BLK_MISALIGN	:1;
 		unsigned READ_BL_PARTIAL	:1;
 		unsigned READ_BL_LEN		:4;
-		unsigned CCC				:12;
-		unsigned TRAN_SPEED			:8;
+		unsigned CCC_0				:1;
+		unsigned CCC_1				:1;
+		unsigned CCC_2				:1;
+		unsigned CCC_3				:1;
+		unsigned CCC_4				:1;
+		unsigned CCC_5				:1;
+		unsigned CCC_6				:1;
+		unsigned CCC_7				:1;
+		unsigned CCC_8				:1;
+		unsigned CCC_9				:1;
+		unsigned CCC_10				:1;
+		unsigned CCC_11				:1;
+		unsigned TRAN_SPEED_UNIT	:3;	//TRAN_SPEED 0:2
+		unsigned TRAN_SPEED_VALUE	:4;	//TRAN_SPEED 3:6
+		unsigned TRAN_SPEED_7		:1;	//TRAN_SPEED 7
 		unsigned NSAC				:8;
-		unsigned TAAC				:8;
+		unsigned TAAC_UNIT			:3;	//TAAC 0:2
+		unsigned TAAC_VALUE			:4;	//TAAC 3:6
+		unsigned TAAC_7				:1;	//TAAC 7
 		unsigned RESERVED_120_125	:6;
 		unsigned CSD_STRUCTURE		:2;
 	} bit;
@@ -109,10 +124,25 @@ typedef union {
 		unsigned WRITE_BLK_MISALIGN	:1;
 		unsigned READ_BL_PARTIAL	:1;
 		unsigned READ_BL_LEN		:4;
-		unsigned CCC				:12;
-		unsigned TRAN_SPEED			:8;
+		unsigned CCC_0				:1;
+		unsigned CCC_1				:1;
+		unsigned CCC_2				:1;
+		unsigned CCC_3				:1;
+		unsigned CCC_4				:1;
+		unsigned CCC_5				:1;
+		unsigned CCC_6				:1;
+		unsigned CCC_7				:1;
+		unsigned CCC_8				:1;
+		unsigned CCC_9				:1;
+		unsigned CCC_10				:1;
+		unsigned CCC_11				:1;
+		unsigned TRAN_SPEED_UNIT	:3;	//TRAN_SPEED 0:2
+		unsigned TRAN_SPEED_VALUE	:4;	//TRAN_SPEED 3:6
+		unsigned TRAN_SPEED_7		:1;	//TRAN_SPEED 7
 		unsigned NSAC				:8;
-		unsigned TAAC				:8;
+		unsigned TAAC_UNIT			:3;	//TAAC 0:2
+		unsigned TAAC_VALUE			:4;	//TAAC 3:6
+		unsigned TAAC_7				:1;	//TAAC 7
 		unsigned RESERVED_120_125	:6;
 		unsigned CSD_STRUCTURE		:2;
 	} bit;
@@ -150,10 +180,25 @@ typedef union {
 		unsigned WRITE_BLK_MISALIGN	:1;
 		unsigned READ_BL_PARTIAL	:1;
 		unsigned READ_BL_LEN		:4;
-		unsigned CCC				:12;
-		unsigned TRAN_SPEED			:8;
+		unsigned CCC_0				:1;
+		unsigned CCC_1				:1;
+		unsigned CCC_2				:1;
+		unsigned CCC_3				:1;
+		unsigned CCC_4				:1;
+		unsigned CCC_5				:1;
+		unsigned CCC_6				:1;
+		unsigned CCC_7				:1;
+		unsigned CCC_8				:1;
+		unsigned CCC_9				:1;
+		unsigned CCC_10				:1;
+		unsigned CCC_11				:1;
+		unsigned TRAN_SPEED_UNIT	:3;	//TRAN_SPEED 0:2
+		unsigned TRAN_SPEED_VALUE	:4;	//TRAN_SPEED 3:6
+		unsigned TRAN_SPEED_7		:1;	//TRAN_SPEED 7
 		unsigned NSAC				:8;
-		unsigned TAAC				:8;
+		unsigned TAAC_UNIT			:3;	//TAAC 0:2
+		unsigned TAAC_VALUE			:4;	//TAAC 3:6
+		unsigned TAAC_7				:1;	//TAAC 7
 		unsigned RESERVED_120_125	:6;
 		unsigned CSD_STRUCTURE		:2;
 	} bit;
