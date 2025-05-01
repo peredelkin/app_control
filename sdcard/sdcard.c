@@ -285,6 +285,31 @@ err_t sdcard_change_current_state(sdcard_t* sdcard) {
 	return E_NO_ERROR;
 }
 
+err_t sdcard_operation_complete_state(sdcard_t* sdcard) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	static const sdcard_state_t state[SDCARD_STATE_COUNT] = {
+			SDCARD_STATE_ILLEGAL,	//idle
+			SDCARD_STATE_ILLEGAL,	//ready
+			SDCARD_STATE_ILLEGAL,	//ident
+			SDCARD_STATE_ILLEGAL,	//stby
+			SDCARD_STATE_ILLEGAL,	//tran
+			SDCARD_STATE_TRAN,		//data
+			SDCARD_STATE_ILLEGAL,	//rcv
+			SDCARD_STATE_TRAN,		//prg
+			SDCARD_STATE_STBY,		//dis
+			SDCARD_STATE_ILLEGAL,	//ina
+	};
+
+	//проверка возможности изменения состояния
+	if (state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
+
+	//изменить текущее состояние через завершение операции
+	sdcard->current_state = state[sdcard->current_state];
+
+	return E_NO_ERROR;
+}
+
 err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
@@ -501,7 +526,7 @@ err_t sdcard_CSD_MULT_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* mult
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
-		*mult = (1 << sdcard->CSD_v1.bit.C_SIZE_MULT + 2);
+		*mult = (1 << (sdcard->CSD_v1.bit.C_SIZE_MULT + 2));
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
