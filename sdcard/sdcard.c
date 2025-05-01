@@ -467,11 +467,7 @@ err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *t
 	return E_NOT_IMPLEMENTED;
 }
 
-static const uint32_t read_bl_len_value[16] = {
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 512, 1024, 2048, 0, 0, 0, 0
-};
-
-err_t sdcard_CSD_READ_BL_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* read_bl_len) {
+err_t sdcard_CSD_sector_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* read_bl_len) {
 
 	switch (csd_version) {
 
@@ -479,22 +475,22 @@ err_t sdcard_CSD_READ_BL_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_
 		/*
 		 * Note that in an SD Memory Card the WRITE_BL_LEN is always equal to READ_BL_LEN
 		 */
-		*read_bl_len = read_bl_len_value[sdcard->CSD_v1.bit.READ_BL_LEN];
+		*read_bl_len = (1 << sdcard->CSD_v1.bit.READ_BL_LEN);
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
 		/*
 		 * This field is fixed to 9h, which indicates READ_BL_LEN=512 Byte
 		 */
-		*read_bl_len = read_bl_len_value[sdcard->CSD_v2.bit.READ_BL_LEN];
-		return E_CANCELED;
+		*read_bl_len = (1 << sdcard->CSD_v2.bit.READ_BL_LEN);
+		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
 		/*
 		 * Definition of this field is same as in CSD Version2.0.
 		 */
-		*read_bl_len = read_bl_len_value[sdcard->CSD_v3.bit.READ_BL_LEN];
-		return E_CANCELED;
+		*read_bl_len = (1 << sdcard->CSD_v3.bit.READ_BL_LEN);
+		return E_NO_ERROR;
 
 	default:
 		break;
@@ -503,229 +499,69 @@ err_t sdcard_CSD_READ_BL_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_
 	return E_NOT_IMPLEMENTED;
 }
 
-///*
-// * CRC.
-// */
-//
-///*
-//  Name  : CRC7 SDCARD
-//  Poly  : 0x89 x^7 + x^3 + 1
-//  Init  : 0x0
-//*/
-//static const uint8_t crc7_sdcard_table[256] = {
-//    0x00, 0x09, 0x12, 0x1b, 0x24, 0x2d, 0x36, 0x3f,
-//    0x48, 0x41, 0x5a, 0x53, 0x6c, 0x65, 0x7e, 0x77,
-//    0x19, 0x10, 0x0b, 0x02, 0x3d, 0x34, 0x2f, 0x26,
-//    0x51, 0x58, 0x43, 0x4a, 0x75, 0x7c, 0x67, 0x6e,
-//    0x32, 0x3b, 0x20, 0x29, 0x16, 0x1f, 0x04, 0x0d,
-//    0x7a, 0x73, 0x68, 0x61, 0x5e, 0x57, 0x4c, 0x45,
-//    0x2b, 0x22, 0x39, 0x30, 0x0f, 0x06, 0x1d, 0x14,
-//    0x63, 0x6a, 0x71, 0x78, 0x47, 0x4e, 0x55, 0x5c,
-//    0x64, 0x6d, 0x76, 0x7f, 0x40, 0x49, 0x52, 0x5b,
-//    0x2c, 0x25, 0x3e, 0x37, 0x08, 0x01, 0x1a, 0x13,
-//    0x7d, 0x74, 0x6f, 0x66, 0x59, 0x50, 0x4b, 0x42,
-//    0x35, 0x3c, 0x27, 0x2e, 0x11, 0x18, 0x03, 0x0a,
-//    0x56, 0x5f, 0x44, 0x4d, 0x72, 0x7b, 0x60, 0x69,
-//    0x1e, 0x17, 0x0c, 0x05, 0x3a, 0x33, 0x28, 0x21,
-//    0x4f, 0x46, 0x5d, 0x54, 0x6b, 0x62, 0x79, 0x70,
-//    0x07, 0x0e, 0x15, 0x1c, 0x23, 0x2a, 0x31, 0x38,
-//    0x41, 0x48, 0x53, 0x5a, 0x65, 0x6c, 0x77, 0x7e,
-//    0x09, 0x00, 0x1b, 0x12, 0x2d, 0x24, 0x3f, 0x36,
-//    0x58, 0x51, 0x4a, 0x43, 0x7c, 0x75, 0x6e, 0x67,
-//    0x10, 0x19, 0x02, 0x0b, 0x34, 0x3d, 0x26, 0x2f,
-//    0x73, 0x7a, 0x61, 0x68, 0x57, 0x5e, 0x45, 0x4c,
-//    0x3b, 0x32, 0x29, 0x20, 0x1f, 0x16, 0x0d, 0x04,
-//    0x6a, 0x63, 0x78, 0x71, 0x4e, 0x47, 0x5c, 0x55,
-//    0x22, 0x2b, 0x30, 0x39, 0x06, 0x0f, 0x14, 0x1d,
-//    0x25, 0x2c, 0x37, 0x3e, 0x01, 0x08, 0x13, 0x1a,
-//    0x6d, 0x64, 0x7f, 0x76, 0x49, 0x40, 0x5b, 0x52,
-//    0x3c, 0x35, 0x2e, 0x27, 0x18, 0x11, 0x0a, 0x03,
-//    0x74, 0x7d, 0x66, 0x6f, 0x50, 0x59, 0x42, 0x4b,
-//    0x17, 0x1e, 0x05, 0x0c, 0x33, 0x3a, 0x21, 0x28,
-//    0x5f, 0x56, 0x4d, 0x44, 0x7b, 0x72, 0x69, 0x60,
-//    0x0e, 0x07, 0x1c, 0x15, 0x2a, 0x23, 0x38, 0x31,
-//    0x46, 0x4f, 0x54, 0x5d, 0x62, 0x6b, 0x70, 0x79,
-//};
-//
-///**
-// * Вычисляет контрольную сумму crc7 карты памяти.
-// * @param data Данные.
-// * @param size Размер данных.
-// * @return Контрольная сумма.
-// */
-//static uint8_t crc7_sdcard(const void* data, size_t size)
-//{
-//    uint8_t crc = 0x0;
-//
-//    while (size --)
-//        crc = crc7_sdcard_table[(crc << 1) ^ *(uint8_t*)data ++];
-//
-//    return crc;
-//}
-//
-///*
-//static uint8_t crc7_sdcard_first(void)
-//{
-//    return 0x0;
-//}
-//
-//static uint8_t crc7_sdcard_next(uint8_t crc, const void* data)
-//{
-//    if(data == NULL) return crc;
-//    return crc7_sdcard_table[(crc << 1) ^ *(uint8_t*)data];
-//}
-//*/
-//
-///*
-// * CRC16-CCITT
-// * с начальным значением
-// * 0x0000.
-// */
-//ALWAYS_INLINE static uint16_t sdcard_crc16_ccitt(const void* data, size_t size)
-//{
-//    return crc16_ccitt_initial(data, size, 0x0000);
-//}
-//
-///*
+err_t sdcard_CSD_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* capacity) {
+
+	switch (csd_version) {
+
+	case SDCARD_CSD_VERSION_1:
+		/*
+		 * memory capacity = BLOCKNR * BLOCK_LEN
+		 * Where
+		 * 		BLOCKNR = (C_SIZE+1) * MULT
+		 * 		MULT = 2^(C_SIZE_MULT+2)
+		 * 		BLOCK_LEN = 2^READ_BL_LEN
+		 */
+		*capacity = sdcard->CSD_v1.bit.C_SIZE + 1;
+		*capacity <<= (sdcard->CSD_v1.bit.C_SIZE_MULT + 2 + sdcard->CSD_v1.bit.READ_BL_LEN);
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_2:
+		//memory capacity = (C_SIZE+1) * 512KByte
+		*capacity = sdcard->CSD_v2.bit.C_SIZE + 1;
+		*capacity <<= 19;
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_3:
+		//memory capacity = (C_SIZE+1) * 512KByte
+		*capacity = sdcard->CSD_v3.bit.C_SIZE + 1;
+		*capacity <<= 19;
+		return E_NO_ERROR;
+
+	default:
+		break;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
+err_t sdcard_CSD_sectors_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* sectors) {
+
+	switch (csd_version) {
+
+	case SDCARD_CSD_VERSION_1:
+		*sectors = sdcard->CSD_v1.bit.C_SIZE + 1;
+		*sectors <<= (sdcard->CSD_v1.bit.C_SIZE_MULT + 2 + sdcard->CSD_v1.bit.READ_BL_LEN - 9);
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_2:
+		*sectors = sdcard->CSD_v2.bit.C_SIZE + 1;
+		*sectors <<= (19 - 9);
+		return E_NO_ERROR;
+
+	case SDCARD_CSD_VERSION_3:
+		*sectors = sdcard->CSD_v3.bit.C_SIZE + 1;
+		*sectors <<= (19 - 9);
+		return E_NO_ERROR;
+
+	default:
+		break;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
+
 // * SD card.
-// */
-//
-//uint64_t sdcard_capacity(sdcard_t* sdcard)
-//{
-//    uint64_t cap = 0;
-//
-//    switch(sdcard->card_type){
-//    case SDCARD_TYPE_UNKNOWN:
-//        break;
-//    case SDCARD_TYPE_MMC:
-//        cap = sdcard->csd.mmc_csd.c_size + 1;
-//        cap <<= (sdcard->csd.mmc_csd.c_size_mult + 2 + sdcard->csd.mmc_csd.read_bl_len);
-//        break;
-//    case SDCARD_TYPE_SDSCv1:
-//    case SDCARD_TYPE_SDSCv2:
-//        cap = sdcard->csd.sd_csd1.c_size + 1;
-//        cap <<= (sdcard->csd.sd_csd1.c_size_mult + 2 + sdcard->csd.sd_csd1.read_bl_len);
-//        break;
-//    case SDCARD_TYPE_SDHC_SDXC:
-//        cap = sdcard->csd.sd_csd2.c_size + 1;
-//        cap <<= 19;
-//        break;
-//    }
-//
-//    return cap;
-//}
-//
-//uint16_t sdcard_sector_size(sdcard_t* sdcard)
-//{
-//    uint16_t size = 0;
-//
-//    switch(sdcard->card_type){
-//    case SDCARD_TYPE_UNKNOWN:
-//        break;
-//    case SDCARD_TYPE_MMC:
-//    case SDCARD_TYPE_SDSCv1:
-//    case SDCARD_TYPE_SDSCv2:
-//    case SDCARD_TYPE_SDHC_SDXC:
-//        size = SDCARD_BLOCK_SIZE;
-//        break;
-//    }
-//
-//    return size;
-//}
-//
-//uint32_t sdcard_sectors_count(sdcard_t* sdcard)
-//{
-//    uint32_t count = 0;
-//
-//    switch(sdcard->card_type){
-//    case SDCARD_TYPE_UNKNOWN:
-//        break;
-//    case SDCARD_TYPE_MMC:
-//        count = sdcard->csd.mmc_csd.c_size + 1;
-//        count <<= (sdcard->csd.mmc_csd.c_size_mult + 2 + sdcard->csd.mmc_csd.read_bl_len - 9);
-//        break;
-//    case SDCARD_TYPE_SDSCv1:
-//    case SDCARD_TYPE_SDSCv2:
-//        count = sdcard->csd.sd_csd1.c_size + 1;
-//        count <<= (sdcard->csd.sd_csd1.c_size_mult + 2 + sdcard->csd.sd_csd1.read_bl_len - 9);
-//        break;
-//    case SDCARD_TYPE_SDHC_SDXC:
-//        count = sdcard->csd.sd_csd2.c_size + 1;
-//        count <<= (19 - 9);
-//        break;
-//    }
-//
-//    return count;
-//}
-//
-//bool sdcard_partial_block_read(sdcard_t* sdcard)
-//{
-//    switch(sdcard->card_type){
-//    case SDCARD_TYPE_UNKNOWN:
-//        break;
-//    case SDCARD_TYPE_MMC:
-//        return sdcard->csd.mmc_csd.read_bl_partial;
-//    case SDCARD_TYPE_SDSCv1:
-//    case SDCARD_TYPE_SDSCv2:
-//        return sdcard->csd.sd_csd1.read_bl_partial;
-//    case SDCARD_TYPE_SDHC_SDXC:
-//        return sdcard->csd.sd_csd2.read_bl_partial;
-//    }
-//
-//    return false;
-//}
-//
-//bool sdcard_partial_block_write(sdcard_t* sdcard)
-//{
-//    switch(sdcard->card_type){
-//    case SDCARD_TYPE_UNKNOWN:
-//        break;
-//    case SDCARD_TYPE_MMC:
-//        return sdcard->csd.mmc_csd.write_bl_partial;
-//    case SDCARD_TYPE_SDSCv1:
-//    case SDCARD_TYPE_SDSCv2:
-//        return sdcard->csd.sd_csd1.write_bl_partial;
-//    case SDCARD_TYPE_SDHC_SDXC:
-//        return sdcard->csd.sd_csd2.write_bl_partial;
-//    }
-//
-//    return false;
-//}
-//
-//bool sdcard_misalign_block_read(sdcard_t* sdcard)
-//{
-//    switch(sdcard->card_type){
-//    case SDCARD_TYPE_UNKNOWN:
-//        break;
-//    case SDCARD_TYPE_MMC:
-//        return sdcard->csd.mmc_csd.read_blk_misalign;
-//    case SDCARD_TYPE_SDSCv1:
-//    case SDCARD_TYPE_SDSCv2:
-//        return sdcard->csd.sd_csd1.read_blk_misalign;
-//    case SDCARD_TYPE_SDHC_SDXC:
-//        return sdcard->csd.sd_csd2.read_blk_misalign;
-//    }
-//
-//    return false;
-//}
-//
-//bool sdcard_misalign_block_write(sdcard_t* sdcard)
-//{
-//    switch(sdcard->card_type){
-//    case SDCARD_TYPE_UNKNOWN:
-//        break;
-//    case SDCARD_TYPE_MMC:
-//        return sdcard->csd.mmc_csd.write_blk_misalign;
-//    case SDCARD_TYPE_SDSCv1:
-//    case SDCARD_TYPE_SDSCv2:
-//        return sdcard->csd.sd_csd1.write_blk_misalign;
-//    case SDCARD_TYPE_SDHC_SDXC:
-//        return sdcard->csd.sd_csd2.write_blk_misalign;
-//    }
-//
-//    return false;
-//}
-//
 ///**
 // * Получает ответ заданного типа от SD-карты.
 // * @param sdcard SD-карта.
