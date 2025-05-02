@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <assert.h>
 
+// SD Version 9.10
+
 #define SDCARD_CID_SIZE 16
 #define SDCARD_CSD_SIZE 16
 
@@ -67,18 +69,7 @@ typedef union {
 		unsigned WRITE_BLK_MISALIGN	:1;
 		unsigned READ_BL_PARTIAL	:1;
 		unsigned READ_BL_LEN		:4;
-		unsigned CCC_0				:1;
-		unsigned CCC_1				:1;
-		unsigned CCC_2				:1;
-		unsigned CCC_3				:1;
-		unsigned CCC_4				:1;
-		unsigned CCC_5				:1;
-		unsigned CCC_6				:1;
-		unsigned CCC_7				:1;
-		unsigned CCC_8				:1;
-		unsigned CCC_9				:1;
-		unsigned CCC_10				:1;
-		unsigned CCC_11				:1;
+		unsigned CCC				:12;
 		unsigned TRAN_SPEED_UNIT	:3;	//TRAN_SPEED 0:2
 		unsigned TRAN_SPEED_VALUE	:4;	//TRAN_SPEED 3:6
 		unsigned TRAN_SPEED_7		:1;	//TRAN_SPEED 7
@@ -124,18 +115,7 @@ typedef union {
 		unsigned WRITE_BLK_MISALIGN	:1;
 		unsigned READ_BL_PARTIAL	:1;
 		unsigned READ_BL_LEN		:4;
-		unsigned CCC_0				:1;
-		unsigned CCC_1				:1;
-		unsigned CCC_2				:1;
-		unsigned CCC_3				:1;
-		unsigned CCC_4				:1;
-		unsigned CCC_5				:1;
-		unsigned CCC_6				:1;
-		unsigned CCC_7				:1;
-		unsigned CCC_8				:1;
-		unsigned CCC_9				:1;
-		unsigned CCC_10				:1;
-		unsigned CCC_11				:1;
+		unsigned CCC				:12;
 		unsigned TRAN_SPEED_UNIT	:3;	//TRAN_SPEED 0:2
 		unsigned TRAN_SPEED_VALUE	:4;	//TRAN_SPEED 3:6
 		unsigned TRAN_SPEED_7		:1;	//TRAN_SPEED 7
@@ -180,18 +160,7 @@ typedef union {
 		unsigned WRITE_BLK_MISALIGN	:1;
 		unsigned READ_BL_PARTIAL	:1;
 		unsigned READ_BL_LEN		:4;
-		unsigned CCC_0				:1;
-		unsigned CCC_1				:1;
-		unsigned CCC_2				:1;
-		unsigned CCC_3				:1;
-		unsigned CCC_4				:1;
-		unsigned CCC_5				:1;
-		unsigned CCC_6				:1;
-		unsigned CCC_7				:1;
-		unsigned CCC_8				:1;
-		unsigned CCC_9				:1;
-		unsigned CCC_10				:1;
-		unsigned CCC_11				:1;
+		unsigned CCC				:12;
 		unsigned TRAN_SPEED_UNIT	:3;	//TRAN_SPEED 0:2
 		unsigned TRAN_SPEED_VALUE	:4;	//TRAN_SPEED 3:6
 		unsigned TRAN_SPEED_7		:1;	//TRAN_SPEED 7

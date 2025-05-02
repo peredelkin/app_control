@@ -22,6 +22,7 @@
 const sdcard_cmd_t sdcard_Class0_CMD0 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_GO_IDLE_STATE,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_NO,
 				SDCARD_STATE_IDLE,      //idle
 				SDCARD_STATE_IDLE,      //ready
@@ -42,6 +43,7 @@ const sdcard_cmd_t sdcard_Class0_CMD0 =
 const sdcard_cmd_t sdcard_Class0_CMD2 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ALL_SEND_CID,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R2,
 				SDCARD_STATE_ILLEGAL,   //idle
 				SDCARD_STATE_IDENT,     //ready
@@ -62,6 +64,7 @@ const sdcard_cmd_t sdcard_Class0_CMD2 =
 const sdcard_cmd_t sdcard_Class0_CMD3 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_RELATIVE_ADDR,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R6,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -83,6 +86,7 @@ const sdcard_cmd_t sdcard_Class0_CMD3 =
 const sdcard_cmd_t sdcard_Class0_CMD4 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_DSR,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_NO,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -113,6 +117,7 @@ const sdcard_cmd_t sdcard_Class0_CMD4 =
 const sdcard_cmd_t sdcard_Class10_CMD6 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SWITCH_FUNC,
+				SDCARD_CCC_10,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -136,6 +141,7 @@ const sdcard_cmd_t sdcard_Class10_CMD6 =
 const sdcard_cmd_t sdcard_Class0_CMD7_adressed =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SELECT_DESELECT_CARD,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R1b,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -151,6 +157,7 @@ const sdcard_cmd_t sdcard_Class0_CMD7_adressed =
 const sdcard_cmd_t sdcard_Class0_CMD7_not_adressed =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SELECT_DESELECT_CARD,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_NO,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -175,6 +182,7 @@ const sdcard_cmd_t sdcard_Class0_CMD7_not_adressed =
 const sdcard_cmd_t sdcard_Class0_CMD8 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_IF_COND,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R7,
 				SDCARD_STATE_IDLE,		//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -197,6 +205,7 @@ const sdcard_cmd_t sdcard_Class0_CMD8 =
 const sdcard_cmd_t sdcard_Class0_CMD9 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_CSD,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R2,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -219,6 +228,7 @@ const sdcard_cmd_t sdcard_Class0_CMD9 =
 const sdcard_cmd_t sdcard_Class0_CMD10 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_CID,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R2,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -239,6 +249,7 @@ const sdcard_cmd_t sdcard_Class0_CMD10 =
 const sdcard_cmd_t sdcard_Class0_CMD11 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_VOLTAGE_SWITCH,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_READY,		//ready
@@ -259,6 +270,7 @@ const sdcard_cmd_t sdcard_Class0_CMD11 =
 const sdcard_cmd_t sdcard_Class0_CMD12 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_STOP_TRANSMISSION,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R1b,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -285,6 +297,7 @@ const sdcard_cmd_t sdcard_Class0_CMD12 =
 const sdcard_cmd_t sdcard_Class0_CMD13 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_STATUS,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -306,6 +319,7 @@ const sdcard_cmd_t sdcard_Class0_CMD13 =
 const sdcard_cmd_t sdcard_Class0_CMD15 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_GO_INACTIVE_STATE,
+				SDCARD_CCC_0,
 				SDCARD_RESPONSE_NO,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -329,6 +343,7 @@ const sdcard_cmd_t sdcard_Class0_CMD15 =
 const sdcard_cmd_t sdcard_Class2_CMD16 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCKLEN,
+				SDCARD_CCC_2,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -352,6 +367,7 @@ const sdcard_cmd_t sdcard_Class2_CMD16 =
 const sdcard_cmd_t sdcard_Class2_CMD17 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_READ_SINGLE_BLOCK,
+				SDCARD_CCC_2,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -376,6 +392,7 @@ const sdcard_cmd_t sdcard_Class2_CMD17 =
 const sdcard_cmd_t sdcard_Class2_CMD18 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_READ_MULTIPLE_BLOCK,
+				SDCARD_CCC_2,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -396,6 +413,7 @@ const sdcard_cmd_t sdcard_Class2_CMD18 =
 const sdcard_cmd_t sdcard_Class2_CMD19 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_TUNING_BLOCK,
+				SDCARD_CCC_2,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -417,6 +435,7 @@ const sdcard_cmd_t sdcard_Class2_CMD19 =
 const sdcard_cmd_t sdcard_Class2_CMD20 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SPEED_CLASS_CONTROL,
+				SDCARD_CCC_2,
 				SDCARD_RESPONSE_R1b,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -438,6 +457,7 @@ const sdcard_cmd_t sdcard_Class2_CMD20 =
 const sdcard_cmd_t sdcard_Class2_CMD22 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ADDRESS_EXTENSION,
+				SDCARD_CCC_2,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -458,6 +478,7 @@ const sdcard_cmd_t sdcard_Class2_CMD22 =
 const sdcard_cmd_t sdcard_Class2_CMD23 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCK_COUNT,
+				SDCARD_CCC_2,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -481,6 +502,7 @@ const sdcard_cmd_t sdcard_Class2_CMD23 =
 const sdcard_cmd_t sdcard_Class4_CMD16 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCKLEN,
+				SDCARD_CCC_4,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -502,6 +524,7 @@ const sdcard_cmd_t sdcard_Class4_CMD16 =
 const sdcard_cmd_t sdcard_Class4_CMD20 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SPEED_CLASS_CONTROL,
+				SDCARD_CCC_4,
 				SDCARD_RESPONSE_R1b,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -523,6 +546,7 @@ const sdcard_cmd_t sdcard_Class4_CMD20 =
 const sdcard_cmd_t sdcard_Class4_CMD22 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ADDRESS_EXTENSION,
+				SDCARD_CCC_4,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -543,6 +567,7 @@ const sdcard_cmd_t sdcard_Class4_CMD22 =
 const sdcard_cmd_t sdcard_Class4_CMD23 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCK_COUNT,
+				SDCARD_CCC_4,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -564,6 +589,7 @@ const sdcard_cmd_t sdcard_Class4_CMD23 =
 const sdcard_cmd_t sdcard_Class4_CMD24 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_WRITE_BLOCK,
+				SDCARD_CCC_4,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -587,6 +613,7 @@ const sdcard_cmd_t sdcard_Class4_CMD24 =
 const sdcard_cmd_t sdcard_Class4_CMD25 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_WRITE_MULTIPLE_BLOCK,
+				SDCARD_CCC_4,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -606,6 +633,7 @@ const sdcard_cmd_t sdcard_Class4_CMD25 =
 const sdcard_cmd_t sdcard_Class4_CMD27 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_PROGRAM_CSD,
+				SDCARD_CCC_4,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -627,6 +655,7 @@ const sdcard_cmd_t sdcard_Class4_CMD27 =
 const sdcard_cmd_t sdcard_Class5_CMD32 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE_WR_BLK_START,
+				SDCARD_CCC_5,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -649,6 +678,7 @@ const sdcard_cmd_t sdcard_Class5_CMD32 =
 const sdcard_cmd_t sdcard_Class5_CMD33 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE_WR_BLK_END,
+				SDCARD_CCC_5,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -672,6 +702,7 @@ const sdcard_cmd_t sdcard_Class5_CMD33 =
 const sdcard_cmd_t sdcard_Class5_CMD38 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE,
+				SDCARD_CCC_5,
 				SDCARD_RESPONSE_R1b,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -709,6 +740,7 @@ const sdcard_cmd_t sdcard_Class5_CMD38 =
 const sdcard_cmd_t sdcard_Class8_CMD55 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_APP_CMD,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_IDLE,		//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -733,6 +765,7 @@ const sdcard_cmd_t sdcard_Class8_CMD55 =
 const sdcard_acmd_t sdcard_Class8_ACMD6 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_BUS_WIDTH,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -753,6 +786,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD6 =
 const sdcard_acmd_t sdcard_Class8_ACMD13 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SD_STATUS,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -781,6 +815,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD13 =
 const sdcard_acmd_t sdcard_Class8_ACMD22 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SEND_NUM_WR_BLOCKS,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -806,6 +841,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD22 =
 const sdcard_acmd_t sdcard_Class8_ACMD23 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -836,6 +872,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD23 =
 const sdcard_acmd_t sdcard_Class8_ACMD41 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SD_SEND_OP_COND,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R3,
 				SDCARD_STATE_READY,		//idle (ready if OCR check is OK and card is not busy)
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -859,6 +896,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD41 =
 const sdcard_acmd_t sdcard_Class8_ACMD42 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_CLR_CARD_DETECT,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -879,6 +917,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD42 =
 const sdcard_acmd_t sdcard_Class8_ACMD51 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SEND_SCR,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -908,6 +947,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD51 =
 const sdcard_acmd_t sdcard_Class8_ACMD53 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SECURE_RECEIVE,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -937,6 +977,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD53 =
 const sdcard_acmd_t sdcard_Class8_ACMD54 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SECURE_SEND,
+				SDCARD_CCC_8,
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready

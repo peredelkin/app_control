@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <assert.h>
 
+// SD Version 9.10
+
 /*
  * Short response: Card Status [39:8]
  * Long response: Card Status [127:96]
