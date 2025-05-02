@@ -176,4 +176,10 @@ typedef union {
 #pragma pack(pop)
 static_assert(sizeof(sdcard_reg_CSD_v3_t) == SDCARD_CSD_SIZE, "Invalid size of sdcard CSD V3!");
 
+typedef struct {
+	sdcard_reg_CSD_v1_t v1;
+	sdcard_reg_CSD_v2_t v2;
+	sdcard_reg_CSD_v3_t v3;
+} sdcard_reg_CSD_t;
+
 #endif /* SDCARD_SDCARD_REG_H_ */

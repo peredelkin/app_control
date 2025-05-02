@@ -106,9 +106,7 @@ typedef struct _SD_Card {
 	sdcard_response_t response;
 	uint32_t RCA;
 	sdcard_reg_CID_t CID;
-	sdcard_reg_CSD_v1_t CSD_v1;
-	sdcard_reg_CSD_v2_t CSD_v2;
-	sdcard_reg_CSD_v3_t CSD_v3;
+	sdcard_reg_CSD_t CSD;
 } sdcard_t;
 
 
@@ -129,6 +127,7 @@ extern const sdcard_acmd_t sdcard_Class8_ACMD41;
 
 //вспопогательные функции
 extern err_t sdcard_change_current_state(sdcard_t* sdcard);
+extern void sdcard_CSD_fill(sdcard_t* sdcard);
 
 //функции отправки команд
 extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);

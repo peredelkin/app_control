@@ -220,6 +220,7 @@ int main(void)
 			goto exit_sdcard_init;
 		}
 
+		//TODO: определить тип карты по ответу ACMD41
 		printf("ACMD 41 STATE: %d\n", sdcard.current_state);
 
 		//CMD2
@@ -250,22 +251,9 @@ int main(void)
 			goto exit_sdcard_init;
 		}
 
-		sdcard.CSD_v1.all[0] = sdcard.response.r2.all[0];
-		sdcard.CSD_v1.all[1] = sdcard.response.r2.all[1];
-		sdcard.CSD_v1.all[2] = sdcard.response.r2.all[2];
-		sdcard.CSD_v1.all[3] = sdcard.response.r2.all[3];
+		sdcard_CSD_fill(&sdcard);
 
-		sdcard.CSD_v2.all[0] = sdcard.response.r2.all[0];
-		sdcard.CSD_v2.all[1] = sdcard.response.r2.all[1];
-		sdcard.CSD_v2.all[2] = sdcard.response.r2.all[2];
-		sdcard.CSD_v2.all[3] = sdcard.response.r2.all[3];
-
-		sdcard.CSD_v3.all[0] = sdcard.response.r2.all[0];
-		sdcard.CSD_v3.all[1] = sdcard.response.r2.all[1];
-		sdcard.CSD_v3.all[2] = sdcard.response.r2.all[2];
-		sdcard.CSD_v3.all[3] = sdcard.response.r2.all[3];
-
-		printf("CSD Version: %d\n", sdcard.CSD_v1.bit.CSD_STRUCTURE);
+		printf("CSD Version: %d\n", sdcard.CSD.v1.bit.CSD_STRUCTURE);
 
 		printf("CMD 9 STATE: %d\n", sdcard.current_state);
 

@@ -360,7 +360,23 @@ err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument)
 }
 
 
-//CSD calc
+//CSD
+void sdcard_CSD_fill(sdcard_t* sdcard) {
+	sdcard->CSD.v1.all[0] = sdcard->response.r2.all[0];
+	sdcard->CSD.v1.all[1] = sdcard->response.r2.all[1];
+	sdcard->CSD.v1.all[2] = sdcard->response.r2.all[2];
+	sdcard->CSD.v1.all[3] = sdcard->response.r2.all[3];
+
+	sdcard->CSD.v2.all[0] = sdcard->response.r2.all[0];
+	sdcard->CSD.v2.all[1] = sdcard->response.r2.all[1];
+	sdcard->CSD.v2.all[2] = sdcard->response.r2.all[2];
+	sdcard->CSD.v2.all[3] = sdcard->response.r2.all[3];
+
+	sdcard->CSD.v3.all[0] = sdcard->response.r2.all[0];
+	sdcard->CSD.v3.all[1] = sdcard->response.r2.all[1];
+	sdcard->CSD.v3.all[2] = sdcard->response.r2.all[2];
+	sdcard->CSD.v3.all[3] = sdcard->response.r2.all[3];
+}
 
 enum {
 	SDCARD_CSD_VERSION_1 = 0,
@@ -388,7 +404,7 @@ err_t sdcard_CSD_TAAC_calc(sdcard_t* sdcard, uint8_t csd_version, float* taac) {
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
-		*taac = taac_value[sdcard->CSD_v1.bit.TAAC_VALUE] * taac_unit[sdcard->CSD_v1.bit.TAAC_UNIT];
+		*taac = taac_value[sdcard->CSD.v1.bit.TAAC_VALUE] * taac_unit[sdcard->CSD.v1.bit.TAAC_UNIT];
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
@@ -398,14 +414,14 @@ err_t sdcard_CSD_TAAC_calc(sdcard_t* sdcard, uint8_t csd_version, float* taac) {
 		 * to calculate timeout and should uses fixed timeout values
 		 * for read and write operations (See 4.6.2).
 		 */
-		*taac = taac_value[sdcard->CSD_v2.bit.TAAC_VALUE] * taac_unit[sdcard->CSD_v2.bit.TAAC_UNIT];
+		*taac = taac_value[sdcard->CSD.v2.bit.TAAC_VALUE] * taac_unit[sdcard->CSD.v2.bit.TAAC_UNIT];
 		return E_CANCELED;
 
 	case SDCARD_CSD_VERSION_3:
 		/*
 		 * Definition of this field is same as in CSD Version2.0.
 		 */
-		*taac = taac_value[sdcard->CSD_v3.bit.TAAC_VALUE] * taac_unit[sdcard->CSD_v3.bit.TAAC_UNIT];
+		*taac = taac_value[sdcard->CSD.v3.bit.TAAC_VALUE] * taac_unit[sdcard->CSD.v3.bit.TAAC_UNIT];
 		return E_CANCELED;
 
 	default:
@@ -420,21 +436,21 @@ err_t sdcard_CSD_NSAC_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* nsac
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
-		*nsac = 100 * sdcard->CSD_v1.bit.NSAC;
+		*nsac = 100 * sdcard->CSD.v1.bit.NSAC;
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
 		/*
 		 * This field is fixed to 00h. NSAC should not be used to calculate time-out values.
 		 */
-		*nsac = 100 * sdcard->CSD_v2.bit.NSAC;
+		*nsac = 100 * sdcard->CSD.v2.bit.NSAC;
 		return E_CANCELED;
 
 	case SDCARD_CSD_VERSION_3:
 		/*
 		 * Definition of this field is same as in CSD Version2.0.
 		 */
-		*nsac = 100 * sdcard->CSD_v3.bit.NSAC;
+		*nsac = 100 * sdcard->CSD.v3.bit.NSAC;
 		return E_CANCELED;
 
 	default:
@@ -464,8 +480,8 @@ err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *t
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
-		*tran_speed = tran_speed_value[sdcard->CSD_v1.bit.TRAN_SPEED_VALUE]
-									   * tran_speed_unit[sdcard->CSD_v1.bit.TRAN_SPEED_UNIT];
+		*tran_speed = tran_speed_value[sdcard->CSD.v1.bit.TRAN_SPEED_VALUE]
+									   * tran_speed_unit[sdcard->CSD.v1.bit.TRAN_SPEED_UNIT];
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
@@ -473,16 +489,16 @@ err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *t
 		 *  This field shall be set to 0Bh (100Mbit/sec) in both SDR50 and DDR50 mode,
 		 *  and shall be set to 2Bh (200Mbit/sec) in SDR104 mode.
 		 */
-		*tran_speed = tran_speed_value[sdcard->CSD_v2.bit.TRAN_SPEED_VALUE]
-									   * tran_speed_unit[sdcard->CSD_v2.bit.TRAN_SPEED_UNIT];
+		*tran_speed = tran_speed_value[sdcard->CSD.v2.bit.TRAN_SPEED_VALUE]
+									   * tran_speed_unit[sdcard->CSD.v2.bit.TRAN_SPEED_UNIT];
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
 		/*
 		 * Definition of this field is same as in CSD Version2.0.
 		 */
-		*tran_speed = tran_speed_value[sdcard->CSD_v3.bit.TRAN_SPEED_VALUE]
-									   * tran_speed_unit[sdcard->CSD_v3.bit.TRAN_SPEED_UNIT];
+		*tran_speed = tran_speed_value[sdcard->CSD.v3.bit.TRAN_SPEED_VALUE]
+									   * tran_speed_unit[sdcard->CSD.v3.bit.TRAN_SPEED_UNIT];
 		return E_NO_ERROR;
 
 	default:
@@ -500,15 +516,15 @@ err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t*
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
-		*len = (1 << sdcard->CSD_v1.bit.READ_BL_LEN);
+		*len = (1 << sdcard->CSD.v1.bit.READ_BL_LEN);
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
-		*len = (1 << sdcard->CSD_v2.bit.READ_BL_LEN);
+		*len = (1 << sdcard->CSD.v2.bit.READ_BL_LEN);
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
-		*len = (1 << sdcard->CSD_v3.bit.READ_BL_LEN);
+		*len = (1 << sdcard->CSD.v3.bit.READ_BL_LEN);
 		return E_NO_ERROR;
 
 	default:
@@ -526,7 +542,7 @@ err_t sdcard_CSD_MULT_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* mult
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
-		*mult = (1 << (sdcard->CSD_v1.bit.C_SIZE_MULT + 2));
+		*mult = (1 << (sdcard->CSD.v1.bit.C_SIZE_MULT + 2));
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
@@ -556,15 +572,15 @@ err_t sdcard_CSD_BLOCKNR_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* c
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
-		*count = (sdcard->CSD_v1.bit.C_SIZE + 1) * mult;
+		*count = (sdcard->CSD.v1.bit.C_SIZE + 1) * mult;
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
-		*count = (sdcard->CSD_v2.bit.C_SIZE + 1) * mult;
+		*count = (sdcard->CSD.v2.bit.C_SIZE + 1) * mult;
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
-		*count = (sdcard->CSD_v3.bit.C_SIZE + 1) * mult;
+		*count = (sdcard->CSD.v3.bit.C_SIZE + 1) * mult;
 		return E_NO_ERROR;
 
 	default:
