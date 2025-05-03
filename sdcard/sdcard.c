@@ -635,5 +635,36 @@ void sdcard_CID_fill(sdcard_t* sdcard) {
 	sdcard->CID.all[3] = sdcard->response.r2.all[3];
 }
 
+//read, write, erase
+err_t sdcard_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32_t func) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	err_t err = E_NO_ERROR;
+
+	//first
+	if (sdcard->type == SDCARD_TYPE_UC) {
+		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & first[1]));	//[5:0] extended address
+		if (err != E_NO_ERROR) return err;
+	}
+
+	err = sdcard_cmd(sdcard, &sdcard_CMD32, first);
+	if(err != E_NO_ERROR) return err;
+
+	//last
+	if (sdcard->type == SDCARD_TYPE_UC) {
+		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & last[1]));	//[5:0] extended address
+		if(err != E_NO_ERROR) return err;
+	}
+
+	err = sdcard_cmd(sdcard, &sdcard_CMD33, last);
+	if(err != E_NO_ERROR) return err;
+
+	//erase
+	err = sdcard_cmd(sdcard, &sdcard_CMD38, func);
+	return err;
+}
+
+
+
 
 
