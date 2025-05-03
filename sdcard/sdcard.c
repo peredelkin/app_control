@@ -647,7 +647,7 @@ err_t sdcard_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32_t f
 		if (err != E_NO_ERROR) return err;
 	}
 
-	err = sdcard_cmd(sdcard, &sdcard_CMD32, first);
+	err = sdcard_cmd(sdcard, &sdcard_CMD32, first[0]);
 	if(err != E_NO_ERROR) return err;
 
 	//last
@@ -656,7 +656,7 @@ err_t sdcard_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32_t f
 		if(err != E_NO_ERROR) return err;
 	}
 
-	err = sdcard_cmd(sdcard, &sdcard_CMD33, last);
+	err = sdcard_cmd(sdcard, &sdcard_CMD33, last[0]);
 	if(err != E_NO_ERROR) return err;
 
 	//erase

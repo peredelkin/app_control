@@ -147,4 +147,43 @@ typedef struct _SD_Card_ACmd {
 			.state[9] = ina,\
 		}
 
+//команды
+extern const sdcard_cmd_t sdcard_CMD0;
+extern const sdcard_cmd_t sdcard_CMD2;
+extern const sdcard_cmd_t sdcard_CMD3;
+extern const sdcard_cmd_t sdcard_CMD4;
+extern const sdcard_cmd_t sdcard_CMD6;
+extern const sdcard_cmd_t sdcard_CMD7_adressed;
+extern const sdcard_cmd_t sdcard_CMD7_not_adressed;
+extern const sdcard_cmd_t sdcard_CMD8;
+extern const sdcard_cmd_t sdcard_CMD9;
+extern const sdcard_cmd_t sdcard_CMD10;
+extern const sdcard_cmd_t sdcard_CMD11;
+extern const sdcard_cmd_t sdcard_CMD12;
+extern const sdcard_cmd_t sdcard_CMD13;
+extern const sdcard_cmd_t sdcard_CMD15;
+extern const sdcard_cmd_t sdcard_CMD16;
+extern const sdcard_cmd_t sdcard_CMD17;
+extern const sdcard_cmd_t sdcard_CMD18;
+extern const sdcard_cmd_t sdcard_CMD19;
+extern const sdcard_cmd_t sdcard_CMD20;
+extern const sdcard_cmd_t sdcard_CMD22;
+extern const sdcard_cmd_t sdcard_CMD23;
+extern const sdcard_cmd_t sdcard_CMD24;
+extern const sdcard_cmd_t sdcard_CMD25;
+extern const sdcard_cmd_t sdcard_CMD27;
+extern const sdcard_cmd_t sdcard_CMD32;
+extern const sdcard_cmd_t sdcard_CMD33;
+extern const sdcard_cmd_t sdcard_CMD38;
+extern const sdcard_cmd_t sdcard_CMD55;
+extern const sdcard_acmd_t sdcard_ACMD6;
+extern const sdcard_acmd_t sdcard_ACMD13;
+extern const sdcard_acmd_t sdcard_ACMD22;
+extern const sdcard_acmd_t sdcard_ACMD23;
+extern const sdcard_acmd_t sdcard_ACMD41;
+extern const sdcard_acmd_t sdcard_ACMD42;
+extern const sdcard_acmd_t sdcard_ACMD51;
+extern const sdcard_acmd_t sdcard_ACMD53;
+extern const sdcard_acmd_t sdcard_ACMD54;
+
 #endif /* SDCARD_CMD_H_ */

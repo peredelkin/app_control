@@ -110,22 +110,6 @@ typedef struct _SD_Card {
 	sdcard_type_t type;
 } sdcard_t;
 
-
-
-
-//команды
-extern const sdcard_cmd_t sdcard_CMD0;
-extern const sdcard_cmd_t sdcard_CMD2;
-extern const sdcard_cmd_t sdcard_CMD3;
-extern const sdcard_cmd_t sdcard_CMD7_adressed;
-extern const sdcard_cmd_t sdcard_CMD7_not_adressed;
-extern const sdcard_cmd_t sdcard_CMD8;
-extern const sdcard_cmd_t sdcard_CMD9;
-extern const sdcard_cmd_t sdcard_CMD10;
-extern const sdcard_cmd_t sdcard_CMD13;
-extern const sdcard_cmd_t sdcard_CMD55;
-extern const sdcard_acmd_t sdcard_ACMD41;
-
 //вспопогательные функции
 extern err_t sdcard_change_current_state(sdcard_t* sdcard);
 extern void sdcard_CSD_fill(sdcard_t* sdcard);
