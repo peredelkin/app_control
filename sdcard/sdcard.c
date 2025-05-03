@@ -336,7 +336,7 @@ err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument)
 
 	err_t err = E_NO_ERROR;
 
-	err = sdcard_cmd(sdcard, &sdcard_Class8_CMD55, 0);
+	err = sdcard_cmd(sdcard, &sdcard_CMD55, 0);
 	if(err != E_NO_ERROR) return err;
 
 	if (sdcard->response.r1.bit.APP_CMD == 0) return E_INVALID_OPERATION;
@@ -357,6 +357,21 @@ err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument)
 	 */
 
 	return err;
+}
+
+//установка типа карты по ответу ACMD41
+void sdcard_type_set(sdcard_t* sdcard) {
+	if(sdcard->response.r3.bit.CARD_CAPACITY_STATUS) {
+		//10b
+		sdcard->type = SDCARD_TYPE_HC_XC;
+		if (sdcard->response.r3.bit.OVER_2TB_SUPPORT) {
+			//11b
+			sdcard->type = SDCARD_TYPE_UC;
+		}
+	} else {
+		//00b
+		sdcard->type = SDCARD_TYPE_SC;
+	}
 }
 
 

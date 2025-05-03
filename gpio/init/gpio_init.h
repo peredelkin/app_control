@@ -88,5 +88,6 @@ extern const gpio_pin_t SDIO_DAT0_App;
 extern const gpio_pin_t GPO_SDIO_PWR_App;
 extern const gpio_pin_t GPI_SDIO_CD_App;
 extern void gpio_sdio_cfg_setup();
+extern void gpio_sdio_dat_cfg_setup();
 
 #endif /* INC_GPIO_INIT_H_ */

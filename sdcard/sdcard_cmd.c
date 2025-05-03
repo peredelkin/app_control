@@ -19,7 +19,7 @@
  * Resets all cards to idle state.
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD0 =
+const sdcard_cmd_t sdcard_CMD0 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_GO_IDLE_STATE,
 				SDCARD_CCC_0,
@@ -40,7 +40,7 @@ const sdcard_cmd_t sdcard_Class0_CMD0 =
  *
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD2 =
+const sdcard_cmd_t sdcard_CMD2 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ALL_SEND_CID,
 				SDCARD_CCC_0,
@@ -61,7 +61,7 @@ const sdcard_cmd_t sdcard_Class0_CMD2 =
  *
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD3 =
+const sdcard_cmd_t sdcard_CMD3 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_RELATIVE_ADDR,
 				SDCARD_CCC_0,
@@ -83,7 +83,7 @@ const sdcard_cmd_t sdcard_Class0_CMD3 =
  * [31:16] DSR
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD4 =
+const sdcard_cmd_t sdcard_CMD4 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_DSR,
 				SDCARD_CCC_0,
@@ -114,7 +114,7 @@ const sdcard_cmd_t sdcard_Class0_CMD4 =
  * [7:4] function group 2 for Command System
  * [3:0] function group 1 for Access Mode
  */
-const sdcard_cmd_t sdcard_Class10_CMD6 =
+const sdcard_cmd_t sdcard_CMD6 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SWITCH_FUNC,
 				SDCARD_CCC_10,
@@ -138,7 +138,7 @@ const sdcard_cmd_t sdcard_Class10_CMD6 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD7_adressed =
+const sdcard_cmd_t sdcard_CMD7_adressed =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SELECT_DESELECT_CARD,
 				SDCARD_CCC_0,
@@ -154,7 +154,7 @@ const sdcard_cmd_t sdcard_Class0_CMD7_adressed =
 				SDCARD_STATE_ILLEGAL,	//dis
 				SDCARD_STATE_ILLEGAL);	//ina
 
-const sdcard_cmd_t sdcard_Class0_CMD7_not_adressed =
+const sdcard_cmd_t sdcard_CMD7_not_adressed =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SELECT_DESELECT_CARD,
 				SDCARD_CCC_0,
@@ -179,7 +179,7 @@ const sdcard_cmd_t sdcard_Class0_CMD7_not_adressed =
  * [11:8]supply voltage(VHS)
  * [7:0]check pattern
  */
-const sdcard_cmd_t sdcard_Class0_CMD8 =
+const sdcard_cmd_t sdcard_CMD8 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_IF_COND,
 				SDCARD_CCC_0,
@@ -202,7 +202,7 @@ const sdcard_cmd_t sdcard_Class0_CMD8 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD9 =
+const sdcard_cmd_t sdcard_CMD9 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_CSD,
 				SDCARD_CCC_0,
@@ -225,7 +225,7 @@ const sdcard_cmd_t sdcard_Class0_CMD9 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD10 =
+const sdcard_cmd_t sdcard_CMD10 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_CID,
 				SDCARD_CCC_0,
@@ -246,7 +246,7 @@ const sdcard_cmd_t sdcard_Class0_CMD10 =
  *
  * [31:0] reserved bits (all 0)
  */
-const sdcard_cmd_t sdcard_Class0_CMD11 =
+const sdcard_cmd_t sdcard_CMD11 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_VOLTAGE_SWITCH,
 				SDCARD_CCC_0,
@@ -267,7 +267,7 @@ const sdcard_cmd_t sdcard_Class0_CMD11 =
  *
  * [31:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD12 =
+const sdcard_cmd_t sdcard_CMD12 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_STOP_TRANSMISSION,
 				SDCARD_CCC_0,
@@ -294,7 +294,7 @@ const sdcard_cmd_t sdcard_Class0_CMD12 =
  * [15] Send Task Status Register
  * [14:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD13 =
+const sdcard_cmd_t sdcard_CMD13 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_STATUS,
 				SDCARD_CCC_0,
@@ -316,7 +316,7 @@ const sdcard_cmd_t sdcard_Class0_CMD13 =
  * [31:16] RCA
  * [15:0] reserved bits
  */
-const sdcard_cmd_t sdcard_Class0_CMD15 =
+const sdcard_cmd_t sdcard_CMD15 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_GO_INACTIVE_STATE,
 				SDCARD_CCC_0,
@@ -340,10 +340,10 @@ const sdcard_cmd_t sdcard_Class0_CMD15 =
  *
  * [31:0] block length
  */
-const sdcard_cmd_t sdcard_Class2_CMD16 =
+const sdcard_cmd_t sdcard_CMD16 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCKLEN,
-				SDCARD_CCC_2,
+				(SDCARD_CCC_2 | SDCARD_CCC_4 | SDCARD_CCC_7),
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -364,7 +364,7 @@ const sdcard_cmd_t sdcard_Class2_CMD16 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_Class2_CMD17 =
+const sdcard_cmd_t sdcard_CMD17 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_READ_SINGLE_BLOCK,
 				SDCARD_CCC_2,
@@ -389,7 +389,7 @@ const sdcard_cmd_t sdcard_Class2_CMD17 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_Class2_CMD18 =
+const sdcard_cmd_t sdcard_CMD18 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_READ_MULTIPLE_BLOCK,
 				SDCARD_CCC_2,
@@ -410,7 +410,7 @@ const sdcard_cmd_t sdcard_Class2_CMD18 =
  *
  * [31:0] reserved bits (all 0)
  */
-const sdcard_cmd_t sdcard_Class2_CMD19 =
+const sdcard_cmd_t sdcard_CMD19 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SEND_TUNING_BLOCK,
 				SDCARD_CCC_2,
@@ -432,10 +432,10 @@ const sdcard_cmd_t sdcard_Class2_CMD19 =
  * [31:28]Speed Class Control
  * [27:0]See command description
  */
-const sdcard_cmd_t sdcard_Class2_CMD20 =
+const sdcard_cmd_t sdcard_CMD20 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SPEED_CLASS_CONTROL,
-				SDCARD_CCC_2,
+				(SDCARD_CCC_2 | SDCARD_CCC_4),
 				SDCARD_RESPONSE_R1b,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -454,10 +454,10 @@ const sdcard_cmd_t sdcard_Class2_CMD20 =
  * [31:6] reserved bits (all 0)
  * [5:0] extended address
  */
-const sdcard_cmd_t sdcard_Class2_CMD22 =
+const sdcard_cmd_t sdcard_CMD22 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ADDRESS_EXTENSION,
-				SDCARD_CCC_2,
+				(SDCARD_CCC_2 | SDCARD_CCC_4),
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -475,99 +475,10 @@ const sdcard_cmd_t sdcard_Class2_CMD22 =
  *
  * [31:0] Block Count
  */
-const sdcard_cmd_t sdcard_Class2_CMD23 =
+const sdcard_cmd_t sdcard_CMD23 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_SET_BLOCK_COUNT,
-				SDCARD_CCC_2,
-				SDCARD_RESPONSE_R1,
-				SDCARD_STATE_ILLEGAL,	//idle
-				SDCARD_STATE_ILLEGAL,	//ready
-				SDCARD_STATE_ILLEGAL,	//ident
-				SDCARD_STATE_ILLEGAL,	//stby
-				SDCARD_STATE_TRAN,		//tran
-				SDCARD_STATE_ILLEGAL,	//data
-				SDCARD_STATE_ILLEGAL,	//rcv
-				SDCARD_STATE_ILLEGAL,	//prg
-				SDCARD_STATE_ILLEGAL,	//dis
-				SDCARD_STATE_ILLEGAL);	//ina
-
-/*
- * In the case of a Standard Capacity SD
- * Memory Card, this command sets the
- * block length (in bytes) for all following
- * block commands (read, write, lock).
- *
- * [31:0] block length
- */
-const sdcard_cmd_t sdcard_Class4_CMD16 =
-		SDCARD_CMD_MAKE(
-				SDCARD_CMD_SET_BLOCKLEN,
-				SDCARD_CCC_4,
-				SDCARD_RESPONSE_R1,
-				SDCARD_STATE_ILLEGAL,	//idle
-				SDCARD_STATE_ILLEGAL,	//ready
-				SDCARD_STATE_ILLEGAL,	//ident
-				SDCARD_STATE_ILLEGAL,	//stby
-				SDCARD_STATE_TRAN,		//tran
-				SDCARD_STATE_ILLEGAL,	//data
-				SDCARD_STATE_ILLEGAL,	//rcv
-				SDCARD_STATE_ILLEGAL,	//prg
-				SDCARD_STATE_ILLEGAL,	//dis
-				SDCARD_STATE_ILLEGAL);	//ina
-
-/*
- * Speed Class control command.
- *
- * [31:28]Speed Class Control
- * [27:0]See command description
- */
-const sdcard_cmd_t sdcard_Class4_CMD20 =
-		SDCARD_CMD_MAKE(
-				SDCARD_CMD_SPEED_CLASS_CONTROL,
-				SDCARD_CCC_4,
-				SDCARD_RESPONSE_R1b,
-				SDCARD_STATE_ILLEGAL,	//idle
-				SDCARD_STATE_ILLEGAL,	//ready
-				SDCARD_STATE_ILLEGAL,	//ident
-				SDCARD_STATE_ILLEGAL,	//stby
-				SDCARD_STATE_PRG,		//tran
-				SDCARD_STATE_ILLEGAL,	//data
-				SDCARD_STATE_ILLEGAL,	//rcv
-				SDCARD_STATE_ILLEGAL,	//prg
-				SDCARD_STATE_ILLEGAL,	//dis
-				SDCARD_STATE_ILLEGAL);	//ina
-
-/*
- * Address extension for SDUC cards.
- *
- * [31:6] reserved bits (all 0)
- * [5:0] extended address
- */
-const sdcard_cmd_t sdcard_Class4_CMD22 =
-		SDCARD_CMD_MAKE(
-				SDCARD_CMD_ADDRESS_EXTENSION,
-				SDCARD_CCC_4,
-				SDCARD_RESPONSE_R1,
-				SDCARD_STATE_ILLEGAL,	//idle
-				SDCARD_STATE_ILLEGAL,	//ready
-				SDCARD_STATE_ILLEGAL,	//ident
-				SDCARD_STATE_ILLEGAL,	//stby
-				SDCARD_STATE_TRAN,		//tran (for SDUC only)
-				SDCARD_STATE_ILLEGAL,	//data
-				SDCARD_STATE_ILLEGAL,	//rcv
-				SDCARD_STATE_ILLEGAL,	//prg
-				SDCARD_STATE_ILLEGAL,	//dis
-				SDCARD_STATE_ILLEGAL);	//ina
-
-/*
- * Specify block count for CMD18 and CMD25.
- *
- * [31:0] Block Count
- */
-const sdcard_cmd_t sdcard_Class4_CMD23 =
-		SDCARD_CMD_MAKE(
-				SDCARD_CMD_SET_BLOCK_COUNT,
-				SDCARD_CCC_4,
+				(SDCARD_CCC_2 | SDCARD_CCC_4 | SDCARD_CCC_8),
 				SDCARD_RESPONSE_R1,
 				SDCARD_STATE_ILLEGAL,	//idle
 				SDCARD_STATE_ILLEGAL,	//ready
@@ -586,7 +497,7 @@ const sdcard_cmd_t sdcard_Class4_CMD23 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_Class4_CMD24 =
+const sdcard_cmd_t sdcard_CMD24 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_WRITE_BLOCK,
 				SDCARD_CCC_4,
@@ -610,7 +521,7 @@ const sdcard_cmd_t sdcard_Class4_CMD24 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_Class4_CMD25 =
+const sdcard_cmd_t sdcard_CMD25 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_WRITE_MULTIPLE_BLOCK,
 				SDCARD_CCC_4,
@@ -630,7 +541,7 @@ const sdcard_cmd_t sdcard_Class4_CMD25 =
  * Programming of the programmable
  * bits of the CSD.
  */
-const sdcard_cmd_t sdcard_Class4_CMD27 =
+const sdcard_cmd_t sdcard_CMD27 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_PROGRAM_CSD,
 				SDCARD_CCC_4,
@@ -652,7 +563,7 @@ const sdcard_cmd_t sdcard_Class4_CMD27 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_Class5_CMD32 =
+const sdcard_cmd_t sdcard_CMD32 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE_WR_BLK_START,
 				SDCARD_CCC_5,
@@ -675,7 +586,7 @@ const sdcard_cmd_t sdcard_Class5_CMD32 =
  *
  * [31:0] data address
  */
-const sdcard_cmd_t sdcard_Class5_CMD33 =
+const sdcard_cmd_t sdcard_CMD33 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE_WR_BLK_END,
 				SDCARD_CCC_5,
@@ -699,7 +610,7 @@ const sdcard_cmd_t sdcard_Class5_CMD33 =
  *
  * [31:0] Erase Function
  */
-const sdcard_cmd_t sdcard_Class5_CMD38 =
+const sdcard_cmd_t sdcard_CMD38 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_ERASE,
 				SDCARD_CCC_5,
@@ -737,7 +648,7 @@ const sdcard_cmd_t sdcard_Class5_CMD38 =
  * [31:16] RCA
  * [15:0] stuff bits
  */
-const sdcard_cmd_t sdcard_Class8_CMD55 =
+const sdcard_cmd_t sdcard_CMD55 =
 		SDCARD_CMD_MAKE(
 				SDCARD_CMD_APP_CMD,
 				SDCARD_CCC_8,
@@ -762,7 +673,7 @@ const sdcard_cmd_t sdcard_Class8_CMD55 =
  * [31:2] stuff bits
  * [1:0]bus width
  */
-const sdcard_acmd_t sdcard_Class8_ACMD6 =
+const sdcard_acmd_t sdcard_ACMD6 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_BUS_WIDTH,
 				SDCARD_CCC_8,
@@ -783,7 +694,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD6 =
  *
  * [31:0] stuff bits
  */
-const sdcard_acmd_t sdcard_Class8_ACMD13 =
+const sdcard_acmd_t sdcard_ACMD13 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SD_STATUS,
 				SDCARD_CCC_8,
@@ -812,7 +723,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD13 =
  *
  * [31:0] stuff bits
  */
-const sdcard_acmd_t sdcard_Class8_ACMD22 =
+const sdcard_acmd_t sdcard_ACMD22 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SEND_NUM_WR_BLOCKS,
 				SDCARD_CCC_8,
@@ -838,7 +749,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD22 =
  * [31:23] stuff bits
  * [22:0] Number of blocks
  */
-const sdcard_acmd_t sdcard_Class8_ACMD23 =
+const sdcard_acmd_t sdcard_ACMD23 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT,
 				SDCARD_CCC_8,
@@ -869,7 +780,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD23 =
  * [24] S18R
  * [23:0] VDD Voltage Window(OCR[23:0])
  */
-const sdcard_acmd_t sdcard_Class8_ACMD41 =
+const sdcard_acmd_t sdcard_ACMD41 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SD_SEND_OP_COND,
 				SDCARD_CCC_8,
@@ -893,7 +804,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD41 =
  * [31:1] stuff bits
  * [0] set_cd
  */
-const sdcard_acmd_t sdcard_Class8_ACMD42 =
+const sdcard_acmd_t sdcard_ACMD42 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SET_CLR_CARD_DETECT,
 				SDCARD_CCC_8,
@@ -914,7 +825,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD42 =
  *
  * [31:0] stuff bits
  */
-const sdcard_acmd_t sdcard_Class8_ACMD51 =
+const sdcard_acmd_t sdcard_ACMD51 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SEND_SCR,
 				SDCARD_CCC_8,
@@ -944,7 +855,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD51 =
  * [15:8] Security Protocol Specific 0 (SPSP0)
  * [7:0] SD Security Specific Field (SSSF)
  */
-const sdcard_acmd_t sdcard_Class8_ACMD53 =
+const sdcard_acmd_t sdcard_ACMD53 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SECURE_RECEIVE,
 				SDCARD_CCC_8,
@@ -974,7 +885,7 @@ const sdcard_acmd_t sdcard_Class8_ACMD53 =
  * [15:8] Security Protocol Specific 0 (SPSP0)
  * [7:0] SD Security Specific Field (SSSF)
  */
-const sdcard_acmd_t sdcard_Class8_ACMD54 =
+const sdcard_acmd_t sdcard_ACMD54 =
 		SDCARD_CMD_MAKE(
 				SDCARD_ACMD_SECURE_SEND,
 				SDCARD_CCC_8,

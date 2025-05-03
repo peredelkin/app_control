@@ -7,14 +7,13 @@
 
 #include "gpio_init.h"
 
-#define SDIO_GPIO_COUNT 5
+#define SDIO_GPIO_COUNT 4
 
 const gpio_pin_t SDIO_DAT0_App = GPIO_PIN(GPIOC, GPIO_PIN_8); /*117, PC8, SDIO_D0, SDIO_DAT0_App*/
 const gpio_pin_t GPO_SDIO_PWR_App = GPIO_PIN(GPIOC, GPIO_PIN_9); /*118, PC9, GPIO_Output, SDIO_PWR_App*/
 const gpio_pin_t GPI_SDIO_CD_App = GPIO_PIN(GPIOA, GPIO_PIN_8); /*119, PA8, GPIO_Input, SDIO_CD_App*/
 
 const gpio_pin_cfg_t gpio_sdio_cfg[SDIO_GPIO_COUNT] = {
-		GPIO_PIN_CFG(GPIOC, GPIO_PIN_8, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_12, GPIO_STATE_OFF),	/*117, PC8,		SDIO_D0,		OFF,		SDIO_DAT0_App*/
 		GPIO_PIN_CFG(GPIOC, GPIO_PIN_9, GPIO_MODE_OUT, GPIO_OTYPE_OD, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0, GPIO_STATE_ON),		/*118, PC9,		GPIO_Output,	ON,		SDIO_PWR_App*/
 		GPIO_PIN_CFG(GPIOA, GPIO_PIN_8, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0, GPIO_STATE_OFF),		/*119, PA8,		GPIO_Input,		OFF,		SDIO_CD_App*/
 		GPIO_PIN_CFG(GPIOC, GPIO_PIN_12, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_12, GPIO_STATE_OFF),	/*141, PC12,	SDIO_CK,		OFF,		SDIO_CLK_App*/
@@ -23,4 +22,14 @@ const gpio_pin_cfg_t gpio_sdio_cfg[SDIO_GPIO_COUNT] = {
 
 void gpio_sdio_cfg_setup() {
 	gpio_pins_cfg_setup(gpio_sdio_cfg, SDIO_GPIO_COUNT);
+}
+
+#define SDIO_DAT_GPIO_COUNT 1
+
+const gpio_pin_cfg_t gpio_sdio_dat_cfg[SDIO_DAT_GPIO_COUNT] = {
+		GPIO_PIN_CFG(GPIOC, GPIO_PIN_8, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_12, GPIO_STATE_OFF),	/*117, PC8,		SDIO_D0,		OFF,		SDIO_DAT0_App*/
+};
+
+void gpio_sdio_dat_cfg_setup() {
+	gpio_pins_cfg_setup(gpio_sdio_dat_cfg, SDIO_DAT_GPIO_COUNT);
 }

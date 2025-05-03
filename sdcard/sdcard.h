@@ -89,10 +89,9 @@
 //! Перечисление типа SD-карты.
 typedef enum _SD_Card_Type {
     SDCARD_TYPE_UNKNOWN = 0, //!< Неизвестный тип карты.
-    SDCARD_TYPE_MMC = 1, //!< MMC.
-    SDCARD_TYPE_SDSCv1 = 2, //!< SDSC версии 1.
-    SDCARD_TYPE_SDSCv2 = 3, //!< SDSC версии 2.
-    SDCARD_TYPE_SDHC_SDXC = 4 //!< SDHC или SDXC.
+    SDCARD_TYPE_SC,
+	SDCARD_TYPE_HC_XC,
+	SDCARD_TYPE_UC
 } sdcard_type_t;
 
 
@@ -107,27 +106,30 @@ typedef struct _SD_Card {
 	uint32_t RCA;
 	sdcard_reg_CID_t CID;
 	sdcard_reg_CSD_t CSD;
+	sdcard_ccc_t CCC;
+	sdcard_type_t type;
 } sdcard_t;
 
 
 
 
 //команды
-extern const sdcard_cmd_t sdcard_Class0_CMD0;
-extern const sdcard_cmd_t sdcard_Class0_CMD2;
-extern const sdcard_cmd_t sdcard_Class0_CMD3;
-extern const sdcard_cmd_t sdcard_Class0_CMD7_adressed;
-extern const sdcard_cmd_t sdcard_Class0_CMD7_not_adressed;
-extern const sdcard_cmd_t sdcard_Class0_CMD8;
-extern const sdcard_cmd_t sdcard_Class0_CMD9;
-extern const sdcard_cmd_t sdcard_Class0_CMD10;
-extern const sdcard_cmd_t sdcard_Class0_CMD13;
-extern const sdcard_cmd_t sdcard_Class8_CMD55;
-extern const sdcard_acmd_t sdcard_Class8_ACMD41;
+extern const sdcard_cmd_t sdcard_CMD0;
+extern const sdcard_cmd_t sdcard_CMD2;
+extern const sdcard_cmd_t sdcard_CMD3;
+extern const sdcard_cmd_t sdcard_CMD7_adressed;
+extern const sdcard_cmd_t sdcard_CMD7_not_adressed;
+extern const sdcard_cmd_t sdcard_CMD8;
+extern const sdcard_cmd_t sdcard_CMD9;
+extern const sdcard_cmd_t sdcard_CMD10;
+extern const sdcard_cmd_t sdcard_CMD13;
+extern const sdcard_cmd_t sdcard_CMD55;
+extern const sdcard_acmd_t sdcard_ACMD41;
 
 //вспопогательные функции
 extern err_t sdcard_change_current_state(sdcard_t* sdcard);
 extern void sdcard_CSD_fill(sdcard_t* sdcard);
+extern void sdcard_type_set(sdcard_t* sdcard);
 
 //функции отправки команд
 extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);
