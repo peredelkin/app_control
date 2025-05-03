@@ -627,5 +627,13 @@ err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 	return E_NO_ERROR;
 }
 
+//CID
+void sdcard_CID_fill(sdcard_t* sdcard) {
+	sdcard->CID.all[0] = sdcard->response.r2.all[0];
+	sdcard->CID.all[1] = sdcard->response.r2.all[1];
+	sdcard->CID.all[2] = sdcard->response.r2.all[2];
+	sdcard->CID.all[3] = sdcard->response.r2.all[3];
+}
+
 
 

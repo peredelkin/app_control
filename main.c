@@ -271,10 +271,7 @@ int main(void)
 			goto exit_sdcard_init;
 		}
 
-		sdcard.CID.all[0] = sdcard.response.r2.all[0];
-		sdcard.CID.all[1] = sdcard.response.r2.all[1];
-		sdcard.CID.all[2] = sdcard.response.r2.all[2];
-		sdcard.CID.all[3] = sdcard.response.r2.all[3];
+		sdcard_CID_fill(&sdcard);
 
 		printf("MID: %d\n", sdcard.CID.bit.MID);
 		printf("MDT_M: %d, MDT_Y: %d\n", sdcard.CID.bit.MDT_M, sdcard.CID.bit.MDT_Y);

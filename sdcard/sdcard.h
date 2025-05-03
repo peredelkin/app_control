@@ -129,6 +129,7 @@ extern const sdcard_acmd_t sdcard_ACMD41;
 //вспопогательные функции
 extern err_t sdcard_change_current_state(sdcard_t* sdcard);
 extern void sdcard_CSD_fill(sdcard_t* sdcard);
+extern void sdcard_CID_fill(sdcard_t* sdcard);
 extern void sdcard_type_set(sdcard_t* sdcard);
 
 //функции отправки команд
