@@ -636,8 +636,60 @@ void sdcard_CID_fill(sdcard_t* sdcard) {
 }
 
 //read, write, erase
-err_t sdcard_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32_t func) {
-	if(sdcard == NULL) return E_NULL_POINTER;
+err_t sdcard_cmd_read(sdcard_t* sdcard, uint32_t count, uint32_t* addr) {
+	if(sdcard == NULL || addr == NULL) return E_NULL_POINTER;
+
+	err_t err = E_NO_ERROR;
+
+	if(count > 1) {
+		err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
+		if (err != E_NO_ERROR) return err;
+	}
+
+	if(sdcard->type == SDCARD_TYPE_UC) {
+		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & addr[1]));	//[5:0] extended address
+		if (err != E_NO_ERROR) return err;
+	}
+
+	if(count == 1) {
+		//Single Block Read
+		err = sdcard_cmd(sdcard, &sdcard_CMD17, addr[0]);
+	} else {
+		//Multi-Block Read
+		err = sdcard_cmd(sdcard, &sdcard_CMD18, addr[0]);
+	}
+
+	return err;
+}
+
+err_t sdcard_cmd_write(sdcard_t* sdcard, uint32_t count, uint32_t* addr) {
+	if(sdcard == NULL || addr == NULL) return E_NULL_POINTER;
+
+	err_t err = E_NO_ERROR;
+
+	if(count > 1) {
+		err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
+		if (err != E_NO_ERROR) return err;
+	}
+
+	if(sdcard->type == SDCARD_TYPE_UC) {
+		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & addr[1]));	//[5:0] extended address
+		if (err != E_NO_ERROR) return err;
+	}
+
+	if(count == 1) {
+		//Single Block Write
+		err = sdcard_cmd(sdcard, &sdcard_CMD24, addr[0]);
+	} else {
+		//Multi-Block Write
+		err = sdcard_cmd(sdcard, &sdcard_CMD25, addr[0]);
+	}
+
+	return err;
+}
+
+err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32_t func) {
+	if(sdcard == NULL || first == NULL || last == NULL) return E_NULL_POINTER;
 
 	err_t err = E_NO_ERROR;
 
