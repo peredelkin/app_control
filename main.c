@@ -170,6 +170,11 @@ int main(void)
 		sdcard.CCC = (SDCARD_CCC_0 | SDCARD_CCC_2 | SDCARD_CCC_4 | SDCARD_CCC_5 | SDCARD_CCC_8);
 		sdcard.type = SDCARD_TYPE_UNKNOWN;
 
+		sdcard.CSD.tran_speed = 0.0f;
+		sdcard.CSD.bl_len = 0;
+		sdcard.CSD.bl_count = 0;
+		sdcard.CSD.capacity = 0;
+
 		//CMD0
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD0, 0);
 		if(sdio_err != E_NO_ERROR) {
@@ -228,6 +233,8 @@ int main(void)
 		//определние типа карты по ответу ACMD41
 		sdcard_type_set(&sdcard);
 
+		printf("CSD Version: %d\n", sdcard.type);
+
 		printf("ACMD 41 STATE: %d\n", sdcard.current_state);
 
 		//CMD2
@@ -262,6 +269,38 @@ int main(void)
 
 		printf("CSD Version: %d\n", sdcard.CSD.v1.bit.CSD_STRUCTURE);
 
+		sdio_err = sdcard_CSD_TRAN_SPEED_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.tran_speed);
+		if (sdio_err != E_NO_ERROR) {
+			printf("TRAN SPEED calc Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("TRAN SPEED: %0.2f\n", sdcard.CSD.tran_speed);
+
+		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len);
+		if (sdio_err != E_NO_ERROR) {
+			printf("BLOCK LEN calc Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("BLOCK LEN: %llu\n", sdcard.CSD.bl_len);
+
+		sdio_err = sdcard_CSD_BLOCKNR_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_count);
+		if (sdio_err != E_NO_ERROR) {
+			printf("BLOCKNR calc Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("BLOCKNR: %llu\n", sdcard.CSD.bl_count);
+
+		sdio_err = sdcard_CSD_memory_capacity_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.capacity);
+		if (sdio_err != E_NO_ERROR) {
+			printf("capacity calc Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("capacity: %llu\n", sdcard.CSD.capacity);
+
 		printf("CMD 9 STATE: %d\n", sdcard.current_state);
 
 		//CMD10
@@ -277,15 +316,6 @@ int main(void)
 		printf("MDT_M: %d, MDT_Y: %d\n", sdcard.CID.bit.MDT_M, sdcard.CID.bit.MDT_Y);
 
 		printf("CMD 10 STATE: %d\n", sdcard.current_state);
-
-		//CMD7
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD7_adressed, sdcard.RCA);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 7 Err: %d\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 7 STATE: %d\n", sdcard.current_state);
 
 	} else {
 		printf("SD Card Not Inserted\n");

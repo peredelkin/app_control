@@ -180,6 +180,10 @@ typedef struct {
 	sdcard_reg_CSD_v1_t v1;
 	sdcard_reg_CSD_v2_t v2;
 	sdcard_reg_CSD_v3_t v3;
+	float tran_speed;
+	uint64_t bl_len;
+	uint64_t bl_count;
+	uint64_t capacity;
 } sdcard_reg_CSD_t;
 
 #endif /* SDCARD_SDCARD_REG_H_ */

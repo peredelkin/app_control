@@ -430,14 +430,14 @@ err_t sdcard_CSD_TAAC_calc(sdcard_t* sdcard, uint8_t csd_version, float* taac) {
 		 * for read and write operations (See 4.6.2).
 		 */
 		*taac = taac_value[sdcard->CSD.v2.bit.TAAC_VALUE] * taac_unit[sdcard->CSD.v2.bit.TAAC_UNIT];
-		return E_CANCELED;
+		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
 		/*
 		 * Definition of this field is same as in CSD Version2.0.
 		 */
 		*taac = taac_value[sdcard->CSD.v3.bit.TAAC_VALUE] * taac_unit[sdcard->CSD.v3.bit.TAAC_UNIT];
-		return E_CANCELED;
+		return E_NO_ERROR;
 
 	default:
 		break;
@@ -459,14 +459,14 @@ err_t sdcard_CSD_NSAC_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* nsac
 		 * This field is fixed to 00h. NSAC should not be used to calculate time-out values.
 		 */
 		*nsac = 100 * sdcard->CSD.v2.bit.NSAC;
-		return E_CANCELED;
+		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
 		/*
 		 * Definition of this field is same as in CSD Version2.0.
 		 */
 		*nsac = 100 * sdcard->CSD.v3.bit.NSAC;
-		return E_CANCELED;
+		return E_NO_ERROR;
 
 	default:
 		break;
@@ -526,7 +526,7 @@ err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *t
 /*
  * BLOCK_LEN = 2^READ_BL_LEN
  */
-err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* len) {
+err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len) {
 
 	switch (csd_version) {
 
@@ -552,7 +552,7 @@ err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t*
 /*
  * MULT = 2^(C_SIZE_MULT+2)
  */
-err_t sdcard_CSD_MULT_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* mult) {
+err_t sdcard_CSD_MULT_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* mult) {
 
 	switch (csd_version) {
 
@@ -561,11 +561,11 @@ err_t sdcard_CSD_MULT_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* mult
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
-		*mult = 1;
+		*mult = 1024;
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
-		*mult = 1;
+		*mult = 1024;
 		return E_NO_ERROR;
 
 	default:
@@ -578,9 +578,9 @@ err_t sdcard_CSD_MULT_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* mult
 /*
  * BLOCKNR = (C_SIZE+1) * MULT
  */
-err_t sdcard_CSD_BLOCKNR_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* count) {
+err_t sdcard_CSD_BLOCKNR_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* count) {
 
-	uint32_t mult = 0;
+	uint64_t mult = 0;
 	err_t err = sdcard_CSD_MULT_calc(sdcard, csd_version, &mult);
 	if(err != E_NO_ERROR) return err;
 
@@ -614,11 +614,11 @@ err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 
 	err_t err = E_NO_ERROR;
 
-	uint32_t count = 0;
+	uint64_t count = 0;
 	err = sdcard_CSD_BLOCKNR_calc(sdcard, csd_version, &count);
 	if(err != E_NO_ERROR) return err;
 
-	uint32_t len = 0;
+	uint64_t len = 0;
 	err = sdcard_CSD_BLOCK_LEN_calc(sdcard, csd_version, &len);
 	if(err != E_NO_ERROR) return err;
 
