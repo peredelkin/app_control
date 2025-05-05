@@ -233,7 +233,7 @@ int main(void)
 		//определние типа карты по ответу ACMD41
 		sdcard_type_set(&sdcard);
 
-		printf("CSD Version: %d\n", sdcard.type);
+		printf("Card Type: %d\n", sdcard.type);
 
 		printf("ACMD 41 STATE: %d\n", sdcard.current_state);
 
