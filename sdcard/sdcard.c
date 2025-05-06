@@ -716,6 +716,53 @@ err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32
 	return err;
 }
 
+//dma
+err_t dma_read_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+	//stream check
+	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
+	//stream deinit
+	dma_stream_deinit(&(sdcard->dma));
+	//stream conf
+	dma_stream_number_of_data(&(sdcard->dma), ndtr);							//Count
+
+	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
+	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
+	dma_stream_peripheral_address(&(sdcard->dma), &(SDIO->FIFO));				//Source
+	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
+
+	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
+	dma_stream_memory_data_size(&(sdcard->dma), 0b10);							//32-bit
+	dma_stream_memory_address(&(sdcard->dma), 0, mar);							//Destination
+	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
+
+	dma_stream_data_transfer_direction(&(sdcard->dma), 0b00);					//Peripheral-to-memory
+
+	return E_NO_ERROR;
+}
+
+err_t dma_write_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+	//stream check
+	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
+	//stream deinit
+	dma_stream_deinit(&(sdcard->dma));
+	//stream conf
+	dma_stream_number_of_data(&(sdcard->dma), ndtr);							//Count
+
+	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
+	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
+	dma_stream_peripheral_address(&(sdcard->dma), &(SDIO->FIFO));				//Destination
+	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
+
+	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
+	dma_stream_memory_data_size(&(sdcard->dma), 0b10);							//32-bit
+	dma_stream_memory_address(&(sdcard->dma), 0, mar);							//Source
+	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
+
+	dma_stream_data_transfer_direction(&(sdcard->dma), 0b01);					//Memory-to-peripheral
+
+	return E_NO_ERROR;
+}
+
 
 
 

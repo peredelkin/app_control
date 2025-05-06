@@ -165,6 +165,9 @@ int main(void)
 
 		err_t sdio_err = E_NO_ERROR;
 		//инициализация структуры sdcard
+		dma_stream_struct_init(&(sdcard.dma), DMA2, DMA2_Stream6, 6);
+		dma_stream_deinit(&(sdcard.dma));
+
 		sdcard.cmd = NULL;
 		sdcard.current_state = SDCARD_STATE_IDLE;
 		sdcard.CCC = (SDCARD_CCC_0 | SDCARD_CCC_2 | SDCARD_CCC_4 | SDCARD_CCC_5 | SDCARD_CCC_8);

@@ -19,6 +19,7 @@
 #include "sdcard_token.h"
 #include "sdcard_reg.h"
 #include "sdcard_cmd.h"
+#include "dma/dma.h"
 
 /*
  * Размер блока и ограничения SD-карты.
@@ -97,6 +98,7 @@ typedef enum _SD_Card_Type {
 
 //! Структура SD-карты.
 typedef struct _SD_Card {
+	dma_t dma;
 	sdcard_state_t current_state; //!< Текущее состояние карты.
 	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
 	sdio_respwait_t resp_wait;
