@@ -635,7 +635,7 @@ void sdcard_CID_fill(sdcard_t* sdcard) {
 	sdcard->CID.all[3] = sdcard->response.r2.all[3];
 }
 
-//read, write, erase
+//read, write, erase commands
 err_t sdcard_cmd_read(sdcard_t* sdcard, uint32_t count, uint32_t* addr) {
 	if(sdcard == NULL || addr == NULL) return E_NULL_POINTER;
 
@@ -716,8 +716,22 @@ err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32
 	return err;
 }
 
+//data path
+err_t sdcard_dpsm_read_setup(sdcard_t* sdcard) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	return E_NO_ERROR;
+}
+
+err_t sdcard_dpsm_write_setup(sdcard_t* sdcard) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	return E_NO_ERROR;
+}
+
 //dma
-err_t dma_read_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+	if(sdcard == NULL) return E_NULL_POINTER;
 	//stream check
 	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
 	//stream deinit
@@ -740,7 +754,8 @@ err_t dma_read_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
 	return E_NO_ERROR;
 }
 
-err_t dma_write_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+	if(sdcard == NULL) return E_NULL_POINTER;
 	//stream check
 	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
 	//stream deinit
