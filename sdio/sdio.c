@@ -68,10 +68,7 @@ void sdio_command(
 	SDIO->CMD = cmd.all;
 }
 
-#define SDIO_BLOCK_COUNT_MAX ((1 << 16) - 1)
-#define SDIO_DATA_LENGTH_MAX ((1 << 25) - 1)
-
-err_t sdio_data(
+void sdio_data(
 		sdio_dten_t dten,
 		sdio_dtdir_t dtdir,
 		sdio_dtmode_t dtmode,
@@ -84,24 +81,24 @@ err_t sdio_data(
 		uint32_t block_count,
 		uint32_t timeout) {
 
-	if (dblocksize > SDIO_DBLOCKSIZE_16384_bytes) return E_OUT_OF_RANGE;
-
-	if (block_count > SDIO_BLOCK_COUNT_MAX) return E_OUT_OF_RANGE;
-
-	uint32_t data_length =  (1 << dblocksize) * block_count;
-
-	if (data_length > SDIO_DATA_LENGTH_MAX) return E_OUT_OF_RANGE;
-
 	_sdio_data_reg_t dctrl;
 	dctrl.all = SDIO->DCTRL;
 
+	dctrl.bit.dt_en = dten;
+	dctrl.bit.dt_dir = dtdir;
+	dctrl.bit.dt_mode = dtmode;
+	dctrl.bit.dma_en = dmaen;
+	dctrl.bit.block_size = dblocksize;
+	dctrl.bit.rw_start = rwstart;
+	dctrl.bit.rw_stop = rwstop;
+	dctrl.bit.rw_mod = rwmod;
+	dctrl.bit.sdio_en = sdioen;
+
 	SDIO->DTIMER = timeout;
 
-	SDIO->DLEN = data_length;
+	SDIO->DLEN = (1 << dblocksize) * block_count;
 
 	SDIO->DCTRL = dctrl.all;
-
-	return E_NO_ERROR;
 }
 
 uint32_t sdio_CMD_ACT() {
