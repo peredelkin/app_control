@@ -48,6 +48,7 @@ void sdio_command(
 		sdio_cmdcompl_t cmdcompl,
 		sdio_nien_t nien,
 		sdio_atacmd_t atacmd) {
+
 	_sdio_cmd_reg_t cmd;
 	cmd.all = SDIO->CMD;
 
@@ -65,6 +66,42 @@ void sdio_command(
 	SDIO->ARG = argument;
 
 	SDIO->CMD = cmd.all;
+}
+
+#define SDIO_BLOCK_COUNT_MAX ((1 << 16) - 1)
+#define SDIO_DATA_LENGTH_MAX ((1 << 25) - 1)
+
+err_t sdio_data(
+		sdio_dten_t dten,
+		sdio_dtdir_t dtdir,
+		sdio_dtmode_t dtmode,
+		sdio_dmaen_t dmaen,
+		sdio_dblocksize_t dblocksize,
+		sdio_rwstart_t rwstart,
+		sdio_rwstop_t rwstop,
+		sdio_rwmod_t rwmod,
+		sdio_sdioen_t sdioen,
+		uint32_t block_count,
+		uint32_t timeout) {
+
+	if (dblocksize > SDIO_DBLOCKSIZE_16384_bytes) return E_OUT_OF_RANGE;
+
+	if (block_count > SDIO_BLOCK_COUNT_MAX) return E_OUT_OF_RANGE;
+
+	uint32_t data_length =  (1 << dblocksize) * block_count;
+
+	if (data_length > SDIO_DATA_LENGTH_MAX) return E_OUT_OF_RANGE;
+
+	_sdio_data_reg_t dctrl;
+	dctrl.all = SDIO->DCTRL;
+
+	SDIO->DTIMER = timeout;
+
+	SDIO->DLEN = data_length;
+
+	SDIO->DCTRL = dctrl.all;
+
+	return E_NO_ERROR;
 }
 
 uint32_t sdio_CMD_ACT() {
@@ -149,10 +186,6 @@ void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp)
 	resp[1] = SDIO->RESP2;
 	resp[2] = SDIO->RESP3;
 	resp[3] = SDIO->RESP4;
-}
-
-void sdio_data_read() {
-
 }
 
 
