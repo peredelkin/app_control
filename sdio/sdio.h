@@ -154,8 +154,8 @@ extern void sdio_clock_control(uint8_t clkdiv, sdio_clken_t clken, sdio_pwrsav_t
 extern void sdio_command(uint32_t argument, int cmd_index, sdio_respwait_t respwait, sdio_resptype_t resptype,
 		sdio_intwait_t intwait, sdio_pendwait_t pendwait, sdio_cpsmen_t cpsmen, sdio_suspend_t suspend,
 		sdio_cmdcompl_t cmdcompl, sdio_nien_t nien, sdio_atacmd_t atacmd);
-extern err_t sdio_data_wait();
-extern err_t sdio_cmd_wait();
+extern err_t sdio_cmd_status();
 extern void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp);
+extern err_t sdio_data_status();
 
 #endif /* SDIO_SDIO_H_ */

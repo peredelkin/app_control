@@ -137,7 +137,7 @@ static err_t sdcard_response_index_compare(sdcard_t* sdcard, uint32_t cmd) {
 static err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
 
-	err_t err = sdio_cmd_wait();
+	err_t err = sdio_cmd_status();
 	//есть ошибка
 	if(err != E_NO_ERROR) {
 		//ошибка CRC
@@ -741,7 +741,7 @@ err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
 
 	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
 	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
-	dma_stream_peripheral_address(&(sdcard->dma), &(SDIO->FIFO));				//Source
+	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));				//Source
 	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
 
 	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
@@ -765,7 +765,7 @@ err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
 
 	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
 	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
-	dma_stream_peripheral_address(&(sdcard->dma), &(SDIO->FIFO));				//Destination
+	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));				//Destination
 	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
 
 	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats

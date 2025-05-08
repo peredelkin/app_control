@@ -67,39 +67,73 @@ void sdio_command(
 	SDIO->CMD = cmd.all;
 }
 
-err_t sdio_data_wait() {
-	while (SDIO->STA & (SDIO_STA_RXACT | SDIO_STA_TXACT));
-	if (SDIO->STA & SDIO_STA_DTIMEOUT) {
-		SDIO->ICR = SDIO_ICR_DTIMEOUTC;
-		return E_TIME_OUT;
-	}
-	return E_NO_ERROR;
+uint32_t sdio_CMD_ACT() {
+	return (SDIO->STA & SDIO_STA_CMDACT);
 }
 
-err_t sdio_cmd_wait() {
-	while (SDIO->STA & SDIO_STA_CMDACT);
+uint32_t sdio_DATA_ACT() {
+	return (SDIO->STA & (SDIO_STA_TXACT | SDIO_STA_RXACT));
+}
 
-	if (SDIO->STA & SDIO_STA_CMDREND) {
-		SDIO->ICR = SDIO_ICR_CMDRENDC;
-		return E_NO_ERROR;
+err_t sdio_cmd_status() {
+	while(sdio_CMD_ACT());
+
+	/*Command response timeout*/
+	if (SDIO->STA & SDIO_STA_CTIMEOUT) {
+		SDIO->ICR = SDIO_ICR_CTIMEOUTC;
+		return E_TIME_OUT;
 	}
 
-	/*
-	 * If the response does not contain a CRC, the device driver must ignore the CRC failed status.
-	 */
+	/*Command response received (CRC check failed)*/
 	if (SDIO->STA & SDIO_STA_CCRCFAIL) {
 		SDIO->ICR = SDIO_ICR_CCRCFAILC;
 		return E_CRC;
 	}
 
+	/*Command response received (CRC check passed)*/
+	if (SDIO->STA & SDIO_STA_CMDREND) {
+		SDIO->ICR = SDIO_ICR_CMDRENDC;
+		return E_NO_ERROR;
+	}
+
+	/*Command sent (no response required)*/
 	if (SDIO->STA & SDIO_STA_CMDSENT) {
 		SDIO->ICR = SDIO_ICR_CMDSENTC;
 		return E_NO_ERROR;
 	}
 
-	if (SDIO->STA & SDIO_STA_CTIMEOUT) {
-		SDIO->ICR = SDIO_ICR_CTIMEOUTC;
+	return E_NOT_IMPLEMENTED;
+}
+
+err_t sdio_data_status() {
+	uint32_t STA;
+	while(sdio_DATA_ACT()) {
+		STA = SDIO->STA;
+		/*Data NOT end (data counter, SDIDCOUNT, is NOT zero)*/
+		/*Data block sent/received (CRC check passed)*/
+		if((!(STA & SDIO_STA_DATAEND)) && (STA & SDIO_STA_DBCKEND)) {
+			SDIO->ICR = SDIO_ICR_DBCKENDC;
+		}
+	}
+
+	/*Data timeout*/
+	if (SDIO->STA & SDIO_STA_DTIMEOUT) {
+		SDIO->ICR = SDIO_ICR_DTIMEOUTC;
 		return E_TIME_OUT;
+	}
+
+	/*Data block sent/received (CRC check failed)*/
+	if (SDIO->STA & SDIO_STA_DCRCFAIL) {
+		SDIO->ICR = SDIO_ICR_DCRCFAILC;
+		return E_CRC;
+	}
+
+	/*Data end (data counter, SDIDCOUNT, is zero)*/
+	/*Data block sent/received (CRC check passed)*/
+	if ((SDIO->STA & SDIO_STA_DATAEND) && (SDIO->STA & SDIO_STA_DBCKEND)) {
+		SDIO->ICR = SDIO_ICR_DATAENDC;
+		SDIO->ICR = SDIO_ICR_DBCKENDC;
+		return E_NO_ERROR;
 	}
 
 	return E_NOT_IMPLEMENTED;
@@ -117,7 +151,9 @@ void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp)
 	resp[3] = SDIO->RESP4;
 }
 
+void sdio_data_read() {
 
+}
 
 
 
