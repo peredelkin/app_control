@@ -141,13 +141,15 @@ err_t sdio_cmd_status() {
 
 err_t sdio_data_status() {
 	uint32_t STA;
-	while(sdio_DATA_ACT()) {
+	//TODO: нужен обработчик прерываний SDIO для обработки статусов, пока работает DMA
+	if(sdio_DATA_ACT()) {
 		STA = SDIO->STA;
 		/*Data NOT end (data counter, SDIDCOUNT, is NOT zero)*/
 		/*Data block sent/received (CRC check passed)*/
 		if((!(STA & SDIO_STA_DATAEND)) && (STA & SDIO_STA_DBCKEND)) {
 			SDIO->ICR = SDIO_ICR_DBCKENDC;
 		}
+		return E_NO_ERROR;
 	}
 
 	/*Data timeout*/

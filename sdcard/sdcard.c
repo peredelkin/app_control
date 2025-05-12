@@ -526,20 +526,23 @@ err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *t
 /*
  * BLOCK_LEN = 2^READ_BL_LEN
  */
-err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len) {
+err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len, uint32_t* len_power) {
 
 	switch (csd_version) {
 
 	case SDCARD_CSD_VERSION_1:
 		*len = (1 << sdcard->CSD.v1.bit.READ_BL_LEN);
+		*len_power = sdcard->CSD.v1.bit.READ_BL_LEN;
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_2:
 		*len = (1 << sdcard->CSD.v2.bit.READ_BL_LEN);
+		*len_power = sdcard->CSD.v2.bit.READ_BL_LEN;
 		return E_NO_ERROR;
 
 	case SDCARD_CSD_VERSION_3:
 		*len = (1 << sdcard->CSD.v3.bit.READ_BL_LEN);
+		*len_power = sdcard->CSD.v3.bit.READ_BL_LEN;
 		return E_NO_ERROR;
 
 	default:
@@ -618,8 +621,9 @@ err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 	err = sdcard_CSD_BLOCKNR_calc(sdcard, csd_version, &count);
 	if(err != E_NO_ERROR) return err;
 
+	uint32_t len_power = 0;
 	uint64_t len = 0;
-	err = sdcard_CSD_BLOCK_LEN_calc(sdcard, csd_version, &len);
+	err = sdcard_CSD_BLOCK_LEN_calc(sdcard, csd_version, &len, &len_power);
 	if(err != E_NO_ERROR) return err;
 
 	*capacity = count * len;
@@ -716,66 +720,127 @@ err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32
 	return err;
 }
 
-//data path
-err_t sdcard_dpsm_read_setup(sdcard_t* sdcard) {
-	if(sdcard == NULL) return E_NULL_POINTER;
-
-	return E_NO_ERROR;
-}
-
-err_t sdcard_dpsm_write_setup(sdcard_t* sdcard) {
-	if(sdcard == NULL) return E_NULL_POINTER;
-
-	return E_NO_ERROR;
-}
-
 //dma
-err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint16_t count) {
 	if(sdcard == NULL) return E_NULL_POINTER;
 	//stream check
 	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
 	//stream deinit
 	dma_stream_deinit(&(sdcard->dma));
 	//stream conf
-	dma_stream_number_of_data(&(sdcard->dma), ndtr);							//Count
+	dma_stream_number_of_data(&(sdcard->dma), count / 4);						//Count
 
 	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
 	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
-	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));				//Source
+	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));		//Source
 	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
 
 	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
 	dma_stream_memory_data_size(&(sdcard->dma), 0b10);							//32-bit
-	dma_stream_memory_address(&(sdcard->dma), 0, mar);							//Destination
+	dma_stream_memory_address(&(sdcard->dma), 0, (uint32_t)(memory_addr));		//Destination
 	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
 
 	dma_stream_data_transfer_direction(&(sdcard->dma), 0b00);					//Peripheral-to-memory
 
+	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
+
+	dma_stream_enable(&(sdcard->dma), true); //enable Stream
+
 	return E_NO_ERROR;
 }
 
-err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t mar, uint16_t ndtr) {
+err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint16_t count) {
 	if(sdcard == NULL) return E_NULL_POINTER;
 	//stream check
 	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
 	//stream deinit
 	dma_stream_deinit(&(sdcard->dma));
 	//stream conf
-	dma_stream_number_of_data(&(sdcard->dma), ndtr);							//Count
+	dma_stream_number_of_data(&(sdcard->dma), count / 4);						//Count
 
 	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
 	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
-	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));				//Destination
+	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));		//Destination
 	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
 
 	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
 	dma_stream_memory_data_size(&(sdcard->dma), 0b10);							//32-bit
-	dma_stream_memory_address(&(sdcard->dma), 0, mar);							//Source
+	dma_stream_memory_address(&(sdcard->dma), 0, (uint32_t)(memory_addr));		//Source
 	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
 
 	dma_stream_data_transfer_direction(&(sdcard->dma), 0b01);					//Memory-to-peripheral
 
+	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
+
+	dma_stream_enable(&(sdcard->dma), true); //enable Stream
+
 	return E_NO_ERROR;
+}
+
+err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
+	err_t err = E_NO_ERROR;
+
+	while (!dma_stream_transfer_complete_interrupt_read(&sdcard->dma)) { //wait TC
+
+		if (dma_stream_transfer_error_interrupt_read(&sdcard->dma)) { //if TE
+			dma_stream_transfer_error_interrupt_clear(&sdcard->dma); //clear TE
+			dma_stream_enable(&(sdcard->dma), false); //disable Stream
+			return E_STATE;
+		}
+
+		err = sdio_data_status();
+		if (err != E_NO_ERROR) return err;
+	}
+
+	dma_stream_transfer_complete_interrupt_clear(&(sdcard->dma)); //clear TC
+	dma_stream_enable(&(sdcard->dma), false); //disable Stream
+
+	return err;
+}
+
+//data path
+err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr, uint32_t block_count, uint32_t timeout) {
+	if(sdcard == NULL || memory_addr == NULL || block_addr == NULL) return E_NULL_POINTER;
+
+	if(block_count == 0) return E_INVALID_VALUE;
+
+	if(block_count > (DMA_DATA_COUNT_MAX / sdcard->CSD.bl_len)) return E_OUT_OF_RANGE;
+
+	uint64_t count = block_count * sdcard->CSD.bl_len;
+
+	//такого происходить не должно, но проверим
+	if(count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
+
+	err_t err = E_NO_ERROR;
+
+	err = sdcard_dma_read_setup(sdcard, memory_addr, count);
+	if (err != E_NO_ERROR) return err;
+
+	err = sdcard_cmd_read(sdcard, block_count, block_addr);
+	if (err != E_NO_ERROR) return err;
+
+	sdio_data(
+			SDIO_DTEN_ENA,
+			SDIO_DTDIR_FROM_CARD,
+			SDIO_DTMODE_BLOCK,
+			SDIO_DMAEN_ENA,
+			sdcard->CSD.bl_len_power,
+			SDIO_RWSTART_DIS,
+			SDIO_RWSTOP_DIS,
+			SDIO_RWMOD_D2,
+			SDIO_SDIOEN_ENA,
+			block_count,
+			timeout);
+
+	err = sdcard_dma_wait_tc(sdcard);
+
+	return err;
+}
+
+err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr) {
+	err_t err = E_NO_ERROR;
+
+	return err;
 }
 
 

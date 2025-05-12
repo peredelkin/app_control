@@ -113,15 +113,19 @@ typedef struct _SD_Card {
 } sdcard_t;
 
 //вспопогательные функции
+extern err_t sdcard_operation_complete_state(sdcard_t* sdcard);
 extern err_t sdcard_change_current_state(sdcard_t* sdcard);
 extern void sdcard_CSD_fill(sdcard_t* sdcard);
 extern void sdcard_CID_fill(sdcard_t* sdcard);
 extern void sdcard_type_set(sdcard_t* sdcard);
 //CSD
 extern err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *tran_speed);
-extern err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len);
+extern err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len, uint32_t* len_power);
 extern err_t sdcard_CSD_BLOCKNR_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* count);
 extern err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* capacity);
+
+//read write
+extern err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr, uint32_t block_count, uint32_t timeout);
 
 //функции отправки команд
 extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);

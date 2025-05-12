@@ -75,6 +75,7 @@ void CAN_TIM_IRQHANDLER(void) {
 //volatile int test_extsram;
 
 sdcard_t sdcard; //TODO: не забыть убрать
+uint8_t sdcard_data_array[1024];
 
 void dma_rcc_init() {
 	//DMA
@@ -230,9 +231,6 @@ int main(void)
 			goto exit_sdcard_init;
 		}
 
-		//инициализация линии данных
-		gpio_sdio_dat_cfg_setup();
-
 		//определние типа карты по ответу ACMD41
 		sdcard_type_set(&sdcard);
 
@@ -280,7 +278,7 @@ int main(void)
 
 		printf("TRAN SPEED: %0.2f\n", sdcard.CSD.tran_speed);
 
-		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len);
+		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len, &sdcard.CSD.bl_len_power);
 		if (sdio_err != E_NO_ERROR) {
 			printf("BLOCK LEN calc Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
@@ -319,6 +317,42 @@ int main(void)
 		printf("MDT_M: %d, MDT_Y: %d\n", sdcard.CID.bit.MDT_M, sdcard.CID.bit.MDT_Y);
 
 		printf("CMD 10 STATE: %d\n", sdcard.current_state);
+
+		//CMD7
+		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD7_adressed, sdcard.RCA);
+		if (sdio_err != E_NO_ERROR) {
+			printf("CMD 7 Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("CMD 7 STATE: %d\n", sdcard.current_state);
+
+		//READ
+		uint32_t block_addr[2];
+		block_addr[1] = 0;
+		block_addr[0] = 0;
+
+		sdio_err = sdcard_read(&sdcard, ((uint32_t*)sdcard_data_array), block_addr, 1, 0xFFFFF);
+		if (sdio_err != E_NO_ERROR) {
+			printf("READ Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("READ STATE: %d\n", sdcard.current_state);
+
+		//OP Complete
+		sdio_err = sdcard_operation_complete_state(&sdcard);
+		if (sdio_err != E_NO_ERROR) {
+			printf("READ Err: %d\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		printf("COMPLETE STATE: %d\n", sdcard.current_state);
+
+		for(int i = 1023; i > -1; i--) {
+			printf("DATA %d: %d\n", i, sdcard_data_array[i]);
+			sys_counter_delay(0, 10000); // 10ms
+		}
 
 	} else {
 		printf("SD Card Not Inserted\n");
