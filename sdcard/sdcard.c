@@ -721,60 +721,47 @@ err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32
 }
 
 //dma
-err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint16_t count) {
+err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t count, uint8_t dir) {
 	if(sdcard == NULL) return E_NULL_POINTER;
-	//stream check
+
+	if(sdcard->dma.dma == NULL || sdcard->dma.stream == NULL) return E_NULL_POINTER;
+
 	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
-	//stream deinit
+
 	dma_stream_deinit(&(sdcard->dma));
+
 	//stream conf
-	dma_stream_number_of_data(&(sdcard->dma), count / 4);						//Count
+	uint32_t item_count = count / 4;
+
+	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
+
+	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
 
 	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
 	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
-	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));		//Source
+	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));		//Source/Destination
 	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
 
 	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
 	dma_stream_memory_data_size(&(sdcard->dma), 0b10);							//32-bit
-	dma_stream_memory_address(&(sdcard->dma), 0, (uint32_t)(memory_addr));		//Destination
+	dma_stream_memory_address(&(sdcard->dma), 0, (uint32_t) (memory_addr));		//Destination/Source
 	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
 
-	dma_stream_data_transfer_direction(&(sdcard->dma), 0b00);					//Peripheral-to-memory
+	dma_stream_number_of_data(&(sdcard->dma), item_count);						//Count
 
-	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
+	dma_stream_data_transfer_direction(&(sdcard->dma), dir);					//DIr
 
-	dma_stream_enable(&(sdcard->dma), true); //enable Stream
+	dma_stream_enable(&(sdcard->dma), true);									//Enable Stream
 
 	return E_NO_ERROR;
 }
 
-err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint16_t count) {
-	if(sdcard == NULL) return E_NULL_POINTER;
-	//stream check
-	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
-	//stream deinit
-	dma_stream_deinit(&(sdcard->dma));
-	//stream conf
-	dma_stream_number_of_data(&(sdcard->dma), count / 4);						//Count
+err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t count) {
+	return sdcard_dma_common_setup(sdcard, memory_addr, count, 0b00);		//Peripheral-to-memory
+}
 
-	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
-	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
-	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));		//Destination
-	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
-
-	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
-	dma_stream_memory_data_size(&(sdcard->dma), 0b10);							//32-bit
-	dma_stream_memory_address(&(sdcard->dma), 0, (uint32_t)(memory_addr));		//Source
-	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
-
-	dma_stream_data_transfer_direction(&(sdcard->dma), 0b01);					//Memory-to-peripheral
-
-	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
-
-	dma_stream_enable(&(sdcard->dma), true); //enable Stream
-
-	return E_NO_ERROR;
+err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t count) {
+	return sdcard_dma_common_setup(sdcard, memory_addr, count, 0b01);		//Memory-to-peripheral
 }
 
 err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
@@ -800,20 +787,15 @@ err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
 
 //data path
 err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr, uint32_t block_count, uint32_t timeout) {
-	if(sdcard == NULL || memory_addr == NULL || block_addr == NULL) return E_NULL_POINTER;
+	if (sdcard == NULL || memory_addr == NULL || block_addr == NULL) return E_NULL_POINTER;
 
-	if(block_count == 0) return E_INVALID_VALUE;
+	if (block_count == 0) return E_INVALID_VALUE;
 
-	if(block_count > (DMA_DATA_COUNT_MAX / sdcard->CSD.bl_len)) return E_OUT_OF_RANGE;
-
-	uint64_t count = block_count * sdcard->CSD.bl_len;
-
-	//такого происходить не должно, но проверим
-	if(count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
+	if (sdcard->CSD.bl_len == 0) return E_INVALID_VALUE;
 
 	err_t err = E_NO_ERROR;
 
-	err = sdcard_dma_read_setup(sdcard, memory_addr, count);
+	err = sdcard_dma_read_setup(sdcard, memory_addr, (block_count * sdcard->CSD.bl_len));
 	if (err != E_NO_ERROR) return err;
 
 	err = sdcard_cmd_read(sdcard, block_count, block_addr);
@@ -833,6 +815,9 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 			timeout);
 
 	err = sdcard_dma_wait_tc(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//TODO: здесь нужна проверка остальных статусов SDIO в конце обмена
 
 	return err;
 }

@@ -140,16 +140,16 @@ err_t sdio_cmd_status() {
 }
 
 err_t sdio_data_status() {
-	uint32_t STA;
-	//TODO: нужен обработчик прерываний SDIO для обработки статусов, пока работает DMA
-	if(sdio_DATA_ACT()) {
-		STA = SDIO->STA;
-		/*Data NOT end (data counter, SDIDCOUNT, is NOT zero)*/
-		/*Data block sent/received (CRC check passed)*/
-		if((!(STA & SDIO_STA_DATAEND)) && (STA & SDIO_STA_DBCKEND)) {
-			SDIO->ICR = SDIO_ICR_DBCKENDC;
-		}
-		return E_NO_ERROR;
+	/*Received FIFO overrun error*/
+	if (SDIO->STA & SDIO_STA_RXOVERR) {
+		SDIO->ICR = SDIO_ICR_RXOVERRC;
+		return E_STATE;
+	}
+
+	/*Transmit FIFO underrun error*/
+	if (SDIO->STA & SDIO_STA_TXUNDERR) {
+		SDIO->ICR = SDIO_ICR_TXUNDERRC;
+		return E_STATE;
 	}
 
 	/*Data timeout*/
@@ -164,15 +164,13 @@ err_t sdio_data_status() {
 		return E_CRC;
 	}
 
-	/*Data end (data counter, SDIDCOUNT, is zero)*/
 	/*Data block sent/received (CRC check passed)*/
-	if ((SDIO->STA & SDIO_STA_DATAEND) && (SDIO->STA & SDIO_STA_DBCKEND)) {
-		SDIO->ICR = SDIO_ICR_DATAENDC;
+	if (SDIO->STA & SDIO_STA_DBCKEND) {
 		SDIO->ICR = SDIO_ICR_DBCKENDC;
 		return E_NO_ERROR;
 	}
 
-	return E_NOT_IMPLEMENTED;
+	return E_NO_ERROR;
 }
 
 void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp) {
