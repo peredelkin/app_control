@@ -81,8 +81,12 @@ void sdio_data(
 		uint32_t block_count,
 		uint32_t timeout) {
 
+	SDIO->DTIMER = timeout;
+
+	SDIO->DLEN = (1 << dblocksize) * block_count;
+
 	_sdio_data_reg_t dctrl;
-	dctrl.all = SDIO->DCTRL;
+	dctrl.all = SDIO->DCTRL & 0xfffUL;
 
 	dctrl.bit.dt_en = dten;
 	dctrl.bit.dt_dir = dtdir;
@@ -94,15 +98,11 @@ void sdio_data(
 	dctrl.bit.rw_mod = rwmod;
 	dctrl.bit.sdio_en = sdioen;
 
-	SDIO->DTIMER = timeout;
-
-	SDIO->DLEN = (1 << dblocksize) * block_count;
-
 	SDIO->DCTRL = dctrl.all;
 }
 
-uint32_t sdio_CMD_ACT() {
-	return (SDIO->STA & SDIO_STA_CMDACT);
+void sdio_data_reset() {
+	SDIO->DCTRL = 0;
 }
 
 uint32_t sdio_DATA_ACT() {
@@ -110,7 +110,7 @@ uint32_t sdio_DATA_ACT() {
 }
 
 err_t sdio_cmd_status() {
-	while(sdio_CMD_ACT());
+	while(SDIO->STA & SDIO_STA_CMDACT);
 
 	/*Command response timeout*/
 	if (SDIO->STA & SDIO_STA_CTIMEOUT) {
@@ -172,7 +172,13 @@ err_t sdio_data_status() {
 		return E_NO_ERROR;
 	}
 
-	return E_NO_ERROR;
+	/*Data end (data counter, SDIDCOUNT, is zero)*/
+	if (STA & SDIO_STA_DATAEND) {
+		SDIO->ICR = SDIO_ICR_DATAENDC;
+		return E_NO_ERROR;
+	}
+
+	return E_NOT_IMPLEMENTED;
 }
 
 void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp) {

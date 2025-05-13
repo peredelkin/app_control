@@ -175,7 +175,7 @@ int main(void)
 		sdcard.type = SDCARD_TYPE_UNKNOWN;
 
 		sdcard.CSD.tran_speed = 0.0f;
-		sdcard.CSD.bl_len = 0;
+		sdcard.CSD.bl_len_max = 0;
 		sdcard.CSD.bl_count = 0;
 		sdcard.CSD.capacity = 0;
 
@@ -278,13 +278,13 @@ int main(void)
 
 		printf("TRAN SPEED: %0.2f\n", sdcard.CSD.tran_speed);
 
-		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len, &sdcard.CSD.bl_len_power);
+		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len_max, &sdcard.CSD.bl_len_max_power);
 		if (sdio_err != E_NO_ERROR) {
 			printf("BLOCK LEN calc Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
-		printf("BLOCK LEN: %llu\n", sdcard.CSD.bl_len);
+		printf("BLOCK LEN: %llu\n", sdcard.CSD.bl_len_max);
 
 		sdio_err = sdcard_CSD_BLOCKNR_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_count);
 		if (sdio_err != E_NO_ERROR) {
@@ -349,7 +349,7 @@ int main(void)
 
 		printf("COMPLETE STATE: %d\n", sdcard.current_state);
 
-		for(int i = 1023; i > -1; i--) {
+		for(int i = 511; i > -1; i--) {
 			printf("DATA %d: %d\n", i, sdcard_data_array[i]);
 			sys_counter_delay(0, 10000); // 10ms
 		}

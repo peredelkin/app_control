@@ -235,6 +235,8 @@ extern void sdio_data(sdio_dten_t dten, sdio_dtdir_t dtdir, sdio_dtmode_t dtmode
 		sdio_dblocksize_t dblocksize, sdio_rwstart_t rwstart, sdio_rwstop_t rwstop, sdio_rwmod_t rwmod,
 		sdio_sdioen_t sdioen, uint32_t block_count, uint32_t timeout);
 
+extern void sdio_data_reset();
+
 extern err_t sdio_cmd_status();
 extern void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp);
 extern err_t sdio_data_status();
