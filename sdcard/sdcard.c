@@ -737,17 +737,17 @@ err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t 
 
 	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
 
-	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01/**/);	//4 beats
+	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
 	dma_stream_peripheral_data_size(&(sdcard->dma), 0b10);						//32-bit
 	dma_stream_peripheral_address(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));		//Source/Destination
 	dma_stream_peripheral_flow_controller(&(sdcard->dma), true);				//Peripheral as flow controller
 
-	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01/**/);		//4 beats
+	dma_stream_memory_burst_transfer_configuration(&(sdcard->dma), 0b01);		//4 beats
 	dma_stream_memory_data_size(&(sdcard->dma), 0b10);							//32-bit
 	dma_stream_memory_address(&(sdcard->dma), 0, (uint32_t) (memory_addr));		//Destination/Source
 	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
 
-	dma_stream_number_of_data(&(sdcard->dma), 0/*item_count*/);						//Count
+	dma_stream_number_of_data(&(sdcard->dma), 0/*item_count*/);					//Count
 
 	dma_stream_data_transfer_direction(&(sdcard->dma), dir);					//DIr
 
@@ -776,7 +776,7 @@ err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
 		}
 
 		err = sdio_data_status();
-		if (err != E_NO_ERROR && err != E_NOT_IMPLEMENTED) {
+		if ((err != E_NO_ERROR) && (err != E_NOT_IMPLEMENTED)) {
 			dma_stream_transfer_error_interrupt_clear(&sdcard->dma); //clear TE
 			dma_stream_enable(&(sdcard->dma), false); //disable Stream
 			return err;
@@ -794,8 +794,6 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 	if (sdcard == NULL || memory_addr == NULL || block_addr == NULL) return E_NULL_POINTER;
 
 	if (block_count == 0) return E_INVALID_VALUE;
-
-	if (sdcard->CSD.bl_len_max == 0) return E_INVALID_VALUE;
 
 	err_t err = E_NO_ERROR;
 
@@ -819,11 +817,11 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 			timeout);
 
 	err = sdcard_dma_wait_tc(sdcard);
-	if (err != E_NO_ERROR && err != E_NOT_IMPLEMENTED) return err;
-
-	do {
-		err = sdio_data_status();
-	} while (err == E_NOT_IMPLEMENTED);
+	if (err == E_NOT_IMPLEMENTED) {
+		do {
+			err = sdio_data_status();
+		} while (err == E_NOT_IMPLEMENTED);
+	}
 
 	sdio_data_reset();
 

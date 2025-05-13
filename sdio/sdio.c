@@ -166,15 +166,16 @@ err_t sdio_data_status() {
 		return E_CRC;
 	}
 
-	/*Data block sent/received (CRC check passed)*/
-	if (STA & SDIO_STA_DBCKEND) {
+	/*Data end (data counter, SDIDCOUNT, is zero)*/
+	if ((STA & SDIO_STA_DATAEND) && (STA & SDIO_STA_DBCKEND)) {
+		SDIO->ICR = SDIO_ICR_DATAENDC;
 		SDIO->ICR = SDIO_ICR_DBCKENDC;
 		return E_NO_ERROR;
 	}
 
-	/*Data end (data counter, SDIDCOUNT, is zero)*/
-	if (STA & SDIO_STA_DATAEND) {
-		SDIO->ICR = SDIO_ICR_DATAENDC;
+	/*Data block sent/received (CRC check passed)*/
+	if (STA & SDIO_STA_DBCKEND) {
+		SDIO->ICR = SDIO_ICR_DBCKENDC;
 		return E_NO_ERROR;
 	}
 
