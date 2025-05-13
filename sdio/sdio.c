@@ -140,32 +140,34 @@ err_t sdio_cmd_status() {
 }
 
 err_t sdio_data_status() {
+	uint32_t STA = SDIO->STA;
+
 	/*Received FIFO overrun error*/
-	if (SDIO->STA & SDIO_STA_RXOVERR) {
+	if (STA & SDIO_STA_RXOVERR) {
 		SDIO->ICR = SDIO_ICR_RXOVERRC;
 		return E_STATE;
 	}
 
 	/*Transmit FIFO underrun error*/
-	if (SDIO->STA & SDIO_STA_TXUNDERR) {
+	if (STA & SDIO_STA_TXUNDERR) {
 		SDIO->ICR = SDIO_ICR_TXUNDERRC;
 		return E_STATE;
 	}
 
 	/*Data timeout*/
-	if (SDIO->STA & SDIO_STA_DTIMEOUT) {
+	if (STA & SDIO_STA_DTIMEOUT) {
 		SDIO->ICR = SDIO_ICR_DTIMEOUTC;
 		return E_TIME_OUT;
 	}
 
 	/*Data block sent/received (CRC check failed)*/
-	if (SDIO->STA & SDIO_STA_DCRCFAIL) {
+	if (STA & SDIO_STA_DCRCFAIL) {
 		SDIO->ICR = SDIO_ICR_DCRCFAILC;
 		return E_CRC;
 	}
 
 	/*Data block sent/received (CRC check passed)*/
-	if (SDIO->STA & SDIO_STA_DBCKEND) {
+	if (STA & SDIO_STA_DBCKEND) {
 		SDIO->ICR = SDIO_ICR_DBCKENDC;
 		return E_NO_ERROR;
 	}

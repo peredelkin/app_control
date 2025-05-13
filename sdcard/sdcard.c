@@ -776,7 +776,11 @@ err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
 		}
 
 		err = sdio_data_status();
-		if (err != E_NO_ERROR) return err;
+		if (err != E_NO_ERROR) {
+			dma_stream_transfer_error_interrupt_clear(&sdcard->dma); //clear TE
+			dma_stream_enable(&(sdcard->dma), false); //disable Stream
+			return err;
+		}
 	}
 
 	dma_stream_transfer_complete_interrupt_clear(&(sdcard->dma)); //clear TC
@@ -816,6 +820,21 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 
 	err = sdcard_dma_wait_tc(sdcard);
 	if (err != E_NO_ERROR) return err;
+
+	err = sdio_data_status();
+
+	sdio_data(
+			SDIO_DTEN_DIS,
+			SDIO_DTDIR_FROM_CARD,
+			SDIO_DTMODE_BLOCK,
+			SDIO_DMAEN_ENA,
+			sdcard->CSD.bl_len_power,
+			SDIO_RWSTART_DIS,
+			SDIO_RWSTOP_DIS,
+			SDIO_RWMOD_D2,
+			SDIO_SDIOEN_ENA,
+			block_count,
+			timeout);
 
 	//TODO: здесь нужна проверка остальных статусов SDIO в конце обмена
 
