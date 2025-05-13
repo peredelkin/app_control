@@ -721,7 +721,7 @@ err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32
 }
 
 //dma
-err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t count, uint8_t dir) {
+err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint8_t dir) {
 	if(sdcard == NULL) return E_NULL_POINTER;
 
 	if(sdcard->dma.dma == NULL || sdcard->dma.stream == NULL) return E_NULL_POINTER;
@@ -729,11 +729,6 @@ err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t 
 	if (!dma_stream_ready(&(sdcard->dma))) return E_BUSY;
 
 	dma_stream_deinit(&(sdcard->dma));
-
-	//stream conf
-	uint32_t item_count = count / 4;
-
-	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
 
 	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
 
@@ -756,12 +751,12 @@ err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t 
 	return E_NO_ERROR;
 }
 
-err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t count) {
-	return sdcard_dma_common_setup(sdcard, memory_addr, count, 0b00);		//Peripheral-to-memory
+err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t* memory_addr) {
+	return sdcard_dma_common_setup(sdcard, memory_addr, 0b00);		//Peripheral-to-memory
 }
 
-err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t count) {
-	return sdcard_dma_common_setup(sdcard, memory_addr, count, 0b01);		//Memory-to-peripheral
+err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t* memory_addr) {
+	return sdcard_dma_common_setup(sdcard, memory_addr, 0b01);		//Memory-to-peripheral
 }
 
 err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
@@ -795,9 +790,14 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 
 	if (block_count == 0) return E_INVALID_VALUE;
 
+	//stream conf
+	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блка
+
+	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
+
 	err_t err = E_NO_ERROR;
 
-	err = sdcard_dma_read_setup(sdcard, memory_addr, (block_count * 512)); //TODO: сделать настройку размера блка
+	err = sdcard_dma_read_setup(sdcard, memory_addr);
 	if (err != E_NO_ERROR) return err;
 
 	err = sdcard_cmd_read(sdcard, block_count, block_addr);
