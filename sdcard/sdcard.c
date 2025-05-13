@@ -772,7 +772,6 @@ err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
 
 		err = sdio_data_status();
 		if ((err != E_NO_ERROR) && (err != E_NOT_IMPLEMENTED)) {
-			dma_stream_transfer_error_interrupt_clear(&sdcard->dma); //clear TE
 			dma_stream_enable(&(sdcard->dma), false); //disable Stream
 			return err;
 		}
