@@ -36,7 +36,7 @@ void sdio_clock_control(
 	SDIO->CLKCR = clkcr.all;
 }
 
-void sdio_command(
+void sdio_cpsm_set(
 		uint32_t argument,
 		int cmd_index,
 		sdio_respwait_t respwait,
@@ -68,7 +68,7 @@ void sdio_command(
 	SDIO->CMD = cmd.all;
 }
 
-void sdio_data(
+void sdio_dpsm_set(
 		sdio_dten_t dten,
 		sdio_dtdir_t dtdir,
 		sdio_dtmode_t dtmode,
@@ -101,8 +101,12 @@ void sdio_data(
 	SDIO->DCTRL = dctrl.all;
 }
 
-void sdio_data_reset() {
+void sdio_dpsm_reset() {
 	SDIO->DCTRL = 0;
+
+	SDIO->DTIMER = 0;
+
+	SDIO->DLEN = 0;
 }
 
 uint32_t sdio_DATA_ACT() {
@@ -115,13 +119,13 @@ err_t sdio_cmd_status() {
 	/*Command response timeout*/
 	if (SDIO->STA & SDIO_STA_CTIMEOUT) {
 		SDIO->ICR = SDIO_ICR_CTIMEOUTC;
-		return E_TIME_OUT;
+		return E_SDIO_CMD_TIMEOUT;
 	}
 
 	/*Command response received (CRC check failed)*/
 	if (SDIO->STA & SDIO_STA_CCRCFAIL) {
 		SDIO->ICR = SDIO_ICR_CCRCFAILC;
-		return E_CRC;
+		return E_SDIO_CMD_CRCFAIL;
 	}
 
 	/*Command response received (CRC check passed)*/
@@ -145,25 +149,25 @@ err_t sdio_data_status() {
 	/*Received FIFO overrun error*/
 	if (STA & SDIO_STA_RXOVERR) {
 		SDIO->ICR = SDIO_ICR_RXOVERRC;
-		return E_STATE;
+		return E_SDIO_DATA_RX_OVERRUN;
 	}
 
 	/*Transmit FIFO underrun error*/
 	if (STA & SDIO_STA_TXUNDERR) {
 		SDIO->ICR = SDIO_ICR_TXUNDERRC;
-		return E_STATE;
+		return E_SDIO_DATA_TX_UNDERRUN;
 	}
 
 	/*Data timeout*/
 	if (STA & SDIO_STA_DTIMEOUT) {
 		SDIO->ICR = SDIO_ICR_DTIMEOUTC;
-		return E_TIME_OUT;
+		return E_SDIO_DATA_TIMEOUT;
 	}
 
 	/*Data block sent/received (CRC check failed)*/
 	if (STA & SDIO_STA_DCRCFAIL) {
 		SDIO->ICR = SDIO_ICR_DCRCFAILC;
-		return E_CRC;
+		return E_SDIO_DATA_CRCFAIL;
 	}
 
 	/*Data end (data counter, SDIDCOUNT, is zero)*/

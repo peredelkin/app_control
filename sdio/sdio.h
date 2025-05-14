@@ -13,6 +13,29 @@
 #include "lib/errors/errors.h"
 #include "sdcard/sdcard_response.h"
 
+/*
+ * Ошибки
+ */
+//! Ошибка CPSM
+#define E_SDIO_CMD (E_USER)
+//! Command response received (CRC check failed)
+#define E_SDIO_CMD_CRCFAIL (E_SDIO_CMD + 0)
+//! Command response timeout
+#define E_SDIO_CMD_TIMEOUT (E_SDIO_CMD + 1)
+
+//! Ошибки DPSM
+#define E_SDIO_DATA (E_SDIO_CMD + 2)
+//! Data block sent/received (CRC check failed)
+#define E_SDIO_DATA_CRCFAIL (E_SDIO_DATA + 0)
+//! Data timeout
+#define E_SDIO_DATA_TIMEOUT (E_SDIO_DATA + 1)
+//! Transmit FIFO underrun error
+#define E_SDIO_DATA_TX_UNDERRUN (E_SDIO_DATA + 2)
+//! Received FIFO overrun error
+#define E_SDIO_DATA_RX_OVERRUN (E_SDIO_DATA + 3)
+//! Start bit not detected on all data signals in wide bus mode
+#define E_SDIO_DATA_STARTBIT (E_SDIO_DATA + 4)
+
 #define SDIO_ACCESS_WIDTH 4
 
 typedef enum {
@@ -227,15 +250,15 @@ typedef enum {
 
 extern void sdio_power_control(sdio_pwrctrl_t pwrctrl);
 extern void sdio_clock_control(uint8_t clkdiv, sdio_clken_t clken, sdio_pwrsav_t pwrsav, sdio_bypass_t bypass);
-extern void sdio_command(uint32_t argument, int cmd_index, sdio_respwait_t respwait, sdio_resptype_t resptype,
+extern void sdio_cpsm_set(uint32_t argument, int cmd_index, sdio_respwait_t respwait, sdio_resptype_t resptype,
 		sdio_intwait_t intwait, sdio_pendwait_t pendwait, sdio_cpsmen_t cpsmen, sdio_suspend_t suspend,
 		sdio_cmdcompl_t cmdcompl, sdio_nien_t nien, sdio_atacmd_t atacmd);
 
-extern void sdio_data(sdio_dten_t dten, sdio_dtdir_t dtdir, sdio_dtmode_t dtmode, sdio_dmaen_t dmaen,
+extern void sdio_dpsm_set(sdio_dten_t dten, sdio_dtdir_t dtdir, sdio_dtmode_t dtmode, sdio_dmaen_t dmaen,
 		sdio_dblocksize_t dblocksize, sdio_rwstart_t rwstart, sdio_rwstop_t rwstop, sdio_rwmod_t rwmod,
 		sdio_sdioen_t sdioen, uint32_t block_count, uint32_t timeout);
 
-extern void sdio_data_reset();
+extern void sdio_dpsm_reset();
 
 extern err_t sdio_cmd_status();
 extern void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp);

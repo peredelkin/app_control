@@ -232,7 +232,7 @@ int main(void)
 		}
 
 		//определние типа карты по ответу ACMD41
-		sdcard_type_set(&sdcard);
+		sdcard_type_define(&sdcard);
 
 		printf("Card Type: %d\n", sdcard.type);
 

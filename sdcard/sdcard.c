@@ -46,13 +46,13 @@ static void sdcard_resp_setup(sdcard_t* sdcard) {
 
 static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 
-	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
+	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_CMD_STATE_MISMATCH;
 
 	sdcard->cmd = (sdcard_cmd_t*) cmd;
 
 	sdcard_resp_setup(sdcard);
 
-	sdio_command(
+	sdio_cpsm_set(
 			argument,
 			sdcard->cmd->index,
 			sdcard->resp_wait,
@@ -70,13 +70,13 @@ static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t
 
 static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
 
-	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
+	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_CMD_STATE_MISMATCH;
 
 	sdcard->cmd = (sdcard_cmd_t*) cmd;
 
 	sdcard_resp_setup(sdcard);
 
-	sdio_command(
+	sdio_cpsm_set(
 			argument,
 			sdcard->cmd->index,
 			sdcard->resp_wait,
@@ -97,35 +97,33 @@ static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32
 //TODO: проверить, все ли ответы, где используется функция, имеют корректный индекс
 static err_t sdcard_response_index_compare(sdcard_t* sdcard, uint32_t cmd) {
 	if(sdcard->cmd->index == cmd) return E_NO_ERROR;
-	return E_INVALID_VALUE;
+	return E_SDCARD_RESPONSE_INDEX_MISMATCH;
 }
 
 static err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
 
-	err_t err = sdio_cmd_status();
+	sdcard->cmd_err = sdio_cmd_status();
 	//есть ошибка
-	if(err != E_NO_ERROR) {
+	if(sdcard->cmd_err != E_NO_ERROR) {
 		//ошибка CRC
-		if(err == E_CRC) {
+		if(sdcard->cmd_err == E_SDIO_CMD_CRCFAIL) {
 			//CRC должен быть в ответе
-			if (sdcard->resp_crc == SDIO_RESP_CRC_INCLUDED) return err;
+			if (sdcard->resp_crc == SDIO_RESP_CRC_INCLUDED) return sdcard->cmd_err;
 		} else {
 			//другая ошибка
-			return err;
+			return sdcard->cmd_err;
 		}
 	}
 
 	if(sdcard->resp_wait == SDIO_RESP_WAIT_DIS) return E_NO_ERROR;
 
-	uint32_t cmd;
-	uint32_t resp[4];
+	uint32_t resp_cmd;
+	uint32_t resp_data[4];
 
-	sdio_response_read(sdcard->resp_long, &cmd, resp);
+	sdio_response_read(sdcard->resp_long, &resp_cmd, resp_data);
 
-	cmd = cmd & SDIO_COMMAND_INDEX_MASK; //отбрасываем мусор
-
-	if(sdcard)
+	resp_cmd = resp_cmd & SDIO_COMMAND_INDEX_MASK; //отбрасываем мусор
 
 	switch (sdcard->cmd->response_type) {
 
@@ -134,47 +132,42 @@ static err_t sdcard_response_rcv(sdcard_t* sdcard) {
 		//no break
 
 	case SDCARD_RESPONSE_R1:
-		if (sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
-		sdcard->response.r1.all = resp[0];
-		return E_NO_ERROR;
+		sdcard->response.r1.all = resp_data[0];
+		return sdcard_response_index_compare(sdcard, resp_cmd);
 
 	case SDCARD_RESPONSE_R2:
-		if(cmd != SDIO_COMMAND_INDEX_MASK) return E_INVALID_VALUE;
-		sdcard->response.r2.all[0] = resp[3];
-		sdcard->response.r2.all[1] = resp[2];
-		sdcard->response.r2.all[2] = resp[1];
-		sdcard->response.r2.all[3] = resp[0];
+		sdcard->response.r2.all[0] = resp_data[3];
+		sdcard->response.r2.all[1] = resp_data[2];
+		sdcard->response.r2.all[2] = resp_data[1];
+		sdcard->response.r2.all[3] = resp_data[0];
+		if(resp_cmd != SDIO_COMMAND_INDEX_MASK) return E_SDCARD_RESPONSE_INDEX_MISMATCH;
 		return E_NO_ERROR;
 
 	case SDCARD_RESPONSE_R3:
-		if(cmd != SDIO_COMMAND_INDEX_MASK) return E_INVALID_VALUE;
-		sdcard->response.r3.all = resp[0];
+		sdcard->response.r3.all = resp_data[0];
+		if(resp_cmd != SDIO_COMMAND_INDEX_MASK) return E_SDCARD_RESPONSE_INDEX_MISMATCH;
 		return E_NO_ERROR;
 
 	case SDCARD_RESPONSE_R4:
-		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
-		sdcard->response.r4.all = resp[0];
-		return E_NO_ERROR;
+		sdcard->response.r4.all = resp_data[0];
+		return sdcard_response_index_compare(sdcard, resp_cmd);
 
 	case SDCARD_RESPONSE_R4b:
-		sdcard->response.r4b.all = resp[0];
+		sdcard->response.r4b.all = resp_data[0];
 		//TODO: сюда нужна функция проверки состояния I/O с таймаутом. или не сюда.
 		return E_NOT_IMPLEMENTED;
 
 	case SDCARD_RESPONSE_R5:
-		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
-		sdcard->response.r5.all = resp[0];
-		return E_NO_ERROR;
+		sdcard->response.r5.all = resp_data[0];
+		return sdcard_response_index_compare(sdcard, resp_cmd);
 
 	case SDCARD_RESPONSE_R6:
-		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
-		sdcard->response.r6.all = resp[0];
-		return E_NO_ERROR;
+		sdcard->response.r6.all = resp_data[0];
+		return sdcard_response_index_compare(sdcard, resp_cmd);
 
 	case SDCARD_RESPONSE_R7:
-		if(sdcard_response_index_compare(sdcard, cmd) != E_NO_ERROR) return E_INVALID_VALUE;
-		sdcard->response.r7.all = resp[0];
-		return E_NO_ERROR;
+		sdcard->response.r7.all = resp_data[0];
+		return sdcard_response_index_compare(sdcard, resp_cmd);
 
 	default:
 		break;
@@ -231,11 +224,11 @@ err_t sdcard_change_current_state(sdcard_t* sdcard) {
 		//no break
 
 	case SDCARD_RESPONSE_R1:
-		if (sdcard->current_state != sdcard->response.r1.bit.CURRENT_STATE) return E_INVALID_VALUE;
+		if (sdcard->current_state != sdcard->response.r1.bit.CURRENT_STATE) return E_SDCARD_RESPONSE_STATE_MISMATCH;
 		break;
 
 	case SDCARD_RESPONSE_R6:
-		if (sdcard->current_state != sdcard->response.r6.bit.CURRENT_STATE) return E_INVALID_VALUE;
+		if (sdcard->current_state != sdcard->response.r6.bit.CURRENT_STATE) return E_SDCARD_RESPONSE_STATE_MISMATCH;
 		break;
 
 	default:
@@ -243,7 +236,7 @@ err_t sdcard_change_current_state(sdcard_t* sdcard) {
 	}
 
 	//такой ситуации не должно возникать, если команда была принята
-	if (sdcard->cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
+	if (sdcard->cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_RESPONSE_STATE_MISMATCH;
 
 	//изменить текущее состояние через состояние команды
 	sdcard->current_state = sdcard->cmd->state[sdcard->current_state];
@@ -268,7 +261,7 @@ err_t sdcard_operation_complete_state(sdcard_t* sdcard) {
 	};
 
 	//проверка возможности изменения состояния
-	if (state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
+	if (state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_CMD_STATE_MISMATCH;
 
 	//изменить текущее состояние через завершение операции
 	sdcard->current_state = state[sdcard->current_state];
@@ -279,42 +272,38 @@ err_t sdcard_operation_complete_state(sdcard_t* sdcard) {
 err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
-	err_t err = E_NO_ERROR;
+	sdcard->cmd_err = sdcard_cmd_send(sdcard, cmd, argument);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	err = sdcard_cmd_send(sdcard, cmd, argument);
-	if(err != E_NO_ERROR) return err;
+	sdcard->cmd_err = sdcard_response_rcv(sdcard);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	err = sdcard_response_rcv(sdcard);
-	if(err != E_NO_ERROR) return err;
+	sdcard->resp_err = sdcard_status_error_check(sdcard);
+	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
 
-	err = sdcard_status_error_check(sdcard);
-	if(err != E_NO_ERROR) return err;
+	sdcard->cmd_err = sdcard_change_current_state(sdcard);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	err = sdcard_change_current_state(sdcard);
-	if(err != E_NO_ERROR) return err;
-
-	return err;
+	return E_NO_ERROR;
 }
 
 
 err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
-	err_t err = E_NO_ERROR;
-
-	err = sdcard_cmd(sdcard, &sdcard_CMD55, 0);
-	if(err != E_NO_ERROR) return err;
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD55, 0);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	if (sdcard->response.r1.bit.APP_CMD == 0) return E_INVALID_OPERATION;
 
-	err = sdcard_acmd_send(sdcard, cmd, argument);
-	if(err != E_NO_ERROR) return err;
+	sdcard->cmd_err = sdcard_acmd_send(sdcard, cmd, argument);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	err = sdcard_response_rcv(sdcard);
-	if(err != E_NO_ERROR) return err;
+	sdcard->cmd_err = sdcard_response_rcv(sdcard);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	err = sdcard_status_error_check(sdcard);
-	if(err != E_NO_ERROR) return err;
+	sdcard->resp_err = sdcard_status_error_check(sdcard);
+	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
 
 	/*
 	 * Менять состояние после выполнения
@@ -322,11 +311,11 @@ err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument)
 	 * из-за условия смены состояния ACMD41
 	 */
 
-	return err;
+	return E_NO_ERROR;
 }
 
 //установка типа карты по ответу ACMD41
-void sdcard_type_set(sdcard_t* sdcard) {
+void sdcard_type_define(sdcard_t* sdcard) {
 	if(sdcard->response.r3.bit.CARD_CAPACITY_STATUS) {
 		//10b
 		sdcard->type = SDCARD_TYPE_HC_XC;
@@ -609,81 +598,75 @@ void sdcard_CID_fill(sdcard_t* sdcard) {
 err_t sdcard_cmd_read(sdcard_t* sdcard, uint32_t count, uint32_t* addr) {
 	if(sdcard == NULL || addr == NULL) return E_NULL_POINTER;
 
-	err_t err = E_NO_ERROR;
-
 	if(count > 1) {
-		err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
-		if (err != E_NO_ERROR) return err;
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
 	if(sdcard->type == SDCARD_TYPE_UC) {
-		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & addr[1]));	//[5:0] extended address
-		if (err != E_NO_ERROR) return err;
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & addr[1]));	//[5:0] extended address
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
 	if(count == 1) {
 		//Single Block Read
-		err = sdcard_cmd(sdcard, &sdcard_CMD17, addr[0]);
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD17, addr[0]);
 	} else {
 		//Multi-Block Read
-		err = sdcard_cmd(sdcard, &sdcard_CMD18, addr[0]);
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD18, addr[0]);
 	}
 
-	return err;
+	return sdcard->cmd_err;
 }
 
 err_t sdcard_cmd_write(sdcard_t* sdcard, uint32_t count, uint32_t* addr) {
 	if(sdcard == NULL || addr == NULL) return E_NULL_POINTER;
 
-	err_t err = E_NO_ERROR;
-
 	if(count > 1) {
-		err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
-		if (err != E_NO_ERROR) return err;
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
 	if(sdcard->type == SDCARD_TYPE_UC) {
-		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & addr[1]));	//[5:0] extended address
-		if (err != E_NO_ERROR) return err;
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & addr[1]));	//[5:0] extended address
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
 	if(count == 1) {
 		//Single Block Write
-		err = sdcard_cmd(sdcard, &sdcard_CMD24, addr[0]);
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD24, addr[0]);
 	} else {
 		//Multi-Block Write
-		err = sdcard_cmd(sdcard, &sdcard_CMD25, addr[0]);
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD25, addr[0]);
 	}
 
-	return err;
+	return sdcard->cmd_err;
 }
 
 err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32_t func) {
 	if(sdcard == NULL || first == NULL || last == NULL) return E_NULL_POINTER;
 
-	err_t err = E_NO_ERROR;
-
 	//first
 	if (sdcard->type == SDCARD_TYPE_UC) {
-		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & first[1]));	//[5:0] extended address
-		if (err != E_NO_ERROR) return err;
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & first[1]));	//[5:0] extended address
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
-	err = sdcard_cmd(sdcard, &sdcard_CMD32, first[0]);
-	if(err != E_NO_ERROR) return err;
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD32, first[0]);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	//last
 	if (sdcard->type == SDCARD_TYPE_UC) {
-		err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & last[1]));	//[5:0] extended address
-		if(err != E_NO_ERROR) return err;
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & last[1]));	//[5:0] extended address
+		if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
-	err = sdcard_cmd(sdcard, &sdcard_CMD33, last[0]);
-	if(err != E_NO_ERROR) return err;
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD33, last[0]);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	//erase
-	err = sdcard_cmd(sdcard, &sdcard_CMD38, func);
-	return err;
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD38, func);
+	return sdcard->cmd_err;
 }
 
 //dma
@@ -726,8 +709,6 @@ err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t* memory_addr) {
 }
 
 err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
-	err_t err = E_NO_ERROR;
-
 	while (!dma_stream_transfer_complete_interrupt_read(&sdcard->dma)) { //wait TC
 
 		if (dma_stream_transfer_error_interrupt_read(&sdcard->dma)) { //if TE
@@ -736,17 +717,17 @@ err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
 			return E_STATE;
 		}
 
-		err = sdio_data_status();
-		if ((err != E_NO_ERROR) && (err != E_NOT_IMPLEMENTED)) {
+		sdcard->data_err = sdio_data_status();
+		if ((sdcard->data_err != E_NO_ERROR) && (sdcard->data_err != E_NOT_IMPLEMENTED)) {
 			dma_stream_enable(&(sdcard->dma), false); //disable Stream
-			return err;
+			return sdcard->data_err;
 		}
 	}
 
 	dma_stream_transfer_complete_interrupt_clear(&(sdcard->dma)); //clear TC
 	dma_stream_enable(&(sdcard->dma), false); //disable Stream
 
-	return err;
+	return sdcard->data_err;
 }
 
 //data path
@@ -767,14 +748,14 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 	if (err != E_NO_ERROR) return err;
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
-		err = sdcard_cmd_read(sdcard, 0, block_addr);
+		sdcard->cmd_err = sdcard_cmd_read(sdcard, 0, block_addr);
 	} else {
-		err = sdcard_cmd_read(sdcard, block_count, block_addr);
+		sdcard->cmd_err = sdcard_cmd_read(sdcard, block_count, block_addr);
 	}
 
-	if (err != E_NO_ERROR) return err;
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	sdio_data(
+	sdio_dpsm_set(
 			SDIO_DTEN_ENA,
 			SDIO_DTDIR_FROM_CARD,
 			SDIO_DTMODE_BLOCK,
@@ -787,22 +768,24 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 			block_count,
 			timeout);
 
-	err = sdcard_dma_wait_tc(sdcard);
-	if (err == E_NOT_IMPLEMENTED) {
+	sdcard->data_err = sdcard_dma_wait_tc(sdcard);
+	if (sdcard->data_err == E_NOT_IMPLEMENTED) {
 		do {
-			err = sdio_data_status();
-		} while (err == E_NOT_IMPLEMENTED);
+			sdcard->data_err = sdio_data_status();
+		} while (sdcard->data_err == E_NOT_IMPLEMENTED);
 	}
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
-		err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
 	} else {
-		err = sdcard_operation_complete_state(sdcard);
+		sdcard->cmd_err = sdcard_operation_complete_state(sdcard);
 	}
 
-	sdio_data_reset();
+	sdio_dpsm_reset();
 
-	return err;
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	return E_NO_ERROR;
 }
 
 err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr) {
