@@ -43,6 +43,26 @@ static void sdcard_resp_setup(sdcard_t* sdcard) {
 	}
 }
 
+static err_t sdcard_cmd_status(sdcard_t* sdcard) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	sdcard->cmd_err = sdio_cmd_status();
+	//есть ошибка
+	if (sdcard->cmd_err != E_NO_ERROR) {
+		//ошибка CRC
+		if (sdcard->cmd_err == E_SDIO_CMD_CRCFAIL) {
+			//CRC должен быть в ответе
+			if (sdcard->resp_crc == SDIO_RESP_CRC_INCLUDED)
+				return sdcard->cmd_err;
+		} else {
+			//другая ошибка
+			return sdcard->cmd_err;
+		}
+	}
+
+	return E_NO_ERROR;
+}
+
 
 static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 
@@ -65,7 +85,7 @@ static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t
 			SDIO_nIEN_DIS,
 			SDIO_ATACMD_DIS);
 
-	return E_NO_ERROR;
+	return sdcard_cmd_status(sdcard);
 }
 
 static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
@@ -89,7 +109,7 @@ static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32
 			SDIO_nIEN_DIS,
 			SDIO_ATACMD_DIS);
 
-	return E_NO_ERROR;
+	return sdcard_cmd_status(sdcard);
 }
 
 #define SDIO_COMMAND_INDEX_MASK 0b111111
@@ -102,19 +122,6 @@ static err_t sdcard_response_index_compare(sdcard_t* sdcard, uint32_t cmd) {
 
 static err_t sdcard_response_rcv(sdcard_t* sdcard) {
 	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
-
-	sdcard->cmd_err = sdio_cmd_status();
-	//есть ошибка
-	if(sdcard->cmd_err != E_NO_ERROR) {
-		//ошибка CRC
-		if(sdcard->cmd_err == E_SDIO_CMD_CRCFAIL) {
-			//CRC должен быть в ответе
-			if (sdcard->resp_crc == SDIO_RESP_CRC_INCLUDED) return sdcard->cmd_err;
-		} else {
-			//другая ошибка
-			return sdcard->cmd_err;
-		}
-	}
 
 	if(sdcard->resp_wait == SDIO_RESP_WAIT_DIS) return E_NO_ERROR;
 
@@ -275,8 +282,8 @@ err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 	sdcard->cmd_err = sdcard_cmd_send(sdcard, cmd, argument);
 	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	sdcard->cmd_err = sdcard_response_rcv(sdcard);
-	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+	sdcard->resp_err = sdcard_response_rcv(sdcard);
+	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
 
 	sdcard->resp_err = sdcard_status_error_check(sdcard);
 	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
@@ -299,8 +306,8 @@ err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument)
 	sdcard->cmd_err = sdcard_acmd_send(sdcard, cmd, argument);
 	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	sdcard->cmd_err = sdcard_response_rcv(sdcard);
-	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+	sdcard->resp_err = sdcard_response_rcv(sdcard);
+	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
 
 	sdcard->resp_err = sdcard_status_error_check(sdcard);
 	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
