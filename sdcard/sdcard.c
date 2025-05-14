@@ -784,6 +784,7 @@ err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
 }
 
 //data path
+//TODO: нужно как то разделить ошибки, чтобы не затирать ошибку SDIO шибкой SD card
 err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr, uint32_t block_count, uint32_t timeout) {
 	if (sdcard == NULL || memory_addr == NULL || block_addr == NULL) return E_NULL_POINTER;
 
@@ -799,7 +800,12 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 	err = sdcard_dma_read_setup(sdcard, memory_addr);
 	if (err != E_NO_ERROR) return err;
 
-	err = sdcard_cmd_read(sdcard, block_count, block_addr);
+	if(sdcard->type == SDCARD_TYPE_SC) {
+		err = sdcard_cmd_read(sdcard, 0, block_addr);
+	} else {
+		err = sdcard_cmd_read(sdcard, block_count, block_addr);
+	}
+
 	if (err != E_NO_ERROR) return err;
 
 	sdio_data(
@@ -820,6 +826,12 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 		do {
 			err = sdio_data_status();
 		} while (err == E_NOT_IMPLEMENTED);
+	}
+
+	if(sdcard->type == SDCARD_TYPE_SC) {
+		err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
+	} else {
+		err = sdcard_operation_complete_state(sdcard);
 	}
 
 	sdio_data_reset();

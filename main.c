@@ -75,7 +75,7 @@ void CAN_TIM_IRQHANDLER(void) {
 //volatile int test_extsram;
 
 sdcard_t sdcard; //TODO: не забыть убрать
-uint8_t sdcard_data_array[1024];
+uint8_t sdcard_data_array[4096];
 
 void dma_rcc_init() {
 	//DMA
@@ -332,7 +332,7 @@ int main(void)
 		block_addr[1] = 0;
 		block_addr[0] = 0;
 
-		sdio_err = sdcard_read(&sdcard, ((uint32_t*)sdcard_data_array), block_addr, 1, 0xFFFFF);
+		sdio_err = sdcard_read(&sdcard, ((uint32_t*)sdcard_data_array), block_addr, 8, 0xFFFFFF);
 		if (sdio_err != E_NO_ERROR) {
 			printf("READ Err: %d\n", sdio_err);
 			goto exit_sdcard_init;
@@ -340,17 +340,24 @@ int main(void)
 
 		printf("READ STATE: %d\n", sdcard.current_state);
 
-		//OP Complete
-		sdio_err = sdcard_operation_complete_state(&sdcard);
-		if (sdio_err != E_NO_ERROR) {
-			printf("READ Err: %d\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("COMPLETE STATE: %d\n", sdcard.current_state);
-
-		for(int i = 511; i > -1; i--) {
-			printf("DATA %d: %d\n", i, sdcard_data_array[i]);
+		for(int i = 0; i < (4096 - 16); i += 16) {
+			printf("%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+					sdcard_data_array[i],
+					sdcard_data_array[i + 1],
+					sdcard_data_array[i + 2],
+					sdcard_data_array[i + 3],
+					sdcard_data_array[i + 4],
+					sdcard_data_array[i + 5],
+					sdcard_data_array[i + 6],
+					sdcard_data_array[i + 7],
+					sdcard_data_array[i + 8],
+					sdcard_data_array[i + 9],
+					sdcard_data_array[i + 10],
+					sdcard_data_array[i + 11],
+					sdcard_data_array[i + 12],
+					sdcard_data_array[i + 13],
+					sdcard_data_array[i + 14],
+					sdcard_data_array[i + 15]);
 			sys_counter_delay(0, 10000); // 10ms
 		}
 
