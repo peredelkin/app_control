@@ -783,6 +783,7 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint32_t* block_addr,
 
 	sdio_dpsm_reset();
 
+	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	return E_NO_ERROR;
