@@ -40,59 +40,85 @@
 
 
 /*
- * Ошибки SD-карты.
+ * Ошибки
  */
-//! Начальный код ошибки SD-карты.
-#define E_SDCARD (E_USER + 10)
-//! Неподдерживаемая карта.
-#define E_SDCARD_INVALID (E_SDCARD + 0)
-//! Принят некорректный токен данных.
-#define E_SDCARD_INVALID_TOKEN (E_SDCARD + 1)
-//! Ошибка записи данных картой.
-#define E_SDCARD_WRITE_ERROR (E_SDCARD + 2)
-//! Ошибки в статусе карты.
-#define E_SDCARD_STATUS (E_SDCARD + 3)
-//! Карта заблокирована.
-#define E_SDCARD_CARD_IS_LOCKED (E_SDCARD_STATUS + 0)
-//! Ошибка последовательности блокировки/разблокировки.
-#define E_SDCARD_LOCK_UNLOCK_CMD_FAILED (E_SDCARD_STATUS + 1)
-//! Стирание защищённого от записи блока.
-#define E_SDCARD_WP_ERASE_SKIP (E_SDCARD_STATUS + 1)
-//! Общая или неизвестная ошибка.
-#define E_SDCARD_ERROR (E_SDCARD_STATUS + 2)
-//! Ошибка контроллера карты.
-#define E_SDCARD_CC_ERROR (E_SDCARD_STATUS + 3)
-//! Ошибка ECC.
-#define E_SDCARD_CARD_ECC_FAILED (E_SDCARD_STATUS + 4)
-//! Запись в защищённый от записи блок.
-#define E_SDCARD_WP_VIOLATION (E_SDCARD_STATUS + 5)
-//! Параметр стирания.
-#define E_SDCARD_ERASE_PARAM (E_SDCARD_STATUS + 6)
-//! Передапись CSD.
-#define E_SDCARD_CSD_OVERWRITE (E_SDCARD_STATUS + 7)
-//! Выход за пределы.
-#define E_SDCARD_OUT_OF_RANGE (E_SDCARD_STATUS + 7)
-//! В состоянии IDLE.
-#define E_SDCARD_IN_IDLE_STATE (E_SDCARD_STATUS + 8)
-//! Сброс стирания.
-#define E_SDCARD_ERASE_RESET (E_SDCARD_STATUS + 9)
-//! Недопустимая команда.
-#define E_SDCARD_ILLEGAL_COMMAND (E_SDCARD_STATUS + 10)
-//! Ошибка CRC команды.
-#define E_SDCARD_COM_CRC_ERROR (E_SDCARD_STATUS + 11)
-//! Ошибка последовательности стирания.
-#define E_SDCARD_ERASE_SEQ_ERROR (E_SDCARD_STATUS + 12)
-//! Ошибка адреса.
-#define E_SDCARD_ADDR_ERROR (E_SDCARD_STATUS + 13)
-//! Ошибка параметра.
-#define E_SDCARD_PARAM_ERROR (E_SDCARD_STATUS + 14)
+//! Ошибка CPSM
+#define E_SDIO_CMD (E_USER)
+//! Command response received (CRC check failed)
+#define E_SDIO_CMD_CRCFAIL (E_SDIO_CMD + 0)
+//! Command response timeout
+#define E_SDIO_CMD_TIMEOUT (E_SDIO_CMD + 1)
+
+//! Ошибки DPSM
+#define E_SDIO_DATA (E_SDIO_CMD + 2)
+//! Data block sent/received (CRC check failed)
+#define E_SDIO_DATA_CRCFAIL (E_SDIO_DATA + 0)
+//! Data timeout
+#define E_SDIO_DATA_TIMEOUT (E_SDIO_DATA + 1)
+//! Transmit FIFO underrun error
+#define E_SDIO_DATA_TX_UNDERRUN (E_SDIO_DATA + 2)
+//! Received FIFO overrun error
+#define E_SDIO_DATA_RX_OVERRUN (E_SDIO_DATA + 3)
+//! Start bit not detected on all data signals in wide bus mode
+#define E_SDIO_DATA_STARTBIT (E_SDIO_DATA + 4)
+
+//! Ошибки в ответе SD карты
+#define E_SDCARD_RESPONSE (E_SDIO_DATA + 5)
+//! Error in the sequence of the authentication process
+#define E_SDCARD_RESPONSE_AKE_SEQ_ERROR (E_SDCARD_RESPONSE + 0)
+//! Set when only partial address
+//! space was erased due to existing
+//! write protected blocks or the
+//! temporary write protected or write
+//! protected until power cycle or
+//! permanent write protected card
+//! was erased.
+#define E_SDCARD_RESPONSE_WP_ERASE_SKIP (E_SDCARD_RESPONSE + 1)
+//! Can be either one of the following errors:
+//! - The read only section of the CSD does not match the card content.
+//! - An attempt to reverse the copy (set as original) or permanent WP (unprotected) bits was made.
+#define E_SDCARD_RESPONSE_CSD_OVERWRITE (E_SDCARD_RESPONSE + 2)
+//! A general or an unknown error occurred during the operation.
+#define E_SDCARD_RESPONSE_ERROR (E_SDCARD_RESPONSE + 3)
+//! Internal card controller error
+#define E_SDCARD_RESPONSE_CC_ERROR (E_SDCARD_RESPONSE + 4)
+//! Card internal ECC was applied butfailed to correct the data.
+#define E_SDCARD_RESPONSE_CARD_ECC_FAILED (E_SDCARD_RESPONSE + 5)
+//! Command not legal for the cardstate
+#define E_SDCARD_RESPONSE_ILLEGAL_COMMAND (E_SDCARD_RESPONSE + 6)
+//! The CRC check of the previous command failed.
+#define E_SDCARD_RESPONSE_COM_CRC_ERROR (E_SDCARD_RESPONSE + 7)
+//! Set when a sequence or passworderror has been detected in lock/unlock card command.
+#define E_SDCARD_RESPONSE_LOCK_UNLOCK_FAILED (E_SDCARD_RESPONSE + 8)
+//! Set when the host attempts to write
+//! to a protected block or to the
+//! temporary write protected card or
+//! write protected until power cycle
+//! card or permanent write protected
+//! card.
+#define E_SDCARD_RESPONSE_WP_VIOLATION (E_SDCARD_RESPONSE + 9)
+//! An invalid selection of write-blocksfor erase occurred.
+#define E_SDCARD_RESPONSE_ERASE_PARAM (E_SDCARD_RESPONSE + 10)
+//! An error in the sequence of erasecommands occurred.
+#define E_SDCARD_RESPONSE_ERASE_SEQ_ERROR (E_SDCARD_RESPONSE + 11)
+//! The transferred block length is not
+//! allowed for this card, or the number
+//! of transferred bytes does not match
+//! the block length.
+#define E_SDCARD_RESPONSE_BLOCK_LEN_ERROR (E_SDCARD_RESPONSE + 12)
+//! A misaligned address which did not
+//! match the block length was used in
+//! the command.
+#define E_SDCARD_RESPONSE_ADDRESS_ERROR (E_SDCARD_RESPONSE + 13)
+//! The command's argument was out of the allowed range for this card.
+#define E_SDCARD_RESPONSE_OUT_OF_RANGE (E_SDCARD_RESPONSE + 14)
 
 //! Перечисление типа SD-карты.
 typedef enum _SD_Card_Type {
     SDCARD_TYPE_UNKNOWN = 0, //!< Неизвестный тип карты.
-    SDCARD_TYPE_SC,
-	SDCARD_TYPE_HC_XC,
-	SDCARD_TYPE_UC
+    SDCARD_TYPE_SC,//!< SDCARD_TYPE_SC
+	SDCARD_TYPE_HC_XC,//!< SDCARD_TYPE_HC_XC
+	SDCARD_TYPE_UC    //!< SDCARD_TYPE_UC
 } sdcard_type_t;
 
 
@@ -101,15 +127,19 @@ typedef struct _SD_Card {
 	dma_t dma;
 	sdcard_state_t current_state; //!< Текущее состояние карты.
 	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
-	sdio_respwait_t resp_wait;
-	sdio_resptype_t resp_long;
-	sdio_resp_crc_include_t resp_crc;
-	sdcard_response_t response;
-	uint32_t RCA;
+	sdio_respwait_t resp_wait; //!< Ожидается ли ответ
+	sdio_resptype_t resp_long; //!< Длинный ли ответ
+	sdio_resp_crc_include_t resp_crc; //!< Содержит ли ответ контрольную сумму
+	sdcard_response_t response; //!< Ответы
+	uint32_t RCA; //!< Адрес карты
 	sdcard_reg_CID_t CID;
 	sdcard_reg_CSD_t CSD;
-	sdcard_ccc_t CCC;
-	sdcard_type_t type;
+	sdcard_ccc_t CCC; //!< Классы поддерживаемых картой команд
+	sdcard_type_t type; //!< Тип карты
+	err_t cmd_err; //!< Ошибки при отправке команды
+	err_t data_err; //!< Ошибки при обмене с картой
+	err_t resp_err; //!< Ошибки в ответе карты
+	err_t dma_err; //!< Ошибки DMA
 } sdcard_t;
 
 //вспопогательные функции

@@ -4,40 +4,6 @@
 #include "crc/crc16_ccitt.h"
 #include <string.h>
 
-
-// Константы.
-
-//! Число пустых байт в начале инициализации SD-карты.
-#define SDCARD_INIT_DUMMY_BYTES 10
-//! Число байт в ожидании ответа карты.
-#define SDCARD_WAIT_REPLY_BYTES 8
-
-//! Число байт до выбора SD-карты.
-#define SDCARD_SELECT_BEFORE_BYTES 1
-//! Число байт после выбора SD-карты.
-#define SDCARD_SELECT_AFTER_BYTES 1
-//! Число байт до сниятия выбора SD-карты.
-#define SDCARD_DESELECT_BEFORE_BYTES 1
-//! Число байт после сниятия выбора SD-карты.
-#define SDCARD_DESELECT_AFTER_BYTES 1
-
-//! Значение передаваемых данных по-умолчанию 16 бит.
-#define SDCARD_DEFAULT_DATA16 0xffffU
-//! Значение передаваемых данных по-умолчанию 8 бит.
-#define SDCARD_DEFAULT_DATA8 0xffU
-//! Значение получаемых данных в случае занятой SD-карты.
-#define SDCARD_BUSY_DATA 0x0
-//! Значение получаемых данных в случае отсутствия ответа SD-карты.
-#define SDCARD_NOREPLY_DATA 0xff
-
-//! Полином контрольной суммы CRC16.
-#define SDCARD_CRC16_POLYNOMIAL 0x1021
-#define SDCARD_CRC16_POLYNOMIAL_REVERSED 0x8408
-
-//! Аргумент команды проверки напряжения (SEND_IF_COND).
-#define SDCARD_SEND_IF_COND_CHECK 0x1aa
-
-
 //! Получение границы блока из адреса.
 #define SDCARD_ADDRESS_BLOCK(addr) ((addr) & ~((SDCARD_BLOCK_SIZE) - 1))
 
@@ -80,7 +46,7 @@ static void sdcard_resp_setup(sdcard_t* sdcard) {
 
 static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 
-	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
+	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
 
 	sdcard->cmd = (sdcard_cmd_t*) cmd;
 
@@ -104,7 +70,7 @@ static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t
 
 static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
 
-	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_SDCARD_ILLEGAL_COMMAND;
+	if(cmd->state[sdcard->current_state] == SDCARD_STATE_ILLEGAL) return E_INVALID_VALUE;
 
 	sdcard->cmd = (sdcard_cmd_t*) cmd;
 
@@ -225,28 +191,28 @@ static err_t sdcard_status_error_check(sdcard_t* sdcard) {
 	case SDCARD_RESPONSE_R1b:
 		//no break
 	case SDCARD_RESPONSE_R1:
-		if(sdcard->response.r1.bit.AKE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.WP_ERASE_SKIP) return E_SDCARD_WP_ERASE_SKIP;
-		if(sdcard->response.r1.bit.CSD_OVERWRITE) return E_SDCARD_CSD_OVERWRITE;
-		if(sdcard->response.r1.bit.ERROR) return E_SDCARD_ERROR;
-		if(sdcard->response.r1.bit.CC_ERROR) return E_SDCARD_CC_ERROR;
-		if(sdcard->response.r1.bit.CARD_ECC_FAILED) return E_SDCARD_CARD_ECC_FAILED;
-		if(sdcard->response.r1.bit.ILLEGAL_COMMAND) return E_SDCARD_ILLEGAL_COMMAND;
-		if(sdcard->response.r1.bit.COM_CRC_ERROR) return E_SDCARD_COM_CRC_ERROR;
-		if(sdcard->response.r1.bit.LOCK_UNLOCK_FAILED) return E_SDCARD_LOCK_UNLOCK_CMD_FAILED;
-		if(sdcard->response.r1.bit.WP_VIOLATION) return E_SDCARD_WP_VIOLATION;
-		if(sdcard->response.r1.bit.ERASE_PARAM) return E_SDCARD_ERASE_PARAM;
-		if(sdcard->response.r1.bit.ERASE_SEQ_ERROR) return E_SDCARD_ERASE_SEQ_ERROR;
-		if(sdcard->response.r1.bit.BLOCK_LEN_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.ADDRESS_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r1.bit.OUT_OF_RANGE) return E_SDCARD_OUT_OF_RANGE;
+		if(sdcard->response.r1.bit.AKE_SEQ_ERROR)		return 	E_SDCARD_RESPONSE_AKE_SEQ_ERROR;
+		if(sdcard->response.r1.bit.WP_ERASE_SKIP)		return 	E_SDCARD_RESPONSE_WP_ERASE_SKIP;
+		if(sdcard->response.r1.bit.CSD_OVERWRITE)		return 	E_SDCARD_RESPONSE_CSD_OVERWRITE;
+		if(sdcard->response.r1.bit.ERROR)				return 	E_SDCARD_RESPONSE_ERROR;
+		if(sdcard->response.r1.bit.CC_ERROR)			return 	E_SDCARD_RESPONSE_CC_ERROR;
+		if(sdcard->response.r1.bit.CARD_ECC_FAILED)		return 	E_SDCARD_RESPONSE_CARD_ECC_FAILED;
+		if(sdcard->response.r1.bit.ILLEGAL_COMMAND)		return 	E_SDCARD_RESPONSE_ILLEGAL_COMMAND;
+		if(sdcard->response.r1.bit.COM_CRC_ERROR)		return 	E_SDCARD_RESPONSE_COM_CRC_ERROR;
+		if(sdcard->response.r1.bit.LOCK_UNLOCK_FAILED)	return	E_SDCARD_RESPONSE_LOCK_UNLOCK_FAILED;
+		if(sdcard->response.r1.bit.WP_VIOLATION)		return	E_SDCARD_RESPONSE_WP_VIOLATION;
+		if(sdcard->response.r1.bit.ERASE_PARAM)			return	E_SDCARD_RESPONSE_ERASE_PARAM;
+		if(sdcard->response.r1.bit.ERASE_SEQ_ERROR)		return 	E_SDCARD_RESPONSE_ERASE_SEQ_ERROR;
+		if(sdcard->response.r1.bit.BLOCK_LEN_ERROR)		return 	E_SDCARD_RESPONSE_BLOCK_LEN_ERROR;
+		if(sdcard->response.r1.bit.ADDRESS_ERROR)		return 	E_SDCARD_RESPONSE_ADDRESS_ERROR;
+		if(sdcard->response.r1.bit.OUT_OF_RANGE)		return 	E_SDCARD_RESPONSE_OUT_OF_RANGE;
 		return E_NO_ERROR;
 
 	case SDCARD_RESPONSE_R6:
-		if(sdcard->response.r6.bit.AKE_SEQ_ERROR) return E_NOT_IMPLEMENTED;
-		if(sdcard->response.r6.bit.ERROR) return E_SDCARD_ERROR;
-		if(sdcard->response.r6.bit.ILLEGAL_COMMAND) return E_SDCARD_ILLEGAL_COMMAND;
-		if(sdcard->response.r6.bit.COM_CRC_ERROR) return E_SDCARD_COM_CRC_ERROR;
+		if(sdcard->response.r6.bit.AKE_SEQ_ERROR)		return E_SDCARD_RESPONSE_AKE_SEQ_ERROR;
+		if(sdcard->response.r6.bit.ERROR)				return E_SDCARD_RESPONSE_ERROR;
+		if(sdcard->response.r6.bit.ILLEGAL_COMMAND)		return E_SDCARD_RESPONSE_ILLEGAL_COMMAND;
+		if(sdcard->response.r6.bit.COM_CRC_ERROR)		return E_SDCARD_RESPONSE_COM_CRC_ERROR;
 		return E_NO_ERROR;
 
 	default:
