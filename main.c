@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "modules/modules.h"
 #include "reg/regs.h"
@@ -328,39 +329,38 @@ int main(void)
 		printf("CMD 7 STATE: %d\n", sdcard.current_state);
 
 		//READ
-		uint32_t block_addr[2];
-		block_addr[1] = 0;
-		block_addr[0] = 0;
+		char hex_to_str[17];
 
-		sdio_err = sdcard_read(&sdcard, ((uint32_t*)sdcard_data_array), block_addr, 8, 0xFFFFFF);
-		if (sdio_err != E_NO_ERROR) {
-			printf("READ Err: %d\n", sdio_err);
-			goto exit_sdcard_init;
+		for (uint64_t block_addr = 0; block_addr < 1024; block_addr+=8) {
+			sdio_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array), block_addr, 8, 0xFFFFFF);
+			if (sdio_err != E_NO_ERROR) {
+				printf("READ Err: %d\n", sdio_err);
+				goto exit_sdcard_init;
+			}
+
+			printf("READ STATE: %d\n", sdcard.current_state);
+
+			hex_to_str[16] = 0;
+
+			for (int i = 0; i < (4096 - 16); i += 16) {
+				memcpy(hex_to_str, &sdcard_data_array[i], 16);
+				hex_to_str[16] = 0;
+
+				for (int ch = 0; ch < 16; ch++) {
+					if (isprint((int)hex_to_str[ch]) == 0)
+						hex_to_str[ch] = '.';
+				}
+
+				printf("%08llx %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %s\n",
+						((block_addr * 512) + i), sdcard_data_array[i], sdcard_data_array[i + 1],
+						sdcard_data_array[i + 2], sdcard_data_array[i + 3], sdcard_data_array[i + 4],
+						sdcard_data_array[i + 5], sdcard_data_array[i + 6], sdcard_data_array[i + 7],
+						sdcard_data_array[i + 8], sdcard_data_array[i + 9], sdcard_data_array[i + 10],
+						sdcard_data_array[i + 11], sdcard_data_array[i + 12], sdcard_data_array[i + 13],
+						sdcard_data_array[i + 14], sdcard_data_array[i + 15], hex_to_str);
+				sys_counter_delay(0, 1000); // 1ms
+			}
 		}
-
-		printf("READ STATE: %d\n", sdcard.current_state);
-
-		for(int i = 0; i < (4096 - 16); i += 16) {
-			printf("%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
-					sdcard_data_array[i],
-					sdcard_data_array[i + 1],
-					sdcard_data_array[i + 2],
-					sdcard_data_array[i + 3],
-					sdcard_data_array[i + 4],
-					sdcard_data_array[i + 5],
-					sdcard_data_array[i + 6],
-					sdcard_data_array[i + 7],
-					sdcard_data_array[i + 8],
-					sdcard_data_array[i + 9],
-					sdcard_data_array[i + 10],
-					sdcard_data_array[i + 11],
-					sdcard_data_array[i + 12],
-					sdcard_data_array[i + 13],
-					sdcard_data_array[i + 14],
-					sdcard_data_array[i + 15]);
-			sys_counter_delay(0, 10000); // 10ms
-		}
-
 	} else {
 		printf("SD Card Not Inserted\n");
 	}
