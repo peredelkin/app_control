@@ -9,19 +9,19 @@ METHOD_INIT_IMPL(M_mso, mso)
 {
 	mso->m_ptr = malloc(MSO_DATA_SIZE);
 
-	mso->r_channel[0].id = REG_ID_TEMP_NTC_0;
+	mso->r_channel[0].id = REG_ID_NTC_TEMP_OUT_TEMP0;
 	mso->r_channel[0].enabled = true;
 
-	mso->r_channel[1].id = REG_ID_TEMP_NTC_1;
+	mso->r_channel[1].id = REG_ID_NTC_TEMP_OUT_TEMP1;
 	mso->r_channel[1].enabled = true;
 
-	mso->r_channel[2].id = REG_ID_TEMP_NTC_2;
+	mso->r_channel[2].id = REG_ID_NTC_TEMP_OUT_TEMP2;
 	mso->r_channel[2].enabled = true;
 
-	mso->r_channel[3].id = REG_ID_VOLTAGE_NTC_VREF;
+	mso->r_channel[3].id = REG_ID_MSDI_OUT_REF;
 	mso->r_channel[3].enabled = true;
 
-	mso->r_channel[4].id = REG_ID_VOLTAGE_MSDI_VCC;
+	mso->r_channel[4].id = REG_ID_MSDI_OUT_VCC;
 	mso->r_channel[4].enabled = true;
 }
 

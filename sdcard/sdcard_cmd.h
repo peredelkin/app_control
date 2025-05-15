@@ -7,119 +7,183 @@
 
 #include <stdint.h>
 #include <assert.h>
+#include "sdio/sdio.h"
+#include "sdcard_response.h"
+
+typedef enum {
+	SDCARD_CMD_GO_IDLE_STATE = 0,
+
+	SDCARD_CMD_ALL_SEND_CID = 2,
+	SDCARD_CMD_SEND_RELATIVE_ADDR,
+	SDCARD_CMD_SET_DSR,
+
+	SDCARD_CMD_SWITCH_FUNC = 6,
+	SDCARD_CMD_SELECT_DESELECT_CARD,
+	SDCARD_CMD_SEND_IF_COND,
+	SDCARD_CMD_SEND_CSD,
+	SDCARD_CMD_SEND_CID,
+	SDCARD_CMD_VOLTAGE_SWITCH,
+	SDCARD_CMD_STOP_TRANSMISSION,
+	SDCARD_CMD_SEND_STATUS,
+
+	SDCARD_CMD_GO_INACTIVE_STATE = 15,
+	SDCARD_CMD_SET_BLOCKLEN,
+	SDCARD_CMD_READ_SINGLE_BLOCK,
+	SDCARD_CMD_READ_MULTIPLE_BLOCK,
+	SDCARD_CMD_SEND_TUNING_BLOCK,
+	SDCARD_CMD_SPEED_CLASS_CONTROL,
+
+	SDCARD_CMD_ADDRESS_EXTENSION = 22,
+	SDCARD_CMD_SET_BLOCK_COUNT,
+	SDCARD_CMD_WRITE_BLOCK,
+	SDCARD_CMD_WRITE_MULTIPLE_BLOCK,
+
+	SDCARD_CMD_PROGRAM_CSD = 27,
+	SDCARD_CMD_SET_WRITE_PROT,
+	SDCARD_CMD_CLR_WRITE_PROT,
+	SDCARD_CMD_SEND_WRITE_PROT,
+
+	SDCARD_CMD_ERASE_WR_BLK_START = 32,
+	SDCARD_CMD_ERASE_WR_BLK_END,
+
+	SDCARD_CMD_ERASE = 38,
+	SDCARD_CMD_SELECT_CARD_PARTITION,
+
+	SDCARD_CMD_Q_MANAGEMENT = 43,
+	SDCARD_CMD_Q_TASK_INFO_A,
+	SDCARD_CMD_Q_TASK_INFO_B,
+	SDCARD_CMD_Q_RD_TASK,
+	SDCARD_CMD_Q_WR_TASK,
+	SDCARD_CMD_READ_EXTR_SINGLE,
+	SDCARD_CMD_WRITE_EXTR_SINGLE,
+
+	SDCARD_CMD_APP_CMD = 55,
+	SDCARD_CMD_GEN_CMD,
+
+	SDCARD_CMD_READ_EXTR_MULTI = 58,
+	SDCARD_CMD_WRITE_EXTR_MULTI
+
+} sdcard_cmd_list_t;
+
+
+typedef enum {
+	SDCARD_ACMD_SET_BUS_WIDTH = 6,
+
+	SDCARD_ACMD_SD_STATUS = 13,
+
+	SDCARD_ACMD_SEND_NUM_WR_BLOCKS = 22,
+	SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT,
+
+	SDCARD_ACMD_SD_SEND_OP_COND = 41,
+	SDCARD_ACMD_SET_CLR_CARD_DETECT,
+
+	SDCARD_ACMD_SEND_SCR = 51,
+
+	SDCARD_ACMD_SECURE_RECEIVE = 53,
+	SDCARD_ACMD_SECURE_SEND
+
+} sdcard_acmd_list_t;
+
+typedef enum {
+	SDCARD_CCC_0 = (1 << 0),
+	SDCARD_CCC_1 = (1 << 1),
+	SDCARD_CCC_2 = (1 << 2),
+	SDCARD_CCC_3 = (1 << 3),
+	SDCARD_CCC_4 = (1 << 4),
+	SDCARD_CCC_5 = (1 << 5),
+	SDCARD_CCC_6 = (1 << 6),
+	SDCARD_CCC_7 = (1 << 7),
+	SDCARD_CCC_8 = (1 << 8),
+	SDCARD_CCC_9 = (1 << 9),
+	SDCARD_CCC_10 = (1 << 10),
+	SDCARD_CCC_11 = (1 << 11)
+} sdcard_ccc_t;
+
+typedef enum {
+	SDCARD_STATE_ILLEGAL = -1,
+	SDCARD_STATE_IDLE,
+	SDCARD_STATE_READY,
+	SDCARD_STATE_IDENT,
+	SDCARD_STATE_STBY,
+	SDCARD_STATE_TRAN,
+	SDCARD_STATE_DATA,
+	SDCARD_STATE_RCV,
+	SDCARD_STATE_PRG,
+	SDCARD_STATE_DIS,
+	SDCARD_STATE_INA,
+	SDCARD_STATE_COUNT
+} sdcard_state_t;
 
 //! Структура команды SD-карты.
-#pragma pack(push, 1)
 typedef struct _SD_Card_Cmd {
-    uint8_t index; //!< Стартовый бит, бит передачи, индекс команды.
-    uint32_t argument; //!< Аргумент команды.
+	sdcard_cmd_list_t index; //!< Индекс команды.
+	sdcard_ccc_t ccc; //!< Класс команды
+	sdcard_response_type_t response_type; //!< Тип ответа
+	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
 } sdcard_cmd_t;
-#pragma pack(pop)
 
-//! Инициализация команды SD-карты по месту объявления.
-#define SDCARD_CMD_MAKE(cmd, arg) {\
-	.index = cmd,\
-	.argument = arg\
-}
+typedef struct _SD_Card_ACmd {
+	sdcard_acmd_list_t index; //!< Индекс команды.
+	sdcard_ccc_t ccc; //!< Класс команды
+	sdcard_response_type_t response_type; //!< Тип ответа
+	sdcard_state_t state[SDCARD_STATE_COUNT]; //!< Состояние SD карты в случае выполнения команды
+} sdcard_acmd_t;
 
-/*
- * Команды карты памяти.
- */
-//! Программный сброс.
-#define SDCARD_CMD_GO_IDLE_STATE 0
+//! Инициализация команды SD-карты по месту объявления. SDIO
+#define SDCARD_CMD_MAKE(ind, class, resp, idle, ready, ident, stby, train, data, rcv, prg, dis, ina)\
+		{\
+		    .index = ind,\
+			.ccc = class,\
+			.response_type = resp,\
+			.state[0] = idle,\
+			.state[1] = ready,\
+			.state[2] = ident,\
+			.state[3] = stby,\
+			.state[4] = train,\
+			.state[5] = data,\
+			.state[6] = rcv,\
+			.state[7] = prg,\
+			.state[8] = dis,\
+			.state[9] = ina,\
+		}
 
-//! Инициализация карты MMC.
-#define SDCARD_CMD_SEND_OP_COND 1
-
-//! Проверка поддержки напряжения.
-#define SDCARD_CMD_SEND_IF_COND 8
-
-//! Отправка регистра CSD.
-#define SDCARD_CMD_SEND_CSD 9
-
-//! Отправка регистра CID.
-#define SDCARD_CMD_SEND_CID 10
-
-//! Остановка передачи.
-#define SDCARD_CMD_STOP_TRANSMISSION 12
-
-//! Отправка состояния.
-#define SDCARD_CMD_SEND_STATUS 13
-
-//! Установка размера блока.
-#define SDCARD_CMD_SET_BLOCKLEN 16
-
-//! Чтение одного блока.
-#define SDCARD_CMD_READ_SINGLE_BLOCK 17
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_READ_SINGLE_BLOCK_ADDRESS 0xffffffff
-
-//! Чтение нескольких блоков.
-#define SDCARD_CMD_READ_MULTIPLE_BLOCK 18
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_READ_MULTIPLE_BLOCK_ADDRESS 0xffffffff
-
-//! Запись одного блока.
-#define SDCARD_CMD_WRITE_SINGLE_BLOCK 24
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_WRITE_SINGLE_BLOCK_ADDRESS 0xffffffff
-
-//! Запись нескольких блоков.
-#define SDCARD_CMD_WRITE_MULTIPLE_BLOCK 25
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_WRITE_MULTIPLE_BLOCK_ADDRESS 0xffffffff
-
-//! Установка начального адреса стирания блоков карты SD.
-#define SDCARD_CMD_ERASE_WR_BLK_START_ADDR 32
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_ERASE_WR_BLK_START_ADDR_ADDRESS 0xffffffff
-
-//! Установка конечного адреса стирания блоков карты SD.
-#define SDCARD_CMD_ERASE_WR_BLK_END_ADDR 33
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_ERASE_WR_BLK_END_ADDR_ADDRESS 0xffffffff
-
-//! Установка начального адреса стирания групп блоков карты MMC.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_START 35
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_START_ADDRESS 0xffffffff
-
-//! Установка конечного адреса стирания групп блоков карты MMC.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_END 36
-//! Аргумент - адрес блока.
-#define SDCARD_CMD_MMC_TAG_ERASE_GROUP_END_ADDRESS 0xffffffff
-
-//! Стирания блоков.
-#define SDCARD_CMD_ERASE 38
-
-//! Установка следующей команды приложения.
-#define SDCARD_CMD_APP_CMD 55
-
-//! Чтение регистра OCR.
-#define SDCARD_CMD_READ_OCR 58
-
-//! Включение/выключение проверки CRC.
-#define SDCARD_CMD_CRC_ON_OFF 59
-//! Аргумент - бит CRC option.
-#define SDCARD_CMD_CRC_ON_OFF_CRC_OPTION 0x1
-
-//! Получения числа успешно записанных блоков.
-//! Данные ответа - 32 бит число.
-#define SDCARD_ACMD_SEND_NUM_WR_BLOCKS 22
-
-//! Установка число записываемых блоков для стирания.
-#define SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT 23
-//! Аргумент - 23 битное число записываемых блоков.
-#define SDCARD_ACMD_SET_WR_BLK_ERASE_COUNT_NUMBER 0x7FFFFF
-
-//! Инициализация карты.
-#define SDCARD_ACMD_SD_SEND_OP_COND 41
-//! Аргумент - бит HCS.
-#define SDCARD_ACMD_SD_SEND_OP_COND_HCS 0x40000000
-
-//! Управление 50 кОм подтяжкой на пину CardDetect карты.
-#define SDCARD_ACMD_SET_CLR_CARD_DETECT 42
-//! Аргумент - подключение подтяжки.
-#define SDCARD_ACMD_SET_CLR_CARD_DETECT_SET_CD 0x1
+//команды
+extern const sdcard_cmd_t sdcard_CMD0;
+extern const sdcard_cmd_t sdcard_CMD2;
+extern const sdcard_cmd_t sdcard_CMD3;
+extern const sdcard_cmd_t sdcard_CMD4;
+extern const sdcard_cmd_t sdcard_CMD6;
+extern const sdcard_cmd_t sdcard_CMD7_adressed;
+extern const sdcard_cmd_t sdcard_CMD7_not_adressed;
+extern const sdcard_cmd_t sdcard_CMD8;
+extern const sdcard_cmd_t sdcard_CMD9;
+extern const sdcard_cmd_t sdcard_CMD10;
+extern const sdcard_cmd_t sdcard_CMD11;
+extern const sdcard_cmd_t sdcard_CMD12;
+extern const sdcard_cmd_t sdcard_CMD13;
+extern const sdcard_cmd_t sdcard_CMD15;
+extern const sdcard_cmd_t sdcard_CMD16;
+extern const sdcard_cmd_t sdcard_CMD17;
+extern const sdcard_cmd_t sdcard_CMD18;
+extern const sdcard_cmd_t sdcard_CMD19;
+extern const sdcard_cmd_t sdcard_CMD20;
+extern const sdcard_cmd_t sdcard_CMD22;
+extern const sdcard_cmd_t sdcard_CMD23;
+extern const sdcard_cmd_t sdcard_CMD24;
+extern const sdcard_cmd_t sdcard_CMD25;
+extern const sdcard_cmd_t sdcard_CMD27;
+extern const sdcard_cmd_t sdcard_CMD32;
+extern const sdcard_cmd_t sdcard_CMD33;
+extern const sdcard_cmd_t sdcard_CMD38;
+extern const sdcard_cmd_t sdcard_CMD55;
+extern const sdcard_acmd_t sdcard_ACMD6;
+extern const sdcard_acmd_t sdcard_ACMD13;
+extern const sdcard_acmd_t sdcard_ACMD22;
+extern const sdcard_acmd_t sdcard_ACMD23;
+extern const sdcard_acmd_t sdcard_ACMD41;
+extern const sdcard_acmd_t sdcard_ACMD42;
+extern const sdcard_acmd_t sdcard_ACMD51;
+extern const sdcard_acmd_t sdcard_ACMD53;
+extern const sdcard_acmd_t sdcard_ACMD54;
 
 #endif /* SDCARD_CMD_H_ */

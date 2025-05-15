@@ -255,17 +255,69 @@ struct _S_TPDOMappingParameter_1a03 {
     uint32_t applicationObject8; /*  */
 } TPDOMappingParameter_1a03;
 
-struct _S_temp {
-    int8_t count; /*  */
-} temp;
+struct _S_conf {
+    uint8_t count; /* Number of sub entries count */
+} conf;
 
-struct _S_voltage {
-    uint8_t count; /* Number of sub-entries */
-} voltage;
+struct _S_sys {
+    uint8_t count; /* Number of sub entries count */
+} sys;
 
-struct _S_current {
-    uint8_t count; /* Number of sub-entries */
-} current;
+struct _S_sys_tim {
+    uint8_t count; /* Number of sub entries count */
+} sys_tim;
+
+struct _S_ms_tim {
+    uint8_t count; /* Number of sub entries count */
+} ms_tim;
+
+struct _S_cli {
+    uint8_t count; /* Number of sub entries count */
+} cli;
+
+struct _S_rgb_led {
+    uint8_t count; /* Number of sub entries count */
+} rgb_led;
+
+struct _S_msdi {
+    uint8_t count; /* Number of sub entries count */
+} msdi;
+
+struct _S_ntc_temp {
+    uint8_t count; /* Number of sub entries count */
+} ntc_temp;
+
+struct _S_do_relay {
+    uint8_t count; /* Number of sub entries count */
+} do_relay;
+
+struct _S_do_ncv7608 {
+    uint8_t count; /* Number of sub entries count */
+} do_ncv7608;
+
+struct _S_digital_in {
+    uint8_t count; /* Number of sub entries count */
+} digital_in;
+
+struct _S_digital_out {
+    uint8_t count; /* Number of sub entries count */
+} digital_out;
+
+struct _S_mso {
+    uint8_t count; /* Number of sub entries count */
+} mso;
+
+struct _S_ao_dac7562 {
+    uint8_t count; /* Number of sub entries count */
+} ao_dac7562;
+
+struct _S_panel_led {
+    uint8_t count; /* Number of sub entries count */
+} panel_led;
+
+struct _S_can_tim {
+    uint8_t count; /* Number of sub entries count */
+} can_tim;
 
 };
 extern struct _S_CO_data CO_data;

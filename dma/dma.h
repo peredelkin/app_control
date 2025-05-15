@@ -28,6 +28,8 @@
 #define DMA_SxCR_PSIZE_SHIFT 11
 #define DMA_SxCR_DIR_SHIFT 6
 
+#define DMA_DATA_COUNT_MAX 65535
+
 typedef struct {
     DMA_Stream_TypeDef* stream;
     DMA_TypeDef* dma;

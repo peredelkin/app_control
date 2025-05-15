@@ -48,9 +48,22 @@ typedef struct {
     OD_obj_record_t o_1A01_TPDOMappingParameter[9];
     OD_obj_record_t o_1A02_TPDOMappingParameter[9];
     OD_obj_record_t o_1A03_TPDOMappingParameter[9];
-    OD_obj_record_t o_2000_temp[7];
-    OD_obj_record_t o_2001_voltage[3];
-    OD_obj_record_t o_2002_current[3];
+    OD_obj_record_t o_2000_conf[3];
+    OD_obj_record_t o_2010_sys[6];
+    OD_obj_record_t o_2020_sys_tim[4];
+    OD_obj_record_t o_2030_ms_tim[4];
+    OD_obj_record_t o_2040_cli[3];
+    OD_obj_record_t o_2050_rgb_led[4];
+    OD_obj_record_t o_2060_msdi[14];
+    OD_obj_record_t o_2070_ntc_temp[15];
+    OD_obj_record_t o_2080_do_relay[4];
+    OD_obj_record_t o_2090_do_ncv7608[4];
+    OD_obj_record_t o_20A0_digital_in[37];
+    OD_obj_record_t o_20B0_digital_out[37];
+    OD_obj_record_t o_20C0_mso[35];
+    OD_obj_record_t o_20D0_ao_dac7562[5];
+    OD_obj_record_t o_20E0_panel_led[4];
+    OD_obj_record_t o_20F0_can_tim[4];
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -918,88 +931,1134 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2000_temp = {
+.o_2000_conf = {
     {
-    .dataOrig = &CO_data.temp.count,
+    .dataOrig = &CO_data.conf.count,
     .subIndex = 0,
     .attribute = ODA_SDO_R,
     .dataLength = 1
     },
     {
-    .dataOrig = &ntc_temp.out_temp[0],
+    .dataOrig = &conf.control,
     .subIndex = 1,
-    .attribute = ODA_SDO_R | ODA_MB,
+    .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = &ntc_temp.out_temp[1],
+    .dataOrig = &conf.status,
     .subIndex = 2,
-    .attribute = ODA_SDO_R | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = &ntc_temp.out_temp[2],
-    .subIndex = 3,
-    .attribute = ODA_SDO_R | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = &ntc_temp.out_temp[3],
-    .subIndex = 4,
-    .attribute = ODA_SDO_R | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = &ntc_temp.out_temp[4],
-    .subIndex = 5,
-    .attribute = ODA_SDO_R | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = &ntc_temp.out_temp[5],
-    .subIndex = 6,
-    .attribute = ODA_SDO_R | ODA_MB,
+    .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     }
 },
-.o_2001_voltage = {
+.o_2010_sys = {
     {
-    .dataOrig = &CO_data.voltage.count,
+    .dataOrig = &CO_data.sys.count,
     .subIndex = 0,
-    .attribute = 0,
+    .attribute = ODA_SDO_R,
     .dataLength = 1
     },
     {
-    .dataOrig = &msdi.out_ref,
+    .dataOrig = &sys.control,
     .subIndex = 1,
-    .attribute = ODA_SDO_R | ODA_MB,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &sys.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &sys.errors,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &sys.warnings,
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &sys.state,
+    .subIndex = 5,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_2020_sys_tim = {
+    {
+    .dataOrig = &CO_data.sys_tim.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &sys_tim.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &sys_tim.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &sys_tim.out_counter,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_2030_ms_tim = {
+    {
+    .dataOrig = &CO_data.ms_tim.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &ms_tim.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ms_tim.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ms_tim.out_counter,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_2040_cli = {
+    {
+    .dataOrig = &CO_data.cli.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &cli.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &cli.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_2050_rgb_led = {
+    {
+    .dataOrig = &CO_data.rgb_led.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &rgb_led.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &rgb_led.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &rgb_led.in_data,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    }
+},
+.o_2060_msdi = {
+    {
+    .dataOrig = &CO_data.msdi.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &msdi.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &msdi.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &msdi.out_digital,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &msdi.out_analog[0],
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_analog[1],
+    .subIndex = 5,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_analog[2],
+    .subIndex = 6,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_analog[3],
+    .subIndex = 7,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_analog[4],
+    .subIndex = 8,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_analog[5],
+    .subIndex = 9,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_analog[6],
+    .subIndex = 10,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_analog[7],
+    .subIndex = 11,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = &msdi.out_ref,
+    .subIndex = 12,
+    .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
     .dataOrig = &msdi.out_vcc,
-    .subIndex = 2,
-    .attribute = ODA_SDO_R | ODA_MB,
+    .subIndex = 13,
+    .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     }
 },
-.o_2002_current = {
+.o_2070_ntc_temp = {
     {
-    .dataOrig = &CO_data.current.count,
+    .dataOrig = &CO_data.ntc_temp.count,
     .subIndex = 0,
-    .attribute = 0,
+    .attribute = ODA_SDO_R,
     .dataLength = 1
     },
     {
-    .dataOrig = &ao_dac7562.in_ch_a,
+    .dataOrig = &ntc_temp.control,
     .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_temp[0],
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_temp[1],
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_temp[2],
+    .subIndex = 5,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_temp[3],
+    .subIndex = 6,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_temp[4],
+    .subIndex = 7,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_temp[5],
+    .subIndex = 8,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_ohm[0],
+    .subIndex = 9,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_ohm[1],
+    .subIndex = 10,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_ohm[2],
+    .subIndex = 11,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_ohm[3],
+    .subIndex = 12,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_ohm[4],
+    .subIndex = 13,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ntc_temp.out_ohm[5],
+    .subIndex = 14,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_2080_do_relay = {
+    {
+    .dataOrig = &CO_data.do_relay.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &do_relay.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &do_relay.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &do_relay.in_data,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_2090_do_ncv7608 = {
+    {
+    .dataOrig = &CO_data.do_ncv7608.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &do_ncv7608.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &do_ncv7608.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &do_ncv7608.in_data,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_20A0_digital_in = {
+    {
+    .dataOrig = &CO_data.digital_in.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_in.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_in.out_data,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_in.p_invert,
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_in.p_select[0],
+    .subIndex = 5,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[1],
+    .subIndex = 6,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[2],
+    .subIndex = 7,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[3],
+    .subIndex = 8,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[4],
+    .subIndex = 9,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[5],
+    .subIndex = 10,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[6],
+    .subIndex = 11,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[7],
+    .subIndex = 12,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[8],
+    .subIndex = 13,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[9],
+    .subIndex = 14,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[10],
+    .subIndex = 15,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[11],
+    .subIndex = 16,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[12],
+    .subIndex = 17,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[13],
+    .subIndex = 18,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[14],
+    .subIndex = 19,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[15],
+    .subIndex = 20,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[16],
+    .subIndex = 21,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[17],
+    .subIndex = 22,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[18],
+    .subIndex = 23,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[19],
+    .subIndex = 24,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[20],
+    .subIndex = 25,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[21],
+    .subIndex = 26,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[22],
+    .subIndex = 27,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[23],
+    .subIndex = 28,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[24],
+    .subIndex = 29,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[25],
+    .subIndex = 30,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[26],
+    .subIndex = 31,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[27],
+    .subIndex = 32,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[28],
+    .subIndex = 33,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[29],
+    .subIndex = 34,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[30],
+    .subIndex = 35,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[31],
+    .subIndex = 36,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    }
+},
+.o_20B0_digital_out = {
+    {
+    .dataOrig = &CO_data.digital_out.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_out.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_out.in_data,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_out.p_invert,
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &digital_out.p_select[0],
+    .subIndex = 5,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[1],
+    .subIndex = 6,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[2],
+    .subIndex = 7,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[3],
+    .subIndex = 8,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[4],
+    .subIndex = 9,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[5],
+    .subIndex = 10,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[6],
+    .subIndex = 11,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[7],
+    .subIndex = 12,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[8],
+    .subIndex = 13,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[9],
+    .subIndex = 14,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[10],
+    .subIndex = 15,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[11],
+    .subIndex = 16,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[12],
+    .subIndex = 17,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[13],
+    .subIndex = 18,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[14],
+    .subIndex = 19,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[15],
+    .subIndex = 20,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[16],
+    .subIndex = 21,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[17],
+    .subIndex = 22,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[18],
+    .subIndex = 23,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[19],
+    .subIndex = 24,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[20],
+    .subIndex = 25,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[21],
+    .subIndex = 26,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[22],
+    .subIndex = 27,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[23],
+    .subIndex = 28,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[24],
+    .subIndex = 29,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[25],
+    .subIndex = 30,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[26],
+    .subIndex = 31,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[27],
+    .subIndex = 32,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[28],
+    .subIndex = 33,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[29],
+    .subIndex = 34,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[30],
+    .subIndex = 35,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_out.p_select[31],
+    .subIndex = 36,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    }
+},
+.o_20C0_mso = {
+    {
+    .dataOrig = &CO_data.mso.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &mso.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[0],
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[1],
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[2],
+    .subIndex = 5,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[3],
+    .subIndex = 6,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[4],
+    .subIndex = 7,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[5],
+    .subIndex = 8,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[6],
+    .subIndex = 9,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[7],
+    .subIndex = 10,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[8],
+    .subIndex = 11,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[9],
+    .subIndex = 12,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[10],
+    .subIndex = 13,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[11],
+    .subIndex = 14,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[12],
+    .subIndex = 15,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[13],
+    .subIndex = 16,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[14],
+    .subIndex = 17,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[15],
+    .subIndex = 18,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[16],
+    .subIndex = 19,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[17],
+    .subIndex = 20,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[18],
+    .subIndex = 21,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[19],
+    .subIndex = 22,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[20],
+    .subIndex = 23,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[21],
+    .subIndex = 24,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[22],
+    .subIndex = 25,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[23],
+    .subIndex = 26,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[24],
+    .subIndex = 27,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[25],
+    .subIndex = 28,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[26],
+    .subIndex = 29,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[27],
+    .subIndex = 30,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[28],
+    .subIndex = 31,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[29],
+    .subIndex = 32,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[30],
+    .subIndex = 33,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &mso.r_channel[31],
+    .subIndex = 34,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_20D0_ao_dac7562 = {
+    {
+    .dataOrig = &CO_data.ao_dac7562.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &ao_dac7562.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ao_dac7562.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &ao_dac7562.in_ch_a,
+    .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 2
     },
     {
     .dataOrig = &ao_dac7562.in_ch_b,
-    .subIndex = 2,
+    .subIndex = 4,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 2
+    }
+},
+.o_20E0_panel_led = {
+    {
+    .dataOrig = &CO_data.panel_led.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &panel_led.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &panel_led.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &panel_led.out_data,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    }
+},
+.o_20F0_can_tim = {
+    {
+    .dataOrig = &CO_data.can_tim.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &can_tim.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &can_tim.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &can_tim.out_counter,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
     }
 }
 };
@@ -1038,9 +2097,22 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1a01, 0x09, ODT_REC, &ODObjs.o_1A01_TPDOMappingParameter, NULL},
     {0x1a02, 0x09, ODT_REC, &ODObjs.o_1A02_TPDOMappingParameter, NULL},
     {0x1a03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
-    {0x2000, 0x07, ODT_REC, &ODObjs.o_2000_temp, NULL},
-    {0x2001, 0x03, ODT_REC, &ODObjs.o_2001_voltage, NULL},
-    {0x2002, 0x03, ODT_REC, &ODObjs.o_2002_current, NULL},
+    {0x2000, 0x03, ODT_REC, &ODObjs.o_2000_conf, NULL},
+    {0x2010, 0x06, ODT_REC, &ODObjs.o_2010_sys, NULL},
+    {0x2020, 0x04, ODT_REC, &ODObjs.o_2020_sys_tim, NULL},
+    {0x2030, 0x04, ODT_REC, &ODObjs.o_2030_ms_tim, NULL},
+    {0x2040, 0x03, ODT_REC, &ODObjs.o_2040_cli, NULL},
+    {0x2050, 0x04, ODT_REC, &ODObjs.o_2050_rgb_led, NULL},
+    {0x2060, 0x0e, ODT_REC, &ODObjs.o_2060_msdi, NULL},
+    {0x2070, 0x0f, ODT_REC, &ODObjs.o_2070_ntc_temp, NULL},
+    {0x2080, 0x04, ODT_REC, &ODObjs.o_2080_do_relay, NULL},
+    {0x2090, 0x04, ODT_REC, &ODObjs.o_2090_do_ncv7608, NULL},
+    {0x20a0, 0x25, ODT_REC, &ODObjs.o_20A0_digital_in, NULL},
+    {0x20b0, 0x25, ODT_REC, &ODObjs.o_20B0_digital_out, NULL},
+    {0x20c0, 0x23, ODT_REC, &ODObjs.o_20C0_mso, NULL},
+    {0x20d0, 0x05, ODT_REC, &ODObjs.o_20D0_ao_dac7562, NULL},
+    {0x20e0, 0x04, ODT_REC, &ODObjs.o_20E0_panel_led, NULL},
+    {0x20f0, 0x04, ODT_REC, &ODObjs.o_20F0_can_tim, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

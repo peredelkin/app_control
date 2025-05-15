@@ -8,12 +8,13 @@
 #ifndef INC_NTC_TABLE_H_
 #define INC_NTC_TABLE_H_
 
-#include "lib/iqmath/iq_types.h"
+#define NTC_4901_TABLE_SIZE 43
 
-#define ntc_4901_data_shift 2
-#define ntc_4901_index_mask 0xFF
-#define ntc_4901_table_size 256
+typedef struct {
+	float temp;
+	float kohm;
+} ntc_point_t;
 
-extern const iqs_t ntc_4901_table[ntc_4901_table_size];
+extern const ntc_point_t ntc_4901_table[NTC_4901_TABLE_SIZE];
 
 #endif /* INC_NTC_TABLE_H_ */

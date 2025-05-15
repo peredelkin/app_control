@@ -218,13 +218,52 @@ struct _S_CO_data CO_data = {
     .applicationObject7 = 0 /*  */,
     .applicationObject8 = 0 /*  */
 },
-.temp = {
-    .count = 6 /*  */
+.conf = {
+    .count = 2 /* Number of sub entries count */
 },
-.voltage = {
-    .count = 2 /* Number of sub-entries */
+.sys = {
+    .count = 5 /* Number of sub entries count */
 },
-.current = {
-    .count = 2 /* Number of sub-entries */
+.sys_tim = {
+    .count = 3 /* Number of sub entries count */
+},
+.ms_tim = {
+    .count = 3 /* Number of sub entries count */
+},
+.cli = {
+    .count = 2 /* Number of sub entries count */
+},
+.rgb_led = {
+    .count = 3 /* Number of sub entries count */
+},
+.msdi = {
+    .count = 13 /* Number of sub entries count */
+},
+.ntc_temp = {
+    .count = 14 /* Number of sub entries count */
+},
+.do_relay = {
+    .count = 3 /* Number of sub entries count */
+},
+.do_ncv7608 = {
+    .count = 3 /* Number of sub entries count */
+},
+.digital_in = {
+    .count = 36 /* Number of sub entries count */
+},
+.digital_out = {
+    .count = 36 /* Number of sub entries count */
+},
+.mso = {
+    .count = 34 /* Number of sub entries count */
+},
+.ao_dac7562 = {
+    .count = 4 /* Number of sub entries count */
+},
+.panel_led = {
+    .count = 3 /* Number of sub entries count */
+},
+.can_tim = {
+    .count = 3 /* Number of sub entries count */
 }
 };

@@ -5,11 +5,8 @@
  *      Author: ruslan
  */
 
-#include <stdbool.h>
-#include <assert.h>
-#include "lib/errors/errors.h"
-
 #include "sdio.h"
+#include "stm32f4xx.h"
 
 void sdio_power_control(sdio_pwrctrl_t pwrctrl) {
 	_sdio_power_reg_t power;
@@ -39,7 +36,7 @@ void sdio_clock_control(
 	SDIO->CLKCR = clkcr.all;
 }
 
-void sdio_command(
+void sdio_cpsm_set(
 		uint32_t argument,
 		int cmd_index,
 		sdio_respwait_t respwait,
@@ -51,6 +48,7 @@ void sdio_command(
 		sdio_cmdcompl_t cmdcompl,
 		sdio_nien_t nien,
 		sdio_atacmd_t atacmd) {
+
 	_sdio_cmd_reg_t cmd;
 	cmd.all = SDIO->CMD;
 
@@ -70,7 +68,135 @@ void sdio_command(
 	SDIO->CMD = cmd.all;
 }
 
+void sdio_dpsm_set(
+		sdio_dten_t dten,
+		sdio_dtdir_t dtdir,
+		sdio_dtmode_t dtmode,
+		sdio_dmaen_t dmaen,
+		sdio_dblocksize_t dblocksize,
+		sdio_rwstart_t rwstart,
+		sdio_rwstop_t rwstop,
+		sdio_rwmod_t rwmod,
+		sdio_sdioen_t sdioen,
+		uint32_t block_count,
+		uint32_t timeout) {
 
+	SDIO->DTIMER = timeout;
+
+	SDIO->DLEN = (1 << dblocksize) * block_count;
+
+	_sdio_data_reg_t dctrl;
+	dctrl.all = SDIO->DCTRL & 0xfffUL;
+
+	dctrl.bit.dt_en = dten;
+	dctrl.bit.dt_dir = dtdir;
+	dctrl.bit.dt_mode = dtmode;
+	dctrl.bit.dma_en = dmaen;
+	dctrl.bit.block_size = dblocksize;
+	dctrl.bit.rw_start = rwstart;
+	dctrl.bit.rw_stop = rwstop;
+	dctrl.bit.rw_mod = rwmod;
+	dctrl.bit.sdio_en = sdioen;
+
+	SDIO->DCTRL = dctrl.all;
+}
+
+void sdio_dpsm_reset() {
+	SDIO->DCTRL = 0;
+
+	SDIO->DTIMER = 0;
+
+	SDIO->DLEN = 0;
+}
+
+uint32_t sdio_DATA_ACT() {
+	return (SDIO->STA & (SDIO_STA_TXACT | SDIO_STA_RXACT));
+}
+
+err_t sdio_cmd_status() {
+	while(SDIO->STA & SDIO_STA_CMDACT);
+
+	/*Command response timeout*/
+	if (SDIO->STA & SDIO_STA_CTIMEOUT) {
+		SDIO->ICR = SDIO_ICR_CTIMEOUTC;
+		return E_SDIO_CMD_TIMEOUT;
+	}
+
+	/*Command response received (CRC check failed)*/
+	if (SDIO->STA & SDIO_STA_CCRCFAIL) {
+		SDIO->ICR = SDIO_ICR_CCRCFAILC;
+		return E_SDIO_CMD_CRCFAIL;
+	}
+
+	/*Command response received (CRC check passed)*/
+	if (SDIO->STA & SDIO_STA_CMDREND) {
+		SDIO->ICR = SDIO_ICR_CMDRENDC;
+		return E_NO_ERROR;
+	}
+
+	/*Command sent (no response required)*/
+	if (SDIO->STA & SDIO_STA_CMDSENT) {
+		SDIO->ICR = SDIO_ICR_CMDSENTC;
+		return E_NO_ERROR;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
+err_t sdio_data_status() {
+	uint32_t STA = SDIO->STA;
+
+	/*Received FIFO overrun error*/
+	if (STA & SDIO_STA_RXOVERR) {
+		SDIO->ICR = SDIO_ICR_RXOVERRC;
+		return E_SDIO_DATA_RX_OVERRUN;
+	}
+
+	/*Transmit FIFO underrun error*/
+	if (STA & SDIO_STA_TXUNDERR) {
+		SDIO->ICR = SDIO_ICR_TXUNDERRC;
+		return E_SDIO_DATA_TX_UNDERRUN;
+	}
+
+	/*Data timeout*/
+	if (STA & SDIO_STA_DTIMEOUT) {
+		SDIO->ICR = SDIO_ICR_DTIMEOUTC;
+		return E_SDIO_DATA_TIMEOUT;
+	}
+
+	/*Data block sent/received (CRC check failed)*/
+	if (STA & SDIO_STA_DCRCFAIL) {
+		SDIO->ICR = SDIO_ICR_DCRCFAILC;
+		return E_SDIO_DATA_CRCFAIL;
+	}
+
+	/*Data end (data counter, SDIDCOUNT, is zero)*/
+	if ((STA & SDIO_STA_DATAEND) && (STA & SDIO_STA_DBCKEND)) {
+		SDIO->ICR = SDIO_ICR_DATAENDC;
+		SDIO->ICR = SDIO_ICR_DBCKENDC;
+		return E_NO_ERROR;
+	}
+
+	/*Data block sent/received (CRC check passed)*/
+	if (STA & SDIO_STA_DBCKEND) {
+		SDIO->ICR = SDIO_ICR_DBCKENDC;
+		return E_NO_ERROR;
+	}
+
+	return E_NOT_IMPLEMENTED;
+}
+
+void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp) {
+	*cmd = SDIO->RESPCMD;
+
+	resp[0] = SDIO->RESP1;
+
+	if(resptype == SDIO_RESP_TYPE_SHORT) return;
+
+	resp[1] = SDIO->RESP2;
+	resp[2] = SDIO->RESP3;
+	resp[3] = SDIO->RESP4;
+}
 
 
 

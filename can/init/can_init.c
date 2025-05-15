@@ -24,8 +24,20 @@
 //CAN1_SCE_IRQHandler               /* CAN1 SCE                     */
 
 
-can_bus_t can1 = {
-		.bus = CAN1,
+can_bus_t can_bus_1 = {
+		.can_ptr[0] = CAN1,
+		.can_ptr[1] = CAN2,
+		.can_n = 0,
+		.error = 0,
+		.tx_error_counter  = 0,
+		.rx_error_counter = 0,
+		.last_error_code  = 0
+};
+
+can_bus_t can_bus_2 = {
+		.can_ptr[0] = CAN1,
+		.can_ptr[1] = CAN2,
+		.can_n = 1,
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
@@ -77,21 +89,28 @@ void can1_rcc_init(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
 }
 
-void can1_pre_init(void) {
-	can_software_master_reset(can1.bus);	//Force a master reset of the bxCAN
+void can1_pre_init(can_bus_t* bus) {
+	while(bus == NULL);
 
-	can_bus_initialization_request(can1.bus);
+	CAN_TypeDef* can_master = bus->can_ptr[0];
+	CAN_TypeDef* can = bus->can_ptr[bus->can_n];
 
-	can_MCR_TXFP_set(can1.bus, true);		//Priority driven by the request order (chronologically)
-	can_MCR_RFLM_set(can1.bus, true);		//Receive FIFO locked against overrun.
-	can_MCR_NART_set(can1.bus,false);		//The CAN hardware will automatically retransmit the message
-	can_MCR_AWUM_set(can1.bus,false);		//The Sleep mode is left on software request
-	can_MCR_ABOM_set(can1.bus, true);		//The Bus-Off state is left automatically by hardware
-	can_MCR_TTCM_set(can1.bus,false);		//Time Triggered Communication mode disabled
-	can_MCR_DBF_set(can1.bus, true);		//CAN reception/transmission frozen during debug
+	while(can == NULL);
 
-	can_filter_init_mode(can1.bus);			//Initialization mode for the filters
-	can2_filter_start_bank_set(can1.bus, 28); //28d, all the filters to CAN1 can be used
+	can_software_master_reset(can);	//Force a master reset of the bxCAN
+
+	can_bus_initialization_request(can);
+
+	can_MCR_TXFP_set(can, true);		//Priority driven by the request order (chronologically)
+	can_MCR_RFLM_set(can, true);		//Receive FIFO locked against overrun.
+	can_MCR_NART_set(can,false);		//The CAN hardware will automatically retransmit the message
+	can_MCR_AWUM_set(can,false);		//The Sleep mode is left on software request
+	can_MCR_ABOM_set(can, true);		//The Bus-Off state is left automatically by hardware
+	can_MCR_TTCM_set(can,false);		//Time Triggered Communication mode disabled
+	can_MCR_DBF_set(can, true);			//CAN reception/transmission frozen during debug
+
+	can_master_filter_init_mode(can_master);			//Initialization mode for the filters
+	can_master_can2_filter_start_bank_set(can_master, 28); //28d, all the filters to CAN1 can be used
 }
 
 int create_CO(CO_t** co)
@@ -198,9 +217,7 @@ void can1_init(void) {
 
 	can1_rcc_init();
 
-	while(can1.bus == NULL);
-
-	can1_pre_init();
+	can1_pre_init(&can_bus_1);
 
 	int res = create_CO(&co);
 
@@ -208,7 +225,7 @@ void can1_init(void) {
 		printf("Error create CO\n");
 	} else {
 		printf("CO created\n");
-		CO_ReturnError_t coerr = init_CO(co, &can1);
+		CO_ReturnError_t coerr = init_CO(co, &can_bus_1);
 
 		if(coerr != CO_ERROR_NO) {
 			printf("Error init CO (%d)\n", (int)coerr);

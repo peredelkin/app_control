@@ -41,7 +41,6 @@ METHOD_INIT_IMPL(M_sys_main, sys)
 
     // Вычислительные модули.
     INIT(cli);
-    INIT(msdi);
     INIT(ntc_temp);
     INIT(digital_in);
     INIT(digital_out);
@@ -108,7 +107,6 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
 
     DEINIT(mso);
     DEINIT(cli);
-    DEINIT(msdi);
     DEINIT(ntc_temp);
     DEINIT(digital_in);
     DEINIT(digital_out);
@@ -205,9 +203,8 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     FSM_state(sys);
 
     // Вычислительные модули.
-    CALC(msdi);
-    CALC(ntc_temp);
     CALC(digital_in);
+    CALC(ntc_temp); //должен стоять после CALC(digital_in);
 
     //TODO: тест CANopen SDO CLI
     if(mc_pid_i_ptr == NULL) {
@@ -240,8 +237,6 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 			mc_mot_pot_ptr = NULL;
 		}
 	}
-
-    //digital_out.in_data = digital_in.out_data; //TODO: тут должна быть логика MC
 
     CALC(ao_dac7562);
     CALC(digital_out);

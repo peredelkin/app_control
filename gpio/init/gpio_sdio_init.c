@@ -9,6 +9,7 @@
 
 #define SDIO_GPIO_COUNT 5
 
+const gpio_pin_t SDIO_DAT0_App = GPIO_PIN(GPIOC, GPIO_PIN_8); /*117, PC8, SDIO_D0, SDIO_DAT0_App*/
 const gpio_pin_t GPO_SDIO_PWR_App = GPIO_PIN(GPIOC, GPIO_PIN_9); /*118, PC9, GPIO_Output, SDIO_PWR_App*/
 const gpio_pin_t GPI_SDIO_CD_App = GPIO_PIN(GPIOA, GPIO_PIN_8); /*119, PA8, GPIO_Input, SDIO_CD_App*/
 

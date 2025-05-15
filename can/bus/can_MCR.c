@@ -5,7 +5,9 @@
  *      Author: Ruslan
  */
 
-#include "can_bus.h"
+#include "can_MCR.h"
+#include "can_reg.h"
+#include "can_MSR.h"
 
 void can_MCR_DBF_set(CAN_TypeDef* CAN, bool DBF) {
 	if(DBF) {
@@ -69,38 +71,21 @@ void can_MCR_TXFP_set(CAN_TypeDef* CAN, bool TXFP) {
 	}
 }
 
-
-/**
- * Sets SLEEP to 1 and waits for SLAK 1
- * @param CAN
- */
 void can_bus_sleep_request(CAN_TypeDef* CAN) {
 	BIT_ON_MASK(CAN->MCR, CAN_MCR_SLEEP);			//Sleep mode request
 	while(can_MSR_SLAK_read(CAN) != CAN_MSR_SLAK);	//Waits for Sleep acknowledge
 }
 
-/**
- * Sets SLEEP to 0 and waits for SLAK 0
- * @param CAN
- */
 void can_bus_sleep_exit(CAN_TypeDef* CAN) {
 	BIT_OFF_MASK(CAN->MCR, CAN_MCR_SLEEP);			//Left Sleep mode request
 	while (can_MSR_SLAK_read(CAN) == CAN_MSR_SLAK);
 }
 
-/**
- * Sets INRQ to 1 and waits for INAK 1
- * @param CAN
- */
 void can_bus_initialization_request(CAN_TypeDef* CAN) {
 	BIT_ON_MASK(CAN->MCR, CAN_MCR_INRQ);			//Initialization request
 	while(can_MSR_INAK_read(CAN) != CAN_MSR_INAK);	//Waits for Initialization acknowledge
 }
 
-/**
- * Sets INRQ to 0 and waits for INAK 0
- * @param CAN
- */
 void can_bus_initialization_exit(CAN_TypeDef* CAN) {
 	BIT_OFF_MASK(CAN->MCR, CAN_MCR_INRQ);			//Normal mode request
 	while(can_MSR_INAK_read(CAN) == CAN_MSR_INAK);	//Waits for Normal mode

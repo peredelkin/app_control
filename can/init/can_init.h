@@ -8,6 +8,8 @@
 #ifndef CAN_INIT_CAN_INIT_H_
 #define CAN_INIT_CAN_INIT_H_
 
+#include <stdint.h>
+
 extern void can1_nvic_init(uint32_t priority);
 extern void can1_init(void);
 
