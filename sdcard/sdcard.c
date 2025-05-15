@@ -644,49 +644,90 @@ err_t sdcard_cmd_read(sdcard_t* sdcard, uint32_t count, uint64_t addr) {
 	return sdcard->cmd_err;
 }
 
-err_t sdcard_cmd_write(sdcard_t* sdcard, uint32_t count, uint32_t* addr) {
-	if(sdcard == NULL || addr == NULL) return E_NULL_POINTER;
+err_t sdcard_cmd_write(sdcard_t* sdcard, uint32_t count, uint64_t addr) {
+	if(sdcard == NULL) return E_NULL_POINTER;
 
-	if(count > 1) {
-		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
-		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+	if(count == 0) return E_INVALID_VALUE;
+
+	union __U_ADDR_64 {
+	    uint64_t _64;
+	    struct _S_ADDR_64 {uint32_t lo; uint32_t hi;} _32;
+	};
+
+	union __U_ADDR_64 __u_addr_64 = {addr};
+
+	uint32_t addr_hi = __u_addr_64._32.hi;
+	uint32_t addr_lo = __u_addr_64._32.lo;
+
+	if(sdcard->type == SDCARD_TYPE_SC) {
+		addr_lo = addr_lo * 512; //TODO: сделать настройку размера блка
+	} else {
+		if(count > 1) {
+			//Set block count
+			sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD23, count);
+			if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+		}
 	}
 
 	if(sdcard->type == SDCARD_TYPE_UC) {
-		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & addr[1]));	//[5:0] extended address
+		//Set extended address
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, addr_hi);
 		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
-	if(count == 1) {
-		//Single Block Write
-		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD24, addr[0]);
-	} else {
+	if(count > 1) {
 		//Multi-Block Write
-		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD25, addr[0]);
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD25, addr_lo);
+	} else {
+		//Single Block Write
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD24, addr_lo);
 	}
 
 	return sdcard->cmd_err;
 }
 
-err_t sdcard_cmd_erase(sdcard_t* sdcard, uint32_t* first, uint32_t* last, uint32_t func) {
-	if(sdcard == NULL || first == NULL || last == NULL) return E_NULL_POINTER;
+err_t sdcard_cmd_erase(sdcard_t* sdcard, uint64_t addr_first, uint64_t addr_last, uint32_t func) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	union __U_ADDR_64 {
+	    uint64_t _64;
+	    struct _S_ADDR_64 {uint32_t lo; uint32_t hi;} _32;
+	};
+
+	union __U_ADDR_64 __u_addr_first_64 = {addr_first};
+
+	uint32_t addr_first_hi = __u_addr_first_64._32.hi;
+	uint32_t addr_first_lo = __u_addr_first_64._32.lo;
+
+	union __U_ADDR_64 __u_addr_last_64 = {addr_last};
+
+	uint32_t addr_last_hi = __u_addr_last_64._32.hi;
+	uint32_t addr_last_lo = __u_addr_last_64._32.lo;
+
+	if(sdcard->type == SDCARD_TYPE_SC) {
+		//TODO: сделать настройку размера блка
+		addr_first_lo = addr_first_lo * 512;
+		addr_last_lo = addr_last_lo * 512;
+	}
 
 	//first
 	if (sdcard->type == SDCARD_TYPE_UC) {
-		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & first[1]));	//[5:0] extended address
+		//Set extended address
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, addr_first_hi);
 		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
-	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD32, first[0]);
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD32, addr_first_lo);
 	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	//last
 	if (sdcard->type == SDCARD_TYPE_UC) {
-		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, (0b111111 & last[1]));	//[5:0] extended address
+		//Set extended address
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD22, addr_last_hi);
 		if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 	}
 
-	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD33, last[0]);
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD33, addr_last_lo);
 	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	//erase
