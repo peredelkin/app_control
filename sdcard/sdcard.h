@@ -145,6 +145,7 @@ extern err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_versi
 
 //read write
 extern err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout);
+extern err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout);
 
 //функции отправки команд
 extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);

@@ -796,8 +796,7 @@ err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
 	return sdcard->data_err;
 }
 
-//data path
-//TODO: нужно как то разделить ошибки, чтобы не затирать ошибку SDIO шибкой SD card
+//data
 err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout) {
 	if (sdcard == NULL || memory_addr == NULL) return E_NULL_POINTER;
 
@@ -808,10 +807,8 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 
 	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
 
-	err_t err = E_NO_ERROR;
-
-	err = sdcard_dma_read_setup(sdcard, memory_addr);
-	if (err != E_NO_ERROR) return err;
+	sdcard->dma_err = sdcard_dma_read_setup(sdcard, memory_addr);
+	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
 
 	sdcard->cmd_err = sdcard_cmd_read(sdcard, block_count, block_addr);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
@@ -850,10 +847,54 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	return E_NO_ERROR;
 }
 
-err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr) {
-	err_t err = E_NO_ERROR;
+err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout) {
+	if (sdcard == NULL || memory_addr == NULL) return E_NULL_POINTER;
 
-	return err;
+	if (block_count == 0) return E_INVALID_VALUE;
+
+	//stream conf
+	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блка
+
+	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
+
+	sdcard->dma_err = sdcard_dma_write_setup(sdcard, memory_addr);
+	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
+
+	sdcard->cmd_err = sdcard_cmd_write(sdcard, block_count, block_addr);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdio_dpsm_set(
+			SDIO_DTEN_ENA,
+			SDIO_DTDIR_TO_CARD,
+			SDIO_DTMODE_BLOCK,
+			SDIO_DMAEN_ENA,
+			9, /*TODO: сделать настройку размера блока*/
+			SDIO_RWSTART_DIS,
+			SDIO_RWSTOP_DIS,
+			SDIO_RWMOD_D2,
+			SDIO_SDIOEN_ENA,
+			block_count,
+			timeout);
+
+	sdcard->data_err = sdcard_dma_wait_tc(sdcard);
+	if (sdcard->data_err == E_NOT_IMPLEMENTED) {
+		do {
+			sdcard->data_err = sdio_data_status();
+		} while (sdcard->data_err == E_NOT_IMPLEMENTED);
+	}
+
+	if(sdcard->type == SDCARD_TYPE_SC) {
+		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
+	} else {
+		sdcard->cmd_err = sdcard_operation_complete_state(sdcard);
+	}
+
+	sdio_dpsm_reset();
+
+	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	return E_NO_ERROR;
 }
 
 
