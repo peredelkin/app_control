@@ -25,6 +25,8 @@
 
 //! Ошибки DPSM
 #define E_SDIO_DATA (E_SDIO_CMD + 2)
+//! Data block sent/received (CRC check passed)
+#define E_SDIO_DATA_DBCKEND (E_SDIO_DATA + 0)
 //! Data block sent/received (CRC check failed)
 #define E_SDIO_DATA_CRCFAIL (E_SDIO_DATA + 0)
 //! Data timeout
@@ -254,9 +256,11 @@ extern void sdio_cpsm_set(uint32_t argument, int cmd_index, sdio_respwait_t resp
 		sdio_intwait_t intwait, sdio_pendwait_t pendwait, sdio_cpsmen_t cpsmen, sdio_suspend_t suspend,
 		sdio_cmdcompl_t cmdcompl, sdio_nien_t nien, sdio_atacmd_t atacmd);
 
-extern void sdio_dpsm_set(sdio_dten_t dten, sdio_dtdir_t dtdir, sdio_dtmode_t dtmode, sdio_dmaen_t dmaen,
+extern void sdio_dpsm_set(sdio_dtdir_t dtdir, sdio_dtmode_t dtmode, sdio_dmaen_t dmaen,
 		sdio_dblocksize_t dblocksize, sdio_rwstart_t rwstart, sdio_rwstop_t rwstop, sdio_rwmod_t rwmod,
 		sdio_sdioen_t sdioen, uint32_t block_count, uint32_t timeout);
+
+extern void sdio_dpsm_enable();
 
 extern void sdio_dpsm_reset();
 

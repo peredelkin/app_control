@@ -76,7 +76,7 @@ void CAN_TIM_IRQHANDLER(void) {
 //volatile int test_extsram;
 
 sdcard_t sdcard; //TODO: не забыть убрать
-uint8_t sdcard_data_array[4096];
+uint8_t sdcard_data_array[1024] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32";
 
 void dma_rcc_init() {
 	//DMA
@@ -162,7 +162,7 @@ int main(void)
 		sys_counter_delay(0, 300000); // 300ms
 
 		RCC->APB2ENR |= RCC_APB2ENR_SDIOEN;
-		sdio_clock_control(126, SDIO_CLKCR_CLK_EN, SDIO_CLKCR_PWRSAV_ENA, SDIO_CLKCR_BYP_DIS);
+		sdio_clock_control(120, SDIO_CLKCR_CLK_EN, SDIO_CLKCR_PWRSAV_ENA, SDIO_CLKCR_BYP_DIS);
 		sdio_power_control(SDIO_POWER_PWRCTRL_ON);
 
 		err_t sdio_err = E_NO_ERROR;
@@ -328,21 +328,33 @@ int main(void)
 
 		printf("CMD 7 STATE: %d\n", sdcard.current_state);
 
+		//WRITE
+//		sdcard_data_array[1023] = 0xFF;
+//
+//		sdio_err = sdcard_write(&sdcard, ((uint32_t*) sdcard_data_array), 0, 2, 0xFFFFFF);
+//		if (sdio_err != E_NO_ERROR) {
+//			printf("WRITE Err: %d\n", sdio_err);
+//			goto exit_sdcard_init;
+//		}
+//
+//		printf("WRITE STATE: %d\n", sdcard.current_state);
+//
+//		sdcard.current_state = 4;
+
+		//DATA reset
+		memset(sdcard_data_array, 0xEE, 1024);
+
 		//READ
 		char hex_to_str[17];
 
-		for (uint64_t block_addr = 0; block_addr < 1024; block_addr+=8) {
-			sdio_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array), block_addr, 8, 0xFFFFFF);
+		for (uint64_t block_addr = 0; block_addr < 32; block_addr+=2) {
+			sdio_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array), block_addr, 2, 0xFFFFFF);
 			if (sdio_err != E_NO_ERROR) {
 				printf("READ Err: %d\n", sdio_err);
 				goto exit_sdcard_init;
 			}
 
-			printf("READ STATE: %d\n", sdcard.current_state);
-
-			hex_to_str[16] = 0;
-
-			for (int i = 0; i < (4096 - 16); i += 16) {
+			for (int i = 0; i < 1024; i += 16) {
 				memcpy(hex_to_str, &sdcard_data_array[i], 16);
 				hex_to_str[16] = 0;
 
@@ -361,6 +373,9 @@ int main(void)
 				sys_counter_delay(0, 1000); // 1ms
 			}
 		}
+
+		printf("READ STATE: %d\n", sdcard.current_state);
+
 	} else {
 		printf("SD Card Not Inserted\n");
 	}

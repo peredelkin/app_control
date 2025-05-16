@@ -745,6 +745,11 @@ err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint8_t d
 
 	dma_stream_deinit(&(sdcard->dma));
 
+	//11: full FIFO
+	//1: Direct mode disabled
+	//TODO: разобраться с настройкой FIFO DMA
+	sdcard->dma.stream->FCR |= DMA_SxFCR_FTH | DMA_SxFCR_DMDIS;
+
 	dma_stream_channel_selection(&(sdcard->dma), 4);							//Channel 4
 
 	dma_stream_peripheral_burst_transfer_configuration(&(sdcard->dma), 0b01);	//4 beats
@@ -757,7 +762,7 @@ err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint8_t d
 	dma_stream_memory_address(&(sdcard->dma), 0, (uint32_t) (memory_addr));		//Destination/Source
 	dma_stream_memory_increment_mode(&(sdcard->dma), true);						//Memory increment
 
-	dma_stream_number_of_data(&(sdcard->dma), 0/*item_count*/);					//Count
+	dma_stream_number_of_data(&(sdcard->dma), 0);								//Count
 
 	dma_stream_data_transfer_direction(&(sdcard->dma), dir);					//DIr
 
@@ -767,31 +772,30 @@ err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, uint8_t d
 }
 
 err_t sdcard_dma_read_setup(sdcard_t* sdcard, uint32_t* memory_addr) {
-	return sdcard_dma_common_setup(sdcard, memory_addr, 0b00);		//Peripheral-to-memory
+	return sdcard_dma_common_setup(sdcard, memory_addr, 0b00);				//Peripheral-to-memory
 }
 
 err_t sdcard_dma_write_setup(sdcard_t* sdcard, uint32_t* memory_addr) {
 	return sdcard_dma_common_setup(sdcard, memory_addr, 0b01);		//Memory-to-peripheral
 }
 
-err_t sdcard_dma_wait_tc(sdcard_t *sdcard) {
-	while (!dma_stream_transfer_complete_interrupt_read(&sdcard->dma)) { //wait TC
-
-		if (dma_stream_transfer_error_interrupt_read(&sdcard->dma)) { //if TE
-			dma_stream_transfer_error_interrupt_clear(&sdcard->dma); //clear TE
-			dma_stream_enable(&(sdcard->dma), false); //disable Stream
-			return E_STATE;
-		}
-
+err_t sdcard_wait_transfer_complete(sdcard_t *sdcard) {
+	do {
 		sdcard->data_err = sdio_data_status();
-		if ((sdcard->data_err != E_NO_ERROR) && (sdcard->data_err != E_NOT_IMPLEMENTED)) {
-			dma_stream_enable(&(sdcard->dma), false); //disable Stream
-			return sdcard->data_err;
-		}
+	} while ((sdcard->data_err == E_NOT_IMPLEMENTED) || sdcard->data_err == E_SDIO_DATA_DBCKEND);
+
+	if (dma_stream_transfer_error_interrupt_read(&sdcard->dma)) { //if TE
+		dma_stream_transfer_error_interrupt_clear(&sdcard->dma); //clear TE
+		dma_stream_enable(&(sdcard->dma), false); //disable Stream
+		return E_STATE;
 	}
 
-	dma_stream_transfer_complete_interrupt_clear(&(sdcard->dma)); //clear TC
-	dma_stream_enable(&(sdcard->dma), false); //disable Stream
+	if (dma_stream_transfer_complete_interrupt_read(&sdcard->dma)) { //if TC
+		dma_stream_transfer_complete_interrupt_clear(&(sdcard->dma)); //clear TC
+		dma_stream_enable(&(sdcard->dma), false); //disable Stream
+	} else {
+		return E_STATE;
+	}
 
 	return sdcard->data_err;
 }
@@ -810,11 +814,7 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	sdcard->dma_err = sdcard_dma_read_setup(sdcard, memory_addr);
 	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
 
-	sdcard->cmd_err = sdcard_cmd_read(sdcard, block_count, block_addr);
-	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
-
 	sdio_dpsm_set(
-			SDIO_DTEN_ENA,
 			SDIO_DTDIR_FROM_CARD,
 			SDIO_DTMODE_BLOCK,
 			SDIO_DMAEN_ENA,
@@ -826,12 +826,12 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 			block_count,
 			timeout);
 
-	sdcard->data_err = sdcard_dma_wait_tc(sdcard);
-	if (sdcard->data_err == E_NOT_IMPLEMENTED) {
-		do {
-			sdcard->data_err = sdio_data_status();
-		} while (sdcard->data_err == E_NOT_IMPLEMENTED);
-	}
+	sdcard->cmd_err = sdcard_cmd_read(sdcard, block_count, block_addr);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdio_dpsm_enable();
+
+	sdcard->data_err = sdcard_wait_transfer_complete(sdcard);
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
 		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
@@ -860,11 +860,7 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 	sdcard->dma_err = sdcard_dma_write_setup(sdcard, memory_addr);
 	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
 
-	sdcard->cmd_err = sdcard_cmd_write(sdcard, block_count, block_addr);
-	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
-
 	sdio_dpsm_set(
-			SDIO_DTEN_ENA,
 			SDIO_DTDIR_TO_CARD,
 			SDIO_DTMODE_BLOCK,
 			SDIO_DMAEN_ENA,
@@ -876,12 +872,12 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 			block_count,
 			timeout);
 
-	sdcard->data_err = sdcard_dma_wait_tc(sdcard);
-	if (sdcard->data_err == E_NOT_IMPLEMENTED) {
-		do {
-			sdcard->data_err = sdio_data_status();
-		} while (sdcard->data_err == E_NOT_IMPLEMENTED);
-	}
+	sdcard->cmd_err = sdcard_cmd_write(sdcard, block_count, block_addr);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdio_dpsm_enable();
+
+	sdcard->data_err = sdcard_wait_transfer_complete(sdcard);
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
 		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);

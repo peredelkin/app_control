@@ -69,7 +69,6 @@ void sdio_cpsm_set(
 }
 
 void sdio_dpsm_set(
-		sdio_dten_t dten,
 		sdio_dtdir_t dtdir,
 		sdio_dtmode_t dtmode,
 		sdio_dmaen_t dmaen,
@@ -86,9 +85,9 @@ void sdio_dpsm_set(
 	SDIO->DLEN = (1 << dblocksize) * block_count;
 
 	_sdio_data_reg_t dctrl;
-	dctrl.all = SDIO->DCTRL & 0xfffUL;
+	dctrl.all = SDIO->DCTRL;
 
-	dctrl.bit.dt_en = dten;
+	dctrl.bit.dt_en = SDIO_DTEN_DIS;
 	dctrl.bit.dt_dir = dtdir;
 	dctrl.bit.dt_mode = dtmode;
 	dctrl.bit.dma_en = dmaen;
@@ -97,6 +96,15 @@ void sdio_dpsm_set(
 	dctrl.bit.rw_stop = rwstop;
 	dctrl.bit.rw_mod = rwmod;
 	dctrl.bit.sdio_en = sdioen;
+
+	SDIO->DCTRL = dctrl.all;
+}
+
+void sdio_dpsm_enable() {
+	_sdio_data_reg_t dctrl;
+	dctrl.all = SDIO->DCTRL;
+
+	dctrl.bit.dt_en = SDIO_DTEN_ENA;
 
 	SDIO->DCTRL = dctrl.all;
 }
@@ -180,7 +188,7 @@ err_t sdio_data_status() {
 	/*Data block sent/received (CRC check passed)*/
 	if (STA & SDIO_STA_DBCKEND) {
 		SDIO->ICR = SDIO_ICR_DBCKENDC;
-		return E_NO_ERROR;
+		return E_SDIO_DATA_DBCKEND;
 	}
 
 	return E_NOT_IMPLEMENTED;
