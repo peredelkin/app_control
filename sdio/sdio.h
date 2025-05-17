@@ -17,26 +17,24 @@
  * Ошибки
  */
 //! Ошибка CPSM
-#define E_SDIO_CMD (E_USER)
 //! Command response received (CRC check failed)
-#define E_SDIO_CMD_CRCFAIL (E_SDIO_CMD + 0)
+#define E_SDIO_CMD_CRCFAIL (E_SDIO_BASE + 1)
 //! Command response timeout
-#define E_SDIO_CMD_TIMEOUT (E_SDIO_CMD + 1)
+#define E_SDIO_CMD_TIMEOUT (E_SDIO_BASE + 2)
 
 //! Ошибки DPSM
-#define E_SDIO_DATA (E_SDIO_CMD + 2)
 //! Data block sent/received (CRC check passed)
-#define E_SDIO_DATA_DBCKEND (E_SDIO_DATA + 0)
+#define E_SDIO_DATA_DBCKEND (E_SDIO_BASE + 3)
 //! Data block sent/received (CRC check failed)
-#define E_SDIO_DATA_CRCFAIL (E_SDIO_DATA + 0)
+#define E_SDIO_DATA_CRCFAIL (E_SDIO_BASE + 4)
 //! Data timeout
-#define E_SDIO_DATA_TIMEOUT (E_SDIO_DATA + 1)
+#define E_SDIO_DATA_TIMEOUT (E_SDIO_BASE + 5)
 //! Transmit FIFO underrun error
-#define E_SDIO_DATA_TX_UNDERRUN (E_SDIO_DATA + 2)
+#define E_SDIO_DATA_TX_UNDERRUN (E_SDIO_BASE + 6)
 //! Received FIFO overrun error
-#define E_SDIO_DATA_RX_OVERRUN (E_SDIO_DATA + 3)
+#define E_SDIO_DATA_RX_OVERRUN (E_SDIO_BASE + 7)
 //! Start bit not detected on all data signals in wide bus mode
-#define E_SDIO_DATA_STARTBIT (E_SDIO_DATA + 4)
+#define E_SDIO_DATA_STARTBIT (E_SDIO_BASE + 8)
 
 #define SDIO_ACCESS_WIDTH 4
 

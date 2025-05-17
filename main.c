@@ -183,7 +183,7 @@ int main(void)
 		//CMD0
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD0, 0);
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 0 Err: %d\n", sdio_err);
+			printf("CMD 0 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -192,7 +192,7 @@ int main(void)
 		//CMD8
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD8, (0b1 << 8));
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 8 Err: %d\n", sdio_err);
+			printf("CMD 8 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -201,7 +201,7 @@ int main(void)
 		//ACMD41 without argument
 		sdio_err = sdcard_acmd(&sdcard, &sdcard_ACMD41, 0);
 		if (sdio_err != E_NO_ERROR) {
-			printf("ACMD 41 Err: %d\n", sdio_err);
+			printf("ACMD 41 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -211,7 +211,7 @@ int main(void)
 
 			sdio_err = sdcard_acmd(&sdcard, &sdcard_ACMD41, ((0b1 << 30) | (0b11 << 20)));
 			if (sdio_err != E_NO_ERROR) {
-				printf("ACMD 41 Err: %d\n", sdio_err);
+				printf("ACMD 41 Err: %lu\n", sdio_err);
 				goto exit_sdcard_init;
 			}
 
@@ -228,7 +228,7 @@ int main(void)
 
 		sdio_err = sdcard_change_current_state(&sdcard);
 		if (sdio_err != E_NO_ERROR) {
-			printf("STATE 41 Err: %d\n", sdio_err);
+			printf("STATE 41 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -242,7 +242,7 @@ int main(void)
 		//CMD2
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD2, 0);
 		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 2 Err: %d\n", sdio_err);
+			printf("CMD 2 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -251,7 +251,7 @@ int main(void)
 		//CMD3
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD3, 0);
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 3 Err: %d\n", sdio_err);
+			printf("CMD 3 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -263,7 +263,7 @@ int main(void)
 		//CMD9
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD9, sdcard.RCA);
 		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 9 Err: %d\n", sdio_err);
+			printf("CMD 9 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -273,7 +273,7 @@ int main(void)
 
 		sdio_err = sdcard_CSD_TRAN_SPEED_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.tran_speed);
 		if (sdio_err != E_NO_ERROR) {
-			printf("TRAN SPEED calc Err: %d\n", sdio_err);
+			printf("TRAN SPEED calc Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -281,7 +281,7 @@ int main(void)
 
 		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len_max, &sdcard.CSD.bl_len_max_power);
 		if (sdio_err != E_NO_ERROR) {
-			printf("BLOCK LEN calc Err: %d\n", sdio_err);
+			printf("BLOCK LEN calc Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -289,7 +289,7 @@ int main(void)
 
 		sdio_err = sdcard_CSD_BLOCKNR_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_count);
 		if (sdio_err != E_NO_ERROR) {
-			printf("BLOCKNR calc Err: %d\n", sdio_err);
+			printf("BLOCKNR calc Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -297,7 +297,7 @@ int main(void)
 
 		sdio_err = sdcard_CSD_memory_capacity_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.capacity);
 		if (sdio_err != E_NO_ERROR) {
-			printf("capacity calc Err: %d\n", sdio_err);
+			printf("capacity calc Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -308,7 +308,7 @@ int main(void)
 		//CMD10
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD10, sdcard.RCA);
 		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 10 Err: %d\n", sdio_err);
+			printf("CMD 10 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -322,7 +322,7 @@ int main(void)
 		//CMD7
 		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD7_adressed, sdcard.RCA);
 		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 7 Err: %d\n", sdio_err);
+			printf("CMD 7 Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
@@ -350,7 +350,7 @@ int main(void)
 		for (uint64_t block_addr = 0; block_addr < 32; block_addr+=2) {
 			sdio_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array), block_addr, 2, 0xFFFFFF);
 			if (sdio_err != E_NO_ERROR) {
-				printf("READ Err: %d\n", sdio_err);
+				printf("READ Err: %lu\n", sdio_err);
 				goto exit_sdcard_init;
 			}
 
