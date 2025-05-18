@@ -22,25 +22,26 @@
 #define E_DMA_STREAM_FIFO_ERROR (E_DMA_BASE + 4)
 
 typedef enum {
-	DMA1_Stream_0,//!< DMA1_Stream_0
-	DMA1_Stream_1,//!< DMA1_Stream_1
-	DMA1_Stream_2,//!< DMA1_Stream_2
-	DMA1_Stream_3,//!< DMA1_Stream_3
-	DMA1_Stream_4,//!< DMA1_Stream_4
-	DMA1_Stream_5,//!< DMA1_Stream_5
-	DMA1_Stream_6,//!< DMA1_Stream_6
-	DMA1_Stream_7,//!< DMA1_Stream_7
+	DMA1_Stream_0,//!< DMA1_Stream0
+	DMA1_Stream_1,//!< DMA1_Stream1
+	DMA1_Stream_2,//!< DMA1_Stream2
+	DMA1_Stream_3,//!< DMA1_Stream3
+	DMA1_Stream_4,//!< DMA1_Stream4
+	DMA1_Stream_5,//!< DMA1_Stream5
+	DMA1_Stream_6,//!< DMA1_Stream6
+	DMA1_Stream_7,//!< DMA1_Stream7
 
-	DMA2_Stream_0,//!< DMA2_Stream_0
-	DMA2_Stream_1,//!< DMA2_Stream_1
-	DMA2_Stream_2,//!< DMA2_Stream_2
-	DMA2_Stream_3,//!< DMA2_Stream_3
-	DMA2_Stream_4,//!< DMA2_Stream_4
-	DMA2_Stream_5,//!< DMA2_Stream_5
-	DMA2_Stream_6,//!< DMA2_Stream_6
-	DMA2_Stream_7 //!< DMA2_Stream_7
+	DMA2_Stream_0,//!< DMA2_Stream0
+	DMA2_Stream_1,//!< DMA2_Stream1
+	DMA2_Stream_2,//!< DMA2_Stream2
+	DMA2_Stream_3,//!< DMA2_Stream3
+	DMA2_Stream_4,//!< DMA2_Stream4
+	DMA2_Stream_5,//!< DMA2_Stream5
+	DMA2_Stream_6,//!< DMA2_Stream6
+	DMA2_Stream_7 //!< DMA2_Stream7
 } dma_n_stream_n_t;
 
+//настройки структуры
 typedef enum {
 	DMA_Controller_1,
 	DMA_Controller_2
@@ -57,19 +58,21 @@ typedef enum {
 	DMA_Stream_7
 } dma_stream_n_t;
 
-typedef struct {
-	uint32_t FEIF;
-	uint32_t DMEIF;
-	uint32_t TEIF;
-	uint32_t HTIF;
-	uint32_t TCIF;
-} dma_interrupt_mask_t;
+typedef enum {
+	DMA_ISR_IFCR_LOW,
+	DMA_ISR_IFCR_HIGH
+} dma_isr_ifcr_n_t;
+
+//настройки стрима
+typedef enum {
+	DMA_SCR_EN_DIS,
+	DMA_SCR_EN_ENA
+} dma_scr_en_t;
 
 typedef struct {
-	DMA_TypeDef* dma [DMA_CONTROLLERS_COUNT];
-	DMA_Stream_TypeDef* stream [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
-	bool busy [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
-	dma_interrupt_mask_t interrupt_mask [DMA_CONTROLLER_STREAMS_COUNT];
+	dma_controller_n_t controller;
+	dma_stream_n_t stream;
+	dma_isr_ifcr_n_t status;
 	bool initialized;
 } dma_t;
 //NEW DMA END

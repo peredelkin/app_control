@@ -2,17 +2,23 @@
 #include "stddef.h"
 
 //NEW DMA BEGIN
-static dma_t _dma;
+typedef struct {
+	uint32_t FEIF;
+	uint32_t DMEIF;
+	uint32_t TEIF;
+	uint32_t HTIF;
+	uint32_t TCIF;
+} _dma_interrupt_mask_t;
 
-enum {
-	DMA_ISR_LOW,
-	DMA_ISR_HIGH
-};
+typedef struct {
+	DMA_TypeDef* dma [DMA_CONTROLLERS_COUNT];
+	DMA_Stream_TypeDef* stream [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
+	bool busy [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
+	_dma_interrupt_mask_t interrupt_mask [DMA_CONTROLLER_STREAMS_COUNT];
+	bool initialized;
+} _dma_controller_t;
 
-enum {
-	DMA_IFCR_LOW,
-	DMA_IFCR_HIGH
-};
+static _dma_controller_t _dma;
 
 void dma_controller_init() {
 	//DMA
@@ -91,31 +97,32 @@ void dma_controller_init() {
 	_dma.initialized = true;
 }
 
-bool dma_initialized() {
+static bool _dma_initialized() {
 	return _dma.initialized;
 }
 
-dma_controller_n_t dma_define_controller(dma_n_stream_n_t stream) {
+static dma_controller_n_t _dma_define_controller(dma_n_stream_n_t stream) {
 	return ((stream & DMA2_Stream_0) ? DMA_Controller_2 : DMA_Controller_1);
 }
 
-dma_stream_n_t dma_define_stream(dma_n_stream_n_t stream) {
+static dma_stream_n_t _dma_define_stream(dma_n_stream_n_t stream) {
 	return (stream & DMA_Stream_7);
 }
 
-err_t dma_stream_busy_read(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
-	if(dma_initialized() == false) return E_CANCELED;
-
-	if (_dma.busy[controller_n][stream_n]) return E_BUSY;
-
-	return E_NO_ERROR;
+static dma_isr_ifcr_n_t _dma_define_status(dma_n_stream_n_t stream) {
+	return (stream & DMA_Stream_4) ? DMA_ISR_IFCR_HIGH : DMA_ISR_IFCR_LOW;
 }
 
-err_t dma_stream_status_read(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
-	if(dma_initialized() == false) return E_CANCELED;
+static bool _dma_stream_busy_read(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
+	return _dma.busy[controller_n][stream_n];
+}
 
-	uint32_t ISR = (stream_n & DMA_Stream_4) ? _dma.dma[controller_n]->ISR[DMA_ISR_HIGH] : _dma.dma[controller_n]->ISR[DMA_ISR_LOW];
+static void _dma_stream_busy_write(dma_controller_n_t controller_n, dma_stream_n_t stream_n, bool busy) {
+	_dma.busy[controller_n][stream_n] = busy;
+}
 
+static err_t _dma_stream_status_read(dma_controller_n_t controller_n, dma_stream_n_t stream_n, dma_isr_ifcr_n_t status) {
+	uint32_t ISR = _dma.dma[controller_n]->ISR[status];
 
 	if (ISR & _dma.interrupt_mask[stream_n].FEIF) {
 		return E_DMA_STREAM_FIFO_ERROR;
@@ -140,44 +147,94 @@ err_t dma_stream_status_read(dma_controller_n_t controller_n, dma_stream_n_t str
 	return E_NOT_IMPLEMENTED;
 }
 
-void dma_stream_status_FEIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
-	if(stream_n & DMA_Stream_4) {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_HIGH]  = _dma.interrupt_mask[stream_n].FEIF;
-	} else {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_LOW]  = _dma.interrupt_mask[stream_n].FEIF;
-	}
+static void _dma_stream_status_FEIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n, dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status]  = _dma.interrupt_mask[stream_n].FEIF;
 }
 
-void dma_stream_status_DMEIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
-	if(stream_n & DMA_Stream_4) {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_HIGH]  = _dma.interrupt_mask[stream_n].DMEIF;
-	} else {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_LOW]  = _dma.interrupt_mask[stream_n].DMEIF;
-	}
+static void _dma_stream_status_DMEIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n, dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status]  = _dma.interrupt_mask[stream_n].DMEIF;
 }
 
-void dma_stream_status_TEIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
-	if(stream_n & DMA_Stream_4) {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_HIGH]  = _dma.interrupt_mask[stream_n].TEIF;
-	} else {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_LOW]  = _dma.interrupt_mask[stream_n].TEIF;
-	}
+static void _dma_stream_status_TEIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n, dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status]  = _dma.interrupt_mask[stream_n].TEIF;
 }
 
-void dma_stream_status_HTIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
-	if(stream_n & DMA_Stream_4) {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_HIGH]  = _dma.interrupt_mask[stream_n].HTIF;
-	} else {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_LOW]  = _dma.interrupt_mask[stream_n].HTIF;
-	}
+static void _dma_stream_status_HTIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n, dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status]  = _dma.interrupt_mask[stream_n].HTIF;
 }
 
-void dma_stream_status_TCIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
-	if(stream_n & DMA_Stream_4) {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_HIGH]  = _dma.interrupt_mask[stream_n].TCIF;
-	} else {
-		_dma.dma[controller_n]->ISR[DMA_IFCR_LOW]  = _dma.interrupt_mask[stream_n].TCIF;
+static void _dma_stream_status_TCIF_clear(dma_controller_n_t controller_n, dma_stream_n_t stream_n, dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status]  = _dma.interrupt_mask[stream_n].TCIF;
+}
+
+static err_t dma_stream_deinit(dma_t* dma) {
+	if(_dma_initialized() == false) return E_CANCELED;
+
+	if(dma == NULL) return E_NULL_POINTER;
+
+	if(dma->initialized == false) return E_CANCELED;
+
+	//TODO: сбросить настройки стрима
+
+	return E_NO_ERROR;
+}
+
+//функции пользователя
+err_t dma_struct_init(dma_t* dma, dma_n_stream_n_t stream) {
+	if(dma == NULL) return E_NULL_POINTER;
+
+	dma->initialized = false;
+	dma->controller = _dma_define_controller(stream);
+	dma->stream = _dma_define_stream(stream);
+	dma->status = _dma_define_status(stream);
+	dma->initialized = true;
+
+	return E_NO_ERROR;
+}
+
+err_t dma_stream_open(dma_t* dma) {
+	if(_dma_initialized() == false) return E_CANCELED;
+
+	if(dma == NULL) return E_NULL_POINTER;
+
+	if(dma->initialized == false) return E_CANCELED;
+
+	__disable_irq();
+	if(_dma_stream_busy_read(dma->controller, dma->stream) == true) {
+		__enable_irq();
+		return E_BUSY;
 	}
+	_dma_stream_busy_write(dma->controller, dma->stream, true);
+	__enable_irq();
+
+	return E_NO_ERROR;
+}
+
+err_t dma_stream_init(dma_t* dma) {
+	if(_dma_initialized() == false) return E_CANCELED;
+
+	if(dma == NULL) return E_NULL_POINTER;
+
+	if(dma->initialized == false) return E_CANCELED;
+
+	//TODO: настроить стрим
+
+	return E_NO_ERROR;
+}
+
+err_t dma_stream_close(dma_t* dma) {
+	if(_dma_initialized() == false) return E_CANCELED;
+
+	if(dma == NULL) return E_NULL_POINTER;
+
+	if(dma->initialized == false) return E_CANCELED;
+
+	err_t err = dma_stream_deinit(dma);
+	if(err != E_NO_ERROR) return err;
+
+	_dma_stream_busy_write(dma->controller, dma->stream, false);
+
+	return E_NO_ERROR;
 }
 //NEW DMA END
 
