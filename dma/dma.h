@@ -69,6 +69,14 @@ typedef enum {
 	DMA_SCR_EN_ENA
 } dma_scr_en_t;
 
+typedef enum {
+
+} dma_scr_dmeie_t;
+
+typedef enum {
+
+} dma_scr_teie_t;
+
 typedef struct {
 	dma_controller_n_t controller;
 	dma_stream_n_t stream;
