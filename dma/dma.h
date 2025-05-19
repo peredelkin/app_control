@@ -2,11 +2,15 @@
 #ifndef DMA_H
 #define DMA_H
 
+#include <stdbool.h>
+#include <assert.h>
+
 #include "lib/stm32f4xx/stm32f4xx.h"
 #include "lib/errors/errors.h"
-#include <stdbool.h>
 
-//NEW DMA BEGIN
+
+#define DMA_DATA_COUNT_MAX 65535
+
 #define DMA_CONTROLLERS_COUNT 2
 #define DMA_CONTROLLER_STREAMS_COUNT 8
 
@@ -64,18 +68,210 @@ typedef enum {
 } dma_isr_ifcr_n_t;
 
 //настройки стрима
+
+//Stream enable / flag stream ready when read low
 typedef enum {
 	DMA_SCR_EN_DIS,
 	DMA_SCR_EN_ENA
 } dma_scr_en_t;
 
+//Direct mode error interrupt enable
 typedef enum {
-
+	DMA_SCR_DMEIE_DIS,
+	DMA_SCR_DMEIE_ENA
 } dma_scr_dmeie_t;
 
+//Transfer error interrupt enable
 typedef enum {
-
+	DMA_SCR_TEIE_DIS,
+	DMA_SCR_TEIE_ENA
 } dma_scr_teie_t;
+
+//Half transfer interrupt enable
+typedef enum {
+	DMA_SCR_HTIE_DIS,
+	DMA_SCR_HTIE_ENA
+} dma_scr_htie_t;
+
+//Transfer complete interrupt enable
+typedef enum {
+	DMA_SCR_TCIE_DIS,
+	DMA_SCR_TCIE_ENA
+} dma_scr_tcie_t;
+
+//Peripheral flow controller
+typedef enum {
+	DMA_SCR_PFCTRL_DIS,
+	DMA_SCR_PFCTRL_ENA
+} dma_scr_pfctrl_t;
+
+//Data transfer direction
+typedef enum {
+	DMA_SCR_DIR_PERI_TO_MEM,
+	DMA_SCR_DIR_MEM_TO_PERI,
+	DMA_SCR_DIR_MEM_TO_MEM
+} dma_scr_dir_t;
+
+//Circular mode
+typedef enum {
+	DMA_SCR_CIRC_DIS,
+	DMA_SCR_CIRC_ENA
+} dma_scr_circ_t;
+
+//Peripheral increment mode
+typedef enum {
+	DMA_SCR_PINC_DIS,
+	DMA_SCR_PINC_ENA
+} dma_scr_pinc_t;
+
+//Memory increment mode
+typedef enum {
+	DMA_SCR_MINC_DIS,
+	DMA_SCR_MINC_ENA
+} dma_scr_minc_t;
+
+//Peripheral data size
+typedef enum {
+	DMA_SCR_PSIZE_8,
+	DMA_SCR_PSIZE_16,
+	DMA_SCR_PSIZE_32
+} dma_scr_psize_t;
+
+//Memory data size
+typedef enum {
+	DMA_SCR_MSIZE_8,
+	DMA_SCR_MSIZE_16,
+	DMA_SCR_MSIZE_32
+} dma_scr_msize_t;
+
+//Peripheral increment offset size
+typedef enum {
+	DMA_SCR_PINCOS_PSIZE,
+	DMA_SCR_PINCOS_32
+} dma_scr_pincos_t;
+
+//Priority level
+typedef enum {
+	DMA_SCR_PL_LOW,
+	DMA_SCR_PL_MEDIUM,
+	DMA_SCR_PL_HIGH,
+	DMA_SCR_PL_VERY_HIGH
+} dma_scr_pl_t;
+
+//Double buffer mode
+typedef enum {
+	DMA_SCR_DBM_DIS,
+	DMA_SCR_DBM_ENA
+} dma_scr_dbm_t;
+
+//Current target (only in double buffer mode)
+typedef enum {
+	DMA_SCR_CT_MEM0,
+	DMA_SCR_CT_MEM1
+} dma_scr_ct_t;
+
+//Peripheral burst transfer configuration
+typedef enum {
+	DMA_SCR_PBURST_DIS,
+	DMA_SCR_PBURST_4,
+	DMA_SCR_PBURST_8,
+	DMA_SCR_PBURST_16
+} dma_scr_pburst_t;
+
+//Memory burst transfer configuration
+typedef enum {
+	DMA_SCR_MBURST_DIS,
+	DMA_SCR_MBURST_4,
+	DMA_SCR_MBURST_8,
+	DMA_SCR_MBURST_16
+} dma_scr_mburst_t;
+
+//Channel selection
+typedef enum {
+	DMA_SCR_CHSEL_0,
+	DMA_SCR_CHSEL_1,
+	DMA_SCR_CHSEL_2,
+	DMA_SCR_CHSEL_3,
+	DMA_SCR_CHSEL_4,
+	DMA_SCR_CHSEL_5,
+	DMA_SCR_CHSEL_6,
+	DMA_SCR_CHSEL_7,
+} dma_scr_chsel_t;
+
+//FIFO threshold selection
+typedef enum {
+	DMA_FCR_FTH_ONE_FOURTH, //!< 1/4 full FIFO
+	DMA_FCR_FTH_ONE_SECOND, //!< 1/2 full FIFO
+	DMA_FCR_FTH_THREE_FOURTHS, //!< 3/4 full FIFO
+	DMA_FCR_FTH_FULL //!< full FIFO
+} dma_fcr_fth_t;
+
+//Direct mode disable
+typedef enum {
+	DMA_FCR_DMDIS_DIS, //!< Direct mode enabled
+	DMA_FCR_DMDIS_ENA //!< Direct mode disabled
+} dma_fcr_dmdis_t;
+
+//FIFO status
+typedef enum {
+	DMA_FCR_FS_0, //!< 0 < fifo_level < 1/4
+	DMA_FCR_FS_1, //!< 1/4 ≤ fifo_level < 1/2
+	DMA_FCR_FS_2, //!< 1/2 ≤ fifo_level < 3/4
+	DMA_FCR_FS_3, //!< 3/4 ≤ fifo_level < full
+	DMA_FCR_FS_EMPTY, //!< FIFO is empty
+	DMA_FCR_FS_FULL //! FIFO is full
+} dma_fcr_fs_t;
+
+//FIFO error interrupt enable
+typedef enum {
+	DMA_FCR_FEIE_DIS,
+	DMA_FCR_FEIE_ENA
+} dma_fcr_feie_t;
+
+#define DMA_SCR_WIDTH 4
+
+typedef union {
+	uint32_t all;
+	struct {
+		unsigned EN			:1;	//!< EN: Stream enable / flag stream ready when read low
+		unsigned DMEIE		:1; //!< DMEIE: Direct mode error interrupt enable
+		unsigned TEIE		:1; //!< TEIE: Transfer error interrupt enable
+		unsigned HTIE		:1; //!< HTIE: Half transfer interrupt enable
+		unsigned TCIE		:1; //!< TCIE: Transfer complete interrupt enable
+		unsigned PFCTRL 	:1; //!< PFCTRL: Peripheral flow controller
+		unsigned DIR		:2; //!< [1:0] DIR: Data transfer direction
+		unsigned CIRC		:1; //!< CIRC: Circular mode
+		unsigned PINC		:1; //!< PINC: Peripheral increment mode
+		unsigned MINC		:1; //!< MINC: Memory increment mode
+		unsigned PSIZE		:2; //!< [1:0] PSIZE: Peripheral data size
+		unsigned MSIZE		:2; //!< [1:0] MSIZE: Memory data size
+		unsigned PINCOS		:1; //!< PINCOS: Peripheral increment offset size
+		unsigned PL			:2; //!< [1:0] PL: Priority level
+		unsigned DBM		:1; //!< DBM: Double buffer mode
+		unsigned CT			:1; //!< CT: Current target (only in double buffer mode)
+		unsigned RES_20		:1;
+		unsigned PBURST		:2; //!< [1:0] PBURST: Peripheral burst transfer configuration
+		unsigned MBURST		:2; //!< [1:0] MBURST: Memory burst transfer configuration
+		unsigned CHSEL		:3; //!< [2:0] CHSEL: Channel selection
+		unsigned RES_28_31	:4;
+	} bit;
+} dma_scr_t;
+static_assert(sizeof(dma_scr_t) == DMA_SCR_WIDTH, "Invalid size of dma_scr_t!");
+
+#define DMA_SFCR_WIDTH 4
+
+typedef union {
+	uint32_t all;
+	struct {
+		unsigned FTH		:2;
+		unsigned DMDIS		:1;
+		unsigned FS			:3;
+		unsigned RES_6		:1;
+		unsigned FEIE		:1;
+		unsigned RES_8_31	:24;
+	} bit;
+} dma_sfcr_t;
+static_assert(sizeof(dma_sfcr_t) == DMA_SFCR_WIDTH, "Invalid size of dma_sfcr_t!");
 
 typedef struct {
 	dma_controller_n_t controller;
@@ -83,115 +279,6 @@ typedef struct {
 	dma_isr_ifcr_n_t status;
 	bool initialized;
 } dma_t;
-//NEW DMA END
-
-#define DMA_ISR_FEIF DMA_LISR_FEIF0
-#define DMA_IFCR_CFEIF DMA_LIFCR_CFEIF0
-
-#define DMA_ISR_DMEIF DMA_LISR_DMEIF0
-#define DMA_IFCR_CDMEIF DMA_LIFCR_CDMEIF0
-
-#define DMA_ISR_TEIF DMA_LISR_TEIF0
-#define DMA_IFCR_CTEIF DMA_LIFCR_CTEIF0
-
-#define DMA_ISR_HTIF DMA_LISR_HTIF0
-#define DMA_IFCR_CHTIF DMA_LIFCR_CHTIF0
-
-#define DMA_ISR_TCIF DMA_LISR_TCIF0
-#define DMA_IFCR_CTCIF DMA_LIFCR_CTCIF0
-
-#define DMA_SxCR_CHSEL_SHIFT 25
-#define DMA_SxCR_MBURST_SHIFT 23
-#define DMA_SxCR_PBURST_SHIFT 21
-#define DMA_SxCR_PL_SHIFT 16
-#define DMA_SxCR_MSIZE_SHIFT 13
-#define DMA_SxCR_PSIZE_SHIFT 11
-#define DMA_SxCR_DIR_SHIFT 6
-
-#define DMA_DATA_COUNT_MAX 65535
-
-typedef struct {
-    DMA_Stream_TypeDef* stream;
-    DMA_TypeDef* dma;
-    uint8_t dma_isr_ifcr_n; //номер ISR/IFCR
-    uint8_t dma_isr_ifcr_mask_shift; //сдвиг маски ISR/IFCR
-} old_dma_t;
-
-extern uint32_t dma_stream_fifo_error_interrupt_status_read(old_dma_t* dma_stream);
-
-extern void dma_stream_fifo_error_interrupt_status_clear(old_dma_t* dma_stream);
-
-extern uint32_t dma_stream_direct_mode_error_interrupt_read(old_dma_t* dma_stream);
-
-extern void dma_stream_direct_mode_error_interrupt_clear(old_dma_t* dma_stream);
-
-extern uint32_t dma_stream_transfer_error_interrupt_read(old_dma_t* dma_stream);
-
-extern void dma_stream_transfer_error_interrupt_clear(old_dma_t* dma_stream);
-
-extern uint32_t dma_stream_half_transfer_interrupt_read(old_dma_t* dma_stream);
-
-extern void dma_stream_half_transfer_interrupt_clear(old_dma_t* dma_stream);
-
-extern uint32_t dma_stream_transfer_complete_interrupt_read(old_dma_t* dma_stream);
-
-extern void dma_stream_transfer_complete_interrupt_clear(old_dma_t* dma_stream);
-
-extern void dma_stream_channel_selection(old_dma_t* dma_stream, uint8_t chsel);
-
-extern void dma_stream_memory_burst_transfer_configuration(old_dma_t* dma_stream, uint8_t mburst);
-
-extern void dma_stream_peripheral_burst_transfer_configuration(old_dma_t* dma_stream, uint8_t pburst);
-
-extern void dma_stream_current_target(old_dma_t* dma_stream, bool ct);
-
-extern bool dma_stream_current_target_read(old_dma_t* dma_stream);
-
-extern void dma_stream_double_buffer_mode(old_dma_t* dma_stream, bool dbm);
-
-extern void dma_stream_priority_level(old_dma_t* dma_stream, uint8_t pl);
-
-extern void dma_stream_peripheral_increment_offset_size(old_dma_t* dma_stream, bool pincos);
-
-extern void dma_stream_memory_data_size(old_dma_t* dma_stream, uint8_t msize);
-
-extern void dma_stream_peripheral_data_size(old_dma_t* dma_stream, uint8_t psize);
-
-extern void dma_stream_memory_increment_mode(old_dma_t* dma_stream, bool minc);
-
-extern void dma_stream_peripheral_increment_mode(old_dma_t* dma_stream, bool pinc);
-
-extern void dma_stream_circular_mode(old_dma_t* dma_stream, bool circ);
-
-extern void dma_stream_data_transfer_direction(old_dma_t* dma_stream, uint8_t dir);
-
-extern void dma_stream_peripheral_flow_controller(old_dma_t* dma_stream, bool pfctrl);
-
-extern void dma_stream_transfer_complete_interrupt_enable(old_dma_t* dma_stream, bool tcie);
-
-extern void dma_stream_half_transfer_interrupt_enable(old_dma_t* dma_stream, bool htie);
-
-extern void dma_stream_transfer_error_interrupt_enable(old_dma_t* dma_stream, bool teie);
-
-extern void dma_stream_direct_mode_error_interrupt_enable(old_dma_t* dma_stream, bool dmeie);
-
-extern void dma_stream_enable(old_dma_t* dma_stream, bool en);
-
-extern bool dma_stream_ready(old_dma_t* dma_stream);
-
-extern void dma_stream_number_of_data(old_dma_t* dma_stream,uint16_t ndtr);
-
-extern uint16_t dma_stream_number_of_data_read(old_dma_t* dma_stream);
-
-extern void dma_stream_peripheral_address(old_dma_t* dma_stream,uint32_t par);
-
-extern void dma_stream_memory_address(old_dma_t* dma_stream,uint8_t mar_n,uint32_t mar);
-
-extern void dma_stream_struct_init(old_dma_t* dma_stream, DMA_TypeDef* dma, DMA_Stream_TypeDef* stream, uint8_t stream_n);
-
-extern void dma_stream_struct_deinit(old_dma_t* dma_stream);
-
-extern void dma_stream_deinit(old_dma_t* dma_stream);
 
 #endif /* DMA_H */
 

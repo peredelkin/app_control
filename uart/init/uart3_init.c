@@ -59,8 +59,8 @@ void usart3_bus_init() {
 
     usart_bus_receiver_enable(&usart_3);
 
-    dma_stream_struct_init(&usart_3.dma_rx_channel,DMA1,DMA1_Stream1,1);
-    dma_stream_struct_init(&usart_3.dma_tx_channel,DMA1,DMA1_Stream3,3);
+    old_dma_stream_struct_init(&usart_3.dma_rx_channel,DMA1,DMA1_Stream1,1);
+    old_dma_stream_struct_init(&usart_3.dma_tx_channel,DMA1,DMA1_Stream3,3);
 
     usart_3.dma_rx_channel_n = 4;
     usart_3.dma_tx_channel_n = 4;

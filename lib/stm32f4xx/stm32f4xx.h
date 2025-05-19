@@ -1095,25 +1095,25 @@ typedef struct
   */
 
 //new DMA_Stream_TypeDef
-typedef struct
-{
-  __IO uint32_t CR;     /*!< DMA stream x configuration register      */
-  __IO uint32_t NDTR;   /*!< DMA stream x number of data register     */
-  __IO uint32_t PAR;    /*!< DMA stream x peripheral address register */
-  __IO uint32_t MAR[2]; /*!< DMA stream x memory address register     */
-  __IO uint32_t FCR;    /*!< DMA stream x FIFO control register       */
-} DMA_Stream_TypeDef;
-
-//old DMA_Stream_TypeDef
 //typedef struct
 //{
 //  __IO uint32_t CR;     /*!< DMA stream x configuration register      */
 //  __IO uint32_t NDTR;   /*!< DMA stream x number of data register     */
 //  __IO uint32_t PAR;    /*!< DMA stream x peripheral address register */
-//  __IO uint32_t M0AR;   /*!< DMA stream x memory 0 address register   */
-//  __IO uint32_t M1AR;   /*!< DMA stream x memory 1 address register   */
+//  __IO uint32_t MAR[2]; /*!< DMA stream x memory address register     */
 //  __IO uint32_t FCR;    /*!< DMA stream x FIFO control register       */
 //} DMA_Stream_TypeDef;
+
+//old DMA_Stream_TypeDef
+typedef struct
+{
+  __IO uint32_t CR;     /*!< DMA stream x configuration register      */
+  __IO uint32_t NDTR;   /*!< DMA stream x number of data register     */
+  __IO uint32_t PAR;    /*!< DMA stream x peripheral address register */
+  __IO uint32_t M0AR;   /*!< DMA stream x memory 0 address register   */
+  __IO uint32_t M1AR;   /*!< DMA stream x memory 1 address register   */
+  __IO uint32_t FCR;    /*!< DMA stream x FIFO control register       */
+} DMA_Stream_TypeDef;
 
 //new DMA_TypeDef
 typedef struct

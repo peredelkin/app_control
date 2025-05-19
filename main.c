@@ -167,8 +167,8 @@ int main(void)
 
 		err_t sdio_err = E_NO_ERROR;
 		//инициализация структуры sdcard
-		dma_stream_struct_init(&(sdcard.dma), DMA2, DMA2_Stream6, 6);
-		dma_stream_deinit(&(sdcard.dma));
+		old_dma_stream_struct_init(&(sdcard.dma), DMA2, DMA2_Stream6, 6);
+		old_dma_stream_deinit(&(sdcard.dma));
 
 		sdcard.cmd = NULL;
 		sdcard.current_state = SDCARD_STATE_IDLE;
@@ -347,7 +347,7 @@ int main(void)
 		//READ
 		char hex_to_str[17];
 
-		for (uint64_t block_addr = 0; block_addr < 32; block_addr+=2) {
+		for (uint64_t block_addr = 0; block_addr < 8; block_addr+=2) {
 			sdio_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array), block_addr, 2, 0xFFFFFF);
 			if (sdio_err != E_NO_ERROR) {
 				printf("READ Err: %lu\n", sdio_err);

@@ -30,8 +30,8 @@ err_t nand_K9F1G08U0E_init(nand_flash_driver_t *drv) {
 	if(drv == NULL) return E_NULL_POINTER;
 
 	if(drv->initialized == false) {
-		dma_stream_struct_init(&(drv->dma), DMA2, DMA2_Stream4, 4);
-		dma_stream_deinit(&(drv->dma));
+		old_dma_stream_struct_init(&(drv->dma), DMA2, DMA2_Stream4, 4);
+		old_dma_stream_deinit(&(drv->dma));
 		drv->initialized = true;
 	}
 
@@ -41,10 +41,10 @@ err_t nand_K9F1G08U0E_init(nand_flash_driver_t *drv) {
 err_t nand_K9F1G08U0E_deinit(nand_flash_driver_t *drv) {
 	if(drv == NULL) return E_NULL_POINTER;
 
-	dma_stream_deinit(&(drv->dma));
-	if(dma_stream_transfer_complete_interrupt_read(&drv->dma)) dma_stream_transfer_complete_interrupt_clear(&drv->dma);
-	if(dma_stream_transfer_error_interrupt_read(&drv->dma)) dma_stream_transfer_error_interrupt_clear(&drv->dma);
-	dma_stream_struct_deinit(&(drv->dma));
+	old_dma_stream_deinit(&(drv->dma));
+	if(old_dma_stream_transfer_complete_interrupt_read(&drv->dma)) old_dma_stream_transfer_complete_interrupt_clear(&drv->dma);
+	if(old_dma_stream_transfer_error_interrupt_read(&drv->dma)) old_dma_stream_transfer_error_interrupt_clear(&drv->dma);
+	old_dma_stream_struct_deinit(&(drv->dma));
 
 	return E_NO_ERROR;
 }
@@ -146,43 +146,43 @@ uint8_t nand_K9F1G08U0E_status_read_cmd(void) {
 /*dma function sets start*/
 err_t nand_K9F1G08U0E_conf_dma_to_read(nand_flash_driver_t *drv) {
 	//stream check
-	if (!dma_stream_ready(&(drv->dma))) return E_BUSY;
+	if (!old_dma_stream_ready(&(drv->dma))) return E_BUSY;
 	//stream deinit
-	dma_stream_deinit(&(drv->dma));
+	old_dma_stream_deinit(&(drv->dma));
 	//stream conf
-	dma_stream_number_of_data(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE); //Count
-	dma_stream_peripheral_address(&(drv->dma), (uint32_t) K9F1G08U0E_DATA32_SECTION); //Source
-	dma_stream_memory_address(&(drv->dma), 0, (uint32_t) (drv->data)); //Destination
-	dma_stream_data_transfer_direction(&(drv->dma), 0b10); //Memory-to-memory
-	dma_stream_memory_increment_mode(&(drv->dma), true); //Destination increment
+	old_dma_stream_number_of_data(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE); //Count
+	old_dma_stream_peripheral_address(&(drv->dma), (uint32_t) K9F1G08U0E_DATA32_SECTION); //Source
+	old_dma_stream_memory_address(&(drv->dma), 0, (uint32_t) (drv->data)); //Destination
+	old_dma_stream_data_transfer_direction(&(drv->dma), 0b10); //Memory-to-memory
+	old_dma_stream_memory_increment_mode(&(drv->dma), true); //Destination increment
 	return E_NO_ERROR;
 }
 
 err_t nand_K9F1G08U0E_conf_dma_to_write(nand_flash_driver_t *drv) {
 	//stream check
-	if (!dma_stream_ready(&(drv->dma))) return E_BUSY;
+	if (!old_dma_stream_ready(&(drv->dma))) return E_BUSY;
 	//stream deinit
-	dma_stream_deinit(&(drv->dma));
+	old_dma_stream_deinit(&(drv->dma));
 	//stream conf
-	dma_stream_number_of_data(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE); //Count
-	dma_stream_peripheral_address(&(drv->dma), (uint32_t) (drv->data)); //Source
-	dma_stream_memory_address(&(drv->dma), 0, (uint32_t) K9F1G08U0E_DATA32_SECTION);//Destination
-	dma_stream_data_transfer_direction(&(drv->dma), 0b10); //Memory-to-memory
-	dma_stream_peripheral_increment_mode(&(drv->dma), true); //Source increment
+	old_dma_stream_number_of_data(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE); //Count
+	old_dma_stream_peripheral_address(&(drv->dma), (uint32_t) (drv->data)); //Source
+	old_dma_stream_memory_address(&(drv->dma), 0, (uint32_t) K9F1G08U0E_DATA32_SECTION);//Destination
+	old_dma_stream_data_transfer_direction(&(drv->dma), 0b10); //Memory-to-memory
+	old_dma_stream_peripheral_increment_mode(&(drv->dma), true); //Source increment
 	return E_NO_ERROR;
 }
 
 err_t nand_K9F1G08U0E_start_dma_transfer(nand_flash_driver_t *drv) {
-	dma_stream_enable(&(drv->dma), true); //enable Stream
-	while (!dma_stream_transfer_complete_interrupt_read(&drv->dma)) { //wait TC
-		if (dma_stream_transfer_error_interrupt_read(&drv->dma)) { //if TE
-			dma_stream_transfer_error_interrupt_clear(&drv->dma); //clear TE
-			dma_stream_enable(&(drv->dma), false); //disable Stream
+	old_dma_stream_enable(&(drv->dma), true); //enable Stream
+	while (!old_dma_stream_transfer_complete_interrupt_read(&drv->dma)) { //wait TC
+		if (old_dma_stream_transfer_error_interrupt_read(&drv->dma)) { //if TE
+			old_dma_stream_transfer_error_interrupt_clear(&drv->dma); //clear TE
+			old_dma_stream_enable(&(drv->dma), false); //disable Stream
 			return E_STATE;
 		}
 	}
-	dma_stream_transfer_complete_interrupt_clear(&(drv->dma)); //clear TC
-	dma_stream_enable(&(drv->dma), false); //disable Stream
+	old_dma_stream_transfer_complete_interrupt_clear(&(drv->dma)); //clear TC
+	old_dma_stream_enable(&(drv->dma), false); //disable Stream
 	return E_NO_ERROR;
 }
 /*dma function sets end*/
