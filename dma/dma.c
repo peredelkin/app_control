@@ -14,10 +14,116 @@ typedef struct {
 	DMA_Stream_TypeDef* stream [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
 	bool busy [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
 	_dma_interrupt_mask_t interrupt_mask [DMA_CONTROLLER_STREAMS_COUNT];
+	void(*callback [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT])();
 	bool initialized;
 } _dma_controller_t;
 
 static _dma_controller_t _dma;
+
+inline bool DMA_Stream_IRQHandler(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
+	if(_dma.callback[controller_n][stream_n] != NULL) {
+		_dma.callback[controller_n][stream_n]();
+		return true;
+	}
+
+	return false;
+}
+
+void DMA1_Stream0_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_0) == false) {
+		NVIC_DisableIRQ(DMA1_Stream0_IRQn);
+	}
+}
+
+void DMA1_Stream1_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_1) == false) {
+		NVIC_DisableIRQ(DMA1_Stream1_IRQn);
+	}
+}
+
+void DMA1_Stream2_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_2) == false) {
+		NVIC_DisableIRQ(DMA1_Stream2_IRQn);
+	}
+}
+
+void DMA1_Stream3_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_3) == false) {
+		NVIC_DisableIRQ(DMA1_Stream3_IRQn);
+	}
+}
+
+void DMA1_Stream4_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_4) == false) {
+		NVIC_DisableIRQ(DMA1_Stream4_IRQn);
+	}
+}
+
+void DMA1_Stream5_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_5) == false) {
+		NVIC_DisableIRQ(DMA1_Stream5_IRQn);
+	}
+}
+
+void DMA1_Stream6_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_6) == false) {
+		NVIC_DisableIRQ(DMA1_Stream6_IRQn);
+	}
+}
+
+void DMA1_Stream7_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_7) == false) {
+		NVIC_DisableIRQ(DMA1_Stream7_IRQn);
+	}
+}
+
+void DMA2_Stream0_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_0) == false) {
+		NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+	}
+}
+
+void DMA2_Stream1_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_1) == false) {
+		NVIC_DisableIRQ(DMA2_Stream1_IRQn);
+	}
+}
+
+void DMA2_Stream2_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_2) == false) {
+		NVIC_DisableIRQ(DMA2_Stream2_IRQn);
+	}
+}
+
+void DMA2_Stream3_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_3) == false) {
+		NVIC_DisableIRQ(DMA2_Stream3_IRQn);
+	}
+}
+
+void DMA2_Stream4_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_4) == false) {
+		NVIC_DisableIRQ(DMA2_Stream4_IRQn);
+	}
+}
+
+void DMA2_Stream5_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_5) == false) {
+		NVIC_DisableIRQ(DMA2_Stream5_IRQn);
+	}
+}
+
+void DMA2_Stream6_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_6) == false) {
+		NVIC_DisableIRQ(DMA2_Stream6_IRQn);
+	}
+}
+
+void DMA2_Stream7_IRQHandler() {
+	if(DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_7) == false) {
+		NVIC_DisableIRQ(DMA2_Stream7_IRQn);
+	}
+}
 
 void dma_controller_init() {
 	//DMA
@@ -404,6 +510,10 @@ err_t dma_stream_deinit(dma_t* dma) {
 
 	_dma_stream_control_register_write(dma->controller, dma->stream, 0);
 	_dma_stream_fifo_control_register_write(dma->controller, dma->stream, 0);
+
+	dma_stream_number_of_data_register_write(dma, 0);
+	dma_stream_peripheral_address_register_write(dma, 0);
+	dma_stream_memory_0_address_register_write(dma, 0);
 
 	return E_NO_ERROR;
 }
