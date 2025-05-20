@@ -206,6 +206,10 @@ static bool _dma_initialized() {
 	return _dma.initialized;
 }
 
+static void _dma_stream_callback_set(dma_controller_n_t controller_n, dma_stream_n_t stream_n, void(*callback)) {
+	_dma.callback[controller_n][stream_n] = callback;
+}
+
 static dma_controller_n_t _dma_define_controller(dma_n_stream_n_t stream) {
 	return ((stream & DMA2_Stream_0) ? DMA_Controller_2 : DMA_Controller_1);
 }
@@ -226,30 +230,33 @@ static void _dma_stream_busy_write(dma_controller_n_t controller_n, dma_stream_n
 	_dma.busy[controller_n][stream_n] = busy;
 }
 
-static err_t _dma_stream_status_read(dma_controller_n_t controller_n, dma_stream_n_t stream_n, dma_isr_ifcr_n_t status) {
-	uint32_t ISR = _dma.dma[controller_n]->ISR[status];
+static uint32_t _dma_stream_status_register_read(dma_controller_n_t controller_n, dma_isr_ifcr_n_t status) {
+	return _dma.dma[controller_n]->ISR[status];
+}
 
-	if (ISR & _dma.interrupt_mask[stream_n].FEIF) {
-		return E_DMA_STREAM_FIFO_ERROR;
-	}
+static bool _dma_stream_status_FEIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].FEIF) return true;
+	return false;
+}
 
-	if (ISR & _dma.interrupt_mask[stream_n].DMEIF) {
-		return E_DMA_STREAM_DIRECT_ERROR;
-	}
+static bool _dma_stream_status_DMEIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].DMEIF) return true;
+	return false;
+}
 
-	if (ISR & _dma.interrupt_mask[stream_n].TEIF) {
-		return E_DMA_STREAM_ERROR;
-	}
+static bool _dma_stream_status_TEIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].TEIF) return true;
+	return false;
+}
 
-	if (ISR & _dma.interrupt_mask[stream_n].HTIF) {
-		return E_DMA_STREAM_HALF_TRANSFER;
-	}
+static bool _dma_stream_status_HTIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].HTIF) return true;
+	return false;
+}
 
-	if (ISR & _dma.interrupt_mask[stream_n].TCIF) {
-		return E_DMA_STREAM_TRANSFER_COMPLETE;
-	}
-
-	return E_NOT_IMPLEMENTED;
+static bool _dma_stream_status_TCIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].TCIF) return true;
+	return false;
 }
 
 static void _dma_stream_status_FEIF_clear(
@@ -370,6 +377,9 @@ err_t dma_struct_init(dma_t* dma, dma_n_stream_n_t stream) {
 	if(dma == NULL) return E_NULL_POINTER;
 
 	dma->initialized = false;
+
+	if(_dma_initialized() == false) return E_CANCELED;
+
 	dma->controller = _dma_define_controller(stream);
 	dma->stream = _dma_define_stream(stream);
 	dma->status = _dma_define_status(stream);
@@ -379,11 +389,11 @@ err_t dma_struct_init(dma_t* dma, dma_n_stream_n_t stream) {
 }
 
 err_t dma_stream_open(dma_t* dma) {
-	if(_dma_initialized() == false) return E_CANCELED;
-
 	if(dma == NULL) return E_NULL_POINTER;
 
 	if(dma->initialized == false) return E_CANCELED;
+
+	if(_dma_initialized() == false) return E_CANCELED;
 
 	__disable_irq();
 	if(_dma_stream_busy_read(dma->controller, dma->stream) == true) {
@@ -396,7 +406,95 @@ err_t dma_stream_open(dma_t* dma) {
 	return E_NO_ERROR;
 }
 
-err_t dma_stream_init(
+uint32_t dma_stream_status_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
+	return _dma_stream_status_register_read(dma->controller, dma->status);
+}
+
+bool dma_stream_status_FEIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_FEIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_DMEIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_DMEIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_TEIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_TEIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_HTIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_HTIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_TCIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_TCIF_read(ISR, dma->stream);
+}
+
+void dma_stream_status_FEIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_FEIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_DMEIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_DMEIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_TEIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_TEIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_HTIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_HTIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_TCIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_TCIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_callback_set(dma_t* dma, void(*callback)) {
+	if (dma->initialized == false) return;
+	_dma_stream_callback_set(dma->controller, dma->stream, callback);
+}
+
+bool dma_stream_enable(dma_t* dma) {
+	if (dma->initialized == false) return false;
+
+	dma_scr_t scr;
+
+	scr.all = _dma_stream_control_register_read(dma->controller, dma->stream);
+
+	scr.bit.EN = DMA_SCR_EN_ENA;
+
+	_dma_stream_control_register_write(dma->controller, dma->stream, scr.all);
+
+	return true;
+}
+
+bool dma_stream_disable(dma_t* dma) {
+	if (dma->initialized == false) return false;
+
+	dma_scr_t scr;
+
+	scr.all = _dma_stream_control_register_read(dma->controller, dma->stream);
+
+	scr.bit.EN = DMA_SCR_EN_DIS;
+
+	_dma_stream_control_register_write(dma->controller, dma->stream, scr.all);
+
+	return true;
+}
+
+void dma_stream_init(
 		dma_t* dma,
 		dma_scr_dbm_t dbm,
 		dma_scr_ct_t ct,
@@ -427,16 +525,15 @@ err_t dma_stream_init(
 
 		dma_scr_pl_t pl,
 		dma_scr_en_t en) {
-	if(_dma_initialized() == false) return E_CANCELED;
-
-	if(dma == NULL) return E_NULL_POINTER;
-
-	if(dma->initialized == false) return E_CANCELED;
+	if (dma->initialized == false) return;
 
 	dma_scr_t scr;
 	dma_sfcr_t fscr;
 
 	scr.all = _dma_stream_control_register_read(dma->controller, dma->stream);
+
+	if(scr.bit.EN == DMA_SCR_EN_ENA) return;
+
 	fscr.all = _dma_stream_fifo_control_register_read(dma->controller, dma->stream);
 
 	scr.bit.EN = en;
@@ -465,48 +562,50 @@ err_t dma_stream_init(
 
 	_dma_stream_fifo_control_register_write(dma->controller, dma->stream, fscr.all);
 	_dma_stream_control_register_write(dma->controller, dma->stream, scr.all);
-
-	return E_NO_ERROR;
 }
 
 uint32_t dma_stream_number_of_data_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
 	return _dma_stream_number_of_data_register_read(dma->controller, dma->stream);
 }
 
 void dma_stream_number_of_data_register_write(dma_t* dma, uint32_t NDTR) {
+	if (dma->initialized == false) return;
 	_dma_stream_number_of_data_register_write(dma->controller, dma->stream, NDTR);
 }
 
 uint32_t dma_stream_peripheral_address_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
 	return _dma_stream_peripheral_address_register_read(dma->controller, dma->stream);
 }
 
 void dma_stream_peripheral_address_register_write(dma_t* dma, uint32_t PAR) {
+	if (dma->initialized == false) return;
 	_dma_stream_peripheral_address_register_write(dma->controller, dma->stream, PAR);
 }
 
 uint32_t dma_stream_memory_0_address_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
 	return _dma_stream_memory_0_address_register_read(dma->controller, dma->stream);
 }
 
 void dma_stream_memory_0_address_register_write(dma_t* dma, uint32_t M0AR) {
+	if (dma->initialized == false) return;
 	_dma_stream_memory_0_address_register_write(dma->controller, dma->stream, M0AR);
 }
 
 uint32_t dma_stream_memory_1_address_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
 	return _dma_stream_memory_1_address_register_read(dma->controller, dma->stream);
 }
 
 void dma_stream_memory_1_address_register_write(dma_t* dma, uint32_t M1AR) {
+	if (dma->initialized == false) return;
 	_dma_stream_memory_1_address_register_write(dma->controller, dma->stream, M1AR);
 }
 
-err_t dma_stream_deinit(dma_t* dma) {
-	if(_dma_initialized() == false) return E_CANCELED;
-
-	if(dma == NULL) return E_NULL_POINTER;
-
-	if(dma->initialized == false) return E_CANCELED;
+void dma_stream_deinit(dma_t* dma) {
+	if (dma->initialized == false) return;
 
 	_dma_stream_control_register_write(dma->controller, dma->stream, 0);
 	_dma_stream_fifo_control_register_write(dma->controller, dma->stream, 0);
@@ -515,20 +614,13 @@ err_t dma_stream_deinit(dma_t* dma) {
 	dma_stream_peripheral_address_register_write(dma, 0);
 	dma_stream_memory_0_address_register_write(dma, 0);
 
-	return E_NO_ERROR;
+	dma_stream_callback_set(dma, NULL);
 }
 
-err_t dma_stream_close(dma_t* dma) {
-	if(_dma_initialized() == false) return E_CANCELED;
+void dma_stream_close(dma_t* dma) {
+	if (dma->initialized == false) return;
 
-	if(dma == NULL) return E_NULL_POINTER;
-
-	if(dma->initialized == false) return E_CANCELED;
-
-	err_t err = dma_stream_deinit(dma);
-	if(err != E_NO_ERROR) return err;
+	dma_stream_deinit(dma);
 
 	_dma_stream_busy_write(dma->controller, dma->stream, false);
-
-	return E_NO_ERROR;
 }

@@ -280,5 +280,71 @@ typedef struct {
 	bool initialized;
 } dma_t;
 
+/*
+ * Инициализация структуры DMA контроллера.
+ * Вызывается один раз, до использовая другими.
+ */
+extern void dma_controller_init();
+
+extern err_t dma_struct_init(dma_t* dma, dma_n_stream_n_t stream);
+
+extern err_t dma_stream_open(dma_t* dma);
+
+extern uint32_t dma_stream_status_register_read(dma_t* dma);
+
+extern bool dma_stream_status_FEIF_read(uint32_t ISR, dma_t* dma);
+
+extern bool dma_stream_status_DMEIF_read(uint32_t ISR, dma_t* dma);
+
+extern bool dma_stream_status_TEIF_read(uint32_t ISR, dma_t* dma);
+
+extern bool dma_stream_status_HTIF_read(uint32_t ISR, dma_t* dma);
+
+extern bool dma_stream_status_TCIF_read(uint32_t ISR, dma_t* dma);
+
+extern void dma_stream_status_FEIF_clear(dma_t* dma);
+
+extern void dma_stream_status_DMEIF_clear(dma_t* dma);
+
+extern void dma_stream_status_TEIF_clear(dma_t* dma);
+
+extern void dma_stream_status_HTIF_clear(dma_t* dma);
+
+extern void dma_stream_status_TCIF_clear(dma_t* dma);
+
+extern void dma_stream_callback_set(dma_t* dma, void(*callback));
+
+extern bool dma_stream_enable(dma_t* dma);
+
+extern bool dma_stream_disable(dma_t* dma);
+
+extern void dma_stream_init(dma_t *dma, dma_scr_dbm_t dbm, dma_scr_ct_t ct, dma_scr_chsel_t chsel,
+		dma_fcr_dmdis_t dmdis, dma_fcr_fth_t fth, dma_scr_msize_t msize, dma_scr_mburst_t mburst,
+		dma_scr_minc_t minc, dma_scr_psize_t psize, dma_scr_pburst_t pburst, dma_scr_pinc_t pinc,
+		dma_scr_pincos_t pincos, dma_scr_dir_t dir, dma_scr_pfctrl_t pfctrl, dma_scr_circ_t circ,
+		dma_scr_tcie_t tcie, dma_scr_htie_t htie, dma_scr_teie_t teie, dma_scr_dmeie_t dmeie,
+		dma_fcr_feie_t feie, dma_scr_pl_t pl, dma_scr_en_t en);
+
+extern uint32_t dma_stream_number_of_data_register_read(dma_t* dma);
+
+extern void dma_stream_number_of_data_register_write(dma_t* dma, uint32_t NDTR);
+
+extern uint32_t dma_stream_peripheral_address_register_read(dma_t* dma);
+
+extern void dma_stream_peripheral_address_register_write(dma_t* dma, uint32_t PAR);
+
+extern uint32_t dma_stream_memory_0_address_register_read(dma_t* dma);
+
+extern void dma_stream_memory_0_address_register_write(dma_t* dma, uint32_t M0AR);
+
+extern uint32_t dma_stream_memory_1_address_register_read(dma_t* dma);
+
+extern void dma_stream_memory_1_address_register_write(dma_t* dma, uint32_t M1AR);
+
+extern void dma_stream_deinit(dma_t* dma);
+
+extern void dma_stream_close(dma_t* dma);
+
+
 #endif /* DMA_H */
 

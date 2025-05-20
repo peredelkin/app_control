@@ -21,11 +21,11 @@ void USART3_IRQHandler() {
 	usart_bus_irq_handler(&usart_3);
 }
 
-void DMA1_Stream1_IRQHandler() {
+void uart3_dma_stream_rx_irq_handler() {
 	usart_bus_dma_rx_channel_irq_handler(&usart_3);
 }
 
-void DMA1_Stream3_IRQHandler() {
+void uart3_dma_stream_tx_irq_handler() {
 	usart_bus_dma_tx_channel_irq_handler(&usart_3);
 }
 
@@ -59,11 +59,14 @@ void usart3_bus_init() {
 
     usart_bus_receiver_enable(&usart_3);
 
-    old_dma_stream_struct_init(&usart_3.dma_rx_channel,DMA1,DMA1_Stream1,1);
-    old_dma_stream_struct_init(&usart_3.dma_tx_channel,DMA1,DMA1_Stream3,3);
+    err_t err = E_NO_ERROR;
+    err = dma_struct_init(&usart_3.dma_rx_channel, DMA1_Stream_1);
+    if(err != E_NO_ERROR) return;
+    dma_stream_callback_set(&usart_3.dma_rx_channel, uart3_dma_stream_rx_irq_handler);
 
-    usart_3.dma_rx_channel_n = 4;
-    usart_3.dma_tx_channel_n = 4;
+    err = dma_struct_init(&usart_3.dma_tx_channel, DMA1_Stream_3);
+    if(err != E_NO_ERROR) return;
+    dma_stream_callback_set(&usart_3.dma_tx_channel, uart3_dma_stream_tx_irq_handler);
 
     usart_bus_init(&usart_3);
 

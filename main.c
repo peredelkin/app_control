@@ -97,6 +97,7 @@ int main(void)
 
 	gpio_rcc_init();
 	dma_rcc_init();
+	dma_controller_init();
 
 	system_counter_init(); //TIM2
 
