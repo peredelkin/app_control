@@ -42,19 +42,15 @@
 /*
  * Ошибки
  */
-//! Ошибки ввода команд
-#define E_SDCARD_CMD (E_SDIO_DATA + 5)
 //! Нельзя выполнить команду в этом состоянии
-#define E_SDCARD_CMD_STATE_MISMATCH (E_SDCARD_CMD + 0)
+#define E_SDCARD_CMD_STATE_MISMATCH (E_SDCARD_BASE + 1)
 
-//! Ошибки в ответе SD карты
-#define E_SDCARD_RESPONSE (E_SDCARD_CMD + 1)
 //! Несоответствие индекса в ответе
-#define E_SDCARD_RESPONSE_INDEX_MISMATCH (E_SDCARD_RESPONSE + 0)
+#define E_SDCARD_RESPONSE_INDEX_MISMATCH (E_SDCARD_BASE + 2)
 //! Несоответствие состояний карты и драйвера
-#define E_SDCARD_RESPONSE_STATE_MISMATCH (E_SDCARD_RESPONSE + 1)
+#define E_SDCARD_RESPONSE_STATE_MISMATCH (E_SDCARD_BASE + 3)
 //! Error in the sequence of the authentication process
-#define E_SDCARD_RESPONSE_AKE_SEQ_ERROR (E_SDCARD_RESPONSE + 2)
+#define E_SDCARD_RESPONSE_AKE_SEQ_ERROR (E_SDCARD_BASE + 4)
 //! Set when only partial address
 //! space was erased due to existing
 //! write protected blocks or the
@@ -62,45 +58,45 @@
 //! protected until power cycle or
 //! permanent write protected card
 //! was erased.
-#define E_SDCARD_RESPONSE_WP_ERASE_SKIP (E_SDCARD_RESPONSE + 3)
+#define E_SDCARD_RESPONSE_WP_ERASE_SKIP (E_SDCARD_BASE + 5)
 //! Can be either one of the following errors:
 //! - The read only section of the CSD does not match the card content.
 //! - An attempt to reverse the copy (set as original) or permanent WP (unprotected) bits was made.
-#define E_SDCARD_RESPONSE_CSD_OVERWRITE (E_SDCARD_RESPONSE + 4)
+#define E_SDCARD_RESPONSE_CSD_OVERWRITE (E_SDCARD_BASE + 6)
 //! A general or an unknown error occurred during the operation.
-#define E_SDCARD_RESPONSE_ERROR (E_SDCARD_RESPONSE + 5)
+#define E_SDCARD_RESPONSE_ERROR (E_SDCARD_BASE + 7)
 //! Internal card controller error
-#define E_SDCARD_RESPONSE_CC_ERROR (E_SDCARD_RESPONSE + 6)
+#define E_SDCARD_RESPONSE_CC_ERROR (E_SDCARD_BASE + 8)
 //! Card internal ECC was applied butfailed to correct the data.
-#define E_SDCARD_RESPONSE_CARD_ECC_FAILED (E_SDCARD_RESPONSE + 7)
+#define E_SDCARD_RESPONSE_CARD_ECC_FAILED (E_SDCARD_BASE + 9)
 //! Command not legal for the cardstate
-#define E_SDCARD_RESPONSE_ILLEGAL_COMMAND (E_SDCARD_RESPONSE + 8)
+#define E_SDCARD_RESPONSE_ILLEGAL_COMMAND (E_SDCARD_BASE + 10)
 //! The CRC check of the previous command failed.
-#define E_SDCARD_RESPONSE_COM_CRC_ERROR (E_SDCARD_RESPONSE + 9)
+#define E_SDCARD_RESPONSE_COM_CRC_ERROR (E_SDCARD_BASE + 11)
 //! Set when a sequence or passworderror has been detected in lock/unlock card command.
-#define E_SDCARD_RESPONSE_LOCK_UNLOCK_FAILED (E_SDCARD_RESPONSE + 10)
+#define E_SDCARD_RESPONSE_LOCK_UNLOCK_FAILED (E_SDCARD_BASE + 12)
 //! Set when the host attempts to write
 //! to a protected block or to the
 //! temporary write protected card or
 //! write protected until power cycle
 //! card or permanent write protected
 //! card.
-#define E_SDCARD_RESPONSE_WP_VIOLATION (E_SDCARD_RESPONSE + 11)
+#define E_SDCARD_RESPONSE_WP_VIOLATION (E_SDCARD_BASE + 13)
 //! An invalid selection of write-blocksfor erase occurred.
-#define E_SDCARD_RESPONSE_ERASE_PARAM (E_SDCARD_RESPONSE + 12)
+#define E_SDCARD_RESPONSE_ERASE_PARAM (E_SDCARD_BASE + 14)
 //! An error in the sequence of erasecommands occurred.
-#define E_SDCARD_RESPONSE_ERASE_SEQ_ERROR (E_SDCARD_RESPONSE + 13)
+#define E_SDCARD_RESPONSE_ERASE_SEQ_ERROR (E_SDCARD_BASE + 15)
 //! The transferred block length is not
 //! allowed for this card, or the number
 //! of transferred bytes does not match
 //! the block length.
-#define E_SDCARD_RESPONSE_BLOCK_LEN_ERROR (E_SDCARD_RESPONSE + 14)
+#define E_SDCARD_RESPONSE_BLOCK_LEN_ERROR (E_SDCARD_BASE + 16)
 //! A misaligned address which did not
 //! match the block length was used in
 //! the command.
-#define E_SDCARD_RESPONSE_ADDRESS_ERROR (E_SDCARD_RESPONSE + 15)
+#define E_SDCARD_RESPONSE_ADDRESS_ERROR (E_SDCARD_BASE + 17)
 //! The command's argument was out of the allowed range for this card.
-#define E_SDCARD_RESPONSE_OUT_OF_RANGE (E_SDCARD_RESPONSE + 16)
+#define E_SDCARD_RESPONSE_OUT_OF_RANGE (E_SDCARD_BASE + 18)
 
 //! Перечисление типа SD-карты.
 typedef enum _SD_Card_Type {

@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 //! Тип ошибки.
-typedef uint8_t err_t;
+typedef uint32_t err_t;
 
 //! Отсутствие ошибки.
 #define E_NO_ERROR 0
@@ -41,7 +41,14 @@ typedef uint8_t err_t;
 #define E_CANCELED 13
 
 //! Начальный код для пользовательских ошибок.
-#define E_USER 100
+#define E_USER_BASE 100
+
+//! Начальный код ошибок SDIO
+#define E_SDIO_BASE 200
+//! Начальный код ошибок SDCARD
+#define E_SDCARD_BASE 300
+//! Начальный код ошибок DMA
+#define E_DMA_BASE 400
 
 #endif	/* ERRORS_H */
 

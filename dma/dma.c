@@ -1,183 +1,615 @@
 #include "dma.h"
 #include "stddef.h"
 
-uint32_t dma_stream_fifo_error_interrupt_status_read(dma_t* dma_stream) {
-    return (dma_stream->dma->ISR[dma_stream->dma_isr_ifcr_n] & (uint32_t) (DMA_ISR_FEIF << dma_stream->dma_isr_ifcr_mask_shift));
+typedef struct {
+	uint32_t FEIF;
+	uint32_t DMEIF;
+	uint32_t TEIF;
+	uint32_t HTIF;
+	uint32_t TCIF;
+} _dma_interrupt_mask_t;
+
+typedef struct {
+	DMA_TypeDef* dma [DMA_CONTROLLERS_COUNT];
+	DMA_Stream_TypeDef* stream [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
+	bool busy [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT];
+	_dma_interrupt_mask_t interrupt_mask [DMA_CONTROLLER_STREAMS_COUNT];
+	void(*callback [DMA_CONTROLLERS_COUNT][DMA_CONTROLLER_STREAMS_COUNT])();
+	bool initialized;
+} _dma_controller_t;
+
+static _dma_controller_t _dma;
+
+static void _dma_stream_interrups_disable_all(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n);
+
+static inline void DMA_Stream_IRQHandler(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
+	if(_dma.callback[controller_n][stream_n] != NULL) {
+		_dma.callback[controller_n][stream_n]();
+	} else {
+		_dma_stream_interrups_disable_all(controller_n, stream_n);
+	}
 }
 
-void dma_stream_fifo_error_interrupt_status_clear(dma_t* dma_stream) {
-    dma_stream->dma->IFCR[dma_stream->dma_isr_ifcr_n] = (uint32_t) (DMA_IFCR_CFEIF << dma_stream->dma_isr_ifcr_mask_shift);
+void DMA1_Stream0_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_0);
 }
 
-uint32_t dma_stream_direct_mode_error_interrupt_read(dma_t* dma_stream) {
-    return (dma_stream->dma->ISR[dma_stream->dma_isr_ifcr_n] & (uint32_t) (DMA_ISR_DMEIF << dma_stream->dma_isr_ifcr_mask_shift));
+void DMA1_Stream1_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_1);
 }
 
-void dma_stream_direct_mode_error_interrupt_clear(dma_t* dma_stream) {
-    dma_stream->dma->IFCR[dma_stream->dma_isr_ifcr_n] = (uint32_t) (DMA_IFCR_CDMEIF << dma_stream->dma_isr_ifcr_mask_shift);
+void DMA1_Stream2_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_2);
 }
 
-uint32_t dma_stream_transfer_error_interrupt_read(dma_t* dma_stream) {
-    return (dma_stream->dma->ISR[dma_stream->dma_isr_ifcr_n] & (uint32_t) (DMA_ISR_TEIF << dma_stream->dma_isr_ifcr_mask_shift));
+void DMA1_Stream3_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_3);
 }
 
-void dma_stream_transfer_error_interrupt_clear(dma_t* dma_stream) {
-    dma_stream->dma->IFCR[dma_stream->dma_isr_ifcr_n] = (uint32_t) (DMA_IFCR_CTEIF << dma_stream->dma_isr_ifcr_mask_shift);
+void DMA1_Stream4_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_4);
 }
 
-uint32_t dma_stream_half_transfer_interrupt_read(dma_t* dma_stream) {
-    return (dma_stream->dma->ISR[dma_stream->dma_isr_ifcr_n] & (uint32_t) (DMA_ISR_HTIF << dma_stream->dma_isr_ifcr_mask_shift));
+void DMA1_Stream5_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_5);
 }
 
-void dma_stream_half_transfer_interrupt_clear(dma_t* dma_stream) {
-    dma_stream->dma->IFCR[dma_stream->dma_isr_ifcr_n] = (uint32_t) (DMA_IFCR_CHTIF << dma_stream->dma_isr_ifcr_mask_shift);
+void DMA1_Stream6_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_6);
 }
 
-uint32_t dma_stream_transfer_complete_interrupt_read(dma_t* dma_stream) {
-    return (dma_stream->dma->ISR[dma_stream->dma_isr_ifcr_n] & (uint32_t) (DMA_ISR_TCIF << dma_stream->dma_isr_ifcr_mask_shift));
+void DMA1_Stream7_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_1, DMA_Stream_7);
 }
 
-void dma_stream_transfer_complete_interrupt_clear(dma_t* dma_stream) {
-    dma_stream->dma->IFCR[dma_stream->dma_isr_ifcr_n] = (uint32_t) (DMA_IFCR_CTCIF << dma_stream->dma_isr_ifcr_mask_shift);
+void DMA2_Stream0_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_0);
 }
 
-void dma_stream_channel_selection(dma_t* dma_stream, uint8_t chsel) {
-    CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_CHSEL);
-    SET_BIT(dma_stream->stream->CR, (DMA_SxCR_CHSEL & (uint32_t) (chsel << DMA_SxCR_CHSEL_SHIFT)));
+void DMA2_Stream1_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_1);
 }
 
-void dma_stream_memory_burst_transfer_configuration(dma_t* dma_stream, uint8_t mburst) {
-    CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_MBURST);
-    SET_BIT(dma_stream->stream->CR, (DMA_SxCR_MBURST & (uint32_t) (mburst << DMA_SxCR_MBURST_SHIFT)));
+void DMA2_Stream2_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_2);
 }
 
-void dma_stream_peripheral_burst_transfer_configuration(dma_t* dma_stream, uint8_t pburst) {
-    CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_PBURST);
-    SET_BIT(dma_stream->stream->CR, (DMA_SxCR_PBURST & (uint32_t) (pburst << DMA_SxCR_PBURST_SHIFT)));
+void DMA2_Stream3_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_3);
 }
 
-void dma_stream_current_target(dma_t* dma_stream, bool ct) {
-    if (ct) SET_BIT(dma_stream->stream->CR, DMA_SxCR_CT);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_CT);
+void DMA2_Stream4_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_4);
 }
 
-bool dma_stream_current_target_read(dma_t* dma_stream) {
-    if (READ_BIT(dma_stream->stream->CR, DMA_SxCR_CT)) return 1;
-    else return 0;
+void DMA2_Stream5_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_5);
 }
 
-void dma_stream_double_buffer_mode(dma_t* dma_stream, bool dbm) {
-    if (dbm) SET_BIT(dma_stream->stream->CR,DMA_SxCR_DBM);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_DBM);
+void DMA2_Stream6_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_6);
 }
 
-void dma_stream_priority_level(dma_t* dma_stream, uint8_t pl) {
-    CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_PL);
-    SET_BIT(dma_stream->stream->CR, (DMA_SxCR_PL & (uint32_t) (pl << DMA_SxCR_PL_SHIFT)));
+void DMA2_Stream7_IRQHandler() {
+	DMA_Stream_IRQHandler(DMA_Controller_2, DMA_Stream_7);
 }
 
-void dma_stream_peripheral_increment_offset_size(dma_t* dma_stream, bool pincos) {
-    if (pincos) SET_BIT(dma_stream->stream->CR, DMA_SxCR_PINCOS);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_PINCOS);
+void dma_controller_init() {
+	//DMA
+	_dma.dma[DMA_Controller_1] = DMA1;
+	_dma.dma[DMA_Controller_2] = DMA2;
+
+	//STREAM
+	_dma.stream[DMA_Controller_1][DMA_Stream_0] = DMA1_Stream0;
+	_dma.stream[DMA_Controller_1][DMA_Stream_1] = DMA1_Stream1;
+	_dma.stream[DMA_Controller_1][DMA_Stream_2] = DMA1_Stream2;
+	_dma.stream[DMA_Controller_1][DMA_Stream_3] = DMA1_Stream3;
+	_dma.stream[DMA_Controller_1][DMA_Stream_4] = DMA1_Stream4;
+	_dma.stream[DMA_Controller_1][DMA_Stream_5] = DMA1_Stream5;
+	_dma.stream[DMA_Controller_1][DMA_Stream_6] = DMA1_Stream6;
+	_dma.stream[DMA_Controller_1][DMA_Stream_7] = DMA1_Stream7;
+
+	_dma.stream[DMA_Controller_2][DMA_Stream_0] = DMA2_Stream0;
+	_dma.stream[DMA_Controller_2][DMA_Stream_1] = DMA2_Stream1;
+	_dma.stream[DMA_Controller_2][DMA_Stream_2] = DMA2_Stream2;
+	_dma.stream[DMA_Controller_2][DMA_Stream_3] = DMA2_Stream3;
+	_dma.stream[DMA_Controller_2][DMA_Stream_4] = DMA2_Stream4;
+	_dma.stream[DMA_Controller_2][DMA_Stream_5] = DMA2_Stream5;
+	_dma.stream[DMA_Controller_2][DMA_Stream_6] = DMA2_Stream6;
+	_dma.stream[DMA_Controller_2][DMA_Stream_7] = DMA2_Stream7;
+
+	//ISR
+	_dma.interrupt_mask[DMA_Stream_0].FEIF = DMA_LISR_FEIF0;
+	_dma.interrupt_mask[DMA_Stream_0].DMEIF = DMA_LISR_DMEIF0;
+	_dma.interrupt_mask[DMA_Stream_0].TEIF = DMA_LISR_TEIF0;
+	_dma.interrupt_mask[DMA_Stream_0].HTIF = DMA_LISR_HTIF0;
+	_dma.interrupt_mask[DMA_Stream_0].TCIF = DMA_LISR_TCIF0;
+
+	_dma.interrupt_mask[DMA_Stream_1].FEIF = DMA_LISR_FEIF1;
+	_dma.interrupt_mask[DMA_Stream_1].DMEIF = DMA_LISR_DMEIF1;
+	_dma.interrupt_mask[DMA_Stream_1].TEIF = DMA_LISR_TEIF1;
+	_dma.interrupt_mask[DMA_Stream_1].HTIF = DMA_LISR_HTIF1;
+	_dma.interrupt_mask[DMA_Stream_1].TCIF = DMA_LISR_TCIF1;
+
+	_dma.interrupt_mask[DMA_Stream_2].FEIF = DMA_LISR_FEIF2;
+	_dma.interrupt_mask[DMA_Stream_2].DMEIF = DMA_LISR_DMEIF2;
+	_dma.interrupt_mask[DMA_Stream_2].TEIF = DMA_LISR_TEIF2;
+	_dma.interrupt_mask[DMA_Stream_2].HTIF = DMA_LISR_HTIF2;
+	_dma.interrupt_mask[DMA_Stream_2].TCIF = DMA_LISR_TCIF2;
+
+	_dma.interrupt_mask[DMA_Stream_3].FEIF = DMA_LISR_FEIF3;
+	_dma.interrupt_mask[DMA_Stream_3].DMEIF = DMA_LISR_DMEIF3;
+	_dma.interrupt_mask[DMA_Stream_3].TEIF = DMA_LISR_TEIF3;
+	_dma.interrupt_mask[DMA_Stream_3].HTIF = DMA_LISR_HTIF3;
+	_dma.interrupt_mask[DMA_Stream_3].TCIF = DMA_LISR_TCIF3;
+
+	_dma.interrupt_mask[DMA_Stream_4].FEIF = DMA_HISR_FEIF4;
+	_dma.interrupt_mask[DMA_Stream_4].DMEIF = DMA_HISR_DMEIF4;
+	_dma.interrupt_mask[DMA_Stream_4].TEIF = DMA_HISR_TEIF4;
+	_dma.interrupt_mask[DMA_Stream_4].HTIF = DMA_HISR_HTIF4;
+	_dma.interrupt_mask[DMA_Stream_4].TCIF = DMA_HISR_TCIF4;
+
+	_dma.interrupt_mask[DMA_Stream_5].FEIF = DMA_HISR_FEIF5;
+	_dma.interrupt_mask[DMA_Stream_5].DMEIF = DMA_HISR_DMEIF5;
+	_dma.interrupt_mask[DMA_Stream_5].TEIF = DMA_HISR_TEIF5;
+	_dma.interrupt_mask[DMA_Stream_5].HTIF = DMA_HISR_HTIF5;
+	_dma.interrupt_mask[DMA_Stream_5].TCIF = DMA_HISR_TCIF5;
+
+	_dma.interrupt_mask[DMA_Stream_6].FEIF = DMA_HISR_FEIF6;
+	_dma.interrupt_mask[DMA_Stream_6].DMEIF = DMA_HISR_DMEIF6;
+	_dma.interrupt_mask[DMA_Stream_6].TEIF = DMA_HISR_TEIF6;
+	_dma.interrupt_mask[DMA_Stream_6].HTIF = DMA_HISR_HTIF6;
+	_dma.interrupt_mask[DMA_Stream_6].TCIF = DMA_HISR_TCIF6;
+
+	_dma.interrupt_mask[DMA_Stream_7].FEIF = DMA_HISR_FEIF7;
+	_dma.interrupt_mask[DMA_Stream_7].DMEIF = DMA_HISR_DMEIF7;
+	_dma.interrupt_mask[DMA_Stream_7].TEIF = DMA_HISR_TEIF7;
+	_dma.interrupt_mask[DMA_Stream_7].HTIF = DMA_HISR_HTIF7;
+	_dma.interrupt_mask[DMA_Stream_7].TCIF = DMA_HISR_TCIF7;
+
+	//init DONE
+	_dma.initialized = true;
 }
 
-void dma_stream_memory_data_size(dma_t* dma_stream, uint8_t msize) {
-    CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_MSIZE);
-    SET_BIT(dma_stream->stream->CR, (DMA_SxCR_MSIZE & (uint32_t) (msize << DMA_SxCR_MSIZE_SHIFT)));
+static bool _dma_initialized() {
+	return _dma.initialized;
 }
 
-void dma_stream_peripheral_data_size(dma_t* dma_stream, uint8_t psize) {
-    CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_PSIZE);
-    SET_BIT(dma_stream->stream->CR, (DMA_SxCR_PSIZE & (uint32_t) (psize << DMA_SxCR_PSIZE_SHIFT)));
+static void _dma_stream_callback_set(dma_controller_n_t controller_n, dma_stream_n_t stream_n, void(*callback)) {
+	_dma.callback[controller_n][stream_n] = callback;
 }
 
-void dma_stream_memory_increment_mode(dma_t* dma_stream, bool minc) {
-    if (minc) SET_BIT(dma_stream->stream->CR, DMA_SxCR_MINC);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_MINC);
+static dma_controller_n_t _dma_define_controller(dma_n_stream_n_t stream) {
+	return ((stream & DMA2_Stream_0) ? DMA_Controller_2 : DMA_Controller_1);
 }
 
-void dma_stream_peripheral_increment_mode(dma_t* dma_stream, bool pinc) {
-    if (pinc) SET_BIT(dma_stream->stream->CR, DMA_SxCR_PINC);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_PINC);
+static dma_stream_n_t _dma_define_stream(dma_n_stream_n_t stream) {
+	return (stream & DMA_Stream_7);
 }
 
-void dma_stream_circular_mode(dma_t* dma_stream, bool circ) {
-    if (circ) SET_BIT(dma_stream->stream->CR, DMA_SxCR_CIRC);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_CIRC);
+static dma_isr_ifcr_n_t _dma_define_status(dma_n_stream_n_t stream) {
+	return (stream & DMA_Stream_4) ? DMA_ISR_IFCR_HIGH : DMA_ISR_IFCR_LOW;
 }
 
-void dma_stream_data_transfer_direction(dma_t* dma_stream, uint8_t dir) {
-    CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_DIR);
-    SET_BIT(dma_stream->stream->CR, (DMA_SxCR_DIR & (uint32_t) (dir << DMA_SxCR_DIR_SHIFT)));
+static bool _dma_stream_busy_read(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
+	return _dma.busy[controller_n][stream_n];
 }
 
-void dma_stream_peripheral_flow_controller(dma_t* dma_stream, bool pfctrl) {
-    if (pfctrl) SET_BIT(dma_stream->stream->CR, DMA_SxCR_PFCTRL);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_PFCTRL);
+static void _dma_stream_busy_write(dma_controller_n_t controller_n, dma_stream_n_t stream_n, bool busy) {
+	_dma.busy[controller_n][stream_n] = busy;
 }
 
-void dma_stream_transfer_complete_interrupt_enable(dma_t* dma_stream, bool tcie) {
-    if (tcie) SET_BIT(dma_stream->stream->CR, DMA_SxCR_TCIE);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_TCIE);
+static uint32_t _dma_stream_status_register_read(dma_controller_n_t controller_n, dma_isr_ifcr_n_t status) {
+	return _dma.dma[controller_n]->ISR[status];
 }
 
-void dma_stream_half_transfer_interrupt_enable(dma_t* dma_stream, bool htie) {
-    if (htie) SET_BIT(dma_stream->stream->CR, DMA_SxCR_HTIE);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_HTIE);
+static bool _dma_stream_status_FEIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].FEIF) return true;
+	return false;
 }
 
-void dma_stream_transfer_error_interrupt_enable(dma_t* dma_stream, bool teie) {
-    if (teie) SET_BIT(dma_stream->stream->CR, DMA_SxCR_TEIE);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_TEIE);
+static bool _dma_stream_status_DMEIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].DMEIF) return true;
+	return false;
 }
 
-void dma_stream_direct_mode_error_interrupt_enable(dma_t* dma_stream, bool dmeie) {
-    if (dmeie) SET_BIT(dma_stream->stream->CR, DMA_SxCR_DMEIE);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_DMEIE);
+static bool _dma_stream_status_TEIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].TEIF) return true;
+	return false;
 }
 
-void dma_stream_enable(dma_t* dma_stream, bool en) {
-    if (en) SET_BIT(dma_stream->stream->CR, DMA_SxCR_EN);
-    else CLEAR_BIT(dma_stream->stream->CR, DMA_SxCR_EN);
+static bool _dma_stream_status_HTIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].HTIF) return true;
+	return false;
 }
 
-bool dma_stream_ready(dma_t* dma_stream) {
-    if (READ_BIT(dma_stream->stream->CR, DMA_SxCR_EN)) return 0; //not ready
-    else return 1; //ready
+static bool _dma_stream_status_TCIF_read(uint32_t ISR, dma_stream_n_t stream_n) {
+	if (ISR & _dma.interrupt_mask[stream_n].TCIF) return true;
+	return false;
 }
 
-void dma_stream_number_of_data(dma_t* dma_stream,uint16_t ndtr) {
-    dma_stream->stream->NDTR = ndtr;
+static void _dma_stream_status_FEIF_clear(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status] = _dma.interrupt_mask[stream_n].FEIF;
 }
 
-uint16_t dma_stream_number_of_data_read(dma_t* dma_stream) {
-    return dma_stream->stream->NDTR;
+static void _dma_stream_status_DMEIF_clear(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status] = _dma.interrupt_mask[stream_n].DMEIF;
 }
 
-void dma_stream_peripheral_address(dma_t* dma_stream,uint32_t par) {
-    dma_stream->stream->PAR = par;
+static void _dma_stream_status_TEIF_clear(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status] = _dma.interrupt_mask[stream_n].TEIF;
 }
 
-void dma_stream_memory_address(dma_t* dma_stream,uint8_t mar_n,uint32_t mar) {
-    dma_stream->stream->MAR[mar_n] = mar;
+static void _dma_stream_status_HTIF_clear(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status] = _dma.interrupt_mask[stream_n].HTIF;
 }
 
-void dma_stream_struct_init(dma_t* dma_stream, DMA_TypeDef* dma, DMA_Stream_TypeDef* stream, uint8_t stream_n) {
-    dma_stream->dma = dma;
-    dma_stream->stream = stream;
-    dma_stream->dma_isr_ifcr_n = (uint8_t) (stream_n/4);
-    dma_stream->dma_isr_ifcr_mask_shift = (uint8_t)((stream_n%4)*8)-((stream_n%2)*2);
+static void _dma_stream_status_TCIF_clear(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		dma_isr_ifcr_n_t status) {
+	_dma.dma[controller_n]->IFCR[status] = _dma.interrupt_mask[stream_n].TCIF;
 }
 
-void dma_stream_struct_deinit(dma_t* dma_stream) {
-    dma_stream->dma = NULL;
-    dma_stream->stream = NULL;
-    dma_stream->dma_isr_ifcr_n = 0;
-    dma_stream->dma_isr_ifcr_mask_shift = 0;
+static uint32_t _dma_stream_control_register_read(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n) {
+	return _dma.stream[controller_n][stream_n]->CR;
 }
 
-void dma_stream_deinit(dma_t* dma_stream) {
-    dma_stream_enable(dma_stream,false);
-    dma_stream->stream->CR = 0;
-    dma_stream->stream->NDTR = 0;
+static void _dma_stream_control_register_write(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		uint32_t CR) {
+	_dma.stream[controller_n][stream_n]->CR = CR;
+}
+
+static uint32_t _dma_stream_fifo_control_register_read(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n) {
+	return _dma.stream[controller_n][stream_n]->FCR;
+}
+
+static void _dma_stream_fifo_control_register_write(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		uint32_t FCR) {
+	_dma.stream[controller_n][stream_n]->FCR = FCR;
+}
+
+static uint32_t _dma_stream_number_of_data_register_read(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n) {
+	return _dma.stream[controller_n][stream_n]->NDTR;
+}
+
+static void _dma_stream_number_of_data_register_write(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		uint32_t NDTR) {
+	_dma.stream[controller_n][stream_n]->NDTR = NDTR;
+}
+
+static uint32_t _dma_stream_peripheral_address_register_read(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n) {
+	return _dma.stream[controller_n][stream_n]->PAR;
+}
+
+static void _dma_stream_peripheral_address_register_write(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		uint32_t PAR) {
+	_dma.stream[controller_n][stream_n]->PAR = PAR;
+}
+
+static uint32_t _dma_stream_memory_0_address_register_read(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n) {
+	return _dma.stream[controller_n][stream_n]->M0AR;
+}
+
+static void _dma_stream_memory_0_address_register_write(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		uint32_t M0AR) {
+	_dma.stream[controller_n][stream_n]->M0AR = M0AR;
+}
+
+static uint32_t _dma_stream_memory_1_address_register_read(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n) {
+	return _dma.stream[controller_n][stream_n]->M1AR;
+}
+
+static void _dma_stream_memory_1_address_register_write(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n,
+		uint32_t M1AR) {
+	_dma.stream[controller_n][stream_n]->M1AR = M1AR;
+}
+
+static void _dma_stream_interrups_disable_all(
+		dma_controller_n_t controller_n,
+		dma_stream_n_t stream_n) {
+
+	dma_scr_t scr;
+	dma_sfcr_t fscr;
+
+	scr.all = _dma_stream_control_register_read(controller_n, stream_n);
+	fscr.all = _dma_stream_fifo_control_register_read(controller_n, stream_n);
+
+	scr.bit.DMEIE = DMA_SCR_DMEIE_DIS;
+	scr.bit.TEIE = DMA_SCR_TEIE_DIS;
+	scr.bit.HTIE = DMA_SCR_HTIE_DIS;
+	scr.bit.TCIE = DMA_SCR_TCIE_DIS;
+
+	fscr.bit.FEIE = DMA_FCR_FEIE_DIS;
+
+	_dma_stream_control_register_write(controller_n, stream_n, scr.all);
+	_dma_stream_fifo_control_register_write(controller_n, stream_n, fscr.all);
+}
+
+//функции пользователя
+err_t dma_struct_init(dma_t* dma, dma_n_stream_n_t stream) {
+	if(dma == NULL) return E_NULL_POINTER;
+
+	dma->initialized = false;
+
+	if(_dma_initialized() == false) return E_CANCELED;
+
+	dma->controller = _dma_define_controller(stream);
+	dma->stream = _dma_define_stream(stream);
+	dma->status = _dma_define_status(stream);
+	dma->initialized = true;
+
+	return E_NO_ERROR;
+}
+
+err_t dma_stream_open(dma_t* dma) {
+	if(dma == NULL) return E_NULL_POINTER;
+
+	if(dma->initialized == false) return E_CANCELED;
+
+	if(_dma_initialized() == false) return E_CANCELED;
+
+	if(_dma_stream_busy_read(dma->controller, dma->stream) == true) {
+		return E_BUSY;
+	}
+
+	_dma_stream_busy_write(dma->controller, dma->stream, true);
+
+	return E_NO_ERROR;
+}
+
+uint32_t dma_stream_status_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
+	return _dma_stream_status_register_read(dma->controller, dma->status);
+}
+
+bool dma_stream_status_FEIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_FEIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_DMEIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_DMEIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_TEIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_TEIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_HTIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_HTIF_read(ISR, dma->stream);
+}
+
+bool dma_stream_status_TCIF_read(uint32_t ISR, dma_t* dma) {
+	if (dma->initialized == false) return false;
+	return _dma_stream_status_TCIF_read(ISR, dma->stream);
+}
+
+void dma_stream_status_FEIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_FEIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_DMEIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_DMEIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_TEIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_TEIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_HTIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_HTIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_status_TCIF_clear(dma_t* dma) {
+	if (dma->initialized == false) return;
+	_dma_stream_status_TCIF_clear(dma->controller, dma->stream, dma->status);
+}
+
+void dma_stream_callback_set(dma_t* dma, void(*callback)) {
+	if (dma->initialized == false) return;
+	_dma_stream_callback_set(dma->controller, dma->stream, callback);
+}
+
+bool dma_stream_enable(dma_t* dma) {
+	if (dma->initialized == false) return false;
+
+	dma_scr_t scr;
+
+	scr.all = _dma_stream_control_register_read(dma->controller, dma->stream);
+
+	scr.bit.EN = DMA_SCR_EN_ENA;
+
+	_dma_stream_control_register_write(dma->controller, dma->stream, scr.all);
+
+	return true;
+}
+
+bool dma_stream_disable(dma_t* dma) {
+	if (dma->initialized == false) return false;
+
+	dma_scr_t scr;
+
+	scr.all = _dma_stream_control_register_read(dma->controller, dma->stream);
+
+	scr.bit.EN = DMA_SCR_EN_DIS;
+
+	_dma_stream_control_register_write(dma->controller, dma->stream, scr.all);
+
+	return true;
+}
+
+void dma_stream_init(
+		dma_t* dma,
+		dma_scr_dbm_t dbm,
+		dma_scr_ct_t ct,
+
+		dma_scr_chsel_t chsel,
+
+		dma_fcr_dmdis_t dmdis,
+		dma_fcr_fth_t fth,
+
+		dma_scr_msize_t msize,
+		dma_scr_mburst_t mburst,
+		dma_scr_minc_t minc,
+
+		dma_scr_psize_t psize,
+		dma_scr_pburst_t pburst,
+		dma_scr_pinc_t pinc,
+		dma_scr_pincos_t pincos,
+
+		dma_scr_dir_t dir,
+		dma_scr_pfctrl_t pfctrl,
+		dma_scr_circ_t circ,
+
+		dma_scr_tcie_t tcie,
+		dma_scr_htie_t htie,
+		dma_scr_teie_t teie,
+		dma_scr_dmeie_t dmeie,
+		dma_fcr_feie_t feie,
+
+		dma_scr_pl_t pl,
+		dma_scr_en_t en) {
+	if (dma->initialized == false) return;
+
+	dma_scr_t scr;
+	dma_sfcr_t fscr;
+
+	scr.all = _dma_stream_control_register_read(dma->controller, dma->stream);
+
+	if(scr.bit.EN == DMA_SCR_EN_ENA) return;
+
+	fscr.all = _dma_stream_fifo_control_register_read(dma->controller, dma->stream);
+
+	scr.bit.EN = en;
+	scr.bit.DMEIE = dmeie;
+	scr.bit.TEIE = teie;
+	scr.bit.HTIE = htie;
+	scr.bit.TCIE = tcie;
+	scr.bit.PFCTRL = pfctrl;
+	scr.bit.DIR = dir;
+	scr.bit.CIRC = circ;
+	scr.bit.PINC = pinc;
+	scr.bit.MINC = minc;
+	scr.bit.PSIZE = psize;
+	scr.bit.MSIZE = msize;
+	scr.bit.PINCOS = pincos;
+	scr.bit.PL = pl;
+	scr.bit.DBM = dbm;
+	scr.bit.CT = ct;
+	scr.bit.PBURST = pburst;
+	scr.bit.MBURST = mburst;
+	scr.bit.CHSEL = chsel;
+
+	fscr.bit.FTH = fth;
+	fscr.bit.DMDIS = dmdis;
+	fscr.bit.FEIE = feie;
+
+	_dma_stream_fifo_control_register_write(dma->controller, dma->stream, fscr.all);
+	_dma_stream_control_register_write(dma->controller, dma->stream, scr.all);
+}
+
+uint32_t dma_stream_number_of_data_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
+	return _dma_stream_number_of_data_register_read(dma->controller, dma->stream);
+}
+
+void dma_stream_number_of_data_register_write(dma_t* dma, uint32_t NDTR) {
+	if (dma->initialized == false) return;
+	_dma_stream_number_of_data_register_write(dma->controller, dma->stream, NDTR);
+}
+
+uint32_t dma_stream_peripheral_address_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
+	return _dma_stream_peripheral_address_register_read(dma->controller, dma->stream);
+}
+
+void dma_stream_peripheral_address_register_write(dma_t* dma, uint32_t PAR) {
+	if (dma->initialized == false) return;
+	_dma_stream_peripheral_address_register_write(dma->controller, dma->stream, PAR);
+}
+
+uint32_t dma_stream_memory_0_address_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
+	return _dma_stream_memory_0_address_register_read(dma->controller, dma->stream);
+}
+
+void dma_stream_memory_0_address_register_write(dma_t* dma, uint32_t M0AR) {
+	if (dma->initialized == false) return;
+	_dma_stream_memory_0_address_register_write(dma->controller, dma->stream, M0AR);
+}
+
+uint32_t dma_stream_memory_1_address_register_read(dma_t* dma) {
+	if (dma->initialized == false) return 0;
+	return _dma_stream_memory_1_address_register_read(dma->controller, dma->stream);
+}
+
+void dma_stream_memory_1_address_register_write(dma_t* dma, uint32_t M1AR) {
+	if (dma->initialized == false) return;
+	_dma_stream_memory_1_address_register_write(dma->controller, dma->stream, M1AR);
+}
+
+void dma_stream_deinit(dma_t* dma) {
+	if (dma->initialized == false) return;
+
+	_dma_stream_control_register_write(dma->controller, dma->stream, 0);
+	_dma_stream_fifo_control_register_write(dma->controller, dma->stream, 0);
+
+	dma_stream_number_of_data_register_write(dma, 0);
+	dma_stream_peripheral_address_register_write(dma, 0);
+	dma_stream_memory_0_address_register_write(dma, 0);
+	dma_stream_memory_1_address_register_write(dma, 0);
+
+	dma_stream_callback_set(dma, NULL);
+}
+
+void dma_stream_close(dma_t* dma) {
+	if (dma->initialized == false) return;
+
+	_dma_stream_busy_write(dma->controller, dma->stream, false);
 }
