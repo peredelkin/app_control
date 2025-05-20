@@ -140,7 +140,7 @@
 
 typedef struct {
 	bool initialized;
-	old_dma_t dma;
+	dma_t dma;
 	uint8_t id[K9F1G08U0E_ID_DATA_COUNT];
 	uint8_t data[K9F1G08U0E_PAGE_TOTAL_SIZE];
 	uint8_t ecc_tmp[K9F1G08U0E_ECC_RESULT_SIZE];

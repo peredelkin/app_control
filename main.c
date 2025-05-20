@@ -168,8 +168,11 @@ int main(void)
 
 		err_t sdio_err = E_NO_ERROR;
 		//инициализация структуры sdcard
-		old_dma_stream_struct_init(&(sdcard.dma), DMA2, DMA2_Stream6, 6);
-		old_dma_stream_deinit(&(sdcard.dma));
+		sdio_err = dma_struct_init(&(sdcard.dma), DMA2_Stream_6);
+		if(sdio_err != E_NO_ERROR) {
+			printf("DMA Struct Init Error: %lu\n", sdio_err);
+			goto exit_sdcard_init;
+		}
 
 		sdcard.cmd = NULL;
 		sdcard.current_state = SDCARD_STATE_IDLE;

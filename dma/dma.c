@@ -20,7 +20,7 @@ typedef struct {
 
 static _dma_controller_t _dma;
 
-inline bool DMA_Stream_IRQHandler(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
+static inline bool DMA_Stream_IRQHandler(dma_controller_n_t controller_n, dma_stream_n_t stream_n) {
 	if(_dma.callback[controller_n][stream_n] != NULL) {
 		_dma.callback[controller_n][stream_n]();
 		return true;
@@ -613,14 +613,13 @@ void dma_stream_deinit(dma_t* dma) {
 	dma_stream_number_of_data_register_write(dma, 0);
 	dma_stream_peripheral_address_register_write(dma, 0);
 	dma_stream_memory_0_address_register_write(dma, 0);
+	dma_stream_memory_1_address_register_write(dma, 0);
 
 	dma_stream_callback_set(dma, NULL);
 }
 
 void dma_stream_close(dma_t* dma) {
 	if (dma->initialized == false) return;
-
-	dma_stream_deinit(dma);
 
 	_dma_stream_busy_write(dma->controller, dma->stream, false);
 }

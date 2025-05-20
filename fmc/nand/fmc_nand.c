@@ -30,8 +30,8 @@ err_t nand_K9F1G08U0E_init(nand_flash_driver_t *drv) {
 	if(drv == NULL) return E_NULL_POINTER;
 
 	if(drv->initialized == false) {
-		old_dma_stream_struct_init(&(drv->dma), DMA2, DMA2_Stream4, 4);
-		old_dma_stream_deinit(&(drv->dma));
+		err_t err = dma_struct_init(&(drv->dma), DMA2_Stream_4);
+		if(err != E_NO_ERROR) return err;
 		drv->initialized = true;
 	}
 
@@ -41,10 +41,7 @@ err_t nand_K9F1G08U0E_init(nand_flash_driver_t *drv) {
 err_t nand_K9F1G08U0E_deinit(nand_flash_driver_t *drv) {
 	if(drv == NULL) return E_NULL_POINTER;
 
-	old_dma_stream_deinit(&(drv->dma));
-	if(old_dma_stream_transfer_complete_interrupt_read(&drv->dma)) old_dma_stream_transfer_complete_interrupt_clear(&drv->dma);
-	if(old_dma_stream_transfer_error_interrupt_read(&drv->dma)) old_dma_stream_transfer_error_interrupt_clear(&drv->dma);
-	old_dma_stream_struct_deinit(&(drv->dma));
+	dma_stream_deinit(&(drv->dma));
 
 	return E_NO_ERROR;
 }
@@ -145,44 +142,101 @@ uint8_t nand_K9F1G08U0E_status_read_cmd(void) {
 
 /*dma function sets start*/
 err_t nand_K9F1G08U0E_conf_dma_to_read(nand_flash_driver_t *drv) {
-	//stream check
-	if (!old_dma_stream_ready(&(drv->dma))) return E_BUSY;
+	//stream open
+	err_t err = dma_stream_open(&(drv->dma));
+	if(err != E_NO_ERROR) return err;
 	//stream deinit
-	old_dma_stream_deinit(&(drv->dma));
+	dma_stream_deinit(&(drv->dma));
 	//stream conf
-	old_dma_stream_number_of_data(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE); //Count
-	old_dma_stream_peripheral_address(&(drv->dma), (uint32_t) K9F1G08U0E_DATA32_SECTION); //Source
-	old_dma_stream_memory_address(&(drv->dma), 0, (uint32_t) (drv->data)); //Destination
-	old_dma_stream_data_transfer_direction(&(drv->dma), 0b10); //Memory-to-memory
-	old_dma_stream_memory_increment_mode(&(drv->dma), true); //Destination increment
+	dma_stream_number_of_data_register_write(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE);				//Count
+	dma_stream_peripheral_address_register_write(&(drv->dma), (uint32_t) K9F1G08U0E_DATA32_SECTION);//Source
+	dma_stream_memory_0_address_register_write(&(drv->dma), (uint32_t) (drv->data));				//Destination
+
+    dma_stream_init(
+    		&(drv->dma),
+    		DMA_SCR_DBM_DIS,
+			DMA_SCR_CT_MEM0,
+			DMA_SCR_CHSEL_0,
+			DMA_FCR_DMDIS_DIS,
+			DMA_FCR_FTH_ONE_FOURTH,
+			DMA_SCR_MSIZE_8,
+			DMA_SCR_MBURST_DIS,
+			DMA_SCR_MINC_ENA,
+			DMA_SCR_PSIZE_8,
+			DMA_SCR_PBURST_DIS,
+			DMA_SCR_PINC_DIS,
+			DMA_SCR_PINCOS_PSIZE,
+			DMA_SCR_DIR_MEM_TO_MEM,
+			DMA_SCR_PFCTRL_DIS,
+			DMA_SCR_CIRC_DIS,
+			DMA_SCR_TCIE_DIS,
+			DMA_SCR_HTIE_DIS,
+			DMA_SCR_TEIE_DIS,
+			DMA_SCR_DMEIE_DIS,
+			DMA_FCR_FEIE_DIS,
+			DMA_SCR_PL_LOW,
+			DMA_SCR_EN_DIS);
+
 	return E_NO_ERROR;
 }
 
 err_t nand_K9F1G08U0E_conf_dma_to_write(nand_flash_driver_t *drv) {
-	//stream check
-	if (!old_dma_stream_ready(&(drv->dma))) return E_BUSY;
+	//stream open
+	err_t err = dma_stream_open(&(drv->dma));
+	if(err != E_NO_ERROR) return err;
 	//stream deinit
-	old_dma_stream_deinit(&(drv->dma));
+	dma_stream_deinit(&(drv->dma));
 	//stream conf
-	old_dma_stream_number_of_data(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE); //Count
-	old_dma_stream_peripheral_address(&(drv->dma), (uint32_t) (drv->data)); //Source
-	old_dma_stream_memory_address(&(drv->dma), 0, (uint32_t) K9F1G08U0E_DATA32_SECTION);//Destination
-	old_dma_stream_data_transfer_direction(&(drv->dma), 0b10); //Memory-to-memory
-	old_dma_stream_peripheral_increment_mode(&(drv->dma), true); //Source increment
+	dma_stream_number_of_data_register_write(&(drv->dma), K9F1G08U0E_PAGE_TOTAL_SIZE);				//Count
+	dma_stream_peripheral_address_register_write(&(drv->dma), (uint32_t) (drv->data));				//Source
+	dma_stream_memory_0_address_register_write(&(drv->dma), (uint32_t) K9F1G08U0E_DATA32_SECTION);	//Destination
+
+    dma_stream_init(
+    		&(drv->dma),
+    		DMA_SCR_DBM_DIS,
+			DMA_SCR_CT_MEM0,
+			DMA_SCR_CHSEL_0,
+			DMA_FCR_DMDIS_DIS,
+			DMA_FCR_FTH_ONE_FOURTH,
+			DMA_SCR_MSIZE_8,
+			DMA_SCR_MBURST_DIS,
+			DMA_SCR_MINC_DIS,
+			DMA_SCR_PSIZE_8,
+			DMA_SCR_PBURST_DIS,
+			DMA_SCR_PINC_ENA,
+			DMA_SCR_PINCOS_PSIZE,
+			DMA_SCR_DIR_MEM_TO_MEM,
+			DMA_SCR_PFCTRL_DIS,
+			DMA_SCR_CIRC_DIS,
+			DMA_SCR_TCIE_DIS,
+			DMA_SCR_HTIE_DIS,
+			DMA_SCR_TEIE_DIS,
+			DMA_SCR_DMEIE_DIS,
+			DMA_FCR_FEIE_DIS,
+			DMA_SCR_PL_LOW,
+			DMA_SCR_EN_DIS);
+
 	return E_NO_ERROR;
 }
 
 err_t nand_K9F1G08U0E_start_dma_transfer(nand_flash_driver_t *drv) {
-	old_dma_stream_enable(&(drv->dma), true); //enable Stream
-	while (!old_dma_stream_transfer_complete_interrupt_read(&drv->dma)) { //wait TC
-		if (old_dma_stream_transfer_error_interrupt_read(&drv->dma)) { //if TE
-			old_dma_stream_transfer_error_interrupt_clear(&drv->dma); //clear TE
-			old_dma_stream_enable(&(drv->dma), false); //disable Stream
+	uint32_t ISR;
+
+	dma_stream_enable(&(drv->dma)); //enable Stream
+
+	do {
+		ISR = dma_stream_status_register_read(&drv->dma);
+		if (dma_stream_status_TEIF_read(ISR, &drv->dma)) { //if TE
+			dma_stream_status_TEIF_clear(&drv->dma); //clear TE
+			dma_stream_disable(&(drv->dma)); //disable Stream
+			dma_stream_close(&(drv->dma)); //close Stream
 			return E_STATE;
 		}
-	}
-	old_dma_stream_transfer_complete_interrupt_clear(&(drv->dma)); //clear TC
-	old_dma_stream_enable(&(drv->dma), false); //disable Stream
+	} while (dma_stream_status_TCIF_read(ISR, &drv->dma) == false);
+
+	dma_stream_status_TCIF_clear(&(drv->dma)); //clear TC
+	dma_stream_disable(&(drv->dma)); //disable Stream
+	dma_stream_close(&(drv->dma)); //close Stream
 	return E_NO_ERROR;
 }
 /*dma function sets end*/
@@ -191,8 +245,6 @@ err_t nand_K9F1G08U0E_start_dma_transfer(nand_flash_driver_t *drv) {
 err_t nand_K9F1G08U0E_page_read(nand_flash_driver_t *drv, uint16_t row) {
 	//NULL pointers
 	if(drv == NULL) return E_NULL_POINTER;
-	if(drv->dma.stream == NULL) return E_NULL_POINTER;
-	if(drv->dma.dma == NULL) return E_NULL_POINTER;
 	//stream check and conf
 	if(nand_K9F1G08U0E_conf_dma_to_read(drv)) return E_BUSY;
 	//write cmd/addr
@@ -238,8 +290,6 @@ err_t nand_K9F1G08U0E_id_check(nand_flash_driver_t *drv) {
 err_t nand_K9F1G08U0E_page_program(nand_flash_driver_t *drv, uint16_t row) {
 	//NULL pointers
 	if(drv == NULL) return E_NULL_POINTER;
-	if(drv->dma.stream == NULL) return E_NULL_POINTER;
-	if(drv->dma.dma == NULL) return E_NULL_POINTER;
 	//check protected/not protected
 	if(!(nand_K9F1G08U0E_status_read_cmd() & NANDFLASH_STATUS_READ_NOT_PROTECTED)) return E_CANCELED;
 	//stream check and conf
