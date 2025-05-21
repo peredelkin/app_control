@@ -611,5 +611,7 @@ void dma_stream_deinit(dma_t* dma) {
 void dma_stream_close(dma_t* dma) {
 	if (dma->initialized == false) return;
 
+	dma_stream_deinit(dma);
+
 	_dma_stream_busy_write(dma->controller, dma->stream, false);
 }
