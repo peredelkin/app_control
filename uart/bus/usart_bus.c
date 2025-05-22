@@ -35,13 +35,13 @@ void usart_bus_transmitter_disable(usart_bus_t* usart) {
  */
 
 static bool usart_bus_dma_lock_tx_channel(usart_bus_t* usart) {
-	if(dma_stream_open(&usart->dma_tx_stream) == E_NO_ERROR) return false;
-	return true;
+	if(dma_stream_open(&usart->dma_tx_stream) == E_NO_ERROR) return true;
+	return false;
 }
 
 static bool usart_bus_dma_lock_rx_channel(usart_bus_t* usart) {
-	if(dma_stream_open(&usart->dma_rx_stream) == E_NO_ERROR) return false;
-	return true;
+	if(dma_stream_open(&usart->dma_rx_stream) == E_NO_ERROR) return true;
+	return false;
 }
 
 static void usart_bus_dma_unlock_tx_channel(usart_bus_t* usart) {
@@ -67,7 +67,7 @@ static void usart_bus_dma_tx_config(usart_bus_t* usart, void* address, size_t si
 			DMA_SCR_CT_MEM0,
 			usart->dma_tx_stream_channel,
 			DMA_FCR_DMDIS_DIS,
-			DMA_FCR_FTH_ONE_FOURTH,
+			DMA_FCR_FTH_ONE_SECOND,
 			DMA_SCR_MSIZE_8,
 			DMA_SCR_MBURST_DIS,
 			DMA_SCR_MINC_ENA,
@@ -102,7 +102,7 @@ static void usart_bus_dma_rx_config(usart_bus_t* usart, void* address, size_t si
 			DMA_SCR_CT_MEM0,
 			usart->dma_rx_stream_channel,
 			DMA_FCR_DMDIS_DIS,
-			DMA_FCR_FTH_ONE_FOURTH,
+			DMA_FCR_FTH_ONE_SECOND,
 			DMA_SCR_MSIZE_8,
 			DMA_SCR_MBURST_DIS,
 			DMA_SCR_MINC_ENA,

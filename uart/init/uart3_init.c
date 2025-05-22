@@ -32,12 +32,6 @@ void uart3_dma_stream_tx_irq_handler() {
 void usart3_nvic_init(uint32_t priority) {
 	NVIC_SetPriority(USART3_IRQn, priority);
 	NVIC_EnableIRQ(USART3_IRQn);
-	//RX
-	NVIC_SetPriority(DMA1_Stream1_IRQn, priority);
-	NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-	//TX
-	NVIC_SetPriority(DMA1_Stream3_IRQn, priority);
-	NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 }
 
 void usart3_rcc_init(void) {
