@@ -32,12 +32,6 @@ void uart3_dma_stream_tx_irq_handler() {
 void usart3_nvic_init(uint32_t priority) {
 	NVIC_SetPriority(USART3_IRQn, priority);
 	NVIC_EnableIRQ(USART3_IRQn);
-	//RX
-	NVIC_SetPriority(DMA1_Stream1_IRQn, priority);
-	NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-	//TX
-	NVIC_SetPriority(DMA1_Stream3_IRQn, priority);
-	NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 }
 
 void usart3_rcc_init(void) {
@@ -61,17 +55,16 @@ void usart3_bus_init() {
 
     err_t err = E_NO_ERROR;
 
-    err = dma_struct_init(&usart_3.dma_rx_channel, DMA1_Stream_1);
+    usart_3.dma_rx_stream_channel = DMA_SCR_CHSEL_4;
+    usart_3.dma_tx_stream_channel = DMA_SCR_CHSEL_4;
+
+    err = dma_struct_init(&usart_3.dma_rx_stream, DMA1_Stream_1);
     if(err != E_NO_ERROR) return;
-    dma_stream_callback_set(&usart_3.dma_rx_channel, uart3_dma_stream_rx_irq_handler);
+    usart_3.dma_rx_stream_callback = uart3_dma_stream_rx_irq_handler;
 
-    usart_3.dma_rx_channel_n = DMA_SCR_CHSEL_4;
-
-    err = dma_struct_init(&usart_3.dma_tx_channel, DMA1_Stream_3);
+    err = dma_struct_init(&usart_3.dma_tx_stream, DMA1_Stream_3);
     if(err != E_NO_ERROR) return;
-    dma_stream_callback_set(&usart_3.dma_tx_channel, uart3_dma_stream_tx_irq_handler);
-
-    usart_3.dma_tx_channel_n = DMA_SCR_CHSEL_4;
+    usart_3.dma_tx_stream_callback = uart3_dma_stream_tx_irq_handler;
 
     usart_bus_init(&usart_3);
 

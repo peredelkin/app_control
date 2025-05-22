@@ -84,6 +84,15 @@ void dma_rcc_init() {
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
 }
 
+void dma_enable_irq() {
+	//UART3 RX
+	NVIC_SetPriority(DMA1_Stream1_IRQn, DMA1_Stream1_IRQ_PRIO);
+	NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+	//UART3 TX
+	NVIC_SetPriority(DMA1_Stream3_IRQn, DMA1_Stream3_IRQ_PRIO);
+	NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+}
+
 int main(void)
 {
 
@@ -98,6 +107,7 @@ int main(void)
 	gpio_rcc_init();
 	dma_rcc_init();
 	dma_controller_init();
+	dma_enable_irq();
 
 	system_counter_init(); //TIM2
 

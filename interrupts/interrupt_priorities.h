@@ -17,11 +17,14 @@
 #define UART6_IRQ_PRIO 5	//Socket 3
 #define UART7_IRQ_PRIO 5	//RS485 Panel
 
-#define UART3_IRQ_PRIO 7	//UART3 + DMA Stream
+#define UART3_IRQ_PRIO 7	//UART3
 
-#define TIM4_IRQ_PRIO 8		//MS_TIM
+#define DMA1_Stream1_IRQ_PRIO 9 //UART3 RX
+#define DMA1_Stream3_IRQ_PRIO 9 //UART3 TX
 
-#define TIM3_IRQ_PRIO 9		//SYS_TIM
+#define TIM4_IRQ_PRIO 11	//MS_TIM
+
+#define TIM3_IRQ_PRIO 13	//SYS_TIM
 
 #define TIM5_IRQ_PRIO 15	//CAN1 CO_process
 

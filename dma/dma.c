@@ -524,7 +524,9 @@ void dma_stream_init(
 
 	if(scr.bit.EN == DMA_SCR_EN_ENA) return;
 
-	fscr.all = _dma_stream_fifo_control_register_read(dma->controller, dma->stream);
+	if (dmdis == DMA_FCR_DMDIS_ENA) {
+		fscr.all = _dma_stream_fifo_control_register_read(dma->controller, dma->stream);
+	}
 
 	scr.bit.EN = en;
 	scr.bit.DMEIE = dmeie;
@@ -550,7 +552,10 @@ void dma_stream_init(
 	fscr.bit.DMDIS = dmdis;
 	fscr.bit.FEIE = feie;
 
-	_dma_stream_fifo_control_register_write(dma->controller, dma->stream, fscr.all);
+	if (dmdis == DMA_FCR_DMDIS_ENA) {
+		_dma_stream_fifo_control_register_write(dma->controller, dma->stream, fscr.all);
+	}
+
 	_dma_stream_control_register_write(dma->controller, dma->stream, scr.all);
 }
 
@@ -610,6 +615,8 @@ void dma_stream_deinit(dma_t* dma) {
 
 void dma_stream_close(dma_t* dma) {
 	if (dma->initialized == false) return;
+
+	dma_stream_deinit(dma);
 
 	_dma_stream_busy_write(dma->controller, dma->stream, false);
 }
