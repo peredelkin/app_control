@@ -13,14 +13,14 @@
 #define SPI2_IRQ_PRIO 3		//SPI2
 #define SPI4_IRQ_PRIO 3		//SPI4
 
-#define CAN1_IRQ_PRIO 5		//Socket 3
-#define UART6_IRQ_PRIO 5	//Socket 3
-#define UART7_IRQ_PRIO 5	//RS485 Panel
+#define CAN1_IRQ_PRIO 5		//CAN1 Socket 3
+#define UART6_IRQ_PRIO 5	//UART6 Socket 3
+#define UART7_IRQ_PRIO 5	//UART7 RS485_Panel
 
-#define UART3_IRQ_PRIO 7	//UART3
+#define UART3_IRQ_PRIO 7	//UART3 RS485_1
 
-#define DMA1_Stream1_IRQ_PRIO 9 //UART3 RX
-#define DMA1_Stream3_IRQ_PRIO 9 //UART3 TX
+#define DMA1_Stream1_IRQ_PRIO 9 //UART3 RX RS485_1
+#define DMA1_Stream3_IRQ_PRIO 9 //UART3 TX RS485_1
 
 #define TIM4_IRQ_PRIO 11	//MS_TIM
 

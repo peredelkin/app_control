@@ -55,7 +55,7 @@ METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
 
 	if (ntc_ptr != NULL) {
 		float Temp = ntc_ptr[0].temp + ((ntc_ptr[1].temp - ntc_ptr[0].temp) * (ntc_ptr[0].kohm - float_R_in)) / (ntc_ptr[0].kohm - ntc_ptr[1].kohm);
-		ntc_temp->out_temp[ntc_counter] += (((iq15_t)(Temp * IQ15_BASE)) - ntc_temp->out_temp[ntc_counter])/16;
+		ntc_temp->out_temp[ntc_counter] += (((iq15_t)(Temp * IQ15_BASE)) - ntc_temp->out_temp[ntc_counter])/64;
 	} else {
 		ntc_temp->out_temp[ntc_counter] = IQ15_MAX;
 	}
