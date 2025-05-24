@@ -190,8 +190,6 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	 * into the device upon device initialization"
 	 */
 	if (msdi->m_int_stat.bit.por || msdi->m_int_stat.bit.chk_fail) {
-		msdi->m_int_stat.bit.por = 0;
-		msdi->m_int_stat.bit.chk_fail = 0;
 		//повторная инициализация
 		tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0, TIC12400_SETTINGS_COUNT);
 		//ожидание конца обмена
@@ -203,26 +201,41 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 			spi_bus_close(msdi->m_tic12400.spi_bus);
 			return;
 		}
+		//сброс флагов
+		msdi->m_int_stat.bit.por = 0;
+		msdi->m_int_stat.bit.chk_fail = 0;
 	}
 
 	//Temperature Shutdown
 	if(msdi->m_int_stat.bit.tsd) {
 		msdi->m_int_stat.bit.tsd = 0;
+		msdi->status |= MSDI_STATUS_TEMP_SHUT;
+	} else {
+		msdi->status &= ~MSDI_STATUS_TEMP_SHUT;
 	}
 
 	//Temperature warning
 	if(msdi->m_int_stat.bit.tw) {
 		msdi->m_int_stat.bit.tw = 0;
+		msdi->status |= MSDI_STATUS_TEMP_WARN;
+	} else {
+		msdi->status &= ~MSDI_STATUS_TEMP_WARN;
 	}
 
 	//Over-voltage
 	if(msdi->m_int_stat.bit.ov) {
 		msdi->m_int_stat.bit.ov = 0;
+		msdi->status |= MSDI_STATUS_OV;
+	} else {
+		msdi->status &= ~MSDI_STATUS_OV;
 	}
 
 	//Under-voltage
 	if(msdi->m_int_stat.bit.uv) {
 		msdi->m_int_stat.bit.uv = 0;
+		msdi->status |= MSDI_STATUS_UV;
+	} else {
+		msdi->status &= ~MSDI_STATUS_UV;
 	}
 
 	//чтение входов
