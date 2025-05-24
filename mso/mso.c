@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "lib/utils/utils.h"
+
 #include "mso.h"
 
 
@@ -49,9 +51,9 @@ METHOD_CALC_IMPL(M_mso, mso) {
 }
 
 void mso_channel_reg_set(M_mso* mso, int ch, reg_t* reg) {
-	__disable_irq();
+	__M_LOCK(mso);
 	mso->r_channel[ch].reg = reg;
-	__enable_irq();
+	__M_UNLOCK(mso);
 }
 
 METHOD_IDLE_IMPL(M_mso, mso)
@@ -74,7 +76,7 @@ METHOD_IDLE_IMPL(M_mso, mso)
 
 	ch_data_count = MSO_DATA_COUNT/ch_count;
 
-	__disable_irq();
+	__M_LOCK(mso);
 	for(int ch = 0; ch < MSO_MAX_CHANNEL_COUNT; ch++) {
 		if(mso->r_channel[ch].enabled) {
 			mso->r_channel[ch].ptr = ptr;
@@ -87,5 +89,5 @@ METHOD_IDLE_IMPL(M_mso, mso)
 
 	mso->m_ch_count = ch_count;
 	mso->m_ch_data_count = ch_data_count;
-	__enable_irq();
+	__M_UNLOCK(mso);
 }
