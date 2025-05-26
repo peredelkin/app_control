@@ -194,153 +194,70 @@ int main(void)
 		sdcard.CSD.bl_count = 0;
 		sdcard.CSD.capacity = 0;
 
+		sdcard.initialized = false;
+
 		//CMD0
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD0, 0);
+		sdio_err = sdcard_card_reset(&sdcard);
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 0 Err: %lu\n", sdio_err);
+			printf("Card Reset Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
-		printf("CMD 0 STATE: %d\n", sdcard.current_state);
+		//CMD8 + ACMD41
+		sdio_err = sdcard_card_initialization(&sdcard);
+		if (sdio_err != E_NO_ERROR) {
+			printf("Card Initialization Err: %lu\n", sdio_err);
+			goto exit_sdcard_init;
+		}
 
-		//CMD8
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD8, (0b1 << 8));
+		//CMD2
+		sdio_err = sdcard_CID_read_any(&sdcard);
+		if (sdio_err != E_NO_ERROR) {
+			printf("CID Read Any Err: %lu\n", sdio_err);
+			goto exit_sdcard_init;
+		}
+
+		//CMD3
+		sdio_err = sdcard_RCA_read(&sdcard);
 		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 8 Err: %lu\n", sdio_err);
+			printf("RCA Read Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
-		printf("CMD 8 STATE: %d\n", sdcard.current_state);
-
-		//ACMD41 without argument
-		sdio_err = sdcard_acmd(&sdcard, &sdcard_ACMD41, 0);
+		//CMD9
+		sdio_err = sdcard_CSD_read(&sdcard);
 		if (sdio_err != E_NO_ERROR) {
-			printf("ACMD 41 Err: %lu\n", sdio_err);
+			printf("CSD Read Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
-
-		//ACMD41 with argument
-		uint8_t acmd41_timeout = 11; //11 * 100ms
-		do {
-
-			sdio_err = sdcard_acmd(&sdcard, &sdcard_ACMD41, ((0b1 << 30) | (0b11 << 20)));
-			if (sdio_err != E_NO_ERROR) {
-				printf("ACMD 41 Err: %lu\n", sdio_err);
-				goto exit_sdcard_init;
-			}
-
-			sys_counter_delay(0, 100000); // 100ms
-
-			acmd41_timeout--;
-
-		} while (sdcard.response.r3.bit.CARD_POWER_UP_STATUS == 0 && acmd41_timeout);
-
-		if(acmd41_timeout == 0) {
-			printf("ACMD 41 TIMEOUT\n");
-			goto exit_sdcard_init;
-		}
-
-		sdio_err = sdcard_change_current_state(&sdcard);
-		if (sdio_err != E_NO_ERROR) {
-			printf("STATE 41 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		//определние типа карты по ответу ACMD41
-		sdcard_type_define(&sdcard);
 
 		printf("Card Type: %d\n", sdcard.type);
 
-		printf("ACMD 41 STATE: %d\n", sdcard.current_state);
-
-		//CMD2
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD2, 0);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 2 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 2 STATE: %d\n", sdcard.current_state);
-
-		//CMD3
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD3, 0);
-		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 3 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 3 STATE: %d\n", sdcard.current_state);
-
-		//NEW_RCA
-		sdcard.RCA = sdcard.response.r6.all & 0xFFFF0000;
-
-		//CMD9
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD9, sdcard.RCA);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 9 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		sdcard_CSD_fill(&sdcard);
-
 		printf("CSD Version: %d\n", sdcard.CSD.v1.bit.CSD_STRUCTURE);
-
-		sdio_err = sdcard_CSD_TRAN_SPEED_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.tran_speed);
-		if (sdio_err != E_NO_ERROR) {
-			printf("TRAN SPEED calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
 
 		printf("TRAN SPEED: %0.2f\n", sdcard.CSD.tran_speed);
 
-		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len_max, &sdcard.CSD.bl_len_max_power);
-		if (sdio_err != E_NO_ERROR) {
-			printf("BLOCK LEN calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
 		printf("BLOCK LEN: %llu\n", sdcard.CSD.bl_len_max);
-
-		sdio_err = sdcard_CSD_BLOCKNR_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_count);
-		if (sdio_err != E_NO_ERROR) {
-			printf("BLOCKNR calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
 
 		printf("BLOCKNR: %llu\n", sdcard.CSD.bl_count);
 
-		sdio_err = sdcard_CSD_memory_capacity_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.capacity);
-		if (sdio_err != E_NO_ERROR) {
-			printf("capacity calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("capacity: %llu\n", sdcard.CSD.capacity);
-
-		printf("CMD 9 STATE: %d\n", sdcard.current_state);
+		printf("Capacity: %llu\n", sdcard.CSD.capacity);
 
 		//CMD10
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD10, sdcard.RCA);
+		sdio_err = sdcard_CID_read(&sdcard);
 		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 10 Err: %lu\n", sdio_err);
+			printf("CID Read Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
-
-		sdcard_CID_fill(&sdcard);
-
-		printf("MID: %d\n", sdcard.CID.bit.MID);
-		printf("MDT_M: %d, MDT_Y: %d\n", sdcard.CID.bit.MDT_M, sdcard.CID.bit.MDT_Y);
-
-		printf("CMD 10 STATE: %d\n", sdcard.current_state);
 
 		//CMD7
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD7_adressed, sdcard.RCA);
+		sdio_err = sdcard_card_select(&sdcard);
 		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 7 Err: %lu\n", sdio_err);
+			printf("Card Select Err: %lu\n", sdio_err);
 			goto exit_sdcard_init;
 		}
 
-		printf("CMD 7 STATE: %d\n", sdcard.current_state);
+		sdcard.initialized = true;
 
 		//WRITE
 //		sdcard_data_array[1023] = 0xFF;

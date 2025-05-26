@@ -363,7 +363,10 @@ void sdcard_type_define(sdcard_t* sdcard) {
 
 
 //CSD
-void sdcard_CSD_fill(sdcard_t* sdcard) {
+err_t sdcard_CSD_read(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD9, sdcard->RCA);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
 	sdcard->CSD.v1.all[0] = sdcard->response.r2.all[0];
 	sdcard->CSD.v1.all[1] = sdcard->response.r2.all[1];
 	sdcard->CSD.v1.all[2] = sdcard->response.r2.all[2];
@@ -378,6 +381,23 @@ void sdcard_CSD_fill(sdcard_t* sdcard) {
 	sdcard->CSD.v3.all[1] = sdcard->response.r2.all[1];
 	sdcard->CSD.v3.all[2] = sdcard->response.r2.all[2];
 	sdcard->CSD.v3.all[3] = sdcard->response.r2.all[3];
+
+	sdcard->cmd_err = sdcard_CSD_TRAN_SPEED_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.tran_speed);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+
+	sdcard->cmd_err = sdcard_CSD_BLOCK_LEN_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.bl_len_max, &sdcard->CSD.bl_len_max_power);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+
+	sdcard->cmd_err = sdcard_CSD_BLOCKNR_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.bl_count);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+
+	sdcard->cmd_err = sdcard_CSD_memory_capacity_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.capacity);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	return E_NO_ERROR;
 }
 
 enum {
@@ -619,11 +639,28 @@ err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 }
 
 //CID
-void sdcard_CID_fill(sdcard_t* sdcard) {
+err_t sdcard_CID_read_any(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD2, 0);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
 	sdcard->CID.all[0] = sdcard->response.r2.all[0];
 	sdcard->CID.all[1] = sdcard->response.r2.all[1];
 	sdcard->CID.all[2] = sdcard->response.r2.all[2];
 	sdcard->CID.all[3] = sdcard->response.r2.all[3];
+
+	return E_NO_ERROR;
+}
+
+err_t sdcard_CID_read(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD10, sdcard->RCA);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdcard->CID.all[0] = sdcard->response.r2.all[0];
+	sdcard->CID.all[1] = sdcard->response.r2.all[1];
+	sdcard->CID.all[2] = sdcard->response.r2.all[2];
+	sdcard->CID.all[3] = sdcard->response.r2.all[3];
+
+	return E_NO_ERROR;
 }
 
 //read, write, erase commands
@@ -960,7 +997,74 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 	return E_NO_ERROR;
 }
 
+err_t sdcard_card_reset(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD0, 0);
+	return sdcard->cmd_err;
+}
 
+err_t sdcard_card_initialization(sdcard_t* sdcard) {
+	//CMD8 with argument: 2.7-3.6v
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD8, (0b1 << 8));
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	//ACMD41 without argument
+	sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD41, 0);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	//ACMD41 with argument: SDHC or SDXC supported and 3.2-3.3v
+	uint8_t acmd41_timeout = 11; //11 * 100ms
+	do {
+
+		sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD41, ((0b1 << 30) | (0b11 << 20)));
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+		sys_counter_delay(0, 100000); // 100ms
+
+		acmd41_timeout--;
+
+	} while (sdcard->response.r3.bit.CARD_POWER_UP_STATUS == 0 && acmd41_timeout);
+
+	if(acmd41_timeout == 0) {
+		return E_TIME_OUT;
+	}
+
+	sdcard->cmd_err = sdcard_change_current_state(sdcard);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	//определние типа карты по ответу ACMD41
+	sdcard_type_define(sdcard);
+
+	return E_NO_ERROR;
+}
+
+err_t sdcard_RCA_read(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD3, 0);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdcard->RCA = sdcard->response.r6.all & 0xFFFF0000;
+
+	return E_NO_ERROR;
+}
+
+err_t sdcard_card_select(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD7_adressed, sdcard->RCA);
+	return sdcard->cmd_err;
+}
+
+err_t sdcard_card_deselect(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD7_not_adressed, 0);
+	return sdcard->cmd_err;
+}
+
+bool sdcard_identified(sdcard_t* sdcard)
+{
+    return sdcard->type != SDCARD_TYPE_UNKNOWN;
+}
+
+bool sdcard_initialized(sdcard_t* sdcard)
+{
+    return sdcard->initialized;
+}
 
 
 

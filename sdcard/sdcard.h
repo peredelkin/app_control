@@ -125,14 +125,23 @@ typedef struct _SD_Card {
 	err_t data_err; //!< Ошибки при обмене с картой
 	err_t resp_err; //!< Ошибки в ответе карты
 	err_t dma_err; //!< Ошибки DMA
+	bool initialized;
 } sdcard_t;
 
 //вспопогательные функции
-extern err_t sdcard_operation_complete_state(sdcard_t* sdcard);
-extern err_t sdcard_change_current_state(sdcard_t* sdcard);
-extern void sdcard_CSD_fill(sdcard_t* sdcard);
-extern void sdcard_CID_fill(sdcard_t* sdcard);
-extern void sdcard_type_define(sdcard_t* sdcard);
+extern err_t sdcard_card_reset(sdcard_t* sdcard);
+extern err_t sdcard_card_initialization(sdcard_t* sdcard);
+extern err_t sdcard_CID_read_any(sdcard_t* sdcard);
+extern err_t sdcard_RCA_read(sdcard_t* sdcard);
+extern err_t sdcard_CSD_read(sdcard_t* sdcard);
+extern err_t sdcard_CID_read(sdcard_t* sdcard);
+
+extern err_t sdcard_card_select(sdcard_t* sdcard);
+extern err_t sdcard_card_deselect(sdcard_t* sdcard);
+
+extern bool sdcard_identified(sdcard_t* sdcard);
+extern bool sdcard_initialized(sdcard_t* sdcard);
+
 //CSD
 extern err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *tran_speed);
 extern err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len, uint32_t* len_power);
@@ -146,6 +155,7 @@ extern err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t bloc
 //функции отправки команд
 extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);
 extern err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument);
+
 
 
 /*
