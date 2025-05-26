@@ -91,4 +91,15 @@
         { return CONCAT(err, __LINE__); }\
         }while(0)
 
+/**
+ *
+ */
+#define __M_LOCK(PTR)                                                                                   \
+    do {                                                                                                               \
+        (PTR)->m_primask = __get_PRIMASK();                                                                  \
+        __disable_irq();                                                                                               \
+    } while (0)
+#define __M_UNLOCK(PTR) __set_PRIMASK((PTR)->m_primask)
+
+
 #endif	/* UTILS_H */

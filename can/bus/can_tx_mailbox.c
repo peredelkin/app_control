@@ -119,14 +119,11 @@ err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dl
 
 	if(data == NULL) return E_NULL_POINTER;
 
-	__disable_irq();
-
 	uint32_t TSR = can_TSR_read(CAN);
 
 	int tx_empty = can_TSR_TME_get(TSR);
 
 	if(tx_empty < 0) {
-		__enable_irq();
 		return E_BUSY;
 	}
 
@@ -149,8 +146,6 @@ err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dl
 	can_TDHR_write(CAN, tx_empty, TDLHR[1]);	//CAN mailbox data high
 
 	can_tx_request(CAN, tx_empty);	//Transmit mailbox request
-
-	__enable_irq();
 
 	return E_NO_ERROR;
 }

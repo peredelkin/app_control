@@ -207,36 +207,36 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(ntc_temp); //должен стоять после CALC(digital_in);
 
     //TODO: тест CANopen SDO CLI
-    if(mc_pid_i_ptr == NULL) {
-    	mc_pid_i_ptr = CO_SDO_CLI_read(&can1_cli_driver, 1, 0x2740, 5, &pid_i_out_value, 4, 20);
-    } else {
-    	if(mc_pid_i_ptr->m_state == CO_SDO_CLI_State_DONE) {
-    		pid_i_out_value_buffered = pid_i_out_value/256;
-    		mc_pid_i_ptr = NULL;
-    	}
-    }
-
-    if(mc_cmd_ptr == NULL) {
-    	mc_cmd_ptr = CO_SDO_CLI_write(&can1_cli_driver, 1, 0x2010, 3, &mc_cmd, 4, 20);
-    } else {
-		if (mc_cmd_ptr->m_state == CO_SDO_CLI_State_DONE) {
-			if((digital_in.out_data & 0b1) == 0b1) {
-				mc_cmd = 1;
-			} else {
-				mc_cmd = 2;
-			}
-			mc_cmd_ptr = NULL;
-		}
-    }
-
-	if (mc_mot_pot_ptr == NULL) {
-		mc_mot_pot_ptr = CO_SDO_CLI_write(&can1_cli_driver, 1, 0x2720, 8, &mc_mot_pot, 4, 20);
-	} else {
-		if (mc_mot_pot_ptr->m_state == CO_SDO_CLI_State_DONE) {
-			mc_mot_pot = ao_dac7562.in_ch_a * 256;
-			mc_mot_pot_ptr = NULL;
-		}
-	}
+//    if(mc_pid_i_ptr == NULL) {
+//    	mc_pid_i_ptr = CO_SDO_CLI_read(&can1_cli_driver, 1, 0x2740, 5, &pid_i_out_value, 4, 20);
+//    } else {
+//    	if(mc_pid_i_ptr->m_state == CO_SDO_CLI_State_DONE) {
+//    		pid_i_out_value_buffered = pid_i_out_value/256;
+//    		mc_pid_i_ptr = NULL;
+//    	}
+//    }
+//
+//    if(mc_cmd_ptr == NULL) {
+//    	mc_cmd_ptr = CO_SDO_CLI_write(&can1_cli_driver, 1, 0x2010, 3, &mc_cmd, 4, 20);
+//    } else {
+//		if (mc_cmd_ptr->m_state == CO_SDO_CLI_State_DONE) {
+//			if((digital_in.out_data & 0b1) == 0b1) {
+//				mc_cmd = 1;
+//			} else {
+//				mc_cmd = 2;
+//			}
+//			mc_cmd_ptr = NULL;
+//		}
+//    }
+//
+//	if (mc_mot_pot_ptr == NULL) {
+//		mc_mot_pot_ptr = CO_SDO_CLI_write(&can1_cli_driver, 1, 0x2720, 8, &mc_mot_pot, 4, 20);
+//	} else {
+//		if (mc_mot_pot_ptr->m_state == CO_SDO_CLI_State_DONE) {
+//			mc_mot_pot = ao_dac7562.in_ch_a * 256;
+//			mc_mot_pot_ptr = NULL;
+//		}
+//	}
 
     CALC(ao_dac7562);
     CALC(digital_out);

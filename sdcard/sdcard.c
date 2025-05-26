@@ -2,6 +2,7 @@
 #include "sdcard_cmd.h"
 #include "utils/utils.h"
 #include "crc/crc16_ccitt.h"
+#include "sys/counter/sys_counter.h"
 #include <string.h>
 
 //! Получение границы блока из адреса.
@@ -247,6 +248,30 @@ err_t sdcard_change_current_state(sdcard_t* sdcard) {
 
 	//изменить текущее состояние через состояние команды
 	sdcard->current_state = sdcard->cmd->state[sdcard->current_state];
+
+	return E_NO_ERROR;
+}
+
+err_t sdcard_sync_current_state(sdcard_t* sdcard) {
+	if(sdcard == NULL || sdcard->cmd == NULL) return E_NULL_POINTER;
+
+	//проверка состояния в ответе
+	switch (sdcard->cmd->response_type) {
+	case SDCARD_RESPONSE_R1b:
+		//no break
+
+	case SDCARD_RESPONSE_R1:
+		sdcard->current_state = sdcard->response.r1.bit.CURRENT_STATE;
+		break;
+
+	case SDCARD_RESPONSE_R6:
+		sdcard->current_state = sdcard->response.r6.bit.CURRENT_STATE;
+		break;
+
+	default:
+		return E_INVALID_OPERATION;
+		break;
+	}
 
 	return E_NO_ERROR;
 }
@@ -735,6 +760,24 @@ err_t sdcard_cmd_erase(sdcard_t* sdcard, uint64_t addr_first, uint64_t addr_last
 	return sdcard->cmd_err;
 }
 
+err_t sdcard_cmd_sync_state(sdcard_t* sdcard) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	sdcard->cmd_err = sdcard_cmd_send(sdcard, &sdcard_CMD13, sdcard->RCA);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdcard->resp_err = sdcard_response_rcv(sdcard);
+	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
+
+	sdcard->resp_err = sdcard_status_error_check(sdcard);
+	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
+
+	sdcard->cmd_err = sdcard_sync_current_state(sdcard);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	return E_NO_ERROR;
+}
+
 //dma
 err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, dma_scr_dir_t dir) {
 	if(sdcard == NULL) return E_NULL_POINTER;
@@ -840,14 +883,23 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
 		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
-	} else {
-		sdcard->cmd_err = sdcard_operation_complete_state(sdcard);
 	}
 
 	sdio_dpsm_reset();
 
 	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	uint32_t sdcard_timeout = 100; //1s
+
+	do {
+		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+		sys_counter_delay(0, 10000); // 10ms
+		sdcard_timeout--;
+	} while ((sdcard->current_state != SDCARD_STATE_TRAN) && (sdcard_timeout > 0));
+
+	if(sdcard_timeout == 0) return E_TIME_OUT;
 
 	return E_NO_ERROR;
 }
@@ -883,17 +935,27 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 	sdio_dpsm_enable();
 
 	sdcard->data_err = sdcard_wait_transfer_complete(sdcard);
+	dma_stream_close(&sdcard->dma);
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
 		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
-	} else {
-		sdcard->cmd_err = sdcard_operation_complete_state(sdcard);
 	}
 
 	sdio_dpsm_reset();
 
 	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	uint32_t sdcard_timeout = 100; //1s
+
+	do {
+		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+		sys_counter_delay(0, 10000); // 10ms
+		sdcard_timeout--;
+	} while ((sdcard->current_state != SDCARD_STATE_TRAN) && (sdcard_timeout > 0));
+
+	if(sdcard_timeout == 0) return E_TIME_OUT;
 
 	return E_NO_ERROR;
 }

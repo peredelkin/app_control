@@ -54,6 +54,7 @@ struct _S_Mso {
     int m_ch_count;
     int m_ch_data_count;
     mso_data_t *m_ptr;
+    uint32_t m_primask;
 };
 
 EXTERN METHOD_INIT_PROTO(M_mso);
@@ -77,6 +78,7 @@ EXTERN METHOD_IDLE_PROTO(M_mso);
 		METHOD_IDLE_PTR(M_mso),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		0,\
 		0,\
 		0,\
 		0,\
