@@ -1049,7 +1049,7 @@ err_t sdcard_card_RCA_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD3, 0);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	sdcard->RCA = sdcard->response.r6.all & 0xFFFF0000;
+	sdcard->RCA = sdcard->response.r6.bit.NEW_RCA;
 
 	return E_NO_ERROR;
 }
