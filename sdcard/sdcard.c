@@ -1185,6 +1185,9 @@ err_t sdcard_card_init(sdcard_t *sdcard) {
 	err = sdcard_card_select(sdcard);
 	if (err != E_NO_ERROR) return err;
 
+	//ACMD13
+	err = //0xFFFFFF
+
 	sdcard_sdio_set_clock_div(2 , SDIO_CLKCR_CLK_EN); //24M
 
 	sdcard->initialized = true;

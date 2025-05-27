@@ -127,6 +127,7 @@ typedef struct _SD_Card {
 	uint32_t RCA; //!< Адрес карты
 	sdcard_reg_CID_t CID;
 	sdcard_reg_CSD_t CSD;
+	sdcard_status_t STAT;
 	sdcard_ccc_t CCC; //!< Классы поддерживаемых картой команд
 	sdcard_type_t type; //!< Тип карты
 	err_t cmd_err; //!< Ошибки при отправке команды

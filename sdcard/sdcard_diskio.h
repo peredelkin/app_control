@@ -5,9 +5,12 @@
 #include "defs/defs.h"
 
 #ifndef _DISKIO_DEFINED
-#include "fatfs/diskio.h"
+#include "lib/fatfs/diskio.h"
 #endif
 
+#define _USE_READ 1
+#define _USE_WRITE 1
+#define _USE_IOCTL 1
 
 /**
  * Инициализирует диск.

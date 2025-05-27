@@ -22,6 +22,7 @@
 #include "yaffs2/yaffs_trace.h"
 #include "interrupts/interrupt_priorities.h"
 
+#define USE_SDCARD_FATFS_DISKIO
 #include "sdcard/sdcard.h"
 
 #include <malloc.h>
