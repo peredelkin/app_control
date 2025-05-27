@@ -73,6 +73,8 @@ static err_t sdcard_cmd_send(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t
 
 	sdcard_resp_setup(sdcard);
 
+	sdio_cmd_status_clear();
+
 	sdio_cpsm_set(
 			argument,
 			sdcard->cmd->index,
@@ -96,6 +98,8 @@ static err_t sdcard_acmd_send(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32
 	sdcard->cmd = (sdcard_cmd_t*) cmd;
 
 	sdcard_resp_setup(sdcard);
+
+	sdio_cmd_status_clear();
 
 	sdio_cpsm_set(
 			argument,
@@ -363,7 +367,7 @@ void sdcard_type_define(sdcard_t* sdcard) {
 
 
 //CSD
-err_t sdcard_CSD_read(sdcard_t* sdcard) {
+err_t sdcard_card_CSD_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD9, sdcard->RCA);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
@@ -639,7 +643,7 @@ err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 }
 
 //CID
-err_t sdcard_CID_read_any(sdcard_t* sdcard) {
+err_t sdcard_card_CID_read_any(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD2, 0);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
@@ -651,7 +655,7 @@ err_t sdcard_CID_read_any(sdcard_t* sdcard) {
 	return E_NO_ERROR;
 }
 
-err_t sdcard_CID_read(sdcard_t* sdcard) {
+err_t sdcard_card_CID_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD10, sdcard->RCA);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
@@ -898,6 +902,8 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	sdcard->dma_err = sdcard_dma_read_setup(sdcard, memory_addr);
 	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
 
+	sdio_data_status_clear();
+
 	sdio_dpsm_set(
 			SDIO_DTDIR_FROM_CARD,
 			SDIO_DTMODE_BLOCK,
@@ -953,6 +959,8 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 
 	sdcard->dma_err = sdcard_dma_write_setup(sdcard, memory_addr);
 	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
+
+	sdio_data_status_clear();
 
 	sdio_dpsm_set(
 			SDIO_DTDIR_TO_CARD,
@@ -1022,7 +1030,7 @@ err_t sdcard_card_initialization(sdcard_t* sdcard) {
 
 		acmd41_timeout--;
 
-	} while (sdcard->response.r3.bit.CARD_POWER_UP_STATUS == 0 && acmd41_timeout);
+	} while ((sdcard->response.r3.bit.CARD_POWER_UP_STATUS == 0) && (acmd41_timeout > 0));
 
 	if(acmd41_timeout == 0) {
 		return E_TIME_OUT;
@@ -1037,7 +1045,7 @@ err_t sdcard_card_initialization(sdcard_t* sdcard) {
 	return E_NO_ERROR;
 }
 
-err_t sdcard_RCA_read(sdcard_t* sdcard) {
+err_t sdcard_card_RCA_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD3, 0);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
@@ -1064,6 +1072,124 @@ bool sdcard_identified(sdcard_t* sdcard)
 bool sdcard_initialized(sdcard_t* sdcard)
 {
     return sdcard->initialized;
+}
+
+bool sdcard_card_detect(sdcard_t* sdcard) {
+	if(sdcard == NULL) return false;
+	if(sdcard->gpio.cd == NULL) return false;
+
+	return (gpio_input_bit_read(sdcard->gpio.cd) == false);
+}
+
+void sdcard_card_pwr_on(sdcard_t* sdcard) {
+	if(sdcard == NULL) return;
+	if(sdcard->gpio.pwr == NULL) return;
+
+	sys_counter_delay(0, 100000); // 100ms
+
+	gpio_output_bit_setup(sdcard->gpio.pwr, DISABLE);
+
+	sys_counter_delay(0, 300000); // 300ms
+}
+
+void sdcard_card_pwr_off(sdcard_t* sdcard) {
+	if(sdcard == NULL) return;
+	if(sdcard->gpio.pwr == NULL) return;
+
+	sys_counter_delay(0, 100000); // 100ms
+
+	gpio_output_bit_setup(sdcard->gpio.pwr, ENABLE);
+
+	sys_counter_delay(0, 300000); // 300ms
+}
+
+err_t sdcard_dma_init(sdcard_t* sdcard) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	sdcard->dma_err = dma_struct_init(&(sdcard->dma), sdcard->dma_stream);
+
+	return sdcard->dma_err;
+}
+
+err_t sdcard_reset(sdcard_t* sdcard) {
+	if(sdcard == NULL) return E_NULL_POINTER;
+
+	sdcard->initialized = false;
+
+	sdcard->cmd = NULL;
+	sdcard->current_state = SDCARD_STATE_IDLE;
+	sdcard->CCC = (SDCARD_CCC_0 | SDCARD_CCC_2 | SDCARD_CCC_4 | SDCARD_CCC_5 | SDCARD_CCC_8);
+	sdcard->type = SDCARD_TYPE_UNKNOWN;
+
+	sdcard->CSD.tran_speed = 0.0f;
+	sdcard->CSD.bl_len_max = 0;
+	sdcard->CSD.bl_count = 0;
+	sdcard->CSD.capacity = 0;
+
+	return E_NO_ERROR;
+}
+
+void sdcard_sdio_set_clock_div(uint8_t clkdiv, sdio_clken_t clken) {
+	sdio_power_control(SDIO_POWER_PWRCTRL_OFF);
+	sdio_clock_control(clkdiv, clken, SDIO_CLKCR_PWRSAV_ENA, SDIO_CLKCR_BYP_DIS);
+	sdio_power_control(SDIO_POWER_PWRCTRL_ON);
+}
+
+void sdcard_sdio_power_on() {
+	sdio_power_control(SDIO_POWER_PWRCTRL_OFF);
+	sdcard_sdio_set_clock_div(120, SDIO_CLKCR_CLK_EN);  //400k
+	sdio_power_control(SDIO_POWER_PWRCTRL_ON);
+}
+
+void sdcard_sdio_power_off() {
+	sdio_power_control(SDIO_POWER_PWRCTRL_OFF);
+	sdcard_sdio_set_clock_div(120, SDIO_CLKCR_CLK_DIS);  //400k
+}
+
+err_t sdcard_card_init(sdcard_t *sdcard) {
+	sdcard_sdio_power_on(); //400k
+
+	err_t err = E_NO_ERROR;
+	//инициализация структуры sdcard
+	err = sdcard_dma_init(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	err = sdcard_reset(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//CMD0
+	err = sdcard_card_reset(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//CMD8 + ACMD41
+	err = sdcard_card_initialization(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//CMD2
+	err = sdcard_card_CID_read_any(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//CMD3
+	err = sdcard_card_RCA_read(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//CMD9
+	err = sdcard_card_CSD_read(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//CMD10
+	err = sdcard_card_CID_read(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	//CMD7
+	err = sdcard_card_select(sdcard);
+	if (err != E_NO_ERROR) return err;
+
+	sdcard_sdio_set_clock_div(2 , SDIO_CLKCR_CLK_EN); //24M
+
+	sdcard->initialized = true;
+
+	return E_NO_ERROR;
 }
 
 

@@ -9,7 +9,7 @@
 #include "defs/defs.h"
 //#include "spi/spi.h"
 #include "sdio/sdio.h"
-//#include "gpio/gpio.h"
+#include "gpio/gpio.h"
 #include "errors/errors.h"
 #include "future/future.h"
 #include <stdint.h>
@@ -107,9 +107,17 @@ typedef enum _SD_Card_Type {
 } sdcard_type_t;
 
 
+typedef struct {
+	const gpio_pin_t* dat0;
+	const gpio_pin_t* pwr;
+	const gpio_pin_t* cd;
+} sdcard_gpio;
+
+
 //! Структура SD-карты.
 typedef struct _SD_Card {
 	dma_t dma;
+	dma_n_stream_n_t dma_stream;
 	sdcard_state_t current_state; //!< Текущее состояние карты.
 	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
 	sdio_respwait_t resp_wait; //!< Ожидается ли ответ
@@ -125,22 +133,31 @@ typedef struct _SD_Card {
 	err_t data_err; //!< Ошибки при обмене с картой
 	err_t resp_err; //!< Ошибки в ответе карты
 	err_t dma_err; //!< Ошибки DMA
+	bool inserted;
 	bool initialized;
+	sdcard_gpio gpio;
 } sdcard_t;
 
 //вспопогательные функции
 extern err_t sdcard_card_reset(sdcard_t* sdcard);
 extern err_t sdcard_card_initialization(sdcard_t* sdcard);
-extern err_t sdcard_CID_read_any(sdcard_t* sdcard);
-extern err_t sdcard_RCA_read(sdcard_t* sdcard);
-extern err_t sdcard_CSD_read(sdcard_t* sdcard);
-extern err_t sdcard_CID_read(sdcard_t* sdcard);
-
+extern err_t sdcard_card_CID_read_any(sdcard_t* sdcard);
+extern err_t sdcard_card_RCA_read(sdcard_t* sdcard);
+extern err_t sdcard_card_CSD_read(sdcard_t* sdcard);
+extern err_t sdcard_card_CID_read(sdcard_t* sdcard);
 extern err_t sdcard_card_select(sdcard_t* sdcard);
 extern err_t sdcard_card_deselect(sdcard_t* sdcard);
 
 extern bool sdcard_identified(sdcard_t* sdcard);
 extern bool sdcard_initialized(sdcard_t* sdcard);
+
+extern bool sdcard_card_detect(sdcard_t* sdcard);
+extern void sdcard_card_pwr_on(sdcard_t* sdcard);
+extern void sdcard_card_pwr_off(sdcard_t* sdcard);
+
+extern void sdcard_sdio_power_off();
+
+extern err_t sdcard_card_init(sdcard_t *sdcard);
 
 //CSD
 extern err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *tran_speed);
