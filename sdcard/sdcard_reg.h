@@ -15,7 +15,8 @@
 
 #define SDCARD_CID_SIZE 16
 #define SDCARD_CSD_SIZE 16
-#define SDCARD_SD_STATUS_SIZE 64
+#define SDCARD_SD_STATUS_SIZE (512/8)
+#define SDCARD_SD_STATUS_W_SIZE (SDCARD_SD_STATUS_SIZE/4)
 
 #pragma pack(push, 1)
 typedef union {
@@ -191,7 +192,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef union {
 	struct {
-		unsigned RERESERVED_0_311		:312;
+		uint8_t RERESERVED_0_311 [39];		//:312;
 		unsigned FULE_SUPPORT			:1;
 		unsigned DISCARD_SUPPORT		:1;
 		unsigned BOOT_PARTITION_SUPPORT	:1;
@@ -221,9 +222,9 @@ typedef union {
 		unsigned SECURED_MODE			:1;
 		unsigned DAT_BUS_WIDTH			:2;
 	} bit;
-	uint32_t all[64];
+	uint32_t all[SDCARD_SD_STATUS_W_SIZE];
 } sdcard_status_t;
 #pragma pack(pop)
-static_assert(sizeof(sdcard_status_t) == SDCARD_CSD_SIZE, "Invalid size of sdcard_status_t!");
+static_assert(sizeof(sdcard_status_t) == SDCARD_SD_STATUS_SIZE, "Invalid size of sdcard_status_t!");
 
 #endif /* SDCARD_SDCARD_REG_H_ */

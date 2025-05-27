@@ -324,15 +324,15 @@ err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 }
 
 
-err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument) {
+err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t cmd_arg, uint32_t acmd_arg) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
-	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD55, 0);
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD55, cmd_arg);
 	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	if (sdcard->response.r1.bit.APP_CMD == 0) return E_INVALID_OPERATION;
 
-	sdcard->cmd_err = sdcard_acmd_send(sdcard, cmd, argument);
+	sdcard->cmd_err = sdcard_acmd_send(sdcard, cmd, acmd_arg);
 	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	sdcard->resp_err = sdcard_response_rcv(sdcard);
@@ -889,6 +889,61 @@ err_t sdcard_wait_transfer_complete(sdcard_t *sdcard) {
 }
 
 //data
+err_t sdcard_status_read(sdcard_t* sdcard, uint32_t timeout) {
+	if (sdcard == NULL) return E_NULL_POINTER;
+
+	//stream conf
+	uint32_t item_count = (1 * 512) / 4; //TODO: сделать настройку размера блка
+
+	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
+
+	sdcard->dma_err = sdcard_dma_read_setup(sdcard, sdcard->STAT.all);
+	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
+
+	sdio_data_status_clear();
+
+	sdio_dpsm_set(
+			SDIO_DTDIR_FROM_CARD,
+			SDIO_DTMODE_BLOCK,
+			SDIO_DMAEN_ENA,
+			9, /*TODO: сделать настройку размера блока*/
+			SDIO_RWSTART_DIS,
+			SDIO_RWSTOP_DIS,
+			SDIO_RWMOD_D2,
+			SDIO_SDIOEN_ENA,
+			1, /*only one block*/
+			timeout);
+
+	sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD13, sdcard->RCA, 0);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdcard->cmd_err = sdcard_change_current_state(sdcard);
+	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdio_dpsm_enable();
+
+	sdcard->data_err = sdcard_wait_transfer_complete(sdcard);
+	dma_stream_close(&sdcard->dma);
+
+	sdio_dpsm_reset();
+
+	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	uint32_t sdcard_timeout = 10; //100ms
+
+	do {
+		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+		sys_counter_delay(0, 10000); // 10ms
+		sdcard_timeout--;
+	} while ((sdcard->current_state != SDCARD_STATE_TRAN) && (sdcard_timeout > 0));
+
+	if(sdcard_timeout == 0) return E_TIME_OUT;
+
+	return E_NO_ERROR;
+}
+
 err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout) {
 	if (sdcard == NULL || memory_addr == NULL) return E_NULL_POINTER;
 
@@ -1016,14 +1071,14 @@ err_t sdcard_card_initialization(sdcard_t* sdcard) {
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	//ACMD41 without argument
-	sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD41, 0);
+	sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD41, 0, 0);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	//ACMD41 with argument: SDHC or SDXC supported and 3.2-3.3v
 	uint8_t acmd41_timeout = 11; //11 * 100ms
 	do {
 
-		sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD41, ((0b1 << 30) | (0b11 << 20)));
+		sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD41, 0, ((0b1 << 30) | (0b11 << 20)));
 		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 		sys_counter_delay(0, 100000); // 100ms
@@ -1185,10 +1240,11 @@ err_t sdcard_card_init(sdcard_t *sdcard) {
 	err = sdcard_card_select(sdcard);
 	if (err != E_NO_ERROR) return err;
 
-	//ACMD13
-	err = //0xFFFFFF
-
 	sdcard_sdio_set_clock_div(2 , SDIO_CLKCR_CLK_EN); //24M
+
+	//ACMD13
+	err =  sdcard_status_read(sdcard, 0xFFFFFF); //Timeout about 0,7s
+	if (err != E_NO_ERROR) return err;
 
 	sdcard->initialized = true;
 
