@@ -892,11 +892,6 @@ err_t sdcard_wait_transfer_complete(sdcard_t *sdcard) {
 err_t sdcard_status_read(sdcard_t* sdcard, uint32_t timeout) {
 	if (sdcard == NULL) return E_NULL_POINTER;
 
-	//stream conf
-	uint32_t item_count = (1 * 512) / 4; //TODO: сделать настройку размера блка
-
-	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
-
 	sdcard->dma_err = sdcard_dma_read_setup(sdcard, sdcard->STAT.all);
 	if (sdcard->dma_err != E_NO_ERROR) return sdcard->dma_err;
 
@@ -906,12 +901,12 @@ err_t sdcard_status_read(sdcard_t* sdcard, uint32_t timeout) {
 			SDIO_DTDIR_FROM_CARD,
 			SDIO_DTMODE_BLOCK,
 			SDIO_DMAEN_ENA,
-			9, /*TODO: сделать настройку размера блока*/
+			6, /*512bit or 65 bytes*/
 			SDIO_RWSTART_DIS,
 			SDIO_RWSTOP_DIS,
 			SDIO_RWMOD_D2,
 			SDIO_SDIOEN_ENA,
-			1, /*only one block*/
+			1, /*one block*/
 			timeout);
 
 	sdcard->cmd_err = sdcard_acmd(sdcard, &sdcard_ACMD13, sdcard->RCA, 0);
@@ -950,7 +945,7 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	if (block_count == 0) return E_INVALID_VALUE;
 
 	//stream conf
-	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блка
+	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блока
 
 	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
 
@@ -988,7 +983,7 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	uint32_t sdcard_timeout = 100; //1s
+	uint32_t sdcard_timeout = 10; //100ms
 
 	do {
 		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
@@ -1008,7 +1003,7 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 	if (block_count == 0) return E_INVALID_VALUE;
 
 	//stream conf
-	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блка
+	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блока
 
 	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
 
@@ -1104,7 +1099,7 @@ err_t sdcard_card_RCA_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD3, 0);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	sdcard->RCA = sdcard->response.r6.bit.NEW_RCA;
+	sdcard->RCA = sdcard->response.r6.all & 0xFFFF0000;
 
 	return E_NO_ERROR;
 }

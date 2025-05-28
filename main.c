@@ -226,6 +226,10 @@ int main(void)
 					printf("BLOCKNR: %llu\n", sdcard.CSD.bl_count);
 
 					printf("Capacity: %llu\n", sdcard.CSD.capacity);
+
+					printf("ERASE SIZE: %d\n", sdcard.STAT.bit.ERASE_SIZE);
+
+					printf("ERASE TIMEOUT: %d\n", sdcard.STAT.bit.ERASE_TIMEOUT);
 				} else {
 					printf("SD Card Init Error: %lu\n", sdcard_init_err);
 				}
