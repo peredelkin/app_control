@@ -227,9 +227,22 @@ int main(void)
 
 					printf("Capacity: %llu\n", sdcard.CSD.capacity);
 
-					printf("ERASE SIZE: %d\n", sdcard.STAT.bit.ERASE_SIZE);
-
-					printf("ERASE TIMEOUT: %d\n", sdcard.STAT.bit.ERASE_TIMEOUT);
+					switch(sdcard.CSD.v1.bit.CSD_STRUCTURE) {
+					case 0:
+						printf("ERASE BLK EN: %d\n", sdcard.CSD.v1.bit.ERASE_BLK_EN);
+						printf("SECTOR SIZE: %d\n", sdcard.CSD.v1.bit.SECTOR_SIZE);
+						break;
+					case 1:
+						printf("ERASE BLK EN: %d\n", sdcard.CSD.v2.bit.ERASE_BLK_EN);
+						printf("SECTOR SIZE: %d\n", sdcard.CSD.v2.bit.SECTOR_SIZE);
+						break;
+					case 2:
+						printf("ERASE BLK EN: %d\n", sdcard.CSD.v3.bit.ERASE_BLK_EN);
+						printf("SECTOR SIZE: %d\n", sdcard.CSD.v3.bit.SECTOR_SIZE);
+						break;
+					default:
+						break;
+					}
 				} else {
 					printf("SD Card Init Error: %lu\n", sdcard_init_err);
 				}

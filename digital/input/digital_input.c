@@ -20,6 +20,10 @@ METHOD_INIT_IMPL(M_digital_input, input)
 	input->p_select[7] = 9;
 	input->p_select[8] = 10;
 	input->p_select[9] = 11;
+	input->p_select[10] = 12;
+	input->p_select[11] = 13;
+	input->p_select[12] = 14;
+	input->p_select[13] = 15;
 }
 
 METHOD_DEINIT_IMPL(M_digital_input, input)

@@ -68,12 +68,12 @@ DRESULT sdcard_disk_ioctl(sdcard_t* sdcard, BYTE cmd, void* buff)
         break;
 
     case GET_SECTOR_SIZE:
-        *((DWORD*)buff) = 0; //TODO: передать хоть что нибудь
+        *((DWORD*)buff) = 512; //TODO: сделать настройку размера блока
         res = RES_OK;
         break;
 
     case GET_BLOCK_SIZE:
-        *((DWORD*)buff) = 0; //TODO: передать хоть что нибудь
+        *((DWORD*)buff) = sdcard->CSD.erase_bl_len;
         res = RES_OK;
         break;
 

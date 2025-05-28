@@ -187,6 +187,7 @@ typedef struct {
 	uint64_t bl_len_max;
 	uint64_t bl_count;
 	uint64_t capacity;
+	uint32_t erase_bl_len;
 } sdcard_reg_CSD_t;
 
 #pragma pack(push, 1)

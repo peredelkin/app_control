@@ -389,16 +389,16 @@ err_t sdcard_card_CSD_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_CSD_TRAN_SPEED_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.tran_speed);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-
 	sdcard->cmd_err = sdcard_CSD_BLOCK_LEN_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.bl_len_max, &sdcard->CSD.bl_len_max_power);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
-
 
 	sdcard->cmd_err = sdcard_CSD_BLOCKNR_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.bl_count);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-
 	sdcard->cmd_err = sdcard_CSD_memory_capacity_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.capacity);
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	sdcard->cmd_err = sdcard_CSD_erasable_sector_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.erase_bl_len);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
 	return E_NO_ERROR;
@@ -638,6 +638,62 @@ err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 	if(err != E_NO_ERROR) return err;
 
 	*capacity = count * len;
+
+	return E_NO_ERROR;
+}
+
+/*
+ * Calc the size of an erasable sector.
+ */
+err_t sdcard_CSD_erasable_sector_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* erase_len) {
+	uint8_t ERASE_BLK_EN = 0;
+	uint8_t SECTOR_SIZE = 0;
+
+	//CSD Version
+	switch (csd_version) {
+	case SDCARD_CSD_VERSION_1:
+		ERASE_BLK_EN = sdcard->CSD.v1.bit.ERASE_BLK_EN;
+		SECTOR_SIZE = sdcard->CSD.v1.bit.SECTOR_SIZE;
+		break;
+
+	case SDCARD_CSD_VERSION_2:
+		ERASE_BLK_EN = sdcard->CSD.v2.bit.ERASE_BLK_EN;
+		SECTOR_SIZE = sdcard->CSD.v2.bit.SECTOR_SIZE;
+		break;
+
+	case SDCARD_CSD_VERSION_3:
+		ERASE_BLK_EN = sdcard->CSD.v3.bit.ERASE_BLK_EN;
+		SECTOR_SIZE = sdcard->CSD.v3.bit.SECTOR_SIZE;
+		break;
+
+	default:
+		return E_NOT_IMPLEMENTED;
+	}
+
+	//SD Card Type
+	switch (sdcard->type) {
+	case SDCARD_TYPE_SC:
+		if(ERASE_BLK_EN) {
+			*erase_len = 512;
+		} else {
+			*erase_len = 512 * SECTOR_SIZE;
+		}
+		break;
+
+	case SDCARD_TYPE_HC_XC:
+		*erase_len = 512;
+		break;
+
+	case SDCARD_TYPE_UC:
+		*erase_len = 512;
+		break;
+
+	case SDCARD_TYPE_UNKNOWN:
+		//no break
+
+	default:
+		return E_NOT_IMPLEMENTED;
+	}
 
 	return E_NO_ERROR;
 }
