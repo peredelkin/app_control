@@ -76,11 +76,36 @@ void CAN_TIM_IRQHANDLER(void) {
 //__attribute__((section(".extsram"), used))
 //volatile int test_extsram;
 
-//!FATFS
-FATFS sdcard_fatfs;
+//!FATFS nad SDCARD
 sdcard_t sdcard;
-uint8_t sdcard_data_array[1024] = "Hello world!";
-char hex_to_str[17];
+
+#define FATFS_DISK_PATH_LEN 4
+char* disk_path = "/SD"; //[FATFS_DISK_PATH_LEN];
+FATFS sdcard_fatfs;
+
+void sdcard_ls_dir(const char* dirname)
+{
+	FRESULT res = FR_OK;
+	DIR dp;
+	FILINFO fno;
+
+	res = f_opendir(&dp, dirname);
+	if(res != FR_OK){
+		printf("Error %d open dir: %s\n", res, dirname);
+		return;
+	}
+
+	for(;;){
+		res = f_readdir(&dp, &fno);
+		if(res != FR_OK || fno.fname[0] == 0){
+			printf("No More Files\n");
+			break;
+		}
+		printf("%s\n", fno.fname);
+	}
+
+	f_closedir(&dp);
+}
 
 void dma_rcc_init() {
 	//DMA
@@ -163,7 +188,7 @@ int main(void)
 		res = yaffs_start_up();
 		sys_counter_tv_print();
 		printf("YAFFS Start Up: %d\n", res);
-		res = yaffs_mount("/nand");
+		res = yaffs_mount("0:/");
 		sys_counter_tv_print();
 		printf("YAFFS Mount: %d\n", res);
 	}
@@ -199,6 +224,7 @@ int main(void)
 	sdcard.inserted = false;
 
 	err_t sdcard_init_err = E_NO_ERROR;
+	FRESULT fatfs_result = FR_OK;
 
 	for (;;) {
 		IDLE(sys);
@@ -206,6 +232,8 @@ int main(void)
 		if (sdcard_card_detect(&sdcard)) {
 			if (sdcard.inserted == false) {
 				sdcard.inserted = true;
+
+				sdcard_setup_diskio(&sdcard, 1);
 
 				sys_counter_tv_print();
 				printf("SD Card Inserted\n");
@@ -218,35 +246,13 @@ int main(void)
 
 				if (sdcard_init_err == E_NO_ERROR) {
 
-					for (uint64_t block_addr = 0; block_addr < 8; block_addr += 2) {
-						sdcard_init_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array),
-								block_addr, 2, 0xFFFFFF);
-						if (sdcard_init_err != E_NO_ERROR) {
-							printf("READ Err: %lu\n", sdcard_init_err);
-							break;
-						}
+					fatfs_result = f_mount(&sdcard_fatfs, disk_path, 0);
+					printf("FATFS Mout Result: %d\n", fatfs_result);
 
-						for (int i = 0; i < 1024; i += 16) {
-							memcpy(hex_to_str, &sdcard_data_array[i], 16);
-							hex_to_str[16] = 0;
-
-							for (int ch = 0; ch < 16; ch++) {
-								if (isprint((int)hex_to_str[ch]) == 0) hex_to_str[ch] = '.';
-							}
-
-							printf(
-									"%08llx %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %s\n",
-									((block_addr * 512) + i), sdcard_data_array[i],
-									sdcard_data_array[i + 1], sdcard_data_array[i + 2],
-									sdcard_data_array[i + 3], sdcard_data_array[i + 4],
-									sdcard_data_array[i + 5], sdcard_data_array[i + 6],
-									sdcard_data_array[i + 7], sdcard_data_array[i + 8],
-									sdcard_data_array[i + 9], sdcard_data_array[i + 10],
-									sdcard_data_array[i + 11], sdcard_data_array[i + 12],
-									sdcard_data_array[i + 13], sdcard_data_array[i + 14],
-									sdcard_data_array[i + 15], hex_to_str);
-							sys_counter_delay(0, 1000); // 1ms
-						}
+					if(fatfs_result == FR_OK) {
+						sdcard_ls_dir(disk_path);
+					}else{
+						f_unmount(disk_path);
 					}
 
 				} else {

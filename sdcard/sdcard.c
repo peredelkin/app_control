@@ -1041,7 +1041,7 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	sdcard->data_err = sdcard_wait_transfer_complete(sdcard);
 	dma_stream_close(&sdcard->dma);
 
-	if(sdcard->type == SDCARD_TYPE_SC) {
+	if((block_count > 1) && (sdcard->type == SDCARD_TYPE_SC)) {
 		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
 	}
 
@@ -1088,7 +1088,7 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 	sdcard->data_err = sdcard_wait_transfer_complete(sdcard);
 	dma_stream_close(&sdcard->dma);
 
-	if(sdcard->type == SDCARD_TYPE_SC) {
+	if((block_count > 1) && (sdcard->type == SDCARD_TYPE_SC)) {
 		sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD12, 0);
 	}
 
@@ -1171,7 +1171,7 @@ err_t sdcard_card_deselect(sdcard_t* sdcard) {
 
 bool sdcard_identified(sdcard_t* sdcard)
 {
-    return sdcard->type != SDCARD_TYPE_UNKNOWN;
+    return sdcard->type == SDCARD_TYPE_UNKNOWN;
 }
 
 bool sdcard_initialized(sdcard_t* sdcard)

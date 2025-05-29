@@ -3,25 +3,23 @@
 
 DSTATUS sdcard_disk_initialize(sdcard_t* sdcard)
 {
-    //sdcard_init_card(sdcard);
-
+	if(sdcard_identified(sdcard)) return STA_NOINIT;
     if(sdcard_initialized(sdcard)) return 0;
-    if(sdcard_identified(sdcard)) return STA_NOINIT;
 
     return STA_NODISK;
 }
 
 DSTATUS sdcard_disk_status(sdcard_t* sdcard)
 {
+	if(sdcard_identified(sdcard)) return STA_NOINIT;
     if(sdcard_initialized(sdcard)) return 0;
-    if(sdcard_identified(sdcard)) return STA_NOINIT;
 
     return STA_NODISK;
 }
 
 DRESULT sdcard_disk_read(sdcard_t* sdcard, BYTE* buff, DWORD sector, UINT count)
 {
-    if(!sdcard_initialized(sdcard)) return RES_NOTRDY;
+    if(sdcard_initialized(sdcard) == false) return RES_NOTRDY;
 
     err_t err = E_NO_ERROR;
 
@@ -34,7 +32,7 @@ DRESULT sdcard_disk_read(sdcard_t* sdcard, BYTE* buff, DWORD sector, UINT count)
 #if _USE_WRITE
 DRESULT sdcard_disk_write(sdcard_t* sdcard, const BYTE* buff, DWORD sector, UINT count)
 {
-    if(!sdcard_initialized(sdcard)) return RES_NOTRDY;
+	if(sdcard_initialized(sdcard) == false) return RES_NOTRDY;
 
     err_t err = E_NO_ERROR;
 
@@ -49,7 +47,7 @@ DRESULT sdcard_disk_write(sdcard_t* sdcard, const BYTE* buff, DWORD sector, UINT
 #if _USE_IOCTL
 DRESULT sdcard_disk_ioctl(sdcard_t* sdcard, BYTE cmd, void* buff)
 {
-    if(!sdcard_initialized(sdcard)) return RES_NOTRDY;
+	if(sdcard_initialized(sdcard) == false) return RES_NOTRDY;
 
     DRESULT res = RES_ERROR;
     err_t err = E_NO_ERROR;
