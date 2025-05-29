@@ -875,6 +875,24 @@ err_t sdcard_cmd_sync_state(sdcard_t* sdcard) {
 	return E_NO_ERROR;
 }
 
+err_t sdcard_sync_state(sdcard_t* sdcard, uint32_t timeout, uint32_t sec, uint32_t usec) {
+	uint32_t sdcard_timeout = timeout;
+
+	do {
+		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
+		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+		if(sdcard->current_state != SDCARD_STATE_TRAN) {
+			sys_counter_delay(sec, usec);
+			sdcard_timeout--;
+		}
+	} while ((sdcard->current_state != SDCARD_STATE_TRAN) && (sdcard_timeout > 0));
+
+	if(sdcard_timeout == 0) return E_TIME_OUT;
+
+	return E_NO_ERROR;
+}
+
 //dma
 err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, dma_scr_dir_t dir) {
 	if(sdcard == NULL) return E_NULL_POINTER;
@@ -981,18 +999,7 @@ err_t sdcard_status_read(sdcard_t* sdcard, uint32_t timeout) {
 	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	uint32_t sdcard_timeout = 10; //100ms
-
-	do {
-		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
-		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
-		sys_counter_delay(0, 10000); // 10ms
-		sdcard_timeout--;
-	} while ((sdcard->current_state != SDCARD_STATE_TRAN) && (sdcard_timeout > 0));
-
-	if(sdcard_timeout == 0) return E_TIME_OUT;
-
-	return E_NO_ERROR;
+	return sdcard_sync_state(sdcard, 10, 0, 10000); // 10 * 10ms
 }
 
 err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout) {
@@ -1039,18 +1046,7 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	uint32_t sdcard_timeout = 10; //100ms
-
-	do {
-		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
-		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
-		sys_counter_delay(0, 10000); // 10ms
-		sdcard_timeout--;
-	} while ((sdcard->current_state != SDCARD_STATE_TRAN) && (sdcard_timeout > 0));
-
-	if(sdcard_timeout == 0) return E_TIME_OUT;
-
-	return E_NO_ERROR;
+	return sdcard_sync_state(sdcard, 10, 0, 10000); // 10 * 10ms
 }
 
 err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout) {
@@ -1097,18 +1093,17 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 	if (sdcard->data_err != E_NO_ERROR) return sdcard->data_err;
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	uint32_t sdcard_timeout = 100; //1s
+	return sdcard_sync_state(sdcard, 100, 0, 10000); // 100 * 10ms
+}
 
-	do {
-		sdcard->cmd_err = sdcard_cmd_sync_state(sdcard);
-		if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
-		sys_counter_delay(0, 10000); // 10ms
-		sdcard_timeout--;
-	} while ((sdcard->current_state != SDCARD_STATE_TRAN) && (sdcard_timeout > 0));
+err_t sdcard_erase(sdcard_t* sdcard, uint64_t addr_first, uint64_t addr_last) {
 
-	if(sdcard_timeout == 0) return E_TIME_OUT;
+	uint64_t sdcard_timeout = addr_last - addr_first + 4; //TODO: сделать нормальное вычисление таймаута
 
-	return E_NO_ERROR;
+	sdcard->cmd_err = sdcard_cmd_erase(sdcard, addr_first, addr_last, 0x00000003); //Erase
+	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+	return sdcard_sync_state(sdcard, (uint32_t)sdcard_timeout, 0, 250000); // N * 250ms
 }
 
 err_t sdcard_card_reset(sdcard_t* sdcard) {
