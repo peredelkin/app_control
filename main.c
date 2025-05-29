@@ -83,11 +83,18 @@ sdcard_t sdcard;
 char* disk_path = "/SD"; //[FATFS_DISK_PATH_LEN];
 FATFS sdcard_fatfs;
 
+//TODO: заглушка для fatfs
+DWORD get_fattime (void) {
+	return 0;
+}
+
 void sdcard_ls_dir(const char* dirname)
 {
 	FRESULT res = FR_OK;
 	DIR dp;
 	FILINFO fno;
+	FIL fp;
+	char line[100];
 
 	res = f_opendir(&dp, dirname);
 	if(res != FR_OK){
@@ -97,11 +104,31 @@ void sdcard_ls_dir(const char* dirname)
 
 	for(;;){
 		res = f_readdir(&dp, &fno);
+
 		if(res != FR_OK || fno.fname[0] == 0){
 			printf("No More Files\n");
 			break;
 		}
-		printf("%s\n", fno.fname);
+
+		if(fno.fattrib & AM_DIR) {
+			printf("Dir: %s\n", fno.fname);
+		} else {
+			printf("File: %s\n", fno.fname);
+
+			res = f_open(&fp, fno.fname, FA_READ);
+
+			if (res != FR_OK) {
+				printf("Error Open File\n");
+				break;
+			}
+
+			while (f_gets(line, sizeof line, &fp)) {
+				printf(line);
+				sys_counter_delay(0, 1000); //1ms
+			}
+
+			f_close(&fp);
+		}
 	}
 
 	f_closedir(&dp);
@@ -188,7 +215,7 @@ int main(void)
 		res = yaffs_start_up();
 		sys_counter_tv_print();
 		printf("YAFFS Start Up: %d\n", res);
-		res = yaffs_mount("0:/");
+		res = yaffs_mount("/nand");
 		sys_counter_tv_print();
 		printf("YAFFS Mount: %d\n", res);
 	}
