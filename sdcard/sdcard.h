@@ -154,18 +154,10 @@ extern void sdcard_sdio_power_off();
 
 extern err_t sdcard_card_init(sdcard_t *sdcard);
 
-//CSD
-extern err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *tran_speed);
-extern err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len, uint32_t* len_power);
-extern err_t sdcard_CSD_BLOCKNR_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* count);
-extern err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* capacity);
-
 //read write
 extern err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout);
 extern err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout);
-
-
-
+extern err_t sdcard_erase(sdcard_t* sdcard, uint64_t addr_first, uint64_t addr_last);
 
 /*
  * FatFS diskio.

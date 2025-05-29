@@ -366,6 +366,12 @@ void sdcard_type_define(sdcard_t* sdcard) {
 }
 
 
+err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *tran_speed);
+err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len, uint32_t* len_power);
+err_t sdcard_CSD_BLOCKNR_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* count);
+err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* capacity);
+err_t sdcard_CSD_erasable_sector_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* erase_len);
+
 //CSD
 err_t sdcard_card_CSD_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD9, sdcard->RCA);
@@ -642,9 +648,6 @@ err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 	return E_NO_ERROR;
 }
 
-/*
- * Calc the size of an erasable sector.
- */
 err_t sdcard_CSD_erasable_sector_calc(sdcard_t* sdcard, uint8_t csd_version, uint32_t* erase_len) {
 	uint8_t ERASE_BLK_EN = 0;
 	uint8_t SECTOR_SIZE = 0;
@@ -697,6 +700,7 @@ err_t sdcard_CSD_erasable_sector_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 
 	return E_NO_ERROR;
 }
+
 
 //CID
 err_t sdcard_card_CID_read_any(sdcard_t* sdcard) {

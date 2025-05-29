@@ -76,8 +76,11 @@ void CAN_TIM_IRQHANDLER(void) {
 //__attribute__((section(".extsram"), used))
 //volatile int test_extsram;
 
-sdcard_t sdcard; //TODO: не забыть убрать
+//!FATFS
+FATFS sdcard_fatfs;
+sdcard_t sdcard;
 uint8_t sdcard_data_array[1024] = "Hello world!";
+char hex_to_str[17];
 
 void dma_rcc_init() {
 	//DMA
@@ -215,34 +218,37 @@ int main(void)
 
 				if (sdcard_init_err == E_NO_ERROR) {
 
-					printf("Card Type: %d\n", sdcard.type);
+					for (uint64_t block_addr = 0; block_addr < 8; block_addr += 2) {
+						sdcard_init_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array),
+								block_addr, 2, 0xFFFFFF);
+						if (sdcard_init_err != E_NO_ERROR) {
+							printf("READ Err: %lu\n", sdcard_init_err);
+							break;
+						}
 
-					printf("CSD Version: %d\n", sdcard.CSD.v1.bit.CSD_STRUCTURE);
+						for (int i = 0; i < 1024; i += 16) {
+							memcpy(hex_to_str, &sdcard_data_array[i], 16);
+							hex_to_str[16] = 0;
 
-					printf("TRAN SPEED: %0.2f\n", sdcard.CSD.tran_speed);
+							for (int ch = 0; ch < 16; ch++) {
+								if (isprint((int)hex_to_str[ch]) == 0) hex_to_str[ch] = '.';
+							}
 
-					printf("BLOCK LEN: %llu\n", sdcard.CSD.bl_len_max);
-
-					printf("BLOCKNR: %llu\n", sdcard.CSD.bl_count);
-
-					printf("Capacity: %llu\n", sdcard.CSD.capacity);
-
-					switch(sdcard.CSD.v1.bit.CSD_STRUCTURE) {
-					case 0:
-						printf("ERASE BLK EN: %d\n", sdcard.CSD.v1.bit.ERASE_BLK_EN);
-						printf("SECTOR SIZE: %d\n", sdcard.CSD.v1.bit.SECTOR_SIZE);
-						break;
-					case 1:
-						printf("ERASE BLK EN: %d\n", sdcard.CSD.v2.bit.ERASE_BLK_EN);
-						printf("SECTOR SIZE: %d\n", sdcard.CSD.v2.bit.SECTOR_SIZE);
-						break;
-					case 2:
-						printf("ERASE BLK EN: %d\n", sdcard.CSD.v3.bit.ERASE_BLK_EN);
-						printf("SECTOR SIZE: %d\n", sdcard.CSD.v3.bit.SECTOR_SIZE);
-						break;
-					default:
-						break;
+							printf(
+									"%08llx %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %s\n",
+									((block_addr * 512) + i), sdcard_data_array[i],
+									sdcard_data_array[i + 1], sdcard_data_array[i + 2],
+									sdcard_data_array[i + 3], sdcard_data_array[i + 4],
+									sdcard_data_array[i + 5], sdcard_data_array[i + 6],
+									sdcard_data_array[i + 7], sdcard_data_array[i + 8],
+									sdcard_data_array[i + 9], sdcard_data_array[i + 10],
+									sdcard_data_array[i + 11], sdcard_data_array[i + 12],
+									sdcard_data_array[i + 13], sdcard_data_array[i + 14],
+									sdcard_data_array[i + 15], hex_to_str);
+							sys_counter_delay(0, 1000); // 1ms
+						}
 					}
+
 				} else {
 					printf("SD Card Init Error: %lu\n", sdcard_init_err);
 				}

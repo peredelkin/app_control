@@ -82,8 +82,7 @@ DRESULT sdcard_disk_ioctl(sdcard_t* sdcard, BYTE cmd, void* buff)
         start_erase_block = ((DWORD*)buff)[0];
         end_erase_block = ((DWORD*)buff)[1];
 
-        err = sdcard_erase_sector(sdcard, start_erase_block,
-                                  end_erase_block - start_erase_block + 1);
+        err = sdcard_erase(sdcard, start_erase_block, end_erase_block + 1);
         if(err == E_NO_ERROR) res = RES_OK;
         break;
     default:
