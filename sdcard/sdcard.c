@@ -305,41 +305,98 @@ err_t sdcard_operation_complete_state(sdcard_t* sdcard) {
 	return E_NO_ERROR;
 }
 
+typedef enum {
+	sdcard_cmd_step_CMD_SEND,
+	sdcard_cmd_step_RESP_RCV,
+	sdcard_cmd_step_ERR_CHECK,
+	sdcard_cmd_step_CHANGE_STATE,
+	sdcard_cmd_step_DONE
+} sdcard_cmd_step_t;
+
 err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
-	sdcard->cmd_err = sdcard_cmd_send(sdcard, cmd, argument);
-	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+	sdcard_cmd_step_t step = sdcard_cmd_step_CMD_SEND;
 
-	sdcard->resp_err = sdcard_response_rcv(sdcard);
-	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
+	do {
+		switch(step) {
 
-	sdcard->resp_err = sdcard_status_error_check(sdcard);
-	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
+		case sdcard_cmd_step_CMD_SEND:
+			sdcard->cmd_err = sdcard_cmd_send(sdcard, cmd, argument);
+			break;
 
-	sdcard->cmd_err = sdcard_change_current_state(sdcard);
-	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+		case sdcard_cmd_step_RESP_RCV:
+			sdcard->resp_err = sdcard_response_rcv(sdcard);
+			break;
+
+		case sdcard_cmd_step_ERR_CHECK:
+			sdcard->resp_err = sdcard_status_error_check(sdcard);
+			break;
+
+		case sdcard_cmd_step_CHANGE_STATE:
+			sdcard->cmd_err = sdcard_change_current_state(sdcard);
+			break;
+
+		default:
+			return E_NOT_IMPLEMENTED;
+		}
+
+		if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+
+		step++;
+
+	} while (step != sdcard_cmd_step_DONE);
 
 	return E_NO_ERROR;
 }
 
 
+typedef enum {
+	sdcard_acmd_step_CMD,
+	sdcard_acmd_step_CMD_RESP_CHECK,
+	sdcard_acmd_step_ACMD_SEND,
+	sdcard_acmd_step_RESP_RCV,
+	sdcard_acmd_step_ERR_CHECK,
+	sdcard_acmd_step_DONE
+} sdcard_acmd_step_t;
+
 err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t cmd_arg, uint32_t acmd_arg) {
 	if(sdcard == NULL || cmd == NULL) return E_NULL_POINTER;
 
-	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD55, cmd_arg);
-	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+	sdcard_acmd_step_t step = sdcard_acmd_step_CMD;
 
-	if (sdcard->response.r1.bit.APP_CMD == 0) return E_INVALID_OPERATION;
+	do {
+		switch(step) {
 
-	sdcard->cmd_err = sdcard_acmd_send(sdcard, cmd, acmd_arg);
-	if(sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
+		case sdcard_acmd_step_CMD:
+			sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD55, cmd_arg);
+			break;
 
-	sdcard->resp_err = sdcard_response_rcv(sdcard);
-	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
+		case sdcard_acmd_step_CMD_RESP_CHECK:
+			if (sdcard->response.r1.bit.APP_CMD == 0) return E_INVALID_OPERATION;
+			break;
 
-	sdcard->resp_err = sdcard_status_error_check(sdcard);
-	if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
+		case sdcard_acmd_step_ACMD_SEND:
+			sdcard->cmd_err = sdcard_acmd_send(sdcard, cmd, acmd_arg);
+			break;
+
+		case sdcard_acmd_step_RESP_RCV:
+			sdcard->resp_err = sdcard_response_rcv(sdcard);
+			break;
+
+		case sdcard_acmd_step_ERR_CHECK:
+			sdcard->resp_err = sdcard_status_error_check(sdcard);
+			break;
+
+		default:
+			return E_NOT_IMPLEMENTED;
+		}
+
+		if(sdcard->resp_err != E_NO_ERROR) return sdcard->resp_err;
+
+		step++;
+
+	} while (step != sdcard_acmd_step_DONE);
 
 	/*
 	 * Менять состояние после выполнения
