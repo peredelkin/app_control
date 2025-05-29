@@ -434,20 +434,9 @@ err_t sdcard_card_CSD_read(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD9, sdcard->RCA);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
 
-	sdcard->CSD.v1.all[0] = sdcard->response.r2.all[0];
-	sdcard->CSD.v1.all[1] = sdcard->response.r2.all[1];
-	sdcard->CSD.v1.all[2] = sdcard->response.r2.all[2];
-	sdcard->CSD.v1.all[3] = sdcard->response.r2.all[3];
-
-	sdcard->CSD.v2.all[0] = sdcard->response.r2.all[0];
-	sdcard->CSD.v2.all[1] = sdcard->response.r2.all[1];
-	sdcard->CSD.v2.all[2] = sdcard->response.r2.all[2];
-	sdcard->CSD.v2.all[3] = sdcard->response.r2.all[3];
-
-	sdcard->CSD.v3.all[0] = sdcard->response.r2.all[0];
-	sdcard->CSD.v3.all[1] = sdcard->response.r2.all[1];
-	sdcard->CSD.v3.all[2] = sdcard->response.r2.all[2];
-	sdcard->CSD.v3.all[3] = sdcard->response.r2.all[3];
+	memcpy(sdcard->CSD.v1.all, sdcard->response.r2.all, sizeof(sdcard_reg_CSD_v1_t));
+	memcpy(sdcard->CSD.v2.all, sdcard->response.r2.all, sizeof(sdcard_reg_CSD_v2_t));
+	memcpy(sdcard->CSD.v3.all, sdcard->response.r2.all, sizeof(sdcard_reg_CSD_v3_t));
 
 	sdcard->cmd_err = sdcard_CSD_TRAN_SPEED_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.tran_speed);
 	if (sdcard->cmd_err != E_NO_ERROR) return sdcard->cmd_err;
