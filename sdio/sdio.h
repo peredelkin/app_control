@@ -248,11 +248,16 @@ typedef enum {
 	SDIO_RESP_CRC_INCLUDED = 0b1
 } sdio_resp_crc_include_t;
 
+extern void sdio_enable();
+extern void sdio_disable();
+
 extern void sdio_power_control(sdio_pwrctrl_t pwrctrl);
 extern void sdio_clock_control(uint8_t clkdiv, sdio_clken_t clken, sdio_pwrsav_t pwrsav, sdio_bypass_t bypass);
 extern void sdio_cpsm_set(uint32_t argument, int cmd_index, sdio_respwait_t respwait, sdio_resptype_t resptype,
 		sdio_intwait_t intwait, sdio_pendwait_t pendwait, sdio_cpsmen_t cpsmen, sdio_suspend_t suspend,
 		sdio_cmdcompl_t cmdcompl, sdio_nien_t nien, sdio_atacmd_t atacmd);
+
+extern void sdio_cpsm_reset();
 
 extern void sdio_dpsm_set(sdio_dtdir_t dtdir, sdio_dtmode_t dtmode, sdio_dmaen_t dmaen,
 		sdio_dblocksize_t dblocksize, sdio_rwstart_t rwstart, sdio_rwstop_t rwstop, sdio_rwmod_t rwmod,
@@ -263,7 +268,9 @@ extern void sdio_dpsm_enable();
 extern void sdio_dpsm_reset();
 
 extern err_t sdio_cmd_status();
+extern void sdio_cmd_status_clear();
 extern void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp);
 extern err_t sdio_data_status();
+extern void sdio_data_status_clear();
 
 #endif /* SDIO_SDIO_H_ */

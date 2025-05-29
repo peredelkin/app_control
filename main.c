@@ -22,6 +22,7 @@
 #include "yaffs2/yaffs_trace.h"
 #include "interrupts/interrupt_priorities.h"
 
+#define USE_SDCARD_FATFS_DISKIO
 #include "sdcard/sdcard.h"
 
 #include <malloc.h>
@@ -75,8 +76,36 @@ void CAN_TIM_IRQHANDLER(void) {
 //__attribute__((section(".extsram"), used))
 //volatile int test_extsram;
 
-sdcard_t sdcard; //TODO: не забыть убрать
-uint8_t sdcard_data_array[1024] = "Hello world!";
+//!FATFS nad SDCARD
+sdcard_t sdcard;
+
+#define FATFS_DISK_PATH_LEN 4
+char* disk_path = "/SD"; //[FATFS_DISK_PATH_LEN];
+FATFS sdcard_fatfs;
+
+void sdcard_ls_dir(const char* dirname)
+{
+	FRESULT res = FR_OK;
+	DIR dp;
+	FILINFO fno;
+
+	res = f_opendir(&dp, dirname);
+	if(res != FR_OK){
+		printf("Error %d open dir: %s\n", res, dirname);
+		return;
+	}
+
+	for(;;){
+		res = f_readdir(&dp, &fno);
+		if(res != FR_OK || fno.fname[0] == 0){
+			printf("No More Files\n");
+			break;
+		}
+		printf("%s\n", fno.fname);
+	}
+
+	f_closedir(&dp);
+}
 
 void dma_rcc_init() {
 	//DMA
@@ -159,240 +188,10 @@ int main(void)
 		res = yaffs_start_up();
 		sys_counter_tv_print();
 		printf("YAFFS Start Up: %d\n", res);
-		res = yaffs_mount("/nand");
+		res = yaffs_mount("0:/");
 		sys_counter_tv_print();
 		printf("YAFFS Mount: %d\n", res);
 	}
-
-	//SDIO!
-	gpio_sdio_cfg_setup();
-	sys_counter_tv_print();
-	if (gpio_input_bit_read(&GPI_SDIO_CD_App) == false) {
-		printf("SD Card Inserted\n");
-		gpio_output_bit_setup(&GPO_SDIO_PWR_App, DISABLE);
-		sys_counter_delay(0, 300000); // 300ms
-
-		RCC->APB2ENR |= RCC_APB2ENR_SDIOEN;
-		sdio_clock_control(120, SDIO_CLKCR_CLK_EN, SDIO_CLKCR_PWRSAV_ENA, SDIO_CLKCR_BYP_DIS);
-		sdio_power_control(SDIO_POWER_PWRCTRL_ON);
-
-		err_t sdio_err = E_NO_ERROR;
-		//инициализация структуры sdcard
-		sdio_err = dma_struct_init(&(sdcard.dma), DMA2_Stream_6);
-		if(sdio_err != E_NO_ERROR) {
-			printf("DMA Struct Init Error: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		sdcard.cmd = NULL;
-		sdcard.current_state = SDCARD_STATE_IDLE;
-		sdcard.CCC = (SDCARD_CCC_0 | SDCARD_CCC_2 | SDCARD_CCC_4 | SDCARD_CCC_5 | SDCARD_CCC_8);
-		sdcard.type = SDCARD_TYPE_UNKNOWN;
-
-		sdcard.CSD.tran_speed = 0.0f;
-		sdcard.CSD.bl_len_max = 0;
-		sdcard.CSD.bl_count = 0;
-		sdcard.CSD.capacity = 0;
-
-		//CMD0
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD0, 0);
-		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 0 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 0 STATE: %d\n", sdcard.current_state);
-
-		//CMD8
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD8, (0b1 << 8));
-		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 8 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 8 STATE: %d\n", sdcard.current_state);
-
-		//ACMD41 without argument
-		sdio_err = sdcard_acmd(&sdcard, &sdcard_ACMD41, 0);
-		if (sdio_err != E_NO_ERROR) {
-			printf("ACMD 41 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		//ACMD41 with argument
-		uint8_t acmd41_timeout = 11; //11 * 100ms
-		do {
-
-			sdio_err = sdcard_acmd(&sdcard, &sdcard_ACMD41, ((0b1 << 30) | (0b11 << 20)));
-			if (sdio_err != E_NO_ERROR) {
-				printf("ACMD 41 Err: %lu\n", sdio_err);
-				goto exit_sdcard_init;
-			}
-
-			sys_counter_delay(0, 100000); // 100ms
-
-			acmd41_timeout--;
-
-		} while (sdcard.response.r3.bit.CARD_POWER_UP_STATUS == 0 && acmd41_timeout);
-
-		if(acmd41_timeout == 0) {
-			printf("ACMD 41 TIMEOUT\n");
-			goto exit_sdcard_init;
-		}
-
-		sdio_err = sdcard_change_current_state(&sdcard);
-		if (sdio_err != E_NO_ERROR) {
-			printf("STATE 41 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		//определние типа карты по ответу ACMD41
-		sdcard_type_define(&sdcard);
-
-		printf("Card Type: %d\n", sdcard.type);
-
-		printf("ACMD 41 STATE: %d\n", sdcard.current_state);
-
-		//CMD2
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD2, 0);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 2 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 2 STATE: %d\n", sdcard.current_state);
-
-		//CMD3
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD3, 0);
-		if(sdio_err != E_NO_ERROR) {
-			printf("CMD 3 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 3 STATE: %d\n", sdcard.current_state);
-
-		//NEW_RCA
-		sdcard.RCA = sdcard.response.r6.all & 0xFFFF0000;
-
-		//CMD9
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD9, sdcard.RCA);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 9 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		sdcard_CSD_fill(&sdcard);
-
-		printf("CSD Version: %d\n", sdcard.CSD.v1.bit.CSD_STRUCTURE);
-
-		sdio_err = sdcard_CSD_TRAN_SPEED_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.tran_speed);
-		if (sdio_err != E_NO_ERROR) {
-			printf("TRAN SPEED calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("TRAN SPEED: %0.2f\n", sdcard.CSD.tran_speed);
-
-		sdio_err = sdcard_CSD_BLOCK_LEN_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_len_max, &sdcard.CSD.bl_len_max_power);
-		if (sdio_err != E_NO_ERROR) {
-			printf("BLOCK LEN calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("BLOCK LEN: %llu\n", sdcard.CSD.bl_len_max);
-
-		sdio_err = sdcard_CSD_BLOCKNR_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.bl_count);
-		if (sdio_err != E_NO_ERROR) {
-			printf("BLOCKNR calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("BLOCKNR: %llu\n", sdcard.CSD.bl_count);
-
-		sdio_err = sdcard_CSD_memory_capacity_calc(&sdcard, sdcard.CSD.v1.bit.CSD_STRUCTURE, &sdcard.CSD.capacity);
-		if (sdio_err != E_NO_ERROR) {
-			printf("capacity calc Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("capacity: %llu\n", sdcard.CSD.capacity);
-
-		printf("CMD 9 STATE: %d\n", sdcard.current_state);
-
-		//CMD10
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD10, sdcard.RCA);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 10 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		sdcard_CID_fill(&sdcard);
-
-		printf("MID: %d\n", sdcard.CID.bit.MID);
-		printf("MDT_M: %d, MDT_Y: %d\n", sdcard.CID.bit.MDT_M, sdcard.CID.bit.MDT_Y);
-
-		printf("CMD 10 STATE: %d\n", sdcard.current_state);
-
-		//CMD7
-		sdio_err = sdcard_cmd(&sdcard, &sdcard_CMD7_adressed, sdcard.RCA);
-		if (sdio_err != E_NO_ERROR) {
-			printf("CMD 7 Err: %lu\n", sdio_err);
-			goto exit_sdcard_init;
-		}
-
-		printf("CMD 7 STATE: %d\n", sdcard.current_state);
-
-		//WRITE
-//		sdcard_data_array[1023] = 0xFF;
-//
-//		sdio_err = sdcard_write(&sdcard, ((uint32_t*) sdcard_data_array), 0, 2, 0xFFFFFF);
-//		if (sdio_err != E_NO_ERROR) {
-//			printf("WRITE Err: %d\n", sdio_err);
-//			goto exit_sdcard_init;
-//		}
-//
-//		printf("WRITE STATE: %d\n", sdcard.current_state);
-
-		//DATA reset
-		memset(sdcard_data_array, 0xEE, 1024);
-
-		//READ
-		char hex_to_str[17];
-
-		for (uint64_t block_addr = 0; block_addr < 8; block_addr+=2) {
-			sdio_err = sdcard_read(&sdcard, ((uint32_t*) sdcard_data_array), block_addr, 2, 0xFFFFFF);
-			if (sdio_err != E_NO_ERROR) {
-				printf("READ Err: %lu\n", sdio_err);
-				goto exit_sdcard_init;
-			}
-
-			for (int i = 0; i < 1024; i += 16) {
-				memcpy(hex_to_str, &sdcard_data_array[i], 16);
-				hex_to_str[16] = 0;
-
-				for (int ch = 0; ch < 16; ch++) {
-					if (isprint((int)hex_to_str[ch]) == 0)
-						hex_to_str[ch] = '.';
-				}
-
-				printf("%08llx %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %s\n",
-						((block_addr * 512) + i), sdcard_data_array[i], sdcard_data_array[i + 1],
-						sdcard_data_array[i + 2], sdcard_data_array[i + 3], sdcard_data_array[i + 4],
-						sdcard_data_array[i + 5], sdcard_data_array[i + 6], sdcard_data_array[i + 7],
-						sdcard_data_array[i + 8], sdcard_data_array[i + 9], sdcard_data_array[i + 10],
-						sdcard_data_array[i + 11], sdcard_data_array[i + 12], sdcard_data_array[i + 13],
-						sdcard_data_array[i + 14], sdcard_data_array[i + 15], hex_to_str);
-				sys_counter_delay(0, 1000); // 1ms
-			}
-		}
-
-		printf("READ STATE: %d\n", sdcard.current_state);
-
-	} else {
-		printf("SD Card Not Inserted\n");
-	}
-
-	exit_sdcard_init: ;
 
 	//eth_init(); //отпаяно
 
@@ -413,9 +212,67 @@ int main(void)
 //        return 0;
 //    }
 
-    for(;;){
-    	IDLE(sys);
-    }
+	//Init SDIO!
+	gpio_sdio_cfg_setup();
+
+	sdcard.dma_stream = DMA2_Stream_6;
+
+	sdcard.gpio.dat0 = &SDIO_DAT0_App;
+	sdcard.gpio.pwr = &GPO_SDIO_PWR_App;
+	sdcard.gpio.cd = &GPI_SDIO_CD_App;
+
+	sdcard.inserted = false;
+
+	err_t sdcard_init_err = E_NO_ERROR;
+	FRESULT fatfs_result = FR_OK;
+
+	for (;;) {
+		IDLE(sys);
+
+		if (sdcard_card_detect(&sdcard)) {
+			if (sdcard.inserted == false) {
+				sdcard.inserted = true;
+
+				sdcard_setup_diskio(&sdcard, 1);
+
+				sys_counter_tv_print();
+				printf("SD Card Inserted\n");
+
+				sdio_enable();
+
+				sdcard_card_pwr_on(&sdcard);
+
+				sdcard_init_err = sdcard_card_init(&sdcard);
+
+				if (sdcard_init_err == E_NO_ERROR) {
+
+					fatfs_result = f_mount(&sdcard_fatfs, disk_path, 0);
+					printf("FATFS Mout Result: %d\n", fatfs_result);
+
+					if(fatfs_result == FR_OK) {
+						sdcard_ls_dir(disk_path);
+					}else{
+						f_unmount(disk_path);
+					}
+
+				} else {
+					printf("SD Card Init Error: %lu\n", sdcard_init_err);
+				}
+			}
+		} else {
+			if (sdcard.inserted == true) {
+				sdcard.inserted = false;
+				sdcard_sdio_power_off();
+
+				sdcard_card_pwr_off(&sdcard);
+
+				sdio_disable();
+
+				sys_counter_tv_print();
+				printf("SD Card removed\n");
+			}
+		}
+	}
 
     //dlog.control = CONTROL_NONE;
 

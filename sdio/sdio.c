@@ -8,6 +8,16 @@
 #include "sdio.h"
 #include "stm32f4xx.h"
 
+void sdio_enable() {
+	RCC->APB2RSTR &= ~RCC_APB2RSTR_SDIORST; //SDIO NOT RESET
+	RCC->APB2ENR |= RCC_APB2ENR_SDIOEN; //SDIO ENA CLK
+}
+
+void sdio_disable() {
+	RCC->APB2RSTR |= RCC_APB2RSTR_SDIORST; //SDIO RESET
+	RCC->APB2ENR &= ~RCC_APB2ENR_SDIOEN; //SDIO DIS CLK
+}
+
 void sdio_power_control(sdio_pwrctrl_t pwrctrl) {
 	_sdio_power_reg_t power;
 	power.all = SDIO->POWER;
@@ -15,6 +25,8 @@ void sdio_power_control(sdio_pwrctrl_t pwrctrl) {
 	power.bit.pwrctrl = pwrctrl;
 
 	SDIO->POWER = power.all;
+
+	while (SDIO->POWER != power.all);
 }
 
 void sdio_clock_control(
@@ -66,6 +78,12 @@ void sdio_cpsm_set(
 	SDIO->ARG = argument;
 
 	SDIO->CMD = cmd.all;
+}
+
+void sdio_cpsm_reset() {
+	SDIO->CMD = 0;
+
+	SDIO->ARG = 0;
 }
 
 void sdio_dpsm_set(
@@ -151,6 +169,10 @@ err_t sdio_cmd_status() {
 	return E_NOT_IMPLEMENTED;
 }
 
+void sdio_cmd_status_clear() {
+	SDIO->ICR = (SDIO_ICR_CTIMEOUTC | SDIO_ICR_CCRCFAILC | SDIO_ICR_CMDRENDC | SDIO_ICR_CMDSENTC);
+}
+
 err_t sdio_data_status() {
 	uint32_t STA = SDIO->STA;
 
@@ -192,6 +214,10 @@ err_t sdio_data_status() {
 	}
 
 	return E_NOT_IMPLEMENTED;
+}
+
+void sdio_data_status_clear() {
+	SDIO->ICR = (SDIO_ICR_RXOVERRC | SDIO_ICR_TXUNDERRC | SDIO_ICR_DTIMEOUTC | SDIO_ICR_DCRCFAILC | SDIO_ICR_DATAENDC | SDIO_ICR_DBCKENDC);
 }
 
 void sdio_response_read(sdio_resptype_t resptype, uint32_t* cmd, uint32_t* resp) {

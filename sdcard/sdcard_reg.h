@@ -15,6 +15,8 @@
 
 #define SDCARD_CID_SIZE 16
 #define SDCARD_CSD_SIZE 16
+#define SDCARD_SD_STATUS_SIZE (512/8) //512bit
+#define SDCARD_SD_STATUS_W_SIZE (SDCARD_SD_STATUS_SIZE/4)
 
 #pragma pack(push, 1)
 typedef union {
@@ -185,6 +187,45 @@ typedef struct {
 	uint64_t bl_len_max;
 	uint64_t bl_count;
 	uint64_t capacity;
+	uint32_t erase_bl_len;
 } sdcard_reg_CSD_t;
+
+#pragma pack(push, 1)
+typedef union {
+	struct {
+		unsigned DAT_BUS_WIDTH			:2;
+		unsigned SECURED_MODE			:1;
+		unsigned RERESERVED_502_508		:7;
+		unsigned RERESERVED_499_501		:3;
+		unsigned SECURE_CMD_STATUS		:3;
+		unsigned SD_CARD_TYPE			:16;
+		unsigned SIZE_OF_PROTECTED_AREA	:32;
+		unsigned SPEED_CLASS			:8;
+		unsigned PERFORMANCE_MOVE		:8;
+		unsigned AU_SIZE				:4;
+		unsigned RERESERVED_424_427		:4;
+		unsigned ERASE_SIZE				:16;
+		unsigned ERASE_TIMEOUT			:6;
+		unsigned ERASE_OFFSET			:2;
+		unsigned UHS_SPEED_GRADE		:4;
+		unsigned UHS_AU_SIZE			:4;
+		unsigned VIDEO_SPEED_CLASS		:8;
+		unsigned RERESERVED_378_383		:6;
+		unsigned VSC_AU_SIZE			:10;
+		unsigned SUS_ADDR				:22;
+		unsigned RERESERVED_340_345		:6;
+		unsigned APP_PERF_CLASS			:4;
+		unsigned PERFORMANCE_ENHANCE	:8;
+		unsigned RERESERVED_314_327		:12;
+		unsigned WP_UPC_SUPPORT			:1;
+		unsigned BOOT_PARTITION_SUPPORT	:1;
+		unsigned DISCARD_SUPPORT		:1;
+		unsigned FULE_SUPPORT			:1;
+		uint8_t RERESERVED_0_311 [39];//:312;
+	} bit;
+	uint32_t all[SDCARD_SD_STATUS_W_SIZE];
+} sdcard_status_t;
+#pragma pack(pop)
+static_assert(sizeof(sdcard_status_t) == SDCARD_SD_STATUS_SIZE, "Invalid size of sdcard_status_t!");
 
 #endif /* SDCARD_SDCARD_REG_H_ */

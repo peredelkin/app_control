@@ -9,7 +9,7 @@
 #include "defs/defs.h"
 //#include "spi/spi.h"
 #include "sdio/sdio.h"
-//#include "gpio/gpio.h"
+#include "gpio/gpio.h"
 #include "errors/errors.h"
 #include "future/future.h"
 #include <stdint.h>
@@ -107,9 +107,17 @@ typedef enum _SD_Card_Type {
 } sdcard_type_t;
 
 
+typedef struct {
+	const gpio_pin_t* dat0;
+	const gpio_pin_t* pwr;
+	const gpio_pin_t* cd;
+} sdcard_gpio;
+
+
 //! Структура SD-карты.
 typedef struct _SD_Card {
 	dma_t dma;
+	dma_n_stream_n_t dma_stream;
 	sdcard_state_t current_state; //!< Текущее состояние карты.
 	sdcard_cmd_t* cmd; //!< Указатель на выполняемую команду
 	sdio_respwait_t resp_wait; //!< Ожидается ли ответ
@@ -119,34 +127,37 @@ typedef struct _SD_Card {
 	uint32_t RCA; //!< Адрес карты
 	sdcard_reg_CID_t CID;
 	sdcard_reg_CSD_t CSD;
+	sdcard_status_t STAT;
 	sdcard_ccc_t CCC; //!< Классы поддерживаемых картой команд
 	sdcard_type_t type; //!< Тип карты
 	err_t cmd_err; //!< Ошибки при отправке команды
 	err_t data_err; //!< Ошибки при обмене с картой
 	err_t resp_err; //!< Ошибки в ответе карты
 	err_t dma_err; //!< Ошибки DMA
+	bool inserted;
+	bool initialized;
+	sdcard_gpio gpio;
 } sdcard_t;
 
 //вспопогательные функции
-extern err_t sdcard_operation_complete_state(sdcard_t* sdcard);
-extern err_t sdcard_change_current_state(sdcard_t* sdcard);
-extern void sdcard_CSD_fill(sdcard_t* sdcard);
-extern void sdcard_CID_fill(sdcard_t* sdcard);
-extern void sdcard_type_define(sdcard_t* sdcard);
-//CSD
-extern err_t sdcard_CSD_TRAN_SPEED_calc(sdcard_t *sdcard, uint8_t csd_version, float *tran_speed);
-extern err_t sdcard_CSD_BLOCK_LEN_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* len, uint32_t* len_power);
-extern err_t sdcard_CSD_BLOCKNR_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* count);
-extern err_t sdcard_CSD_memory_capacity_calc(sdcard_t* sdcard, uint8_t csd_version, uint64_t* capacity);
+extern err_t sdcard_card_select(sdcard_t* sdcard);
+extern err_t sdcard_card_deselect(sdcard_t* sdcard);
+
+extern bool sdcard_identified(sdcard_t* sdcard);
+extern bool sdcard_initialized(sdcard_t* sdcard);
+
+extern bool sdcard_card_detect(sdcard_t* sdcard);
+extern void sdcard_card_pwr_on(sdcard_t* sdcard);
+extern void sdcard_card_pwr_off(sdcard_t* sdcard);
+
+extern void sdcard_sdio_power_off();
+
+extern err_t sdcard_card_init(sdcard_t *sdcard);
 
 //read write
 extern err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout);
 extern err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, uint32_t block_count, uint32_t timeout);
-
-//функции отправки команд
-extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);
-extern err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t argument);
-
+extern err_t sdcard_erase(sdcard_t* sdcard, uint64_t addr_first, uint64_t addr_last);
 
 /*
  * FatFS diskio.
