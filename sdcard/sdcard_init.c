@@ -10,6 +10,7 @@
 #include "sys/counter/sys_counter.h"
 
 extern err_t sdcard_card_reset(sdcard_t* sdcard);
+extern err_t sdcard_card_set_bl_len(sdcard_t* sdcard);
 
 extern err_t sdcard_cmd(sdcard_t* sdcard, const sdcard_cmd_t* cmd, uint32_t argument);
 extern err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t cmd_arg, uint32_t acmd_arg);
@@ -52,7 +53,7 @@ err_t sdcard_reset(sdcard_t* sdcard) {
 	sdcard->type = SDCARD_TYPE_UNKNOWN;
 
 	sdcard->CSD.tran_speed = 0.0f;
-	sdcard->CSD.bl_len_max = 0;
+	sdcard->CSD.bl_len = 0;
 	sdcard->CSD.bl_count = 0;
 	sdcard->CSD.capacity = 0;
 
@@ -397,18 +398,18 @@ err_t sdcard_CSD_erasable_sector_calc(sdcard_t* sdcard, uint8_t csd_version, uin
 	switch (sdcard->type) {
 	case SDCARD_TYPE_SC:
 		if(ERASE_BLK_EN) {
-			*erase_len = 512;
+			*erase_len = SDCARD_BLOCK_SIZE;
 		} else {
-			*erase_len = 512 * SECTOR_SIZE;
+			*erase_len = SDCARD_BLOCK_SIZE * SECTOR_SIZE;
 		}
 		break;
 
 	case SDCARD_TYPE_HC_XC:
-		*erase_len = 512;
+		*erase_len = SDCARD_BLOCK_SIZE;
 		break;
 
 	case SDCARD_TYPE_UC:
-		*erase_len = 512;
+		*erase_len = SDCARD_BLOCK_SIZE;
 		break;
 
 	case SDCARD_TYPE_UNKNOWN:
@@ -453,7 +454,7 @@ err_t sdcard_card_CSD_read(sdcard_t* sdcard) {
 			break;
 
 		case sdcard_card_CSD_read_state_BLOCK_LEN_calc:
-			sdcard->cmd_err = sdcard_CSD_BLOCK_LEN_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.bl_len_max, &sdcard->CSD.bl_len_max_power);
+			sdcard->cmd_err = sdcard_CSD_BLOCK_LEN_calc(sdcard, sdcard->CSD.v1.bit.CSD_STRUCTURE, &sdcard->CSD.bl_len, &sdcard->CSD.bl_len_power);
 			break;
 
 		case sdcard_card_CSD_read_state_BLOCKNR_calc:
@@ -531,6 +532,13 @@ err_t sdcard_card_init(sdcard_t *sdcard) {
 	//CMD7
 	err = sdcard_card_select(sdcard);
 	if (err != E_NO_ERROR) return err;
+
+	//SET_BLOCKLEN for SDSC
+	if (sdcard->type == SDCARD_TYPE_SC) {
+		//CMD16
+		err = sdcard_card_set_bl_len(sdcard);
+		if (err != E_NO_ERROR) return err;
+	}
 
 	sdcard_sdio_set_clock_div(2 , SDIO_CLKCR_CLK_EN); //24M
 

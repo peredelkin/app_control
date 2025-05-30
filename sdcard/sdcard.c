@@ -425,7 +425,7 @@ err_t sdcard_cmd_read(sdcard_t* sdcard, uint32_t count, uint64_t addr) {
 	uint32_t addr_lo = __u_addr_64._32.lo;
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
-		addr_lo = addr_lo * 512; //TODO: сделать настройку размера блка
+		addr_lo = addr_lo * SDCARD_BLOCK_SIZE;
 	} else {
 		if(count > 1) {
 			//Set block count
@@ -467,7 +467,7 @@ err_t sdcard_cmd_write(sdcard_t* sdcard, uint32_t count, uint64_t addr) {
 	uint32_t addr_lo = __u_addr_64._32.lo;
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
-		addr_lo = addr_lo * 512; //TODO: сделать настройку размера блка
+		addr_lo = addr_lo * SDCARD_BLOCK_SIZE;
 	} else {
 		if(count > 1) {
 			//Set block count
@@ -512,9 +512,8 @@ err_t sdcard_cmd_erase(sdcard_t* sdcard, uint64_t addr_first, uint64_t addr_last
 	uint32_t addr_last_lo = __u_addr_last_64._32.lo;
 
 	if(sdcard->type == SDCARD_TYPE_SC) {
-		//TODO: сделать настройку размера блка
-		addr_first_lo = addr_first_lo * 512;
-		addr_last_lo = addr_last_lo * 512;
+		addr_first_lo = addr_first_lo * SDCARD_BLOCK_SIZE;
+		addr_last_lo = addr_last_lo * SDCARD_BLOCK_SIZE;
 	}
 
 	//first
@@ -693,7 +692,7 @@ err_t sdcard_read(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr, 
 	if (block_count == 0) return E_INVALID_VALUE;
 
 	//stream conf
-	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блока
+	uint32_t item_count = (block_count * SDCARD_BLOCK_SIZE) / 4;
 
 	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
 
@@ -740,7 +739,7 @@ err_t sdcard_write(sdcard_t* sdcard, uint32_t* memory_addr, uint64_t block_addr,
 	if (block_count == 0) return E_INVALID_VALUE;
 
 	//stream conf
-	uint32_t item_count = (block_count * 512) / 4; //TODO: сделать настройку размера блока
+	uint32_t item_count = (block_count * SDCARD_BLOCK_SIZE) / 4;
 
 	if(item_count > DMA_DATA_COUNT_MAX) return E_OUT_OF_RANGE;
 
@@ -803,6 +802,11 @@ err_t sdcard_card_select(sdcard_t* sdcard) {
 
 err_t sdcard_card_deselect(sdcard_t* sdcard) {
 	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD7_not_adressed, 0);
+	return sdcard->cmd_err;
+}
+
+err_t sdcard_card_set_bl_len(sdcard_t* sdcard) {
+	sdcard->cmd_err = sdcard_cmd(sdcard, &sdcard_CMD16, SDCARD_BLOCK_SIZE);
 	return sdcard->cmd_err;
 }
 

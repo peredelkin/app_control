@@ -273,6 +273,12 @@ int main(void)
 
 				if (sdcard_init_err == E_NO_ERROR) {
 
+					printf("CARD TYPE: %d\n", sdcard.type);
+					printf("BL LEN MAX POWER: %lu\n", sdcard.CSD.bl_len_power);
+					printf("BL LEN MAX: %llu\n", sdcard.CSD.bl_len);
+					printf("BL COUNT: %llu\n", sdcard.CSD.bl_count);
+					printf("CAPACITY: %llu\n", sdcard.CSD.capacity);
+
 					fatfs_result = f_mount(&sdcard_fatfs, disk_path, 0);
 					printf("FATFS Mout Result: %d\n", fatfs_result);
 
