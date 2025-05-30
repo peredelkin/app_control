@@ -94,7 +94,9 @@ void sdcard_ls_dir(const char* dirname)
 	DIR dp;
 	FILINFO fno;
 	FIL fp;
-	char line[100];
+	char line[6];
+	const char* split = "SPLIT";
+	char* strstr_res = NULL;
 
 	res = f_opendir(&dp, dirname);
 	if(res != FR_OK){
@@ -123,8 +125,13 @@ void sdcard_ls_dir(const char* dirname)
 			}
 
 			while (f_gets(line, sizeof line, &fp)) {
-				printf(line);
-				sys_counter_delay(0, 1000); //1ms
+				strstr_res = strstr(line, split);
+				if(strstr_res == NULL) {
+					printf(line);
+				} else {
+					sys_counter_delay(0, 63000); // 50ms
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+				}
 			}
 
 			f_close(&fp);
