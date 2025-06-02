@@ -88,15 +88,19 @@ DWORD get_fattime (void) {
 	return 0;
 }
 
+TCHAR buff[256];
+
 void sdcard_ls_dir(const char* dirname)
 {
 	FRESULT res = FR_OK;
 	DIR dp;
 	FILINFO fno;
 	FIL fp;
-	char line[6];
-	const char* split = "SPLIT";
+	FSIZE_t total_tize = 0;
+	const char* file_type = ".txt";
+	const char* SPLIT = "SPLIT";
 	char* strstr_res = NULL;
+	char* f_gets_res = NULL;
 
 	res = f_opendir(&dp, dirname);
 	if(res != FR_OK){
@@ -108,6 +112,7 @@ void sdcard_ls_dir(const char* dirname)
 		res = f_readdir(&dp, &fno);
 
 		if(res != FR_OK || fno.fname[0] == 0){
+			printf("Total Size: %0.1f kB\n", ((float)total_tize)/1024);
 			printf("No More Files\n");
 			break;
 		}
@@ -115,26 +120,46 @@ void sdcard_ls_dir(const char* dirname)
 		if(fno.fattrib & AM_DIR) {
 			printf("Dir: %s\n", fno.fname);
 		} else {
-			printf("File: %s\n", fno.fname);
+			printf("File: %s, Size: %0.1f kB, ", fno.fname, ((float)fno.fsize)/1024);
 
-			res = f_open(&fp, fno.fname, FA_READ);
+			total_tize += fno.fsize;
 
-			if (res != FR_OK) {
-				printf("Error Open File\n");
-				break;
-			}
+			strstr_res = strstr(fno.fname, file_type);
 
-			while (f_gets(line, sizeof line, &fp)) {
-				strstr_res = strstr(line, split);
-				if(strstr_res == NULL) {
-					printf(line);
-				} else {
-					sys_counter_delay(0, 63000); // 50ms
-					printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+			printf("Type Is");
+
+			if(strstr_res != NULL) {
+				printf(": %s\n", file_type);
+
+				res = f_open(&fp, fno.fname, FA_READ);
+
+				if (res != FR_OK) {
+					printf("Error %d Open File: %s\n", res, fno.fname);
+					break;
 				}
-			}
 
-			f_close(&fp);
+				while((f_gets_res = f_gets(buff, sizeof buff, &fp)) != NULL) {
+					strstr_res = strstr(buff, SPLIT);
+					if(strstr_res != NULL) {
+						strstr_res[0] = 0;
+						strstr_res[1] = 0;
+						strstr_res[2] = 0;
+						strstr_res[3] = 0;
+						strstr_res[4] = 0;
+						printf("%s", buff);
+						sys_counter_delay(0, 68000); // 100ms
+						printf("%s", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+						printf("%s", &strstr_res[5]);
+					} else {
+						printf("%s", buff);
+					}
+				}
+
+				f_close(&fp);
+
+			} else {
+				printf(" Not: %s\n", file_type);
+			}
 		}
 	}
 
@@ -280,11 +305,23 @@ int main(void)
 
 				if (sdcard_init_err == E_NO_ERROR) {
 
-					printf("CARD TYPE: %d\n", sdcard.type);
-					printf("BL LEN MAX POWER: %lu\n", sdcard.CSD.bl_len_power);
-					printf("BL LEN MAX: %llu\n", sdcard.CSD.bl_len);
-					printf("BL COUNT: %llu\n", sdcard.CSD.bl_count);
-					printf("CAPACITY: %llu\n", sdcard.CSD.capacity);
+					printf("CARD TYPE: ");
+					switch(sdcard.type) {
+					case SDCARD_TYPE_UNKNOWN:
+						printf("UNKNOWN\n");
+						break;
+					case SDCARD_TYPE_SC:
+						printf("SDSC\n");
+						break;
+					case SDCARD_TYPE_HC_XC:
+						printf("SDHC or SDXC\n");
+						break;
+					case SDCARD_TYPE_UC:
+						printf("SDUC\n");
+						break;
+					}
+
+					printf("CAPACITY: %llu MB\n", (sdcard.CSD.capacity/(1024*1024)));
 
 					fatfs_result = f_mount(&sdcard_fatfs, disk_path, 0);
 					printf("FATFS Mout Result: %d\n", fatfs_result);
