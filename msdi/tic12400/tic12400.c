@@ -65,7 +65,6 @@ void tic12400_rx_frame_parity_handler(tic12400_t *tic) {
 	} else {
 		tic->status.bit.rx_par_fail = 1;
 		tic->par_fail = true;
-		tic12400_free(tic);
 	}
 }
 
