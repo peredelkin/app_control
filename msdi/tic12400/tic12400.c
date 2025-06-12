@@ -37,10 +37,6 @@ void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t 
 	tic->frame_tx.bit.par = calc_parity(tic->frame_tx.all, 32, PARITY_ODD);
 }
 
-void tic12400_transfer(tic12400_t *tic) {
-	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
-}
-
 bool tic12400_rx_frame_parity_check(tic12400_t *tic) {
 	int par = tic->frame_rx.bit.par;
 	tic->frame_rx.bit.par = 0;
@@ -104,14 +100,17 @@ void tic12400_sequential_fill(tic12400_t *tic, uint32_t *data, const uint8_t *ad
 	tic->sequential.data = data;
 }
 
-void tic12400_write(tic12400_t *tic) {
+void tic12400_transfer(tic12400_t *tic) {
 	tic12400_bus_busy(tic);
+	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
+}
+
+void tic12400_write(tic12400_t *tic) {
 	tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index], tic->sequential.data[tic->sequential.index]);
 	tic12400_transfer(tic);
 }
 
 void tic12400_read(tic12400_t *tic) {
-	tic12400_bus_busy(tic);
 	tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
 	tic12400_transfer(tic);
 }
