@@ -117,19 +117,24 @@ METHOD_INIT_IMPL(M_msdi, msdi)
 	gpio_tic12400_cfg_setup();
 	//инициализация структуры tic12400
 	tic12400_init(&(msdi->m_tic12400), &SPI4_Bus, &spi_tic12400_cfg);
-
 	//Инит SPI
 	spi_bus_open(msdi->m_tic12400.spi_bus, msdi->m_tic12400.spi_cfg);
-
+	//модуль не готов
+	msdi->status &= ~STATUS_READY;
 	//предварительная инициализация
 	tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0, TIC12400_SETTINGS_COUNT);
-
-	//ожидание конца записи
-	tic12400_wait(&msdi->m_tic12400);
-
-	//проверка статусов RX фрейма
-	M_msdi_rx_frame_status_handler(msdi);
-
+	//если нет ошибок четности
+	if (tic12400_wait(&msdi->m_tic12400) == false) {
+		//проверим статус RX фрейма
+		M_msdi_rx_frame_status_handler(msdi);
+	} else {
+		msdi->status |= MSDI_STATUS_ERROR;
+	}
+	//если нет ошибок
+	if (!(msdi->status & MSDI_STATUS_ERROR)) {
+		//модуль готов
+		msdi->status |= STATUS_READY;
+	}
 	//Деинициализация SPI
 	spi_bus_close(msdi->m_tic12400.spi_bus);
 }
@@ -166,13 +171,16 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	 */
 	if(msdi->status & (MSDI_STATUS_ERROR | MSDI_STATUS_WARNING | MSDI_STATUS_INT)) {
 		//очистка флагов
-		msdi->status &= ~MSDI_STATUS_ERROR;
+		msdi->status &= ~(MSDI_STATUS_ERROR | MSDI_STATUS_WARNING | MSDI_STATUS_INT);
 		//чтение "Interrupt Status Register"
 		tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 0, 1);
-		//ожидание конца обмена
-		tic12400_wait(&msdi->m_tic12400);
-		//проверка статусов RX фрейма
-		/*status.all = */M_msdi_rx_frame_status_handler(msdi);
+		//если нет ошибок четности
+		if (tic12400_wait(&msdi->m_tic12400) == false) {
+			//проверим статус RX фрейма
+			M_msdi_rx_frame_status_handler(msdi);
+		} else {
+			msdi->status |= MSDI_STATUS_ERROR;
+		}
 		//Деинициализация SPI и выход, если есть ошибки
 		if(msdi->status & MSDI_STATUS_ERROR) {
 			msdi->m_int_stat.all = 0;
@@ -180,7 +188,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 			return;
 		}
 		//очистка остальных флагов
-		msdi->status &= ~(MSDI_STATUS_WARNING | MSDI_STATUS_INT);
+//		msdi->status &= ~(MSDI_STATUS_WARNING | MSDI_STATUS_INT);
 		//Сохраним статусы
 		msdi->m_int_stat.all |= msdi->m_data.INT_STAT.all;
 	}
@@ -190,12 +198,17 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	 * into the device upon device initialization"
 	 */
 	if (msdi->m_int_stat.bit.por || msdi->m_int_stat.bit.chk_fail) {
+		//модуль не готов
+		msdi->status &= ~STATUS_READY;
 		//повторная инициализация
 		tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0, TIC12400_SETTINGS_COUNT);
-		//ожидание конца обмена
-		tic12400_wait(&msdi->m_tic12400);
-		//проверка статусов RX фрейма
-		/*status.all = */M_msdi_rx_frame_status_handler(msdi);
+		//если нет ошибок четности
+		if(tic12400_wait(&msdi->m_tic12400) == false) {
+			//проверим статус RX фрейма
+			M_msdi_rx_frame_status_handler(msdi);
+		} else {
+			msdi->status |= MSDI_STATUS_ERROR;
+		}
 		//Деинициализация SPI и выход, если есть ошибки
 		if (msdi->status & (MSDI_STATUS_ERROR)) {
 			spi_bus_close(msdi->m_tic12400.spi_bus);
@@ -204,6 +217,8 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		//сброс флагов
 		msdi->m_int_stat.bit.por = 0;
 		msdi->m_int_stat.bit.chk_fail = 0;
+		//модуль готов
+		msdi->status |= STATUS_READY;
 	}
 
 	//Temperature Shutdown
@@ -238,20 +253,27 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		msdi->status &= ~MSDI_STATUS_UV;
 	}
 
-	//чтение входов
-	tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 1, 6);
-	//ожидание конца обмена
-	tic12400_wait(&msdi->m_tic12400);
-	//проверка статусов RX фрейма
-	/*status.all = */M_msdi_rx_frame_status_handler(msdi);
-	//TODO: определить условия сброса флага
-	msdi->status &= ~MSDI_STATUS_VALID;
-	//если нет ошибок и предупреждений
-	if(!(msdi->status & (MSDI_STATUS_ERROR | MSDI_STATUS_WARNING))) {
-		//заполяем данные, согласно настройкам
-		msdi_data_fill(msdi);
-		//данные валидны
-		msdi->status |= MSDI_STATUS_VALID;
+	if (msdi->status & STATUS_READY) {
+		//чтение входов
+		tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 1, 6);
+		//если нет ошибок четности
+		if(tic12400_wait(&msdi->m_tic12400) == false) {
+			//проверим статус RX фрейма
+			M_msdi_rx_frame_status_handler(msdi);
+		} else {
+			msdi->status |= MSDI_STATUS_ERROR;
+		}
+		//если нет ошибок и предупреждений
+		if (msdi->status & (MSDI_STATUS_ERROR | MSDI_STATUS_WARNING)) {
+			//данные не валидны
+			msdi->status &= ~MSDI_STATUS_VALID;
+		} else {
+			//заполяем данные, согласно настройкам
+			msdi_data_fill(msdi);
+			//данные валидны
+			msdi->status |= MSDI_STATUS_VALID;
+
+		}
 	}
 	//Деинициализация SPI
 	spi_bus_close(msdi->m_tic12400.spi_bus);

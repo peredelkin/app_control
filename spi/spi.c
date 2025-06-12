@@ -23,20 +23,24 @@ void spi_bus_disable(SPI_BUS_TypeDef *bus) {
 
 //NSS off
 void spi_bus_nss_off(SPI_BUS_TypeDef *bus) {
-	//опустить NSS
-	gpio_output_bit_setup(bus->nss.pin, GPIO_STATE_OFF);
-	//подождать после опускания NSS
-	sys_counter_delay(0, bus->nss.leading_delay_usec);
+	if(bus->nss.pin != NULL) {
+		//опустить NSS
+		gpio_output_bit_setup(bus->nss.pin, GPIO_STATE_OFF);
+		//подождать после опускания NSS
+		sys_counter_delay(0, bus->nss.leading_delay_usec);
+	}
 }
 
 //NSS on
 void spi_bus_nss_on(SPI_BUS_TypeDef *bus) {
-	//подождать перед поднятием NSS
-	sys_counter_delay(0, bus->nss.trailing_delay_usec);
-	//поднять NSS
-	gpio_output_bit_setup(bus->nss.pin, GPIO_STATE_ON);
-	//подождать после поднятия NSS
-	sys_counter_delay(0, bus->nss.next_frame_delay_usec);
+	if(bus->nss.pin != NULL) {
+		//подождать перед поднятием NSS
+		sys_counter_delay(0, bus->nss.trailing_delay_usec);
+		//поднять NSS
+		gpio_output_bit_setup(bus->nss.pin, GPIO_STATE_ON);
+		//подождать после поднятия NSS
+		sys_counter_delay(0, bus->nss.next_frame_delay_usec);
+	}
 }
 
 //Ожидает освобождения шины

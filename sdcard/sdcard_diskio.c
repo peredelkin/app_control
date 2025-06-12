@@ -61,12 +61,12 @@ DRESULT sdcard_disk_ioctl(sdcard_t* sdcard, BYTE cmd, void* buff)
         break;
 
     case GET_SECTOR_COUNT:
-        *((DWORD*)buff) = sdcard->CSD.bl_count;
+        *((DWORD*)buff) = (sdcard->CSD.capacity / SDCARD_BLOCK_SIZE);
         res = RES_OK;
         break;
 
     case GET_SECTOR_SIZE:
-        *((DWORD*)buff) = 512; //TODO: сделать настройку размера блока
+        *((DWORD*)buff) = SDCARD_BLOCK_SIZE;
         res = RES_OK;
         break;
 

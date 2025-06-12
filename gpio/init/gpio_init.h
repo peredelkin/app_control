@@ -35,6 +35,8 @@ extern void gpio_uart7_cfg_setup();
 
 extern void gpio_can1_cfg_setup();
 
+extern void gpio_can2_cfg_setup();
+
 extern const gpio_pin_t GPIO_SRAM_nCE;
 extern const gpio_pin_t GPIO_NAND_nCE;
 extern const gpio_pin_t GPI_NAND_RnB;

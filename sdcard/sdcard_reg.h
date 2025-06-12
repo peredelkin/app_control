@@ -183,8 +183,8 @@ typedef struct {
 	sdcard_reg_CSD_v2_t v2;
 	sdcard_reg_CSD_v3_t v3;
 	float tran_speed;
-	uint32_t bl_len_max_power;
-	uint64_t bl_len_max;
+	uint32_t bl_len_power;
+	uint64_t bl_len;
 	uint64_t bl_count;
 	uint64_t capacity;
 	uint32_t erase_bl_len;

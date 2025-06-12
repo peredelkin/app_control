@@ -24,7 +24,7 @@ METHOD_CALC_IMPL(M_panel_led, panel_led)
 		panel_led->m_out_data.bit.ZS = panel_led->m_out_data.bit.Lim;
 		panel_led->m_out_data.bit.Lim = ~panel_led->m_out_data.bit.T_mn;
 	}
-	panel_led_blink = 0b00001111 & (panel_led_blink + 1);
+	panel_led_blink = 0b00011111 & (panel_led_blink + 1);
 
 	panel_led->out_data = panel_led->m_out_data.all;
 }
