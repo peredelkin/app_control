@@ -415,10 +415,7 @@ extern void SPI_BUS_IRQHandler(SPI_BUS_TypeDef *bus);
 extern void spi_bus_transfer(
 		SPI_BUS_TypeDef *bus,
 		SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
-		size_t frame_control_array_amount,
-		spi_byte_order_t frame_byte_order,
-		spi_bus_callback_t callback,
-		void *callback_argument);
+		size_t frame_control_array_amount);
 
 //Запуск приема/передачи из колбека
 extern void spi_bus_transfer_from_callback(
