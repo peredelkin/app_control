@@ -370,29 +370,28 @@ typedef struct {
 	const gpio_pin_t *pin; //NSS pin
 	uint32_t leading_delay_usec; //delay after low NSS
 	uint32_t trailing_delay_usec; //delay before high NSS
-	uint32_t next_frame_delay_usec; //delay after high NSS
 } SPI_BUS_NSS_TypeDef;
+
+typedef void (*spi_bus_callback_t)(void*);
 
 typedef struct {
 	uint8_t *tx;
 	uint8_t *rx;
 	size_t count;
+	spi_byte_order_t byte_order;
+	spi_bus_callback_t callback;
+	void *callback_argument;
 } SPI_BUS_FRAME_TypeDef;
-
-typedef void (*spi_bus_callback)(void*);
 
 //структура SPI BUS
 typedef struct _SPI_BUS_TypeDef {
-	BITS_SPI_TypeDef *spi;
-	SPI_SR_REG SR;
 	SPI_BUS_NSS_TypeDef nss;
-	spi_byte_order_t byte_order;
+	BITS_SPI_TypeDef *spi;
+	SPI_SR_REG status;
 	SPI_BUS_FRAME_TypeDef *frame;
 	volatile size_t frame_count;
-	volatile size_t frame_n;
-	volatile size_t data_n;
-	spi_bus_callback callback;
-	void *callback_argument;
+	volatile size_t frame_counter;
+	volatile size_t byte_counter;
 	volatile bool done;
 } SPI_BUS_TypeDef;
 
@@ -406,8 +405,8 @@ extern void spi_bus_open(SPI_BUS_TypeDef *bus, const CFG_REG_SPI_TypeDef *cfg);
 extern void spi_bus_close(SPI_BUS_TypeDef *bus);
 
 extern void spi_bus_wait(SPI_BUS_TypeDef *bus);
-
 extern void spi_bus_free(SPI_BUS_TypeDef *bus);
+extern void spi_bus_busy(SPI_BUS_TypeDef *bus);
 
 //Обработчик прерывания SPI
 extern void SPI_BUS_IRQHandler(SPI_BUS_TypeDef *bus);
@@ -418,7 +417,7 @@ extern void spi_bus_transfer(
 		SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
 		size_t frame_control_array_amount,
 		spi_byte_order_t frame_byte_order,
-		spi_bus_callback callback,
+		spi_bus_callback_t callback,
 		void *callback_argument);
 
 //Запуск приема/передачи из колбека
@@ -427,7 +426,7 @@ extern void spi_bus_transfer_from_callback(
 		SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
 		size_t frame_control_array_amount,
 		spi_byte_order_t frame_byte_order,
-		spi_bus_callback callback,
+		spi_bus_callback_t callback,
 		void *callback_argument);
 
 #endif /* INC_SPI_H_ */
