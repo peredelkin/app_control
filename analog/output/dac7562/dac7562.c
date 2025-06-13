@@ -159,11 +159,9 @@ METHOD_INIT_IMPL(M_dac7562, dac7562)
 
 	dac7562_internal_ref_enable_gain_2(dac7562->m_frame_ctrl);
 	spi_bus_transfer(dac7562->m_spi_bus, &dac7562_ctrl_spi_control, 1);
-	spi_bus_wait(dac7562->m_spi_bus);
 
 	dac7562_gain_b1_a1(dac7562->m_frame_ctrl);
 	spi_bus_transfer(dac7562->m_spi_bus, &dac7562_ctrl_spi_control, 1);
-	spi_bus_wait(dac7562->m_spi_bus);
 
 	spi_bus_close(dac7562->m_spi_bus);
 
@@ -193,12 +191,7 @@ METHOD_CALC_IMPL(M_dac7562, dac7562)
 
 	spi_bus_open(dac7562->m_spi_bus, &spi_dac7562_cfg);
 
-	spi_bus_busy(dac7562->m_spi_bus);
 	spi_bus_transfer(dac7562->m_spi_bus, &dac7562_ab_spi_control[0], 1);
-
-	spi_bus_wait(dac7562->m_spi_bus);
-
-	spi_bus_busy(dac7562->m_spi_bus);
 	spi_bus_transfer(dac7562->m_spi_bus, &dac7562_ab_spi_control[1], 1);
 
 	spi_bus_close(dac7562->m_spi_bus);

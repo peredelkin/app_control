@@ -21,14 +21,6 @@ void tic12400_busy(tic12400_t *tic) {
 	tic->done = false;
 }
 
-void tic12400_bus_wait(tic12400_t *tic) {
-	spi_bus_wait(tic->spi_bus);
-}
-
-void tic12400_bus_busy(tic12400_t *tic) {
-	spi_bus_busy(tic->spi_bus);
-}
-
 void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t data) {
 	tic->frame_tx.all = 0;
 	tic->frame_tx.bit.rw = rw;
@@ -101,7 +93,6 @@ void tic12400_sequential_fill(tic12400_t *tic, uint32_t *data, const uint8_t *ad
 }
 
 void tic12400_transfer(tic12400_t *tic) {
-	tic12400_bus_busy(tic);
 	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
 }
 
@@ -118,7 +109,6 @@ void tic12400_read(tic12400_t *tic) {
 void tic12400_tx_handler(tic12400_t *tic) {
 	while (tic12400_is_busy(tic)) {
 		if (tic->sequential.data) {
-			tic12400_bus_wait(tic);
 			if ((tic->sequential.index < tic->sequential.end) && (tic->par_fail == false)) {
 				tic12400_write(tic);
 				tic->sequential.index++;
@@ -134,15 +124,10 @@ void tic12400_tx_handler(tic12400_t *tic) {
 void tic12400_rx_handler(tic12400_t *tic) {
 	while (tic12400_is_busy(tic)) {
 		if (tic->sequential.data) {
-			tic12400_bus_wait(tic);
-			if(tic->par_fail == false) {
+			if ((tic->sequential.index < tic->sequential.end) && (tic->par_fail == false)) {
+				tic12400_read(tic);
 				tic->sequential.data[tic->sequential.index] = tic->frame_rx.all; //tic->frame_rx.bit.data;
-				if (tic->sequential.index < tic->sequential.end) {
-					tic12400_read(tic);
-					tic->sequential.index++;
-				} else {
-					tic12400_free(tic);
-				}
+				tic->sequential.index++;
 			} else {
 				tic12400_free(tic);
 			}

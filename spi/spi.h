@@ -404,9 +404,9 @@ extern void spi_bus_open(SPI_BUS_TypeDef *bus, const CFG_REG_SPI_TypeDef *cfg);
 //Деинициализация SPI
 extern void spi_bus_close(SPI_BUS_TypeDef *bus);
 
-extern void spi_bus_wait(SPI_BUS_TypeDef *bus);
+//extern void spi_bus_wait(SPI_BUS_TypeDef *bus);
 //extern void spi_bus_free(SPI_BUS_TypeDef *bus);
-extern void spi_bus_busy(SPI_BUS_TypeDef *bus);
+//extern void spi_bus_busy(SPI_BUS_TypeDef *bus);
 
 //Обработчик прерывания SPI
 extern void SPI_BUS_IRQHandler(SPI_BUS_TypeDef *bus);

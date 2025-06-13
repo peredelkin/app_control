@@ -202,6 +202,7 @@ void spi_bus_transfer_start(SPI_BUS_TypeDef *bus) {
 
 //Настройка и запуск приема/передачи
 void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control_array_pointer, size_t frame_count) {
+	spi_bus_busy(bus);
 
 	bus->frame = frame_control_array_pointer;
 	bus->frame_count = frame_count;
@@ -211,6 +212,7 @@ void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control
 	spi_bus_nss_off(bus);
 	spi_bus_write(bus);
 	spi_bus_interrupt_enable(bus);
+	spi_bus_wait(bus);
 }
 
 void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
@@ -219,8 +221,6 @@ void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
 		//вызовем функцию колбека
 		bus->frame[bus->frame_counter].callback(bus->frame[bus->frame_counter].callback_argument);
 	}
-	//сброс счетчика байт
-	bus->byte_counter = 0;
 	//следующий фрейм
 	bus->frame_counter++;
 	//если все фреймы переданы
@@ -232,6 +232,8 @@ void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
 		//освободим шину
 		spi_bus_free(bus);
 	} else {
+		//сброс счетчика байт
+		bus->byte_counter = 0;
 		//запись
 		spi_bus_write(bus);
 	}
