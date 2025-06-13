@@ -9,18 +9,6 @@
 
 void tic12400_handler(void *tic);
 
-bool tic12400_is_busy(tic12400_t *tic) {
-	return (tic->done == false);
-}
-
-void tic12400_free(tic12400_t *tic) {
-	tic->done = true;
-}
-
-void tic12400_busy(tic12400_t *tic) {
-	tic->done = false;
-}
-
 void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t data) {
 	tic->frame_tx.all = 0;
 	tic->frame_tx.bit.rw = rw;
@@ -104,52 +92,47 @@ void tic12400_write(tic12400_t *tic) {
 void tic12400_read(tic12400_t *tic) {
 	tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
 	tic12400_transfer(tic);
+	tic->sequential.data[tic->sequential.index] = tic->frame_rx.all; //tic->frame_rx.bit.data;
 }
 
-void tic12400_tx_handler(tic12400_t *tic) {
-	while (tic12400_is_busy(tic)) {
-		if (tic->sequential.data) {
+bool tic12400_tx_rx_handler(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
+	//настройка массива приема/передачи
+	tic12400_sequential_fill(tic, data, addr, start, count);
+	//установка флагов
+	tic->done = false;
+	tic->par_fail = false;
+	//ожидание окончания обмена или ошибки четности
+	while (tic->done == false) {
+		//есть откуда/куда передавать
+		if (tic->sequential.data != NULL) {
+			//сравнение индекса и ошибки четности в ответе
 			if ((tic->sequential.index < tic->sequential.end) && (tic->par_fail == false)) {
-				tic12400_write(tic);
+				//передача или прием
+				if(tx == true) {
+					tic12400_write(tic);
+				} else {
+					tic12400_read(tic);
+				}
+				//следующий фрейм
 				tic->sequential.index++;
 			} else {
-				tic12400_free(tic);
+				//все данные переданы/приняты или ошибка четности в ответе
+				tic->done = true;
 			}
 		} else {
-			tic12400_free(tic);
+			//указатель на данные == NULL
+			tic->done = true;
 		}
 	}
-}
-
-void tic12400_rx_handler(tic12400_t *tic) {
-	while (tic12400_is_busy(tic)) {
-		if (tic->sequential.data) {
-			if ((tic->sequential.index < tic->sequential.end) && (tic->par_fail == false)) {
-				tic12400_read(tic);
-				tic->sequential.data[tic->sequential.index] = tic->frame_rx.all; //tic->frame_rx.bit.data;
-				tic->sequential.index++;
-			} else {
-				tic12400_free(tic);
-			}
-		} else {
-			tic12400_free(tic);
-		}
-	}
+	//статус четности в конце обмена
+	return tic->par_fail;
 }
 
 bool tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	tic12400_busy(tic);
-	tic->par_fail = false;
-	tic12400_sequential_fill(tic, data, addr, start, count);
-	tic12400_tx_handler(tic);
-	return tic->par_fail;
+	return tic12400_tx_rx_handler(tic, true, tic, data, addr, start, count);
 }
 
 bool tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	tic12400_busy(tic);
-	tic->par_fail = false;
-	tic12400_sequential_fill(tic, data, addr, start, count);
-	tic12400_rx_handler(tic);
-	return tic->par_fail;
+	return tic12400_tx_rx_handler(tic, false, tic, data, addr, start, count);
 }
 
