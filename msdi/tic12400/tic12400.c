@@ -7,16 +7,6 @@
 
 #include "tic12400.h"
 
-void tic12400_handler(void *tic);
-
-void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t data) {
-	tic->frame_tx.all = 0;
-	tic->frame_tx.bit.rw = rw;
-	tic->frame_tx.bit.addr = addr;
-	tic->frame_tx.bit.data = data;
-	tic->frame_tx.bit.par = calc_parity(tic->frame_tx.all, 32, PARITY_ODD);
-}
-
 bool tic12400_rx_frame_parity_check(tic12400_t *tic) {
 	int par = tic->frame_rx.bit.par;
 	tic->frame_rx.bit.par = 0;
@@ -73,11 +63,12 @@ void tic12400_init(tic12400_t *tic, SPI_BUS_TypeDef *spi_bus, const CFG_REG_SPI_
 	tic->done = true;
 }
 
-void tic12400_sequential_fill(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	tic->sequential.end = start + count;
-	tic->sequential.index = start;
-	tic->sequential.addr = addr;
-	tic->sequential.data = data;
+void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t data) {
+	tic->frame_tx.all = 0;
+	tic->frame_tx.bit.rw = rw;
+	tic->frame_tx.bit.addr = addr;
+	tic->frame_tx.bit.data = data;
+	tic->frame_tx.bit.par = calc_parity(tic->frame_tx.all, 32, PARITY_ODD);
 }
 
 void tic12400_transfer(tic12400_t *tic) {
@@ -96,11 +87,14 @@ void tic12400_read(tic12400_t *tic) {
 }
 
 bool tic12400_tx_rx_handler(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	//настройка массива приема/передачи
-	tic12400_sequential_fill(tic, data, addr, start, count);
 	//установка флагов
 	tic->done = false;
 	tic->par_fail = false;
+	//настройка индексов приема/передачи
+	tic->sequential.end = start + count;
+	tic->sequential.index = start;
+	tic->sequential.addr = addr;
+	tic->sequential.data = data;
 	//ожидание окончания обмена или ошибки четности
 	while (tic->done == false) {
 		//есть откуда/куда передавать
