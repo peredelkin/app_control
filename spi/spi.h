@@ -370,6 +370,7 @@ typedef struct {
 	const gpio_pin_t *pin; //NSS pin
 	uint32_t leading_delay_usec; //delay after low NSS
 	uint32_t trailing_delay_usec; //delay before high NSS
+	uint32_t next_frame_delay_usec; //delay after high NSS
 } SPI_BUS_NSS_TypeDef;
 
 typedef void (*spi_bus_callback_t)(void*);

@@ -71,22 +71,18 @@ void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t 
 	tic->frame_tx.bit.par = calc_parity(tic->frame_tx.all, 32, PARITY_ODD);
 }
 
-void tic12400_transfer(tic12400_t *tic) {
-	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
-}
-
 void tic12400_write(tic12400_t *tic) {
 	tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index], tic->sequential.data[tic->sequential.index]);
-	tic12400_transfer(tic);
+	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
 }
 
 void tic12400_read(tic12400_t *tic) {
 	tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
-	tic12400_transfer(tic);
+	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
 	tic->sequential.data[tic->sequential.index] = tic->frame_rx.all; //tic->frame_rx.bit.data;
 }
 
-bool tic12400_tx_rx_handler(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
+bool tic12400_transfer(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
 	//установка флагов
 	tic->done = false;
 	tic->par_fail = false;
@@ -123,10 +119,10 @@ bool tic12400_tx_rx_handler(tic12400_t *tic, bool tx, uint32_t *data, const uint
 }
 
 bool tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	return tic12400_tx_rx_handler(tic, true, tic, data, addr, start, count);
+	return tic12400_transfer(tic, true, data, addr, start, count);
 }
 
 bool tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	return tic12400_tx_rx_handler(tic, false, tic, data, addr, start, count);
+	return tic12400_transfer(tic, false, data, addr, start, count);
 }
 

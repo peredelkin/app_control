@@ -34,6 +34,8 @@ void spi_bus_nss_on(SPI_BUS_TypeDef *bus) {
 		sys_counter_delay(0, bus->nss.trailing_delay_usec);
 		//поднять NSS
 		gpio_output_bit_setup(bus->nss.pin, GPIO_STATE_ON);
+		//подождать после поднятия NSS
+		sys_counter_delay(0, bus->nss.next_frame_delay_usec);
 	}
 }
 
@@ -146,6 +148,7 @@ void spi_bus_struct_init(SPI_BUS_TypeDef *bus, SPI_TypeDef *spi) {
 	bus->nss.pin = NULL;
 	bus->nss.leading_delay_usec = 0;
 	bus->nss.trailing_delay_usec = 0;
+	bus->nss.next_frame_delay_usec = 0;
 
 	bus->frame = NULL;
 
@@ -170,6 +173,7 @@ void spi_bus_open(SPI_BUS_TypeDef *bus, const CFG_REG_SPI_TypeDef *cfg) {
 	bus->nss.pin = cfg->NSS;
 	bus->nss.leading_delay_usec = cfg->LD_USEC;
 	bus->nss.trailing_delay_usec = cfg->TD_USEC;
+	bus->nss.next_frame_delay_usec = cfg->NFD_USEC;
 }
 
 void spi_bus_close(SPI_BUS_TypeDef *bus) {
@@ -186,6 +190,7 @@ void spi_bus_close(SPI_BUS_TypeDef *bus) {
 	bus->nss.pin = NULL;
 	bus->nss.leading_delay_usec = 0;
 	bus->nss.trailing_delay_usec = 0;
+	bus->nss.next_frame_delay_usec = 0;
 
 	//Сброс указателя на данные приема/передачи
 	bus->frame = NULL;
