@@ -9,7 +9,10 @@ NCV7608_RX_FRAME_REG ncv7608_rx;
 SPI_BUS_FRAME_TypeDef ncv7608_spi_control = {
 		.tx = (uint8_t*)&ncv7608_tx.all,
 		.rx = (uint8_t*)&ncv7608_rx.all,
-		.count = 2
+		.count = 2,
+		.byte_order = SPI_BYTE_ORDER_NORMAL,
+		.callback = NULL,
+		.callback_argument = NULL,
 };
 
 METHOD_INIT_IMPL(M_ncv7608, ncv7608)
@@ -38,7 +41,7 @@ METHOD_CALC_IMPL(M_ncv7608, ncv7608)
 	spi_bus_open(&SPI4_Bus, &spi_ncv7608_cfg);
 
 	//занимает шину и начинает прием/передачу
-	spi_bus_transfer(&SPI4_Bus, &ncv7608_spi_control, 1, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+	spi_bus_transfer(&SPI4_Bus, &ncv7608_spi_control, 1);
 
 	//Деинициализация SPI
 	spi_bus_close(&SPI4_Bus);

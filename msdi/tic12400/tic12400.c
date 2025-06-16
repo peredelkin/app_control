@@ -7,75 +7,11 @@
 
 #include "tic12400.h"
 
-void tic12400_handler(void *tic);
-
-bool tic12400_wait(tic12400_t *tic) {
-	while(tic->done == false);
-	return tic->par_fail;
-}
-
-void tic12400_bus_wait(tic12400_t *tic) {
-	spi_bus_wait(tic->spi_bus);
-	tic->done = false;
-}
-
-void tic12400_bus_free(tic12400_t *tic) {
-	tic->done = true;
-	spi_bus_free(tic->spi_bus);
-}
-
-void tic12400_transfer(tic12400_t *tic) {
-	tic->par_fail = false;
-	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1, SPI_BYTE_ORDER_REVERSE, &tic12400_handler, tic);
-}
-
-void tic12400_transfer_from_callback(tic12400_t *tic) {
-	spi_bus_transfer_from_callback(tic->spi_bus, &tic->spi_control, 1, SPI_BYTE_ORDER_REVERSE, &tic12400_handler, tic);
-}
-
-void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t data) {
-	tic->frame_tx.all = 0;
-	tic->frame_tx.bit.rw = rw;
-	tic->frame_tx.bit.addr = addr;
-	tic->frame_tx.bit.data = data;
-	tic->frame_tx.bit.par = calc_parity(tic->frame_tx.all, 32, PARITY_ODD);
-}
-
 bool tic12400_rx_frame_parity_check(tic12400_t *tic) {
 	int par = tic->frame_rx.bit.par;
 	tic->frame_rx.bit.par = 0;
 	tic->frame_rx.bit.par = calc_parity(tic->frame_rx.all, 32, PARITY_ODD);
 	return ((par) == (tic->frame_rx.bit.par));
-}
-
-void tic12400_tx_handler(tic12400_t *tic) {
-	if (tic->sequential.data) {
-		tic->sequential.index++;
-		if (tic->sequential.index < tic->sequential.end) {
-			tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index],
-					tic->sequential.data[tic->sequential.index]);
-			tic12400_transfer_from_callback(tic);
-		} else {
-			tic12400_bus_free(tic);
-		}
-	} else {
-		tic12400_bus_free(tic);
-	}
-}
-
-void tic12400_rx_handler(tic12400_t *tic) {
-	if (tic->sequential.data) {
-		tic->sequential.data[tic->sequential.index] = tic->frame_rx.bit.data;
-		tic->sequential.index++;
-		if (tic->sequential.index < tic->sequential.end) {
-			tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
-			tic12400_transfer_from_callback(tic);
-		} else {
-			tic12400_bus_free(tic);
-		}
-	} else {
-		tic12400_bus_free(tic);
-	}
 }
 
 void tic12400_status_fill(tic12400_t *tic) {
@@ -88,23 +24,13 @@ void tic12400_status_fill(tic12400_t *tic) {
 	tic->status.bit.por |= tic->frame_rx.bit.por;
 }
 
-void tic12400_tx_rx_handler(tic12400_t *tic) {
-	tic12400_status_fill(tic);
-	if (tic->frame_tx.bit.rw) {
-		tic12400_tx_handler(tic);
-	} else {
-		tic12400_rx_handler(tic);
-	}
-}
-
 void tic12400_rx_frame_parity_handler(tic12400_t *tic) {
 	if (tic12400_rx_frame_parity_check(tic)) {
 		tic->status.bit.rx_par_fail = 0;
-		tic12400_tx_rx_handler(tic);
+		tic12400_status_fill(tic);
 	} else {
 		tic->status.bit.rx_par_fail = 1;
 		tic->par_fail = true;
-		tic12400_bus_free(tic);
 	}
 }
 
@@ -119,6 +45,9 @@ void tic12400_init(tic12400_t *tic, SPI_BUS_TypeDef *spi_bus, const CFG_REG_SPI_
 	tic->spi_control.tx = (uint8_t*) &tic->frame_tx.all;
 	tic->spi_control.rx = (uint8_t*) &tic->frame_rx.all;
 	tic->spi_control.count = TIC12400_FRAME_SIZE;
+	tic->spi_control.byte_order = SPI_BYTE_ORDER_REVERSE;
+	tic->spi_control.callback = &tic12400_handler;
+	tic->spi_control.callback_argument= tic;
 
 	tic->frame_tx.all = 0;
 	tic->frame_rx.all = 0;
@@ -134,24 +63,66 @@ void tic12400_init(tic12400_t *tic, SPI_BUS_TypeDef *spi_bus, const CFG_REG_SPI_
 	tic->done = true;
 }
 
-void tic12400_sequential_fill(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
+void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t data) {
+	tic->frame_tx.all = 0;
+	tic->frame_tx.bit.rw = rw;
+	tic->frame_tx.bit.addr = addr;
+	tic->frame_tx.bit.data = data;
+	tic->frame_tx.bit.par = calc_parity(tic->frame_tx.all, 32, PARITY_ODD);
+}
+
+void tic12400_write(tic12400_t *tic) {
+	tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index], tic->sequential.data[tic->sequential.index]);
+	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
+}
+
+void tic12400_read(tic12400_t *tic) {
+	tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
+	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
+	tic->sequential.data[tic->sequential.index] = tic->frame_rx.all; //tic->frame_rx.bit.data;
+}
+
+bool tic12400_transfer(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
+	//установка флагов
+	tic->done = false;
+	tic->par_fail = false;
+	//настройка индексов приема/передачи
 	tic->sequential.end = start + count;
 	tic->sequential.index = start;
 	tic->sequential.addr = addr;
 	tic->sequential.data = data;
+	//ожидание окончания обмена или ошибки четности
+	while (tic->done == false) {
+		//есть откуда/куда передавать
+		if (tic->sequential.data != NULL) {
+			//сравнение индекса и ошибки четности в ответе
+			if ((tic->sequential.index < tic->sequential.end) && (tic->par_fail == false)) {
+				//передача или прием
+				if(tx == true) {
+					tic12400_write(tic);
+				} else {
+					tic12400_read(tic);
+				}
+				//следующий фрейм
+				tic->sequential.index++;
+			} else {
+				//все данные переданы/приняты или ошибка четности в ответе
+				tic->done = true;
+			}
+		} else {
+			//указатель на данные == NULL
+			tic->done = true;
+		}
+	}
+	//статус четности в конце обмена
+	return tic->par_fail;
 }
 
-void tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	tic12400_bus_wait(tic);
-	tic12400_sequential_fill(tic, data, addr, start, count);
-	tic124_tx_frame_fill(tic, 0, addr[tic->sequential.index], 0);
-	tic12400_transfer(tic);
+bool tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
+	return tic12400_transfer(tic, true, data, addr, start, count);
 }
 
-void tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	tic12400_bus_wait(tic);
-	tic12400_sequential_fill(tic, data, addr, start, count);
-	tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index], tic->sequential.data[tic->sequential.index]);
-	tic12400_transfer(tic);
+bool tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
+	return tic12400_transfer(tic, false, data, addr, start, count);
 }
 
