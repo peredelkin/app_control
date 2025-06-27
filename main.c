@@ -218,6 +218,11 @@ int main(void)
 	sys_counter_tv_print();
 	printf("SPI4 initialized\n");
 
+	spi5_nvic_init(SPI5_IRQ_PRIO);
+	spi5_bus_init(); //Socket3
+	sys_counter_tv_print();
+	printf("SPI5 initialized\n");
+
 	usart3_nvic_init(UART3_IRQ_PRIO);
 	usart3_init(); //RS485_1
 	sys_counter_tv_print();

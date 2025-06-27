@@ -23,6 +23,7 @@ extern void spi4_nvic_init(uint32_t priority);
 extern void spi4_bus_init(void);
 
 //SPI5
+extern void spi5_nvic_init(uint32_t priority);
 extern void spi5_bus_init(void);
 
 #endif /* SPI_INIT_SPI_INIT_H_ */

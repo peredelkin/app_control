@@ -12,6 +12,7 @@
 
 #define SPI2_IRQ_PRIO 3		//SPI2
 #define SPI4_IRQ_PRIO 3		//SPI4
+#define SPI5_IRQ_PRIO 3		//SPI5
 
 #define CAN1_IRQ_PRIO 5		//CAN1 Socket 3
 #define UART6_IRQ_PRIO 5	//UART6 Socket 3

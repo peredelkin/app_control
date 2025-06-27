@@ -91,4 +91,9 @@ extern const gpio_pin_t GPO_SDIO_PWR_App;
 extern const gpio_pin_t GPI_SDIO_CD_App;
 extern void gpio_sdio_cfg_setup();
 
+extern const gpio_pin_t GPO_CS_SPI5_App;
+extern const gpio_pin_t GPO_Board_Out3_App;
+extern const gpio_pin_t GPO_Board_Out4_App;
+extern void gpio_ili9341_cfg_setup();
+
 #endif /* INC_GPIO_INIT_H_ */
