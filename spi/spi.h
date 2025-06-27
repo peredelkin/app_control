@@ -429,6 +429,8 @@ err_t spi_frame_setup(SPI_BUS_FRAME_TypeDef *frame, const void *tx_data, void *r
 extern void spi_bus_transfer(
 		SPI_BUS_TypeDef *bus,
 		SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
-		size_t frame_control_array_amount);
+		size_t frame_control_array_amount,
+		spi_bus_callback_t callback,
+		void *callback_argument);
 
 #endif /* INC_SPI_H_ */

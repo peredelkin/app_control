@@ -264,13 +264,17 @@ err_t spi_frame_setup(SPI_BUS_FRAME_TypeDef *frame, const void *tx_data, void *r
 }
 
 //Настройка и запуск приема/передачи
-void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control_array_pointer, size_t frame_count) {
+void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control_array_pointer, size_t frame_count,
+		spi_bus_callback_t callback, void *callback_argument) {
 	spi_bus_set_busy(bus);
 
 	bus->frame = frame_control_array_pointer;
 	bus->frame_count = frame_count;
 	bus->frame_counter = 0;
 	bus->byte_counter = 0;
+
+	bus->callback = callback;
+	bus->callback_argument = callback_argument;
 
 	spi_bus_nss_off(bus);
 	spi_bus_write(bus);
