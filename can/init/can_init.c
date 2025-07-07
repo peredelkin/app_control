@@ -278,16 +278,18 @@ void can_filter_init(void) {
 void can_canopen_init(void) {
 	sys_counter_tv_print();
 
+	int can1_co_res = 0;
+	CO_ReturnError_t co1_err = CO_ERROR_NO;
+
+	int can2_co_res = 0;
+	CO_ReturnError_t co2_err = CO_ERROR_NO;
+
 #ifdef CAN1_CO_ENABLE
 	can1_init();
-	int can1_co_res = -1;
-	CO_ReturnError_t co1_err = CO_ERROR_INVALID_STATE;
 #endif
 
 #ifdef CAN2_CO_ENABLE
 	can2_init();
-	int can2_co_res = -1;
-	CO_ReturnError_t co2_err = CO_ERROR_INVALID_STATE;
 #endif
 
 #if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
@@ -296,6 +298,7 @@ void can_canopen_init(void) {
 
 	printf("\n");
 
+#ifdef CAN1_CO_ENABLE
 	can1_co_res = create_CO(&can1_co);
 
 	if(can1_co_res == -1 || can1_co == NULL) {
@@ -311,7 +314,9 @@ void can_canopen_init(void) {
 			can1_sdo_cli_init();
 		}
 	}
+#endif
 
+#ifdef CAN2_CO_ENABLE
 	can2_co_res = create_CO(&can2_co);
 
 	if(can2_co_res == -1 || can2_co == NULL) {
@@ -326,8 +331,9 @@ void can_canopen_init(void) {
 
 		}
 	}
+#endif
 
-	//Start timer
+#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	if(can1_co_res == 0 && can2_co_res == 0 && co1_err == CO_ERROR_NO && co2_err == CO_ERROR_NO) {
 		//Настройка CO_process таймера.
 		INIT(can_tim); //TIM5
@@ -349,6 +355,7 @@ void can_canopen_init(void) {
 	} else {
 		printf("CO timer NOT started!\n");
 	}
+#endif
 }
 
 
