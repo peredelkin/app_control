@@ -86,12 +86,13 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 		filter_bank += can_master_can2_filter_start_bank_get(can_master);
 	}
 
+	if (filter_bank > 27) return E_OUT_OF_RANGE;
+
+	int filter_bank_index = (filter >> 1);
 	int filter_bank_subindex = (filter & 0b1);
 
-	int fifo_n = (filter_bank & 0x1);
-	int fifo_index = (filter_bank + filter_bank_subindex - fifo_n);
-
-	if (filter_bank > 27) return E_OUT_OF_RANGE;
+	int fifo_n = (filter_bank_index & 0x1);
+	int fifo_index = (filter_bank_index + filter_bank_subindex - fifo_n);
 
 	bool filter_was_active = false;
 	bool filter_was_single = false;

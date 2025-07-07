@@ -258,14 +258,12 @@ void can1_sdo_cli_init(void) {
 void can1_init(void) {
 	can1_reset();
 	gpio_can1_cfg_setup();
-	can1_rcc_init();
 	can_setup(&can_bus_1);
 }
 
 void can2_init(void) {
 	can2_reset();
 	gpio_can2_cfg_setup();
-	can2_rcc_init();
 	can_setup(&can_bus_2);
 }
 
@@ -284,6 +282,11 @@ void can_canopen_init(void) {
 
 	int can2_co_res = 0;
 	CO_ReturnError_t co2_err = CO_ERROR_NO;
+
+#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+	can1_rcc_init();
+	can2_rcc_init();
+#endif
 
 #ifdef CAN1_CO_ENABLE
 	can1_init();
