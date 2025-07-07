@@ -80,7 +80,7 @@ void tic12400_write(tic12400_t *tic, spi_bus_callback_t callback, void *callback
 void tic12400_read(tic12400_t *tic, spi_bus_callback_t callback, void *callback_argument) {
 	tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
 	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1, callback, callback_argument);
-	tic->sequential.data[tic->sequential.index] = tic->frame_rx.all; //tic->frame_rx.bit.data;
+	tic->sequential.data[tic->sequential.index] = tic->frame_rx.bit.data;
 }
 
 bool tic12400_transfer(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count,

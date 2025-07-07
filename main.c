@@ -242,9 +242,10 @@ int main(void)
 	printf("MODBUS Panel initialized\n");
 
 	can1_nvic_init(CAN1_IRQ_PRIO);
-	can1_init();
+	can2_nvic_init(CAN2_IRQ_PRIO);
+	can_canopen_init();
 	sys_counter_tv_print();
-	printf("CAN1 initialized\n");
+	printf("CAN initialized\n");
 
 	//FMC, SRAM, NAND, YAFFS2
 	int res;

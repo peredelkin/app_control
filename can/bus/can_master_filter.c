@@ -26,6 +26,10 @@ err_t can_master_can2_filter_start_bank_set(CAN_TypeDef *CAN, int CAN2SB) {
 	return E_NO_ERROR;
 }
 
+int can_master_can2_filter_start_bank_get(CAN_TypeDef *CAN) {
+	return ((CAN->FMR & CAN_FMR_CAN2SB) >> CAN_FMR_CAN2SB_SHIFT);
+}
+
 err_t can_master_filter_set_mask_mode(CAN_TypeDef *CAN, int FBM) {
 	if (FBM < 0) return E_INVALID_VALUE;
 	if (FBM > 27) return E_OUT_OF_RANGE;
