@@ -141,3 +141,17 @@ err_t can_master_filter_set_active(CAN_TypeDef *CAN, int FACT) {
 	return E_NO_ERROR;
 }
 
+static void can_master_filter_reset(CAN_TypeDef *CAN, int filter_bank) {
+	if (filter_bank < 0) return;
+	if (filter_bank > 27) return;
+
+	CAN->sFilterRegister[filter_bank].FR1 = 0;
+	CAN->sFilterRegister[filter_bank].FR2 = 0;
+}
+
+void can_master_filter_reset_all(CAN_TypeDef *CAN) {
+	for(int filter_bank = 0; filter_bank < 28; filter_bank++) {
+		can_master_filter_reset(CAN, filter_bank);
+	}
+}
+

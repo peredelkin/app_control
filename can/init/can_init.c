@@ -156,6 +156,7 @@ void can_filter_setup(int CAN2SB) {
 	CAN_TypeDef* can_master = CAN1;
 
 	can_master_filter_init_mode(can_master);			//Initialization mode for the filters
+	can_master_filter_reset_all(can_master);	//
 	can_master_can2_filter_start_bank_set(can_master, CAN2SB); //28d, all the filters to CAN1 can be used
 }
 
