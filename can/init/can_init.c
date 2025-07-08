@@ -300,6 +300,9 @@ void can_filter_init(void) {
 #define CAN1_CO_ENABLE
 #define CAN2_CO_ENABLE
 
+#define CAN_COB_ID_2_TO_1 (0x600 + 0x10)
+#define CAN_COB_ID_1_TO_2 (0x580 + 0x10)
+
 void can_canopen_init(void) {
 	int can1_co_res = 0;
 	CO_ReturnError_t co1_err = CO_ERROR_NO;
@@ -358,9 +361,6 @@ void can_canopen_init(void) {
 		}
 	}
 #endif
-
-#define CAN_COB_ID_2_TO_1 (0x600 + 0x10)
-#define CAN_COB_ID_1_TO_2 (0x580 + 0x10)
 
 //Инициализация моста имени Артёма Тянутова
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
