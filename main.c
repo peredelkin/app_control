@@ -208,6 +208,17 @@ int main(void)
 	sys_counter_tv_print();
 	printf("UART6 initialized\n");
 
+	//FMC, SRAM, NAND, YAFFS2
+	int res;
+	if(fmc_init() == E_NO_ERROR) {
+		res = yaffs_start_up();
+		sys_counter_tv_print();
+		printf("YAFFS Start Up: %d\n", res);
+		res = yaffs_mount("/nand");
+		sys_counter_tv_print();
+		printf("YAFFS Mount: %d\n", res);
+	}
+
 	spi2_nvic_init(SPI2_IRQ_PRIO);
 	spi2_bus_init(); //dac7562
 	sys_counter_tv_print();
@@ -246,17 +257,6 @@ int main(void)
 	can_canopen_init();
 	sys_counter_tv_print();
 	printf("CAN initialized\n");
-
-	//FMC, SRAM, NAND, YAFFS2
-	int res;
-	if(fmc_init() == E_NO_ERROR) {
-		res = yaffs_start_up();
-		sys_counter_tv_print();
-		printf("YAFFS Start Up: %d\n", res);
-		res = yaffs_mount("/nand");
-		sys_counter_tv_print();
-		printf("YAFFS Mount: %d\n", res);
-	}
 
 	//eth_init(); //отпаяно
 

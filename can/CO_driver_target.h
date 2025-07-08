@@ -18,7 +18,7 @@
  */
 
 // User static variables for allocation.
-#define CO_USE_GLOBALS 1
+//#define CO_USE_GLOBALS 1
 
 // crc16.
 #define CO_CONFIG_CRC16 CO_CONFIG_CRC16_ENABLE
