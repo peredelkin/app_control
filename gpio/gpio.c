@@ -544,3 +544,11 @@ void gpio_alternate_function_bit_setup(GPIO_TypeDef *gpio, gpio_pin_n_t pin_n,
 	gpio->AFR[1] = AFRH.all;
 }
 
+void gpio_set(const gpio_pin_t *pin) {
+	gpio_output_bit_setup(pin, GPIO_STATE_ON);
+}
+
+void gpio_reset(const gpio_pin_t *pin) {
+	gpio_output_bit_setup(pin, GPIO_STATE_OFF);
+}
+

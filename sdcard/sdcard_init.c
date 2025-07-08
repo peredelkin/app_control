@@ -17,21 +17,26 @@ extern err_t sdcard_acmd(sdcard_t* sdcard, const sdcard_acmd_t* cmd, uint32_t cm
 extern err_t sdcard_change_current_state(sdcard_t* sdcard);
 extern err_t sdcard_status_read(sdcard_t* sdcard, uint32_t timeout);
 
+//SDIOCLK 48 MHz
+//SDIO_CK frequency = SDIOCLK / [CLKDIV + 2]
+//Frequenc( PCLK2 ) ≥ 3 ⁄ 8 × Frequency ( SDIO_CK )
 void sdcard_sdio_set_clock_div(uint8_t clkdiv, sdio_clken_t clken) {
 	sdio_power_control(SDIO_POWER_PWRCTRL_OFF);
 	sdio_clock_control(clkdiv, clken, SDIO_CLKCR_PWRSAV_ENA, SDIO_CLKCR_BYP_DIS);
-	sdio_power_control(SDIO_POWER_PWRCTRL_ON);
 }
 
 void sdcard_sdio_power_on() {
-	sdio_power_control(SDIO_POWER_PWRCTRL_OFF);
-	sdcard_sdio_set_clock_div(120, SDIO_CLKCR_CLK_EN);  //400k
+	sdcard_sdio_set_clock_div(118, SDIO_CLKCR_CLK_EN);  //400k
 	sdio_power_control(SDIO_POWER_PWRCTRL_ON);
 }
 
 void sdcard_sdio_power_off() {
-	sdio_power_control(SDIO_POWER_PWRCTRL_OFF);
-	sdcard_sdio_set_clock_div(120, SDIO_CLKCR_CLK_DIS);  //400k
+	sdcard_sdio_set_clock_div(118, SDIO_CLKCR_CLK_DIS);  //400k
+}
+
+void sdcard_sdio_switch_speed() {
+	sdcard_sdio_set_clock_div(0 , SDIO_CLKCR_CLK_EN); //24M
+	sdio_power_control(SDIO_POWER_PWRCTRL_ON);
 }
 
 err_t sdcard_dma_init(sdcard_t* sdcard) {
@@ -540,7 +545,7 @@ err_t sdcard_card_init(sdcard_t *sdcard) {
 		if (err != E_NO_ERROR) return err;
 	}
 
-	sdcard_sdio_set_clock_div(2 , SDIO_CLKCR_CLK_EN); //24M
+	sdcard_sdio_switch_speed();
 
 	//ACMD13
 	err =  sdcard_status_read(sdcard, 0xFFFFFF); //Timeout about 0,7s

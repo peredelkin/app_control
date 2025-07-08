@@ -1,18 +1,18 @@
 /*
- * spi_ncv7608_settings.c
+ * spi_ili9341_settings.c
  *
- *  Created on: 20 июл. 2024 г.
- *      Author: ruslan
+ *  Created on: 26 июн. 2025 г.
+ *      Author: Ruslan
  */
 
 #include "spi_settings.h"
 
-const CFG_REG_SPI_TypeDef spi_ncv7608_cfg = SPI_CFG(
+const CFG_REG_SPI_TypeDef spi_ili9341_cfg = SPI_CFG(
 		SPI_CPHA_SECOND,
 		SPI_CPOL_IDLE_LOW,
 		SPI_MSTR_MASTER,
-		NCV7608_SPI_BR_FPCLK,
-		SPI_LSBFIRST_LSB_FIRST,
+		ILI9341_SPI_BR_FPCLK,
+		SPI_LSBFIRST_MSB_FIRST,
 		SPI_SSI_NSEL,
 		SPI_SSM_ENA,
 		SPI_RXONLY_DIS,
@@ -25,8 +25,8 @@ const CFG_REG_SPI_TypeDef spi_ncv7608_cfg = SPI_CFG(
 		SPI_SSOE_DIS,
 		SPI_FRF_MOTOROLA,
 		SPI_ERRIE_DIS,
-		GPO_CS_DO_App,
+		GPO_CS_SPI5_App,
 		1,
 		1,
 		3,
-		76080);
+		93410);

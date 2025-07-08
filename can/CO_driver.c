@@ -12,50 +12,50 @@
 
 //CAN interrupts
 //TRANSMIT INTERRUPT
-#define CAN1_TMEIE		true
+#define CAN_TMEIE_CONF		true
 
 //FIFO 0 INTERRUPT
-#define CAN1_FMPIE0		true
-#define CAN1_FFIE0		false
-#define CAN1_FOVIE0		false
+#define CAN_FMPIE0_CONF		true
+#define CAN_FFIE0_CONF		false
+#define CAN_FOVIE0_CONF		false
 
 //FIFO 1 INTERRUPT
-#define CAN1_FMPIE1		true
-#define CAN1_FFIE1		false
-#define CAN1_FOVIE1		false
+#define CAN_FMPIE1_CONF		true
+#define CAN_FFIE1_CONF		false
+#define CAN_FOVIE1_CONF		false
 
 //STATUS CHANGE ERROR INTERRUPT
-#define CAN1_ERRIE		true
-#define CAN1_EWGIE		true
-#define CAN1_EPVIE		true
-#define CAN1_BOFIE		true
-#define CAN1_LECIE		true
+#define CAN_ERRIE_CONF		true
+#define CAN_EWGIE_CONF		true
+#define CAN_EPVIE_CONF		true
+#define CAN_BOFIE_CONF		true
+#define CAN_LECIE_CONF		true
 
-#define CAN1_WKUIE		false
-#define CAN1_SLKIE		false
+#define CAN_WKUIE_CONF		false
+#define CAN_SLKIE_CONF		false
 
 void can_interrupts_enable(CAN_TypeDef *can) {
 	//TRANSMIT INTERRUPT
-	can_IER_TMEIE_set(can, CAN1_TMEIE);
+	can_IER_TMEIE_set(can, CAN_TMEIE_CONF);
 
 	//FIFO 0 INTERRUPT
-	can_IER_FMPIE_set(can, 0, CAN1_FMPIE0);
-	can_IER_FFIE_set(can, 0, CAN1_FFIE0);
-	can_IER_FOVIE_set(can, 0, CAN1_FOVIE0);
+	can_IER_FMPIE_set(can, 0, CAN_FMPIE0_CONF);
+	can_IER_FFIE_set(can, 0, CAN_FFIE0_CONF);
+	can_IER_FOVIE_set(can, 0, CAN_FOVIE0_CONF);
 
 	//FIFO 1 INTERRUPT
-	can_IER_FMPIE_set(can, 1, CAN1_FMPIE1);
-	can_IER_FFIE_set(can, 1, CAN1_FFIE1);
-	can_IER_FOVIE_set(can, 1, CAN1_FOVIE1);
+	can_IER_FMPIE_set(can, 1, CAN_FMPIE1_CONF);
+	can_IER_FFIE_set(can, 1, CAN_FFIE1_CONF);
+	can_IER_FOVIE_set(can, 1, CAN_FOVIE1_CONF);
 
 	//STATUS CHANGE ERROR INTERRUPT
-	can_IER_ERRIE_set(can, CAN1_ERRIE);
-	can_IER_EWGIE_set(can, CAN1_EWGIE);
-	can_IER_EPVIE_set(can, CAN1_EPVIE);
-	can_IER_BOFIE_set(can, CAN1_BOFIE);
-	can_IER_LECIE_set(can, CAN1_LECIE);
-	can_IER_WKUIE_set(can, CAN1_WKUIE);
-	can_IER_SLKIE_set(can, CAN1_SLKIE);
+	can_IER_ERRIE_set(can, CAN_ERRIE_CONF);
+	can_IER_EWGIE_set(can, CAN_EWGIE_CONF);
+	can_IER_EPVIE_set(can, CAN_EPVIE_CONF);
+	can_IER_BOFIE_set(can, CAN_BOFIE_CONF);
+	can_IER_LECIE_set(can, CAN_LECIE_CONF);
+	can_IER_WKUIE_set(can, CAN_WKUIE_CONF);
+	can_IER_SLKIE_set(can, CAN_SLKIE_CONF);
 }
 
 void can_interrupts_disable(CAN_TypeDef *can) {
@@ -536,10 +536,10 @@ void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
 
 	switch (fifo) {
 	case 0:
-		CO_index = can_bus->fifo_0_filter[index];
+		CO_index = can_bus->fifo_0_filter[can_bus->can_n][index];
 		break;
 	case 1:
-		CO_index = can_bus->fifo_1_filter[index];
+		CO_index = can_bus->fifo_1_filter[can_bus->can_n][index];
 		break;
 	default:
 		break;

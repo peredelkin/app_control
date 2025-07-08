@@ -179,19 +179,21 @@ static void FSM_state(M_sys_main* sys)
     }
 }
 
+/*=========================================================================*/
 #include "can/init/can_init.h" //CANopen
 #include "CO_CLI_driver.h"
 extern CO_SDO_CLI_Driver_t can1_cli_driver; //TODO: тест CANopen SDO CLI
 
-CO_SDO_CLI_Queue* mc_pid_i_ptr = NULL; //TODO: тест CANopen SDO CLI
-reg_iq24_t pid_i_out_value; //TODO: тест CANopen SDO CLI
-reg_iq24_t pid_i_out_value_buffered; //TODO: тест CANopen SDO CLI
+CO_SDO_CLI_Queue* mc_pid_i_ptr = NULL;
+reg_iq24_t pid_i_out_value;
+reg_iq24_t pid_i_out_value_buffered;
 
-CO_SDO_CLI_Queue* mc_cmd_ptr = NULL; //TODO: тест CANopen SDO CLI
-uint32_t mc_cmd; //TODO: тест CANopen SDO CLI
+CO_SDO_CLI_Queue* mc_cmd_ptr = NULL;
+uint32_t mc_cmd;
 
-CO_SDO_CLI_Queue* mc_mot_pot_ptr = NULL; //TODO: тест CANopen SDO CLI
+CO_SDO_CLI_Queue* mc_mot_pot_ptr = NULL;
 reg_iq24_t mc_mot_pot;
+/*=========================================================================*/
 
 struct timeval sys_main_execution_time; //TODO: определить куда засунуть
 

@@ -47,19 +47,29 @@ gpio_pin_state_t spi_bus_nss_read(SPI_BUS_TypeDef *bus) {
 	return GPIO_STATE_ON;
 }
 
+//Шина занята
+bool spi_bus_is_busy(SPI_BUS_TypeDef *bus) {
+	return (bus->done == false);
+}
+
 //Ожидает освобождения шины
 void spi_bus_wait(SPI_BUS_TypeDef *bus) {
-	while (bus->done == false);
+	while (spi_bus_is_busy(bus));
 }
 
 //Освобождение шины
-void spi_bus_free(SPI_BUS_TypeDef *bus) {
+void spi_bus_set_free(SPI_BUS_TypeDef *bus) {
 	bus->done = true;
 }
 
 //Занимает шину
-void spi_bus_busy(SPI_BUS_TypeDef *bus) {
+void spi_bus_set_busy(SPI_BUS_TypeDef *bus) {
 	bus->done = false;
+}
+
+//ID устройства
+spi_transfer_id_t spi_bus_transfer_id(SPI_BUS_TypeDef *bus) {
+	return bus->id;
 }
 
 //включение прерываний
@@ -76,7 +86,7 @@ void spi_bus_interrupt_enable(SPI_BUS_TypeDef *bus) {
 	bus->spi->CR2.all = CR2.all;
 }
 
-void spi_bus_interrupt_distable(SPI_BUS_TypeDef *bus) {
+void spi_bus_interrupt_disable(SPI_BUS_TypeDef *bus) {
 	//настройки SPI, содержащие биты разрешения прерываний
 	SPI_CR2_REG CR2;
 	//прочесть настройки
@@ -150,10 +160,18 @@ void spi_bus_struct_init(SPI_BUS_TypeDef *bus, SPI_TypeDef *spi) {
 	bus->nss.trailing_delay_usec = 0;
 	bus->nss.next_frame_delay_usec = 0;
 
+	bus->status.all = 0;
+
 	bus->frame = NULL;
 
 	bus->frame_count = 0;
 	bus->frame_counter = 0;
+	bus->byte_counter = 0;
+
+	bus->id = 0;
+
+	bus->callback = NULL;
+	bus->callback_argument = NULL;
 
 	bus->done = true;
 }
@@ -174,6 +192,21 @@ void spi_bus_open(SPI_BUS_TypeDef *bus, const CFG_REG_SPI_TypeDef *cfg) {
 	bus->nss.leading_delay_usec = cfg->LD_USEC;
 	bus->nss.trailing_delay_usec = cfg->TD_USEC;
 	bus->nss.next_frame_delay_usec = cfg->NFD_USEC;
+
+	//Настройка ID
+	bus->id = cfg->id;
+
+	//сброс остальных переменных
+	bus->status.all = 0;
+
+	bus->frame = NULL;
+
+	bus->frame_count = 0;
+	bus->frame_counter = 0;
+	bus->byte_counter = 0;
+
+	bus->callback = NULL;
+	bus->callback_argument = NULL;
 }
 
 void spi_bus_close(SPI_BUS_TypeDef *bus) {
@@ -192,6 +225,12 @@ void spi_bus_close(SPI_BUS_TypeDef *bus) {
 	bus->nss.trailing_delay_usec = 0;
 	bus->nss.next_frame_delay_usec = 0;
 
+	//Сброс ID
+	bus->id = 0;
+
+	//Сброс статуса
+	bus->status.all = 0;
+
 	//Сброс указателя на данные приема/передачи
 	bus->frame = NULL;
 
@@ -199,25 +238,48 @@ void spi_bus_close(SPI_BUS_TypeDef *bus) {
 	bus->frame_count = 0;
 	bus->frame_counter = 0;
 	bus->byte_counter = 0;
+
+	//Сбрс колбека
+	bus->callback = NULL;
+	bus->callback_argument = NULL;
 }
 
-void spi_bus_transfer_start(SPI_BUS_TypeDef *bus) {
+//настройка фрейма для передачи
+err_t spi_frame_setup(SPI_BUS_FRAME_TypeDef *frame, const void *tx_data, void *rx_data, size_t count,
+		spi_byte_order_t byte_order, spi_bus_callback_t callback, void *callback_argument) {
+	if (count == 0)
+		return E_INVALID_VALUE;
 
+	frame->tx = tx_data;
+	frame->rx = rx_data;
+
+	frame->count = count;
+
+	frame->byte_order = byte_order;
+
+	frame->callback = callback;
+	frame->callback_argument = callback_argument;
+
+	return E_NO_ERROR;
 }
 
 //Настройка и запуск приема/передачи
-void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control_array_pointer, size_t frame_count) {
-	spi_bus_busy(bus);
+void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control_array_pointer, size_t frame_count,
+		spi_bus_callback_t callback, void *callback_argument) {
+	spi_bus_set_busy(bus);
 
 	bus->frame = frame_control_array_pointer;
 	bus->frame_count = frame_count;
 	bus->frame_counter = 0;
 	bus->byte_counter = 0;
 
+	bus->callback = callback;
+	bus->callback_argument = callback_argument;
+
 	spi_bus_nss_off(bus);
 	spi_bus_write(bus);
 	spi_bus_interrupt_enable(bus);
-	spi_bus_wait(bus);
+	spi_bus_wait(bus); //TODO: убрать отсюда spi_bus_wait() и переписать использующие библиотеки
 }
 
 void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
@@ -231,11 +293,15 @@ void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {
 	//если все фреймы переданы
 	if (bus->frame_counter >= bus->frame_count) {
 		//выключим прерывание
-		spi_bus_interrupt_distable(bus);
+		spi_bus_interrupt_disable(bus);
 		//поднимем NSS
 		spi_bus_nss_on(bus);
+		//Если колбек задан, вызовем
+		if(bus->callback != NULL) {
+			bus->callback(bus->callback_argument);
+		}
 		//освободим шину
-		spi_bus_free(bus);
+		spi_bus_set_free(bus);
 	} else {
 		//сброс счетчика байт
 		bus->byte_counter = 0;

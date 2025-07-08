@@ -28,11 +28,11 @@ err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, 
 	switch (fifo_n) {
 	case 0:
 		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
-		bus->fifo_0_filter[fifo_index] = filter_bank;
+		bus->fifo_0_filter[bus->can_n][fifo_index] = filter_bank;
 		break;
 	case 1:
 		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
-		bus->fifo_1_filter[fifo_index] = filter_bank;
+		bus->fifo_1_filter[bus->can_n][fifo_index] = filter_bank;
 		break;
 	default:
 		return E_INVALID_VALUE;
@@ -81,12 +81,18 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	CAN_TypeDef* can_master = bus->can_ptr[0];
 
 	int filter_bank = (filter >> 1);
-	int filter_bank_subindex = (filter & 0b1);
 
-	int fifo_n = (filter_bank & 0x1);
-	int fifo_index = (filter_bank + filter_bank_subindex - fifo_n); //TODO: как-то протестировать
+	if(bus->can_n == CAN_BUS_SLAVE) {
+		filter_bank += can_master_can2_filter_start_bank_get(can_master);
+	}
 
 	if (filter_bank > 27) return E_OUT_OF_RANGE;
+
+	int filter_bank_index = (filter >> 1);
+	int filter_bank_subindex = (filter & 0b1);
+
+	int fifo_n = (filter_bank_index & 0x1);
+	int fifo_index = (filter_bank_index + filter_bank_subindex - fifo_n);
 
 	bool filter_was_active = false;
 	bool filter_was_single = false;
@@ -112,11 +118,11 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	switch (fifo_n) {
 	case 0:
 		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
-		bus->fifo_0_filter[fifo_index] = filter;
+		bus->fifo_0_filter[bus->can_n][fifo_index] = filter;
 		break;
 	case 1:
 		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
-		bus->fifo_1_filter[fifo_index] = filter;
+		bus->fifo_1_filter[bus->can_n][fifo_index] = filter;
 		break;
 	default:
 		return E_INVALID_VALUE;

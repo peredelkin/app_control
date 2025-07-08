@@ -26,6 +26,10 @@ err_t can_master_can2_filter_start_bank_set(CAN_TypeDef *CAN, int CAN2SB) {
 	return E_NO_ERROR;
 }
 
+int can_master_can2_filter_start_bank_get(CAN_TypeDef *CAN) {
+	return ((CAN->FMR & CAN_FMR_CAN2SB) >> CAN_FMR_CAN2SB_SHIFT);
+}
+
 err_t can_master_filter_set_mask_mode(CAN_TypeDef *CAN, int FBM) {
 	if (FBM < 0) return E_INVALID_VALUE;
 	if (FBM > 27) return E_OUT_OF_RANGE;
@@ -135,5 +139,19 @@ err_t can_master_filter_set_active(CAN_TypeDef *CAN, int FACT) {
 	CAN->FA1R |= (CAN_FA1R_FACTx & (1 << FACT));
 
 	return E_NO_ERROR;
+}
+
+static void can_master_filter_reset(CAN_TypeDef *CAN, int filter_bank) {
+	if (filter_bank < 0) return;
+	if (filter_bank > 27) return;
+
+	CAN->sFilterRegister[filter_bank].FR1 = 0;
+	CAN->sFilterRegister[filter_bank].FR2 = 0;
+}
+
+void can_master_filter_reset_all(CAN_TypeDef *CAN) {
+	for(int filter_bank = 0; filter_bank < 28; filter_bank++) {
+		can_master_filter_reset(CAN, filter_bank);
+	}
 }
 

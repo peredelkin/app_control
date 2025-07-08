@@ -314,6 +314,9 @@ typedef struct {
 	uint16_t RESERVED8; /*!< Reserved, 0x22                                                           */
 } BITS_SPI_TypeDef;
 
+//Тип ID
+typedef uint32_t spi_transfer_id_t;
+
 //структура настроек
 typedef struct {
 	SPI_CR1_REG CR1;
@@ -322,10 +325,11 @@ typedef struct {
 	uint32_t LD_USEC;
 	uint32_t TD_USEC;
 	uint32_t NFD_USEC;
+	spi_transfer_id_t id;
 } CFG_REG_SPI_TypeDef;
 
 //макрос заполнения структуры настроек
-#define SPI_CFG(SPI_CPHA, SPI_CPOL, SPI_MSTR, SPI_BR, SPI_LSBFIRST, SPI_SSI, SPI_SSM, SPI_RXONLY, SPI_DFF, SPI_CRCEN, SPI_BIDIOE, SPI_BIDIMODE, SPI_RXDMAEN, SPI_TXDMAEN, SPI_SSOE, SPI_FRF, SPI_ERRIE, SPI_NSS, LD, TD, NFD) {\
+#define SPI_CFG(SPI_CPHA, SPI_CPOL, SPI_MSTR, SPI_BR, SPI_LSBFIRST, SPI_SSI, SPI_SSM, SPI_RXONLY, SPI_DFF, SPI_CRCEN, SPI_BIDIOE, SPI_BIDIMODE, SPI_RXDMAEN, SPI_TXDMAEN, SPI_SSOE, SPI_FRF, SPI_ERRIE, SPI_NSS, LD, TD, NFD, ID) {\
 		.CR1.bit.CPHA = SPI_CPHA,/*CR1 Bit 0*/\
 		.CR1.bit.CPOL = SPI_CPOL,/*CR1 Bit 1*/\
 		.CR1.bit.MSTR = SPI_MSTR,/*CR1 Bit 2*/\
@@ -351,7 +355,8 @@ typedef struct {
 		.NSS = &SPI_NSS,/*NSS pin pointer*/\
 		.LD_USEC = LD,\
 		.TD_USEC = TD,\
-		.NFD_USEC = NFD\
+		.NFD_USEC = NFD,\
+		.id = ID\
 }
 
 //тип порядка байт
@@ -359,11 +364,8 @@ typedef enum {
 	SPI_BYTE_ORDER_NORMAL, SPI_BYTE_ORDER_REVERSE
 } spi_byte_order_t;
 
-//декларация структуры SPI BUS
-struct _SPI_BUS_TypeDef;
-
 //тип функции обратного вызова
-typedef void (*SPI_BUS_Callback_TypeDef)(struct _SPI_BUS_TypeDef *bus);
+typedef void (*spi_bus_callback_t)(void*);
 
 //структура управления NSS
 typedef struct {
@@ -373,10 +375,9 @@ typedef struct {
 	uint32_t next_frame_delay_usec; //delay after high NSS
 } SPI_BUS_NSS_TypeDef;
 
-typedef void (*spi_bus_callback_t)(void*);
-
+//структура фрейма
 typedef struct {
-	uint8_t *tx;
+	const uint8_t *tx;
 	uint8_t *rx;
 	size_t count;
 	spi_byte_order_t byte_order;
@@ -386,13 +387,16 @@ typedef struct {
 
 //структура SPI BUS
 typedef struct _SPI_BUS_TypeDef {
-	SPI_BUS_NSS_TypeDef nss;
 	BITS_SPI_TypeDef *spi;
+	SPI_BUS_NSS_TypeDef nss;
 	SPI_SR_REG status;
 	SPI_BUS_FRAME_TypeDef *frame;
 	volatile size_t frame_count;
 	volatile size_t frame_counter;
 	volatile size_t byte_counter;
+	volatile spi_transfer_id_t id;
+	spi_bus_callback_t callback;
+	void *callback_argument;
 	volatile bool done;
 } SPI_BUS_TypeDef;
 
@@ -405,17 +409,28 @@ extern void spi_bus_open(SPI_BUS_TypeDef *bus, const CFG_REG_SPI_TypeDef *cfg);
 //Деинициализация SPI
 extern void spi_bus_close(SPI_BUS_TypeDef *bus);
 
-//extern void spi_bus_wait(SPI_BUS_TypeDef *bus);
-//extern void spi_bus_free(SPI_BUS_TypeDef *bus);
-//extern void spi_bus_busy(SPI_BUS_TypeDef *bus);
-
 //Обработчик прерывания SPI
 extern void SPI_BUS_IRQHandler(SPI_BUS_TypeDef *bus);
+
+//Возвращает true, если шина занята
+extern bool spi_bus_is_busy(SPI_BUS_TypeDef *bus);
+
+//Ожидает освобождение шины
+extern void spi_bus_wait(SPI_BUS_TypeDef *bus);
+
+//ID устройства
+extern spi_transfer_id_t spi_bus_transfer_id(SPI_BUS_TypeDef *bus);
+
+//Настройка фрейма для приема/передачи
+err_t spi_frame_setup(SPI_BUS_FRAME_TypeDef *frame, const void *tx_data, void *rx_data, size_t count,
+		spi_byte_order_t byte_order, spi_bus_callback_t callback, void *callback_argument);
 
 //Запуск приема/передачи
 extern void spi_bus_transfer(
 		SPI_BUS_TypeDef *bus,
 		SPI_BUS_FRAME_TypeDef *frame_control_array_pointer,
-		size_t frame_control_array_amount);
+		size_t frame_control_array_amount,
+		spi_bus_callback_t callback,
+		void *callback_argument);
 
 #endif /* INC_SPI_H_ */

@@ -110,9 +110,11 @@ extern void tic12400_init(tic12400_t *tic, SPI_BUS_TypeDef *spi_bus, const CFG_R
 
 extern void tic12400_spi_bus_configure(tic12400_t *tic);
 
-extern bool tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count);
+extern bool tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count,
+		spi_bus_callback_t callback, void *callback_argument);
 
-extern bool tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count);
+extern bool tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count,
+		spi_bus_callback_t callback, void *callback_argument);
 
 
 #endif /* INC_TIC12400_H_ */

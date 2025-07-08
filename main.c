@@ -218,6 +218,11 @@ int main(void)
 	sys_counter_tv_print();
 	printf("SPI4 initialized\n");
 
+	spi5_nvic_init(SPI5_IRQ_PRIO);
+	spi5_bus_init(); //Socket3
+	sys_counter_tv_print();
+	printf("SPI5 initialized\n");
+
 	usart3_nvic_init(UART3_IRQ_PRIO);
 	usart3_init(); //RS485_1
 	sys_counter_tv_print();
@@ -237,9 +242,10 @@ int main(void)
 	printf("MODBUS Panel initialized\n");
 
 	can1_nvic_init(CAN1_IRQ_PRIO);
-	can1_init();
+	can2_nvic_init(CAN2_IRQ_PRIO);
+	can_canopen_init();
 	sys_counter_tv_print();
-	printf("CAN1 initialized\n");
+	printf("CAN initialized\n");
 
 	//FMC, SRAM, NAND, YAFFS2
 	int res;

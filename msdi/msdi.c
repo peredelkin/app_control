@@ -123,7 +123,7 @@ METHOD_INIT_IMPL(M_msdi, msdi)
 	msdi->status &= ~STATUS_READY;
 	//предварительная инициализация
 	if (tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0,
-	TIC12400_SETTINGS_COUNT) == false) {
+	TIC12400_SETTINGS_COUNT, NULL, NULL) == false) {
 		//проверим статус RX фрейма
 		M_msdi_rx_frame_status_handler(msdi);
 	} else {
@@ -172,7 +172,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		//очистка флагов
 		msdi->status &= ~(MSDI_STATUS_ERROR | MSDI_STATUS_WARNING | MSDI_STATUS_INT);
 		//чтение "Interrupt Status Register"
-		if (tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 0, 1) == false) {
+		if (tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 0, 1, NULL, NULL) == false) {
 			//проверим статус RX фрейма
 			M_msdi_rx_frame_status_handler(msdi);
 		} else {
@@ -199,7 +199,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		msdi->status &= ~STATUS_READY;
 		//повторная инициализация
 		if (tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0,
-				TIC12400_SETTINGS_COUNT) == false) {
+				TIC12400_SETTINGS_COUNT, NULL, NULL) == false) {
 			//проверим статус RX фрейма
 			M_msdi_rx_frame_status_handler(msdi);
 		} else {
@@ -251,7 +251,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 
 	if (msdi->status & STATUS_READY) {
 		//чтение входов
-		if (tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 1, 6) == false) {
+		if (tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 1, 6, NULL, NULL) == false) {
 			//проверим статус RX фрейма
 			M_msdi_rx_frame_status_handler(msdi);
 		} else {

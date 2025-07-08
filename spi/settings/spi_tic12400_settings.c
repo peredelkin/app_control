@@ -28,4 +28,5 @@ const CFG_REG_SPI_TypeDef spi_tic12400_cfg = SPI_CFG(
 		GPO_CS_DI_App,
 		1,
 		1,
-		3);
+		3,
+		124000);

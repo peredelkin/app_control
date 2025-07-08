@@ -28,4 +28,5 @@ const CFG_REG_SPI_TypeDef spi_dac7562_cfg = SPI_CFG(
 		GPO_SYNCAO_App,
 		1,
 		1,
-		3);
+		3,
+		75620);

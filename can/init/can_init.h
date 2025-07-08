@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 extern void can1_nvic_init(uint32_t priority);
-extern void can1_init(void);
+extern void can2_nvic_init(uint32_t priority);
+extern void can_canopen_init(void);
 
 #endif /* CAN_INIT_CAN_INIT_H_ */

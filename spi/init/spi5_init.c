@@ -10,12 +10,17 @@
 #include "gpio/init/gpio_init.h"
 
 /* SPI5 BEGIN */
-
+//ili9341
 
 SPI_BUS_TypeDef SPI5_Bus;
 
 void SPI5_IRQHandler() {
 	SPI_BUS_IRQHandler(&SPI5_Bus);
+}
+
+void spi5_nvic_init(uint32_t priority) {
+	NVIC_SetPriority(SPI5_IRQn, priority);
+	NVIC_EnableIRQ(SPI5_IRQn);
 }
 
 void spi5_rcc_init(void) {

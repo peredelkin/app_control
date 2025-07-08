@@ -20,9 +20,6 @@ const gpio_pin_t GPO_Chr_Batt_App = GPIO_PIN(GPIOE, GPIO_PIN_3); /*2, PE3, GPIO_
 const gpio_pin_t GPO_CS_PTC_App = GPIO_PIN(GPIOC, GPIO_PIN_13); /*8, PC13, GPIO_Output, CS_PTC_App*/
 const gpio_pin_t GPI_Board_In1_App = GPIO_PIN(GPIOH, GPIO_PIN_3); /*44, PH3, GPIO_Input, Board_In1_App*/
 const gpio_pin_t GPI_Board_In2_App = GPIO_PIN(GPIOH, GPIO_PIN_4); /*45, PH4, GPIO_Input, Board_In2_App*/
-const gpio_pin_t GPO_CS_SPI5_App = GPIO_PIN(GPIOH, GPIO_PIN_5); /*46, PH5, GPIO_Output, ON, CS_SPI5_App*/
-const gpio_pin_t GPO_Board_Out3_App = GPIO_PIN(GPIOB, GPIO_PIN_0); /*56, PB0, GPIO_Output, Board_Out3_App*/
-const gpio_pin_t GPO_Board_Out4_App = GPIO_PIN(GPIOB, GPIO_PIN_1); /*57, PB1, GPIO_Output, Board_Out4_App*/
 const gpio_pin_t GPI_BOOT1 = GPIO_PIN(GPIOB, GPIO_PIN_2); /*58, PB2/BOOT1, GPIO_Input, BOOT1*/
 const gpio_pin_t GPI_RVS2_App = GPIO_PIN(GPIOB, GPIO_PIN_15); /*95, PB15, GPIO_Input, RVS2_App*/
 const gpio_pin_t GPO_ResetAI_App = GPIO_PIN(GPIOG, GPIO_PIN_6); /*110, PG6, GPIO_Output, ResetAI_App*/
@@ -42,7 +39,7 @@ const gpio_pin_t GPI_IO1_App_MC = GPIO_PIN(GPIOB, GPIO_PIN_7); /*165, PB7, GPIO_
 //GPIO_PIN_CFG(GPIOH, GPIO_PIN_1, , , , , GPIO_AF_ERR),																				/*30, PH1/		OSC_OUT,		OFF,		RCC_OSC_OUT, */
 //GPIO_PIN_CFG(GPIOH, GPIO_PIN_3, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*44, PH3,		GPIO_Input,		OFF,		Board_In1_App*/
 //GPIO_PIN_CFG(GPIOH, GPIO_PIN_4, GPIO_MODE_IN, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*45, PH4,		GPIO_Input,		OFF,		Board_In2_App*/
-//GPIO_PIN_CFG(GPIOH, GPIO_PIN_5, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0, GPIO_STATE_ON),		/*46, PH5,		GPIO_Output,	ON,		CS_SPI5_App*/
+
 //GPIO_PIN_CFG(GPIOA, GPIO_PIN_3, , , , , GPIO_AF_ERR),																				/*47, PA3,		ADC1_IN3,		OFF,		Board_AI_App*/
 //GPIO_PIN_CFG(GPIOA, GPIO_PIN_4, , , , , GPIO_AF_ERR),																				/*50, PA4,		DAC_OUT1,		OFF,		Board_AO_App*/
 //GPIO_PIN_CFG(GPIOB, GPIO_PIN_0, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_VERY_HIGH, GPIO_PUPD_NONE, GPIO_AF_0),					/*56, PB0,		GPIO_Output,	OFF,	Board_Out3_App*/

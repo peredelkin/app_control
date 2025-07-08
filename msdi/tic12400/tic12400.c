@@ -71,18 +71,20 @@ void tic124_tx_frame_fill(tic12400_t *tic, uint32_t rw, uint32_t addr, uint32_t 
 	tic->frame_tx.bit.par = calc_parity(tic->frame_tx.all, 32, PARITY_ODD);
 }
 
-void tic12400_write(tic12400_t *tic) {
-	tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index], tic->sequential.data[tic->sequential.index]);
-	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
+void tic12400_write(tic12400_t *tic, spi_bus_callback_t callback, void *callback_argument) {
+	tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index],
+			tic->sequential.data[tic->sequential.index]);
+	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1, callback, callback_argument);
 }
 
-void tic12400_read(tic12400_t *tic) {
+void tic12400_read(tic12400_t *tic, spi_bus_callback_t callback, void *callback_argument) {
 	tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
-	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1);
-	tic->sequential.data[tic->sequential.index] = tic->frame_rx.all; //tic->frame_rx.bit.data;
+	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1, callback, callback_argument);
+	tic->sequential.data[tic->sequential.index] = tic->frame_rx.bit.data;
 }
 
-bool tic12400_transfer(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
+bool tic12400_transfer(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count,
+		spi_bus_callback_t callback, void *callback_argument) {
 	//установка флагов
 	tic->done = false;
 	tic->par_fail = false;
@@ -99,9 +101,9 @@ bool tic12400_transfer(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *
 			if ((tic->sequential.index < tic->sequential.end) && (tic->par_fail == false)) {
 				//передача или прием
 				if(tx == true) {
-					tic12400_write(tic);
+					tic12400_write(tic, callback, callback_argument);
 				} else {
-					tic12400_read(tic);
+					tic12400_read(tic, callback, callback_argument);
 				}
 				//следующий фрейм
 				tic->sequential.index++;
@@ -118,11 +120,13 @@ bool tic12400_transfer(tic12400_t *tic, bool tx, uint32_t *data, const uint8_t *
 	return tic->par_fail;
 }
 
-bool tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	return tic12400_transfer(tic, true, data, addr, start, count);
+bool tic12400_reg_write(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count,
+		spi_bus_callback_t callback, void *callback_argument) {
+	return tic12400_transfer(tic, true, data, addr, start, count, callback, callback_argument);
 }
 
-bool tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count) {
-	return tic12400_transfer(tic, false, data, addr, start, count);
+bool tic12400_reg_read(tic12400_t *tic, uint32_t *data, const uint8_t *addr, uint8_t start, uint8_t count,
+		spi_bus_callback_t callback, void *callback_argument) {
+	return tic12400_transfer(tic, false, data, addr, start, count, callback, callback_argument);
 }
 

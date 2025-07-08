@@ -27,7 +27,7 @@
 can_bus_t can_bus_1 = {
 		.can_ptr[0] = CAN1,
 		.can_ptr[1] = CAN2,
-		.can_n = 0,
+		.can_n = CAN_BUS_MASTER,
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
@@ -37,34 +37,54 @@ can_bus_t can_bus_1 = {
 can_bus_t can_bus_2 = {
 		.can_ptr[0] = CAN1,
 		.can_ptr[1] = CAN2,
-		.can_n = 1,
+		.can_n = CAN_BUS_SLAVE,
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
 		.last_error_code  = 0
 };
 
-CO_t* co = NULL;
+CO_t* can1_co = NULL;
+CO_t* can2_co = NULL;
 
 CO_SDO_CLI_Queue can1_cli_Queue[16];
 
 CO_SDO_CLI_Driver_t can1_cli_driver;
 
+//CAN1
 void CAN1_TX_IRQHandler() {
-	CO_TX_IRQHandler(co->CANmodule);
+	CO_TX_IRQHandler(can1_co->CANmodule);
 }
 
 void CAN1_RX0_IRQHandler() {
-	CO_RX_IRQHandler(co->CANmodule, 0);
+	CO_RX_IRQHandler(can1_co->CANmodule, CAN_RX_MAILBOX_0);
 }
 
 void CAN1_RX1_IRQHandler() {
-	CO_RX_IRQHandler(co->CANmodule, 1);
+	CO_RX_IRQHandler(can1_co->CANmodule, CAN_RX_MAILBOX_1);
 }
 
 void CAN1_SCE_IRQHandler() {
-	CO_SCE_IRQHandler(co->CANmodule);
+	CO_SCE_IRQHandler(can1_co->CANmodule);
 }
+
+//CAN2
+void CAN2_TX_IRQHandler() {
+	CO_TX_IRQHandler(can2_co->CANmodule);
+}
+
+void CAN2_RX0_IRQHandler() {
+	CO_RX_IRQHandler(can2_co->CANmodule, CAN_RX_MAILBOX_0);
+}
+
+void CAN2_RX1_IRQHandler() {
+	CO_RX_IRQHandler(can2_co->CANmodule, CAN_RX_MAILBOX_1);
+}
+
+void CAN2_SCE_IRQHandler() {
+	CO_SCE_IRQHandler(can2_co->CANmodule);
+}
+
 
 void can1_nvic_init(uint32_t priority) {
 	NVIC_SetPriority(CAN1_TX_IRQn, priority);
@@ -80,19 +100,41 @@ void can1_nvic_init(uint32_t priority) {
 	NVIC_EnableIRQ(CAN1_SCE_IRQn);
 }
 
+void can2_nvic_init(uint32_t priority) {
+	NVIC_SetPriority(CAN2_TX_IRQn, priority);
+	NVIC_EnableIRQ(CAN2_TX_IRQn);
+
+	NVIC_SetPriority(CAN2_RX0_IRQn, priority);
+	NVIC_EnableIRQ(CAN2_RX0_IRQn);
+
+	NVIC_SetPriority(CAN2_RX1_IRQn, priority);
+	NVIC_EnableIRQ(CAN2_RX1_IRQn);
+
+	NVIC_SetPriority(CAN2_SCE_IRQn, priority);
+	NVIC_EnableIRQ(CAN2_SCE_IRQn);
+}
+
 void can1_reset(void) {
 	RCC->APB1RSTR |= RCC_APB1RSTR_CAN1RST; //Reset
 	RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN1RST; //Not Reset
+}
+
+void can2_reset(void) {
+	RCC->APB1RSTR |= RCC_APB1RSTR_CAN2RST; //Reset
+	RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN2RST; //Not Reset
 }
 
 void can1_rcc_init(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
 }
 
-void can1_pre_init(can_bus_t* bus) {
+void can2_rcc_init(void) {
+	RCC->APB1ENR |= RCC_APB1ENR_CAN2EN;
+}
+
+void can_setup(can_bus_t* bus) {
 	while(bus == NULL);
 
-	CAN_TypeDef* can_master = bus->can_ptr[0];
 	CAN_TypeDef* can = bus->can_ptr[bus->can_n];
 
 	while(can == NULL);
@@ -108,9 +150,14 @@ void can1_pre_init(can_bus_t* bus) {
 	can_MCR_ABOM_set(can, true);		//The Bus-Off state is left automatically by hardware
 	can_MCR_TTCM_set(can,false);		//Time Triggered Communication mode disabled
 	can_MCR_DBF_set(can, true);			//CAN reception/transmission frozen during debug
+}
+
+void can_filter_setup(int CAN2SB) {
+	CAN_TypeDef* can_master = CAN1;
 
 	can_master_filter_init_mode(can_master);			//Initialization mode for the filters
-	can_master_can2_filter_start_bank_set(can_master, 28); //28d, all the filters to CAN1 can be used
+	can_master_filter_reset_all(can_master);	//
+	can_master_can2_filter_start_bank_set(can_master, CAN2SB); //28d, all the filters to CAN1 can be used
 }
 
 int create_CO(CO_t** co)
@@ -164,7 +211,7 @@ CO_ReturnError_t init_CO(CO_t *co, can_bus_t *can_bus) {
 	return CO_ERROR_NO;
 }
 
-void can1_CO_process(CO_t *co, uint32_t timeDifference_us, uint32_t* timerNext_us) {
+void can_CO_process(CO_t *co, uint32_t timeDifference_us, uint32_t* timerNext_us) {
 
 	if(co == NULL) return;
 
@@ -183,21 +230,21 @@ void can1_CO_process(CO_t *co, uint32_t timeDifference_us, uint32_t* timerNext_u
 	}
 }
 
-void can1_CO_sdo_cli_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
+void can_CO_sdo_cli_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 	if((drv == NULL) || (drv->sdo_cli == NULL) || (drv->queue == NULL)) return;
 
 	CO_SDO_CLI_process(drv, dt);
 }
 
 void can_tim_handler(void* arg) {
-	CO_t* co = (CO_t*)arg;
-	can1_CO_process(co, 1000, NULL);
-	can1_CO_sdo_cli_process(&can1_cli_driver, 1000);
+	can_CO_process(can1_co, 1000, NULL);
+	can_CO_sdo_cli_process(&can1_cli_driver, 1000);
+	can_CO_process(can2_co, 1000, NULL);
 }
 
 void can1_sdo_cli_init(void) {
-	if(co == NULL) return;
-	can1_cli_driver.sdo_cli = co->SDOclient;
+	if(can1_co == NULL) return;
+	can1_cli_driver.sdo_cli = can1_co->SDOclient;
 	can1_cli_driver.m_SDOclientBlockTransfer = SDO_CLIENT_BLOCK_TRANSFER;
 	can1_cli_driver.m_cobidClientToServer = 0x600;
 	can1_cli_driver.m_cobidServerToClient = 0x580;
@@ -209,48 +256,110 @@ void can1_sdo_cli_init(void) {
 }
 
 void can1_init(void) {
+	can1_reset();
+	gpio_can1_cfg_setup();
+	can_setup(&can_bus_1);
+}
+
+void can2_init(void) {
+	can2_reset();
+	gpio_can2_cfg_setup();
+	can_setup(&can_bus_2);
+}
+
+void can_filter_init(void) {
+	can_filter_setup(14);
+}
+
+//#define CAN1_CO_ENABLE
+#define CAN2_CO_ENABLE
+
+void can_canopen_init(void) {
 	sys_counter_tv_print();
 
-	can1_reset();
+	int can1_co_res = 0;
+	CO_ReturnError_t co1_err = CO_ERROR_NO;
 
-	gpio_can1_cfg_setup();
+	int can2_co_res = 0;
+	CO_ReturnError_t co2_err = CO_ERROR_NO;
 
+#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	can1_rcc_init();
+	can2_rcc_init();
+#endif
 
-	can1_pre_init(&can_bus_1);
+#ifdef CAN1_CO_ENABLE
+	can1_init();
+#endif
 
-	int res = create_CO(&co);
+#ifdef CAN2_CO_ENABLE
+	can2_init();
+#endif
 
-	if(res == -1 || co == NULL) {
-		printf("Error create CO\n");
+#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+	can_filter_init();
+#endif
+
+	printf("\n");
+
+#ifdef CAN1_CO_ENABLE
+	can1_co_res = create_CO(&can1_co);
+
+	if(can1_co_res == -1 || can1_co == NULL) {
+			printf("Error create CO1\n");
 	} else {
-		printf("CO created\n");
-		CO_ReturnError_t coerr = init_CO(co, &can_bus_1);
+		printf("CO1 created\n");
+		co1_err = init_CO(can1_co, &can_bus_1);
 
-		if(coerr != CO_ERROR_NO) {
-			printf("Error init CO (%d)\n", (int)coerr);
+		if (co1_err != CO_ERROR_NO) {
+			printf("Error init CO (%d)\n", (int) co1_err);
 		} else {
 			//Настройка клиента
 			can1_sdo_cli_init();
-			//Настройка CO_process таймера.
-			INIT(can_tim); //TIM5
-			CALLBACK_PROC(can_tim.on_timeout) = can_tim_handler;
-			CALLBACK_ARG(can_tim.on_timeout) = (void*)co;
-			if (can_tim.status & MS_TIMER_STATUS_ERROR) {
-				printf("CO timer init error(%lu)\n", can_tim.status);
-			} else {
-				printf("CO timer inited (%lu)\n", can_tim.status);
-				// Запуск CO_process таймера.
-				can_tim.control = MS_TIMER_CONTROL_ENABLE;
-				CONTROL(can_tim);
-				if (can_tim.status & MS_TIMER_STATUS_RUN) {
-					printf("CO timer started (%lu)\n", can_tim.status);
-				} else {
-					printf("CO timer start error (%lu)\n", can_tim.status);
-				}
-			}
 		}
 	}
+#endif
+
+#ifdef CAN2_CO_ENABLE
+	can2_co_res = create_CO(&can2_co);
+
+	if(can2_co_res == -1 || can2_co == NULL) {
+			printf("Error create CO2\n");
+	} else {
+		printf("CO2 created\n");
+		co2_err = init_CO(can2_co, &can_bus_2);
+
+		if (co2_err != CO_ERROR_NO) {
+			printf("Error init CO (%d)\n", (int) co2_err);
+		} else {
+
+		}
+	}
+#endif
+
+#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+	if(can1_co_res == 0 && can2_co_res == 0 && co1_err == CO_ERROR_NO && co2_err == CO_ERROR_NO) {
+		//Настройка CO_process таймера.
+		INIT(can_tim); //TIM5
+		CALLBACK_PROC(can_tim.on_timeout) = can_tim_handler;
+		CALLBACK_ARG(can_tim.on_timeout) = NULL; //(void*) can1_co;
+		if (can_tim.status & MS_TIMER_STATUS_ERROR) {
+			printf("CO timer init error(%lu)\n", can_tim.status);
+		} else {
+			printf("CO timer inited (%lu)\n", can_tim.status);
+			// Запуск CO_process таймера.
+			can_tim.control = MS_TIMER_CONTROL_ENABLE;
+			CONTROL(can_tim);
+			if (can_tim.status & MS_TIMER_STATUS_RUN) {
+				printf("CO timer started (%lu)\n", can_tim.status);
+			} else {
+				printf("CO timer start error (%lu)\n", can_tim.status);
+			}
+		}
+	} else {
+		printf("CO timer NOT started!\n");
+	}
+#endif
 }
 
 

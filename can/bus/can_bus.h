@@ -58,12 +58,17 @@ enum {
 	CAN_ESR_LEC_Set_by_software
 };
 
+typedef enum {
+	CAN_BUS_MASTER = 0,
+	CAN_BUS_SLAVE,
+	CAN_BUS_COUNT
+} can_n_t;
 
 typedef struct {
-	CAN_TypeDef *can_ptr[2];
-	uint8_t can_n;
-	uint8_t fifo_0_filter[CAN_FILTER_MAX_COUNT];
-	uint8_t fifo_1_filter[CAN_FILTER_MAX_COUNT];
+	CAN_TypeDef *can_ptr[CAN_BUS_COUNT];
+	can_n_t can_n;
+	uint8_t fifo_0_filter[CAN_BUS_COUNT][CAN_FILTER_MAX_COUNT];
+	uint8_t fifo_1_filter[CAN_BUS_COUNT][CAN_FILTER_MAX_COUNT];
 	uint32_t error;
 	uint32_t tx_error_counter;
 	uint32_t rx_error_counter;
