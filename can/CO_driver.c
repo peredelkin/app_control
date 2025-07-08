@@ -254,6 +254,9 @@ CO_ReturnError_t CO_CANrxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, u
 	err = can_bus_filter_16b_bank_set(can_bus, index, can_id, can_mask);
 	if (err == E_INVALID_VALUE || err == E_OUT_OF_RANGE) return CO_ERROR_ILLEGAL_ARGUMENT;
 
+	/* Last CANopen Index for CAN bridge */
+	can_bus->last_filter = index;
+
 	/* buffer, which will be configured */
 	CO_CANrx_t *buffer = &CANmodule->rxArray[index];
 
@@ -534,15 +537,14 @@ void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
 	err = can_rx_mailbox_read_and_release(can, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
 			rcvMsg.data);
 
-	switch (fifo) {
-	case 0:
-		CO_index = can_bus->fifo_0_filter[can_bus->can_n][index];
-		break;
-	case 1:
-		CO_index = can_bus->fifo_1_filter[can_bus->can_n][index];
-		break;
-	default:
-		break;
+	CO_index = can_bus->fifo_filter[fifo][index];
+
+	//Call bridge_callback if index does not belong CANopen and exit from function
+	if(CO_index > can_bus->last_filter) {
+		if(can_bus->bridge_callback != NULL) {
+			can_bus->bridge_callback(can_bus->bridge_callback_argument, (void*) &rcvMsg);
+		}
+		return;
 	}
 
 	switch (err) {

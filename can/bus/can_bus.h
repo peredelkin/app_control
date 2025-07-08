@@ -24,12 +24,6 @@
 
 #include "can_reg.h"
 
-
-enum {
-	CAN_RX_MAILBOX_0 = 0,
-	CAN_RX_MAILBOX_1
-};
-
 #define CAN_CELL_COUNT			2
 #define CAN_FILTER_MAX_COUNT	56	//16b mask + 16b id
 
@@ -58,6 +52,12 @@ enum {
 	CAN_ESR_LEC_Set_by_software
 };
 
+enum {
+	CAN_RX_MAILBOX_0 = 0,
+	CAN_RX_MAILBOX_1,
+	CAN_RX_MAILBOX_COUNT
+};
+
 typedef enum {
 	CAN_BUS_MASTER = 0,
 	CAN_BUS_SLAVE,
@@ -67,12 +67,14 @@ typedef enum {
 typedef struct {
 	CAN_TypeDef *can_ptr[CAN_BUS_COUNT];
 	can_n_t can_n;
-	uint8_t fifo_0_filter[CAN_BUS_COUNT][CAN_FILTER_MAX_COUNT];
-	uint8_t fifo_1_filter[CAN_BUS_COUNT][CAN_FILTER_MAX_COUNT];
+	uint8_t fifo_filter[CAN_RX_MAILBOX_COUNT][CAN_FILTER_MAX_COUNT];
 	uint32_t error;
 	uint32_t tx_error_counter;
 	uint32_t rx_error_counter;
 	uint32_t last_error_code;
+	uint8_t last_filter;
+	void (*bridge_callback)(void*, void*);
+	void* bridge_callback_argument;
 } can_bus_t;
 
 extern err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, uint32_t mask);

@@ -31,7 +31,8 @@ can_bus_t can_bus_1 = {
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
-		.last_error_code  = 0
+		.last_error_code  = 0,
+		.last_filter = 0
 };
 
 can_bus_t can_bus_2 = {
@@ -41,7 +42,8 @@ can_bus_t can_bus_2 = {
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
-		.last_error_code  = 0
+		.last_error_code  = 0,
+		.last_filter = 0
 };
 
 CO_t* can1_co = NULL;
@@ -271,19 +273,17 @@ void can_filter_init(void) {
 	can_filter_setup(14);
 }
 
-//#define CAN1_CO_ENABLE
+#define CAN1_CO_ENABLE
 #define CAN2_CO_ENABLE
 
 void can_canopen_init(void) {
-	sys_counter_tv_print();
-
 	int can1_co_res = 0;
 	CO_ReturnError_t co1_err = CO_ERROR_NO;
 
 	int can2_co_res = 0;
 	CO_ReturnError_t co2_err = CO_ERROR_NO;
 
-#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+#if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	can1_rcc_init();
 	can2_rcc_init();
 #endif
@@ -296,11 +296,9 @@ void can_canopen_init(void) {
 	can2_init();
 #endif
 
-#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+#if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	can_filter_init();
 #endif
-
-	printf("\n");
 
 #ifdef CAN1_CO_ENABLE
 	can1_co_res = create_CO(&can1_co);
@@ -337,7 +335,13 @@ void can_canopen_init(void) {
 	}
 #endif
 
-#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+//Сраный мост
+#if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
+	printf("CAN1 Last Filter: %d\n", can_bus_1.last_filter);
+	printf("CAN2 Last Filter: %d\n", can_bus_2.last_filter);
+#endif
+
+#if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	if(can1_co_res == 0 && can2_co_res == 0 && co1_err == CO_ERROR_NO && co2_err == CO_ERROR_NO) {
 		//Настройка CO_process таймера.
 		INIT(can_tim); //TIM5

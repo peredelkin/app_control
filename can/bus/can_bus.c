@@ -26,17 +26,17 @@ err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, 
 	can_master_filter_set_single_scale(can_master, filter_bank);
 
 	switch (fifo_n) {
-	case 0:
+	case CAN_RX_MAILBOX_0:
 		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
-		bus->fifo_0_filter[bus->can_n][fifo_index] = filter_bank;
 		break;
-	case 1:
+	case CAN_RX_MAILBOX_1:
 		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
-		bus->fifo_1_filter[bus->can_n][fifo_index] = filter_bank;
 		break;
 	default:
 		return E_INVALID_VALUE;
 	}
+
+	bus->fifo_filter[fifo_n][fifo_index] = filter_bank;
 
 	can_master->sFilterRegister[filter_bank].FR1 = id;
 	can_master->sFilterRegister[filter_bank].FR2 = mask;
@@ -118,15 +118,15 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	switch (fifo_n) {
 	case 0:
 		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
-		bus->fifo_0_filter[bus->can_n][fifo_index] = filter;
 		break;
 	case 1:
 		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
-		bus->fifo_1_filter[bus->can_n][fifo_index] = filter;
 		break;
 	default:
 		return E_INVALID_VALUE;
 	}
+
+	bus->fifo_filter[fifo_n][fifo_index] = filter;
 
 	if (filter_bank_subindex) {
 		//фильтры должны быть настроены последовательно!
