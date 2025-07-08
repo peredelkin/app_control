@@ -48,32 +48,6 @@ err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, 
 	return E_NO_ERROR;
 }
 
-typedef union {
-	uint32_t all;
-	struct {
-		unsigned res_0		:1;
-		unsigned rtr		:1;
-		unsigned ide		:1;
-		unsigned exid_0_14	:15;
-		unsigned exid_15_17	:3;
-		unsigned stid_0_10	:11;
-	} bit;
-} can_filter_32b_t;
-
-typedef union {
-	uint32_t all;
-	struct {
-		unsigned id_exid_15_17	:3;
-		unsigned id_ide			:1;
-		unsigned id_rtr			:1;
-		unsigned id_stid_0_10	:11;
-		unsigned mask_exid_15_17:3;
-		unsigned mask_ide		:1;
-		unsigned mask_rtr		:1;
-		unsigned mask_stid_0_10	:11;
-	} bit;
-} can_filter_16b_t;
-
 err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
 	if (filter < 0) return E_INVALID_VALUE;
 	if (filter > 55) return E_OUT_OF_RANGE;
@@ -116,10 +90,10 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	can_master_filter_set_mask_mode(can_master, filter_bank);
 
 	switch (fifo_n) {
-	case 0:
+	case CAN_RX_MAILBOX_0:
 		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
 		break;
-	case 1:
+	case CAN_RX_MAILBOX_1:
 		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
 		break;
 	default:

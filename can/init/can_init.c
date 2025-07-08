@@ -46,6 +46,30 @@ can_bus_t can_bus_2 = {
 		.last_filter = 0
 };
 
+void can_bus_1_bridge_callback(void* bus, void* message) {
+	if((bus == NULL) || (message == NULL)) return;
+
+	can_bus_t* can_bus = (can_bus_t*)bus;
+
+	CAN_TypeDef* can = can_bus->can_ptr[can_bus->can_n];
+
+	CO_CANrxMsg_t* buffer = (CO_CANrxMsg_t*)message;
+
+	can_bus->bridge_error = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC, buffer->data);
+}
+
+void can_bus_2_bridge_callback(void* bus, void* message) {
+	if((bus == NULL) || (message == NULL)) return;
+
+	can_bus_t* can_bus = (can_bus_t*)bus;
+
+	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+
+	CO_CANrxMsg_t* buffer = (CO_CANrxMsg_t*)message;
+
+	can_bus->bridge_error = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC, buffer->data);
+}
+
 CO_t* can1_co = NULL;
 CO_t* can2_co = NULL;
 
@@ -335,10 +359,28 @@ void can_canopen_init(void) {
 	}
 #endif
 
-//Сраный мост
+#define CAN_COB_ID_2_TO_1 (0x600 + 0x10)
+#define CAN_COB_ID_1_TO_2 (0x580 + 0x10)
+
+//Инициализация моста имени Артёма Тянутова
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
-	printf("CAN1 Last Filter: %d\n", can_bus_1.last_filter);
-	printf("CAN2 Last Filter: %d\n", can_bus_2.last_filter);
+	uint32_t can_1_to_2_id = (uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
+	uint32_t can_1_to_2_mask = (uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+
+	uint32_t can_2_to_1_id = (uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
+	uint32_t can_2_to_1_mask = (uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+
+	if(can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_filter + 1, can_1_to_2_id, can_1_to_2_mask) == E_NO_ERROR) {
+		can_bus_1.bridge_callback = can_bus_2_bridge_callback;
+		can_bus_1.bridge_callback_argument = &can_bus_2;
+		printf("CAN1 to CAN2 bridge initialized\n");
+	}
+
+	if(can_bus_filter_16b_bank_set(&can_bus_2, can_bus_1.last_filter + 1, can_2_to_1_id, can_2_to_1_mask) == E_NO_ERROR) {
+		can_bus_2.bridge_callback = can_bus_1_bridge_callback;
+		can_bus_2.bridge_callback_argument = &can_bus_1;
+		printf("CAN2 to CAN1 bridge initialized\n");
+	}
 #endif
 
 #if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
