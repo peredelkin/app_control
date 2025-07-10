@@ -166,12 +166,6 @@ void sdcard_ls_dir(const char* dirname)
 	f_closedir(&dp);
 }
 
-void dma_rcc_init() {
-	//DMA
-	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
-}
-
 int main(void)
 {
 
@@ -185,13 +179,11 @@ int main(void)
 
 	gpio_rcc_init(); //RCC of all GPIO
 
-	dma_rcc_init(); //RCC DMA1 and DMA2
 	dma_controller_init(); //DMA1 and DMA2 struct init
 
 	system_counter_init(); //TIM2
 
 	gpio_socket3_cfg_setup(); //OE_App
-	gpio_output_bit_setup(&GPO_OE_App, GPIO_STATE_OFF); //Socket 3 Enable
 
 	usart6_nvic_init(UART6_IRQ_PRIO);
 	usart6_init(); //Socket3

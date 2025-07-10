@@ -86,6 +86,13 @@ extern const gpio_pin_t GPO_SYNCAO_App;
 extern const gpio_pin_t GPO_nLDAC_App;
 extern void gpio_dac7562_cfg_setup();
 
+extern const gpio_pin_t GPI_RVS2_App;
+extern const gpio_pin_t GPO_ResetAI_App;
+extern const gpio_pin_t GPI_RVS1_App;
+extern const gpio_pin_t GPO_CS1AI_App;
+extern const gpio_pin_t GPO_CS2AI_App;
+extern void gpio_ads8685_cfg_setup();
+
 extern const gpio_pin_t SDIO_DAT0_App;
 extern const gpio_pin_t GPO_SDIO_PWR_App;
 extern const gpio_pin_t GPI_SDIO_CD_App;

@@ -97,6 +97,10 @@ void DMA2_Stream7_IRQHandler() {
 }
 
 void dma_controller_init() {
+	//RCC DMA
+	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
+
 	//DMA
 	_dma.dma[DMA_Controller_1] = DMA1;
 	_dma.dma[DMA_Controller_2] = DMA2;
