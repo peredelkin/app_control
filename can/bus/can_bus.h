@@ -41,6 +41,9 @@
 #define CAN_ERROR_RX1_OVERRUN	((uint32_t)BIT(7))
 #define CAN_ERROR_RX1_FULL		((uint32_t)BIT(8))
 
+#define CAN_BUS_MAKE_ID(ID) ((uint32_t) (CAN_FIR_STID & (ID << CAN_FIR_STID_SHIFT)))
+#define CAN_BUS_MAKE_MASK(MASK) ((uint32_t) (CAN_FIR_STID & (MASK << CAN_FIR_STID_SHIFT)))
+
 enum {
 	CAN_ESR_LEC_No_Error = 0,
 	CAN_ESR_LEC_Stuff_Error,

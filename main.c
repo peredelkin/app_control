@@ -172,15 +172,6 @@ void dma_rcc_init() {
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
 }
 
-void dma_enable_irq() {
-	//UART3 RX
-	NVIC_SetPriority(DMA1_Stream1_IRQn, DMA1_Stream1_IRQ_PRIO);
-	NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-	//UART3 TX
-	NVIC_SetPriority(DMA1_Stream3_IRQn, DMA1_Stream3_IRQ_PRIO);
-	NVIC_EnableIRQ(DMA1_Stream3_IRQn);
-}
-
 int main(void)
 {
 
@@ -192,10 +183,10 @@ int main(void)
 
 	NVIC_SetPriorityGrouping(0b000);
 
-	gpio_rcc_init();
-	dma_rcc_init();
-	dma_controller_init();
-	dma_enable_irq();
+	gpio_rcc_init(); //RCC of all GPIO
+
+	dma_rcc_init(); //RCC DMA1 and DMA2
+	dma_controller_init(); //DMA1 and DMA2 struct init
 
 	system_counter_init(); //TIM2
 
@@ -234,6 +225,7 @@ int main(void)
 	sys_counter_tv_print();
 	printf("SPI5 initialized\n");
 
+	usart3_dma_nvic_init(UART3_DMA_Stream_IRQ_PRIO);
 	usart3_nvic_init(UART3_IRQ_PRIO);
 	usart3_init(); //RS485_1
 	sys_counter_tv_print();

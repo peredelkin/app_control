@@ -17,6 +17,7 @@ typedef struct _UsartBuf usart_buf_t;
 typedef struct _UsartInt usart_int_t;
 
 extern usart_bus_t usart_3;
+extern void usart3_dma_nvic_init(uint32_t priority);
 extern void usart3_nvic_init(uint32_t priority);
 extern void usart3_init(void);
 

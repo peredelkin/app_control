@@ -241,8 +241,8 @@ CO_ReturnError_t CO_CANrxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, u
 	err_t err = E_NO_ERROR;
 
 	/* CAN identifier and CAN mask, bit aligned with CAN module. */
-	uint32_t can_id = (uint32_t) (CAN_FIR_STID & (ident << CAN_FIR_STID_SHIFT));
-	uint32_t can_mask = (uint32_t) (CAN_FIR_STID & (mask << CAN_FIR_STID_SHIFT));
+	uint32_t can_id = CAN_BUS_MAKE_ID(ident); //(uint32_t) (CAN_FIR_STID & (ident << CAN_FIR_STID_SHIFT));
+	uint32_t can_mask = CAN_BUS_MAKE_MASK(mask); //(uint32_t) (CAN_FIR_STID & (mask << CAN_FIR_STID_SHIFT));
 
 	if (rtr) {
 		can_id |= CAN_FIR_RTR;

@@ -192,7 +192,7 @@ int create_CO(CO_t** co)
 
     CO_t* co_res = CO_new(NULL, NULL);
 
-    //printf("co: 0x%x\n", (int)(long)co);
+    printf("co: 0x%x ", (int)(long)co);
 
     if(co_res == NULL) return -1;
 
@@ -328,6 +328,7 @@ void can_canopen_init(void) {
 #endif
 
 #ifdef CAN1_CO_ENABLE
+	sys_counter_tv_print();
 	can1_co_res = create_CO(&can1_co);
 
 	if(can1_co_res == -1 || can1_co == NULL) {
@@ -346,6 +347,7 @@ void can_canopen_init(void) {
 #endif
 
 #ifdef CAN2_CO_ENABLE
+	sys_counter_tv_print();
 	can2_co_res = create_CO(&can2_co);
 
 	if(can2_co_res == -1 || can2_co == NULL) {
@@ -364,26 +366,33 @@ void can_canopen_init(void) {
 
 //Инициализация моста имени Артёма Тянутова
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
-	uint32_t can_1_to_2_id = (uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
-	uint32_t can_1_to_2_mask = (uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+	uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_COB_ID_1_TO_2); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
+	uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
 
-	uint32_t can_2_to_1_id = (uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
-	uint32_t can_2_to_1_mask = (uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_COB_ID_2_TO_1); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
+	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
 
+	sys_counter_tv_print();
 	if(can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_filter + 1, can_1_to_2_id, can_1_to_2_mask) == E_NO_ERROR) {
 		can_bus_1.bridge_callback = can_bus_2_bridge_callback;
 		can_bus_1.bridge_callback_argument = &can_bus_2;
 		printf("CAN1 to CAN2 bridge initialized\n");
+	} else {
+		printf("CAN1 to CAN2 bridge init ERROR\n");
 	}
 
+	sys_counter_tv_print();
 	if(can_bus_filter_16b_bank_set(&can_bus_2, can_bus_1.last_filter + 1, can_2_to_1_id, can_2_to_1_mask) == E_NO_ERROR) {
 		can_bus_2.bridge_callback = can_bus_1_bridge_callback;
 		can_bus_2.bridge_callback_argument = &can_bus_1;
 		printf("CAN2 to CAN1 bridge initialized\n");
+	} else {
+		printf("CAN2 to CAN1 bridge init ERROR\n");
 	}
 #endif
 
 #if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+	sys_counter_tv_print();
 	if(can1_co_res == 0 && can2_co_res == 0 && co1_err == CO_ERROR_NO && co2_err == CO_ERROR_NO) {
 		//Настройка CO_process таймера.
 		INIT(can_tim); //TIM5
@@ -396,6 +405,7 @@ void can_canopen_init(void) {
 			// Запуск CO_process таймера.
 			can_tim.control = MS_TIMER_CONTROL_ENABLE;
 			CONTROL(can_tim);
+			sys_counter_tv_print();
 			if (can_tim.status & MS_TIMER_STATUS_RUN) {
 				printf("CO timer started (%lu)\n", can_tim.status);
 			} else {
