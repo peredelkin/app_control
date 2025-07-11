@@ -14,6 +14,11 @@
 
 #include "can/CANopenNode/CANopen.h"
 
+#define CAN_BUS_DEV_ID_MC 1
+
+#define CAN_BUS_DATA_INDEX_FROM_ID(ID) ((uint16_t)(ID >> 8))
+#define CAN_BUS_DATA_SUB_INDEX_FROM_ID(ID) ((uint8_t)(ID & 0xFF))
+
 typedef enum {
 	CO_SDO_CLI_Type_NONE = 0,
 	CO_SDO_CLI_Type_UPLOAD = 1,

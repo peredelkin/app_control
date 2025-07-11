@@ -46,29 +46,33 @@ can_bus_t can_bus_2 = {
 		.last_filter = 0
 };
 
-void can_bus_1_bridge_callback(void* bus, void* message) {
-	if((bus == NULL) || (message == NULL)) return;
-
-	can_bus_t* can_bus = (can_bus_t*)bus;
-
-	CAN_TypeDef* can = can_bus->can_ptr[can_bus->can_n];
-
-	CO_CANrxMsg_t* buffer = (CO_CANrxMsg_t*)message;
-
-	can_bus->bridge_error = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC, buffer->data);
-}
-
-void can_bus_2_bridge_callback(void* bus, void* message) {
-	if((bus == NULL) || (message == NULL)) return;
-
-	can_bus_t* can_bus = (can_bus_t*)bus;
-
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
-	CO_CANrxMsg_t* buffer = (CO_CANrxMsg_t*)message;
-
-	can_bus->bridge_error = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC, buffer->data);
-}
+//void can_bus_1_bridge_callback(void* bus, void* message) {
+//	if((bus == NULL) || (message == NULL)) return;
+//
+//	can_bus_t* can_bus = (can_bus_t*)bus;
+//
+//	CAN_TypeDef* can = can_bus->can_ptr[can_bus->can_n];
+//
+//	CO_CANrxMsg_t* buffer = (CO_CANrxMsg_t*)message;
+//
+//	do {
+//		can_bus->bridge_error = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC, buffer->data);
+//	} while (can_bus->bridge_error == E_BUSY);
+//}
+//
+//void can_bus_2_bridge_callback(void* bus, void* message) {
+//	if((bus == NULL) || (message == NULL)) return;
+//
+//	can_bus_t* can_bus = (can_bus_t*)bus;
+//
+//	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+//
+//	CO_CANrxMsg_t* buffer = (CO_CANrxMsg_t*)message;
+//
+//	do {
+//		can_bus->bridge_error = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC, buffer->data);
+//	} while (can_bus->bridge_error == E_BUSY);
+//}
 
 CO_t* can1_co = NULL;
 CO_t* can2_co = NULL;
@@ -300,8 +304,8 @@ void can_filter_init(void) {
 #define CAN1_CO_ENABLE
 #define CAN2_CO_ENABLE
 
-#define CAN_COB_ID_2_TO_1 (0x701)
-#define CAN_COB_ID_1_TO_2 (0x681)
+#define CAN_BRIDGE_CLIENT_TO_SERVER (0x641)
+#define CAN_BRIDGE_SERVER_TO_CLIENT (0x621)
 
 void can_canopen_init(void) {
 	int can1_co_res = 0;
@@ -365,31 +369,31 @@ void can_canopen_init(void) {
 #endif
 
 //Инициализация моста имени Артёма Тянутова
-#if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
-	uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_COB_ID_1_TO_2); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
-	uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
-
-	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_COB_ID_2_TO_1); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
-	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
-
-	sys_counter_tv_print();
-	if(can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_filter + 1, can_1_to_2_id, can_1_to_2_mask) == E_NO_ERROR) {
-		can_bus_1.bridge_callback = can_bus_2_bridge_callback;
-		can_bus_1.bridge_callback_argument = &can_bus_2;
-		printf("CAN1 to CAN2 bridge initialized\n");
-	} else {
-		printf("CAN1 to CAN2 bridge init ERROR\n");
-	}
-
-	sys_counter_tv_print();
-	if(can_bus_filter_16b_bank_set(&can_bus_2, can_bus_1.last_filter + 1, can_2_to_1_id, can_2_to_1_mask) == E_NO_ERROR) {
-		can_bus_2.bridge_callback = can_bus_1_bridge_callback;
-		can_bus_2.bridge_callback_argument = &can_bus_1;
-		printf("CAN2 to CAN1 bridge initialized\n");
-	} else {
-		printf("CAN2 to CAN1 bridge init ERROR\n");
-	}
-#endif
+//#if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
+//	uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_SERVER_TO_CLIENT); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
+//	uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+//
+//	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
+//	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+//
+//	sys_counter_tv_print();
+//	if(can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_filter + 1, can_1_to_2_id, can_1_to_2_mask) == E_NO_ERROR) {
+//		can_bus_1.bridge_callback = can_bus_2_bridge_callback;
+//		can_bus_1.bridge_callback_argument = &can_bus_2;
+//		printf("CAN1 to CAN2 bridge initialized\n");
+//	} else {
+//		printf("CAN1 to CAN2 bridge init ERROR\n");
+//	}
+//
+//	sys_counter_tv_print();
+//	if(can_bus_filter_16b_bank_set(&can_bus_2, can_bus_1.last_filter + 1, can_2_to_1_id, can_2_to_1_mask) == E_NO_ERROR) {
+//		can_bus_2.bridge_callback = can_bus_1_bridge_callback;
+//		can_bus_2.bridge_callback_argument = &can_bus_1;
+//		printf("CAN2 to CAN1 bridge initialized\n");
+//	} else {
+//		printf("CAN2 to CAN1 bridge init ERROR\n");
+//	}
+//#endif
 
 #if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	sys_counter_tv_print();
