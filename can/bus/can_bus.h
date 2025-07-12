@@ -135,4 +135,8 @@ typedef union {
 extern err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, uint32_t mask);
 extern err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
 
+extern void CAN_TX_IRQHandler(can_bus_t *can_bus);
+extern void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo);
+extern void CAN_SCE_IRQHandler(can_bus_t *can_bus);
+
 #endif /* CAN_BUS_CAN_BUS_H_ */

@@ -83,36 +83,36 @@ CO_SDO_CLI_Driver_t can1_cli_driver;
 
 //CAN1
 void CAN1_TX_IRQHandler() {
-	CO_TX_IRQHandler(can1_co->CANmodule);
+	CAN_TX_IRQHandler(&can_bus_1);
 }
 
 void CAN1_RX0_IRQHandler() {
-	CO_RX_IRQHandler(can1_co->CANmodule, CAN_RX_MAILBOX_0);
+	CAN_RX_IRQHandler(&can_bus_1, CAN_RX_MAILBOX_0);
 }
 
 void CAN1_RX1_IRQHandler() {
-	CO_RX_IRQHandler(can1_co->CANmodule, CAN_RX_MAILBOX_1);
+	CAN_RX_IRQHandler(&can_bus_1, CAN_RX_MAILBOX_1);
 }
 
 void CAN1_SCE_IRQHandler() {
-	CO_SCE_IRQHandler(can1_co->CANmodule);
+	CAN_SCE_IRQHandler(&can_bus_1);
 }
 
 //CAN2
 void CAN2_TX_IRQHandler() {
-	CO_TX_IRQHandler(can2_co->CANmodule);
+	CAN_TX_IRQHandler(&can_bus_2);
 }
 
 void CAN2_RX0_IRQHandler() {
-	CO_RX_IRQHandler(can2_co->CANmodule, CAN_RX_MAILBOX_0);
+	CAN_RX_IRQHandler(&can_bus_2, CAN_RX_MAILBOX_0);
 }
 
 void CAN2_RX1_IRQHandler() {
-	CO_RX_IRQHandler(can2_co->CANmodule, CAN_RX_MAILBOX_1);
+	CAN_RX_IRQHandler(&can_bus_2, CAN_RX_MAILBOX_1);
 }
 
 void CAN2_SCE_IRQHandler() {
-	CO_SCE_IRQHandler(can2_co->CANmodule);
+	CAN_SCE_IRQHandler(&can_bus_2);
 }
 
 

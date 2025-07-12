@@ -241,18 +241,23 @@ bool can_bus_tx_queue_enqueue(can_bus_t *bus) {
 }
 
 bool can_bus_tx_process(can_bus_t* bus) {
+	//если нечего передавать
 	if (can_bus_tx_queue_empty(bus)) return false;
+
+	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
 
 	can_tx_frame_queue_t* head = NULL;
 	err_t tx_err = E_NO_ERROR;
 
 	do {
+		//Получим указатель
 		head = can_bus_tx_queue_head(bus);
-		tx_err = can_tx_mailbox_write_and_request(bus->can_ptr[bus->can_n], head->id, head->dlc, head->data);
+		//заполним регистры
+		tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
 		if(tx_err == E_NO_ERROR) {
 			can_bus_tx_queue_dequeue(bus);
 		}
-	} while ((tx_err == E_NO_ERROR) && (can_bus_tx_queue_notEmpty(bus) == true));
+	} while ((tx_err == E_NO_ERROR) && can_bus_tx_queue_notEmpty(bus));
 
 	if((tx_err == E_NO_ERROR) || (tx_err == E_BUSY)) return true;
 
@@ -260,6 +265,44 @@ bool can_bus_tx_process(can_bus_t* bus) {
 }
 
 //IRQ Handlers
+void CAN_TSR_RQCP_Handler(can_bus_t *can_bus, uint32_t TSR) {
+
+	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+
+	can_tx_frame_queue_t *head = NULL;
+	err_t tx_err = E_NO_ERROR;
+
+	//проверим все 3 мейлбокса
+	for (int mailbox = 0; mailbox < 3; mailbox++) {
+		//запрос выполнен?
+		if (can_TSR_RQCP_get(TSR, mailbox)) {
+			//очистим запрос
+			can_TSR_RQCP_clear(can, mailbox);
+			//если есть что передать
+			if (can_bus_tx_queue_notEmpty(can_bus)) {
+				//Получим указатель
+				head = can_bus_tx_queue_head(can_bus);
+				//заполним регистры
+				tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
+				if (tx_err == E_NO_ERROR) {
+					can_bus_tx_queue_dequeue(can_bus);
+				}
+			}
+		}
+	}
+}
+
+void CAN_TX_IRQHandler(can_bus_t *can_bus) {
+
+	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+
+	uint32_t TSR = can_TSR_read(can);
+
+	if (can_IER_TMEIE_read(can)) {
+		CAN_TSR_RQCP_Handler(can_bus, TSR);
+	}
+}
+
 void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	CAN_TypeDef *can_ptr = can_bus->can_ptr[can_bus->can_n];
@@ -272,14 +315,17 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 		if (can_RFR_FMP_read(RFR)) {
 			//Если можно добавить в очередь
 			if(can_bus_rx_queue_can_enqueue(can_bus)) {
+				//Получим указатель
 				can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail(can_bus);
-				if(can_rx_mailbox_read(can_ptr, fifo,
+				//заполним поля очереди
+				if(E_NO_ERROR == can_rx_mailbox_read(can_ptr, fifo,
 						&tail->id,
 						&tail->dlc,
 						&tail->index,
-						tail->data) == E_NO_ERROR) {
-					//release if no error
+						tail->data)) {
+					//Если успешно добавили в очередь
 					if(can_bus_rx_queue_enqueue(can_bus)) {
+						//Освободим фифо контроллера
 						can_rx_mailbox_release(can_ptr, fifo);
 					}
 				}
@@ -335,7 +381,77 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 }
 
 
+void CAN_SCE_IRQHandler(can_bus_t *can_bus) {
 
+	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+
+	uint32_t MSR = can_MSR_read(can);
+
+	uint32_t ESR = can_ESR_read(can);
+
+	can_bus->rx_error_counter = can_ESR_REC_read(ESR);
+
+	can_bus->tx_error_counter = can_ESR_TEC_read(ESR);
+
+	if (can_IER_ERRIE_read(can)) {
+		if (can_MSR_ERRI_read(MSR)) {
+			if (can_IER_EWGIE_read(can)) {
+				if (can_ESR_EWGF_read(ESR)) {
+					if (can_bus->rx_error_counter >= 96) {
+						can_bus->error |= CAN_ERROR_RX_WARNING;
+					}
+
+					if (can_bus->tx_error_counter >= 96) {
+						can_bus->error |= CAN_ERROR_TX_WARNING;
+					}
+				} else {
+					can_bus->error &= ~(CAN_ERROR_TX_WARNING | CAN_ERROR_RX_WARNING);
+				}
+			}
+
+			if (can_IER_EPVIE_read(can)) {
+				if (can_ESR_EPVF_read(ESR)) {
+					if (can_bus->rx_error_counter > 127) {
+						can_bus->error |= CAN_ERROR_RX_PASSIVE;
+					}
+
+					if (can_bus->tx_error_counter > 127) {
+						can_bus->error |= CAN_ERROR_TX_PASSIVE;
+					}
+				} else {
+					can_bus->error &= ~(CAN_ERROR_TX_PASSIVE | CAN_ERROR_RX_PASSIVE);
+				}
+			}
+
+			if (can_IER_BOFIE_read(can)) {
+				if (can_ESR_BOFF_read(ESR)) {
+					can_bus->error |= CAN_ERROR_TX_BUSSOFF;
+				} else {
+					can_bus->error &= ~CAN_ERROR_TX_BUSSOFF;
+				}
+			}
+
+			if (can_IER_LECIE_read(can)) {
+				can_bus->last_error_code = can_ESR_LEC_read(ESR);
+			}
+
+			can_MSR_ERRI_clear(can);
+		}
+	}
+
+	if (can_MSR_WKUI_read(MSR)) {
+		if (can_IER_WKUIE_read(can)) {
+		}
+		can_MSR_WKUI_clear(can);
+	}
+
+	if (can_IER_SLKIE_read(can)) {
+		if (can_MSR_SLAKI_read(MSR)) {
+
+			can_MSR_SLAKI_clear(can);
+		}
+	}
+}
 
 
 

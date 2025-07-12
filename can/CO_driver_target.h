@@ -203,11 +203,6 @@ typedef struct {
 } CO_CANmodule_t;
 
 
-extern void CO_TX_IRQHandler(CO_CANmodule_t* CANmodule);
-extern void CO_RX_IRQHandler(CO_CANmodule_t* CANmodule, int fifo);
-extern void CO_SCE_IRQHandler(CO_CANmodule_t* CANmodule);
-
-
 /* (un)lock critical section in CO_CANsend() */
 // Why disabling the whole Interrupt
 #define CO_LOCK_CAN_SEND(CAN_MODULE)                                                                                   \
