@@ -24,7 +24,6 @@
 
 #include "can_reg.h"
 
-#define CAN_CELL_COUNT			2
 #define CAN_FILTER_MAX_COUNT	56	//16b mask + 16b id
 
 #define CAN_ERROR_RX_WARNING	((uint32_t)BIT(0))
@@ -68,17 +67,43 @@ typedef enum {
 } can_n_t;
 
 typedef struct {
+	uint32_t id;
+	uint8_t dlc;
+	uint8_t index;
+	uint8_t data[8];
+} can_rx_frame_queue_t;
+
+typedef struct {
+	uint32_t id;
+	uint8_t dlc;
+	uint8_t data[8];
+} can_tx_frame_queue_t;
+
+typedef struct {
+	can_rx_frame_queue_t* queue;
+	size_t size;
+	size_t head;
+	size_t tail;
+} can_rx_queue_t;
+
+typedef struct {
+	can_tx_frame_queue_t* queue;
+	size_t size;
+	size_t head;
+	size_t tail;
+} can_tx_queue_t;
+
+typedef struct {
 	CAN_TypeDef *can_ptr[CAN_BUS_COUNT];
 	can_n_t can_n;
-	uint8_t fifo_filter[CAN_RX_MAILBOX_COUNT][CAN_FILTER_MAX_COUNT];
+	can_rx_queue_t queue_rx;
+	can_tx_queue_t queue_tx;
+	uint8_t index_array[CAN_RX_MAILBOX_COUNT][CAN_FILTER_MAX_COUNT];
 	uint32_t error;
 	uint32_t tx_error_counter;
 	uint32_t rx_error_counter;
 	uint32_t last_error_code;
 	uint8_t last_filter;
-	void (*bridge_callback)(void*, void*);
-	void* bridge_callback_argument;
-	err_t bridge_error;
 } can_bus_t;
 
 typedef union {

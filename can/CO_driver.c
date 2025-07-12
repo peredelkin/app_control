@@ -536,15 +536,7 @@ void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
 	err = can_rx_mailbox_read_and_release(can, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
 			rcvMsg.data);
 
-	CO_index = can_bus->fifo_filter[fifo][index];
-
-	//Call bridge_callback if index does not belong CANopen and exit from function
-	if(CO_index > can_bus->last_filter) {
-		if(can_bus->bridge_callback != NULL) {
-			can_bus->bridge_callback(can_bus->bridge_callback_argument, (void*) &rcvMsg);
-		}
-		return;
-	}
+	CO_index = can_bus->index_array[fifo][index];
 
 	switch (err) {
 	case E_NO_ERROR:

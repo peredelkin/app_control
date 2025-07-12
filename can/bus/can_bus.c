@@ -36,7 +36,7 @@ err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, 
 		return E_INVALID_VALUE;
 	}
 
-	bus->fifo_filter[fifo_n][fifo_index] = filter_bank;
+	bus->index_array[fifo_n][fifo_index] = filter_bank;
 
 	can_master->sFilterRegister[filter_bank].FR1 = id;
 	can_master->sFilterRegister[filter_bank].FR2 = mask;
@@ -100,7 +100,7 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 		return E_INVALID_VALUE;
 	}
 
-	bus->fifo_filter[fifo_n][fifo_index] = filter;
+	bus->index_array[fifo_n][fifo_index] = filter;
 
 	if (filter_bank_subindex) {
 		//фильтры должны быть настроены последовательно!
@@ -151,3 +151,124 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 
 	return E_NO_ERROR;
 }
+
+//RX
+bool can_bus_rx_queue_empty(can_bus_t *bus) {
+	return (bus->queue_rx.head == bus->queue_rx.tail);
+}
+
+bool can_bus_rx_queue_notEmpty(can_bus_t *bus) {
+	return (bus->queue_rx.head != bus->queue_rx.tail);
+}
+
+can_rx_frame_queue_t* can_bus_rx_queue_head(can_bus_t *bus) {
+	return &(bus->queue_rx.queue[bus->queue_rx.head]);
+}
+
+bool can_bus_rx_queue_dequeue(can_bus_t *bus) {
+	if (bus->queue_rx.head == bus->queue_rx.tail) return false; //empty
+	size_t new_head = bus->queue_rx.head + 1;
+	if (new_head >= bus->queue_rx.size) new_head = 0;
+	bus->queue_rx.head = new_head;
+	return true;
+}
+
+can_rx_frame_queue_t* can_bus_rx_queue_tail(can_bus_t *bus) {
+	return &(bus->queue_rx.queue[bus->queue_rx.tail]);
+}
+
+bool can_bus_rx_queue_can_enqueue(can_bus_t *bus) {
+	size_t new_tail = bus->queue_rx.tail + 1;
+	if (new_tail >= bus->queue_rx.size) new_tail = 0;
+	if (new_tail == bus->queue_rx.head) return false; //ovf
+	return true;
+}
+
+bool can_bus_rx_queue_enqueue(can_bus_t *bus) {
+	size_t new_tail = bus->queue_rx.tail + 1;
+	if (new_tail >= bus->queue_rx.size) new_tail = 0;
+	if (new_tail == bus->queue_rx.head) return false; //ovf
+	bus->queue_rx.tail = new_tail;
+	return true;
+}
+
+bool can_bus_rx_process(can_bus_t* bus) {
+	if (can_bus_rx_queue_empty(&bus->queue_rx)) return false;
+
+	can_rx_frame_queue_t* head = can_bus_rx_queue_head(&bus->queue_rx);
+
+	return false;
+}
+
+//TX
+bool can_bus_tx_queue_empty(can_bus_t *bus) {
+	return (bus->queue_tx.head == bus->queue_tx.tail);
+}
+
+bool can_bus_tx_queue_notEmpty(can_bus_t *bus) {
+	return (bus->queue_tx.head != bus->queue_tx.tail);
+}
+
+can_tx_frame_queue_t* can_bus_tx_queue_head(can_bus_t *bus) {
+	return &(bus->queue_tx.queue[bus->queue_tx.head]);
+}
+
+bool can_bus_tx_queue_dequeue(can_bus_t *bus) {
+	if (bus->queue_tx.head == bus->queue_tx.tail) return false; //empty
+	size_t new_head = bus->queue_tx.head + 1;
+	if (new_head >= bus->queue_tx.size) new_head = 0;
+	bus->queue_tx.head = new_head;
+	return true;
+}
+
+can_tx_frame_queue_t* can_bus_tx_queue_tail(can_bus_t *bus) {
+	return &(bus->queue_tx.queue[bus->queue_tx.tail]);
+}
+
+bool can_bus_tx_queue_can_enqueue(can_bus_t *bus) {
+	size_t new_tail = bus->queue_tx.tail + 1;
+	if (new_tail >= bus->queue_tx.size) new_tail = 0;
+	if (new_tail == bus->queue_tx.head) return false; //ovf
+	return true;
+}
+
+bool can_bus_tx_queue_enqueue(can_bus_t *bus) {
+	size_t new_tail = bus->queue_tx.tail + 1;
+	if (new_tail >= bus->queue_tx.size) new_tail = 0;
+	if (new_tail == bus->queue_tx.head) return false; //ovf
+	bus->queue_tx.tail = new_tail;
+	return true;
+}
+
+bool can_bus_tx_process(can_bus_t* bus) {
+	if (can_bus_tx_queue_empty(bus)) return false;
+
+	can_tx_frame_queue_t* head = NULL;
+	err_t tx_err = E_NO_ERROR;
+
+	do {
+		head = can_bus_tx_queue_head(&bus->queue_tx);
+		tx_err = can_tx_mailbox_write_and_request(bus->can_ptr[bus->can_n], head->id, head->dlc, head->data);
+		if(tx_err == E_NO_ERROR) {
+			can_bus_tx_queue_dequeue(&bus->queue_tx);
+		}
+	} while ((tx_err == E_NO_ERROR) && (can_bus_tx_queue_notEmpty(&bus->queue_tx) == true));
+
+	if((tx_err == E_NO_ERROR) || (tx_err == E_BUSY)) return true;
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

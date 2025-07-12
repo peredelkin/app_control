@@ -131,6 +131,15 @@ void can_RFR_RFOM_set(CAN_TypeDef* CAN, int fifo) {
 	}
 }
 
+void can_raw_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* RIR, uint32_t* RDTR, uint32_t* RDLR, uint32_t* RDHR) {
+	*RIR = can_RIR_read(CAN, fifo);
+	*RDTR = can_RDTR_read(CAN, fifo);
+	*RDLR = can_RDLR_read(CAN, fifo);
+	*RDHR = can_RDHR_read(CAN, fifo);
+
+	can_RFR_RFOM_set(CAN, fifo);
+}
+
 err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, uint8_t* dlc, uint8_t* index, uint8_t* data) {
 	if(CAN == NULL) return E_NULL_POINTER;
 
@@ -146,12 +155,7 @@ err_t can_rx_mailbox_read_and_release(CAN_TypeDef* CAN, int fifo, uint32_t* id, 
 	uint32_t RDTR = 0;
 	uint32_t RDLHR[2] = {0,0};
 
-	RIR = can_RIR_read(CAN, fifo);
-	RDTR = can_RDTR_read(CAN, fifo);
-	RDLHR[0] = can_RDLR_read(CAN, fifo);
-	RDLHR[1] = can_RDHR_read(CAN, fifo);
-
-	can_RFR_RFOM_set(CAN, fifo);
+	can_raw_rx_mailbox_read_and_release(CAN, fifo, &RIR, &RDTR, &RDLHR[0], &RDLHR[1]);
 
 	//ID
 	*id = ((CAN_TIR_STID | CAN_TIR_EXID | CAN_TIR_IDE | CAN_TIR_RTR) & RIR);
