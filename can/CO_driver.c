@@ -519,38 +519,38 @@ void CO_TX_IRQHandler(CO_CANmodule_t *CANmodule) {
 	}
 }
 
-void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
-	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
-
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
-	err_t err = E_NO_ERROR;
-
-	CO_CANrx_t *buffer = NULL;
-
-	uint8_t index = 0;
-	uint8_t CO_index = 0;
-
-	CO_CANrxMsg_t rcvMsg = { 0 };
-
-	err = can_rx_mailbox_read_and_release(can, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
-			rcvMsg.data);
-
-	CO_index = can_bus->index_array[fifo][index];
-
-	switch (err) {
-	case E_NO_ERROR:
-		buffer = &CANmodule->rxArray[CO_index];
-		break;
-	default:
-		break;
-	}
-
-	/* Call specific function, which will process the message */
-	if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
-		buffer->pCANrx_callback(buffer->object, (void*) &rcvMsg);
-	}
-}
+//void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
+//	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
+//
+//	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+//
+//	err_t err = E_NO_ERROR;
+//
+//	CO_CANrx_t *buffer = NULL;
+//
+//	uint8_t index = 0;
+//	uint8_t CO_index = 0;
+//
+//	CO_CANrxMsg_t rcvMsg = { 0 };
+//
+//	err = can_rx_mailbox_read(can, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
+//			rcvMsg.data);
+//
+//	CO_index = can_bus->index_array[fifo][index];
+//
+//	switch (err) {
+//	case E_NO_ERROR:
+//		buffer = &CANmodule->rxArray[CO_index];
+//		break;
+//	default:
+//		break;
+//	}
+//
+//	/* Call specific function, which will process the message */
+//	if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
+//		buffer->pCANrx_callback(buffer->object, (void*) &rcvMsg);
+//	}
+//}
 
 void CO_RX_IRQHandler(CO_CANmodule_t *CANmodule, int fifo) {
 

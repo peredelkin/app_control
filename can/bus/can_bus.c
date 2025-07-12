@@ -193,9 +193,9 @@ bool can_bus_rx_queue_enqueue(can_bus_t *bus) {
 }
 
 bool can_bus_rx_process(can_bus_t* bus) {
-	if (can_bus_rx_queue_empty(&bus->queue_rx)) return false;
+	if (can_bus_rx_queue_empty(bus)) return false;
 
-	can_rx_frame_queue_t* head = can_bus_rx_queue_head(&bus->queue_rx);
+	can_rx_frame_queue_t* head = can_bus_rx_queue_head(bus);
 
 	return false;
 }
@@ -247,19 +247,92 @@ bool can_bus_tx_process(can_bus_t* bus) {
 	err_t tx_err = E_NO_ERROR;
 
 	do {
-		head = can_bus_tx_queue_head(&bus->queue_tx);
+		head = can_bus_tx_queue_head(bus);
 		tx_err = can_tx_mailbox_write_and_request(bus->can_ptr[bus->can_n], head->id, head->dlc, head->data);
 		if(tx_err == E_NO_ERROR) {
-			can_bus_tx_queue_dequeue(&bus->queue_tx);
+			can_bus_tx_queue_dequeue(bus);
 		}
-	} while ((tx_err == E_NO_ERROR) && (can_bus_tx_queue_notEmpty(&bus->queue_tx) == true));
+	} while ((tx_err == E_NO_ERROR) && (can_bus_tx_queue_notEmpty(bus) == true));
 
 	if((tx_err == E_NO_ERROR) || (tx_err == E_BUSY)) return true;
 
 	return false;
 }
 
+//IRQ Handlers
+void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
+	CAN_TypeDef *can_ptr = can_bus->can_ptr[can_bus->can_n];
+
+	uint32_t RFR = can_RFR_read(can_ptr, fifo);
+
+	//FMPIE0: FIFO message pending interrupt enabled
+	if (can_IER_FMPIE_read(can_ptr, fifo)) {
+		//FIFO 0 message pending
+		if (can_RFR_FMP_read(RFR)) {
+			//Если можно добавить в очередь
+			if(can_bus_rx_queue_can_enqueue(can_bus)) {
+				can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail(can_bus);
+				if(can_rx_mailbox_read(can_ptr, fifo,
+						&tail->id,
+						&tail->dlc,
+						&tail->index,
+						tail->data) == E_NO_ERROR) {
+					//release if no error
+					if(can_bus_rx_queue_enqueue(can_bus)) {
+						can_rx_mailbox_release(can_ptr, fifo);
+					}
+				}
+			}
+		}
+	}
+
+	//FULL: FIFO full
+	if (can_RFR_FULL_read(RFR)) {
+		switch (fifo) {
+		case CAN_RX_MAILBOX_0:
+			can_bus->error |= CAN_ERROR_RX0_FULL;
+			break;
+
+		case CAN_RX_MAILBOX_1:
+			can_bus->error |= CAN_ERROR_RX1_FULL;
+			break;
+
+		default:
+			break;
+		}
+
+		//FFIE0: FIFO full interrupt enabled
+		if (can_IER_FFIE_read(can_ptr, fifo)) {
+
+		}
+
+		can_RFR_FULL_clear(can_ptr, fifo);
+	}
+
+	//FOVR: FIFO overrun
+	if (can_RFR_FOVR_read(RFR)) {
+		switch (fifo) {
+		case CAN_RX_MAILBOX_0:
+			can_bus->error |= CAN_ERROR_RX0_OVERRUN;
+			break;
+
+		case CAN_RX_MAILBOX_1:
+			can_bus->error |= CAN_ERROR_RX1_OVERRUN;
+			break;
+
+		default:
+			break;
+		}
+
+		//FOVIE0: FIFO overrun interrupt enabled
+		if (can_IER_FOVIE_read(can_ptr, fifo)) {
+
+		}
+
+		can_RFR_FOVR_clear(can_ptr, fifo);
+	}
+}
 
 
 
