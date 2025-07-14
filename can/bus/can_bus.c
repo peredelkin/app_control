@@ -104,6 +104,9 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 
 	bus->index_array[fifo_n][fifo_index] = filter;
 
+	/* Last CANopen Index for CAN bridge */
+	bus->last_index = filter;
+
 	if (filter_bank_subindex) {
 		//фильтры должны быть настроены последовательно!
 		if(filter_was_active == false || filter_was_single == false) return E_INVALID_OPERATION;
@@ -152,6 +155,54 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	can_master_filter_active_mode(can_master);
 
 	return E_NO_ERROR;
+}
+
+//Bitrate
+err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate) {
+	//проверка указателя CANptr
+	if (can_bus == NULL) return E_NULL_POINTER;
+	//получение указателя CAN
+	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+	//проверка указателя CAN
+	if (can == NULL) return E_NULL_POINTER;
+	//ошибка настройки битрейта
+	err_t error = E_NO_ERROR;
+	//CAN bit timing
+	uint32_t btr = 0xFFFFFFFF;
+	//for 168MHz
+	switch (bitrate) {
+	case 10:
+		btr = 0x001b0117;
+		break;
+	case 20:
+		btr = 0x001b008b;
+		break;
+	case 50:
+		btr = 0x001b0037;
+		break;
+	case 100:
+		btr = 0x001b001b;
+		break;
+	default:
+		error = E_INVALID_VALUE;
+		//no break
+	case 125:
+		btr = 0x001c0014;
+		break;
+	case 250:
+		btr = 0x001a000b;
+		break;
+	case 500:
+		btr = 0x001a0005;
+		break;
+	case 1000:
+		btr = 0x001a0002;
+		break;
+	}
+
+	can_BTR_set(can, btr);
+
+	return error;
 }
 
 //RX
@@ -362,6 +413,8 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	uint32_t RFR = can_RFR_read(can_ptr, fifo);
 
+	uint8_t index;
+
 	//FMPIE0: FIFO message pending interrupt enabled
 	if (can_IER_FMPIE_read(can_ptr, fifo)) {
 		//FIFO 0 message pending
@@ -374,8 +427,10 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 				if(E_NO_ERROR == can_rx_mailbox_read(can_ptr, fifo,
 						&tail->id,
 						&tail->dlc,
-						&tail->index,
+						&index,
 						tail->data)) {
+					//вычислим реальный индекс и запишем
+					tail->index = can_bus->index_array[fifo][index]; //TODO: перенести вычисление индекса в функцию can_rx_mailbox_read
 					//Если успешно добавили в очередь
 					if(can_bus_rx_queue_enqueue(can_bus)) {
 						//Освободим фифо контроллера

@@ -103,7 +103,7 @@ typedef struct {
 	uint32_t tx_error_counter;
 	uint32_t rx_error_counter;
 	uint32_t last_error_code;
-	uint8_t last_filter;
+	int last_index;
 	err_t (*rx_callback)(void* bus, void* head);
 } can_bus_t;
 
@@ -135,6 +135,8 @@ typedef union {
 
 extern err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, uint32_t mask);
 extern err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
+
+extern err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate);
 
 extern bool can_bus_rx_process(can_bus_t* bus);
 extern void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size);
