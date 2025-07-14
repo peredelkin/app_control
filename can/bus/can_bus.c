@@ -5,6 +5,8 @@
  *      Author: Ruslan
  */
 
+#include <string.h>
+
 #include "can_bus.h"
 #include "can_master_filter.h"
 
@@ -193,11 +195,37 @@ bool can_bus_rx_queue_enqueue(can_bus_t *bus) {
 }
 
 bool can_bus_rx_process(can_bus_t* bus) {
+	//если нечего принимать
 	if (can_bus_rx_queue_empty(bus)) return false;
 
-	can_rx_frame_queue_t* head = can_bus_rx_queue_head(bus);
+	can_rx_frame_queue_t* head = NULL;
+	err_t rx_err = E_NO_ERROR;
+
+	do {
+		//Получим указатель
+		head = can_bus_rx_queue_head(bus);
+		//если колбек задан
+		if(bus->rx_callback != NULL) {
+			rx_err = bus->rx_callback(bus, head);
+		} else {
+			rx_err = E_NULL_POINTER;
+		}
+
+		if(rx_err == E_NO_ERROR) {
+			can_bus_rx_queue_dequeue(bus);
+		}
+	} while ((rx_err == E_NO_ERROR) && can_bus_rx_queue_notEmpty(bus));
+
+	if((rx_err == E_NO_ERROR) || (rx_err == E_BUSY)) return true;
 
 	return false;
+}
+
+void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size) {
+	bus->queue_rx.queue = queue;
+	bus->queue_rx.size = queue_size;
+	bus->queue_rx.head = 0;
+	bus->queue_rx.tail = 0;
 }
 
 //TX
@@ -262,6 +290,31 @@ bool can_bus_tx_process(can_bus_t* bus) {
 	if((tx_err == E_NO_ERROR) || (tx_err == E_BUSY)) return true;
 
 	return false;
+}
+
+void can_bus_tx_queue_init(can_bus_t *bus, can_tx_frame_queue_t* queue, size_t queue_size) {
+	bus->queue_tx.queue = queue;
+	bus->queue_tx.size = queue_size;
+	bus->queue_tx.head = 0;
+	bus->queue_tx.tail = 0;
+}
+
+bool can_bus_write(can_bus_t* bus, uint32_t id, uint8_t dlc, uint8_t* data) {
+	//можно ли добавить в очередь
+	if (can_bus_tx_queue_can_enqueue(bus) == false) return false;
+
+	//получим указатель
+	can_tx_frame_queue_t* tail = can_bus_tx_queue_tail(bus);
+
+	//заполним данные
+	tail->id = id;
+	tail->dlc = dlc;
+	memcpy(tail->data, data, dlc); //copy DATA
+
+	//добавим в очередь
+	can_bus_tx_queue_enqueue(bus);
+
+	return true;
 }
 
 //IRQ Handlers
