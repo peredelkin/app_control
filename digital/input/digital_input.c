@@ -73,6 +73,18 @@ METHOD_CALC_IMPL(M_digital_input, input)
 
 	input->m_in_data.bit.panel = gpio_input_bit_read(&gpio_rs485_panel_detect);
 
+	//TODO: запретить и восстановить прерывание
+	if(input->r_invert_set) {
+		input->p_invert |= input->r_invert_set;
+		input->r_invert_set = 0;
+	}
+
+	//TODO: запретить и восстановить прерывание
+	if(input->r_invert_clear) {
+		input->p_invert &= ~input->r_invert_clear;
+		input->r_invert_clear = 0;
+	}
+
 	uint32_t raw_mask;
 	uint32_t out_mask;
 	uint32_t invert_res;

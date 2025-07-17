@@ -90,6 +90,82 @@ DWORD get_fattime (void) {
 
 TCHAR buff[256];
 
+//void sdcard_ls_dir(const char* dirname)
+//{
+//	FRESULT res = FR_OK;
+//	DIR dp;
+//	FILINFO fno;
+//	FIL fp;
+//	FSIZE_t total_tize = 0;
+//	const char* file_type = ".txt";
+//	const char* SPLIT = "SPLIT";
+//	char* strstr_res = NULL;
+//	char* f_gets_res = NULL;
+//
+//	res = f_opendir(&dp, dirname);
+//	if(res != FR_OK){
+//		printf("Error %d open dir: %s\n", res, dirname);
+//		return;
+//	}
+//
+//	for(;;){
+//		res = f_readdir(&dp, &fno);
+//
+//		if(res != FR_OK || fno.fname[0] == 0){
+//			printf("Total Size: %0.1f kB\n", ((float)total_tize)/1024);
+//			printf("No More Files\n");
+//			break;
+//		}
+//
+//		if(fno.fattrib & AM_DIR) {
+//			printf("Dir: %s\n", fno.fname);
+//		} else {
+//			printf("File: %s, Size: %0.1f kB, ", fno.fname, ((float)fno.fsize)/1024);
+//
+//			total_tize += fno.fsize;
+//
+//			strstr_res = strstr(fno.fname, file_type);
+//
+//			printf("Type Is");
+//
+//			if(strstr_res != NULL) {
+//				printf(": %s\n", file_type);
+//
+//				res = f_open(&fp, fno.fname, FA_READ);
+//
+//				if (res != FR_OK) {
+//					printf("Error %d Open File: %s\n", res, fno.fname);
+//					break;
+//				}
+//
+//				while((f_gets_res = f_gets(buff, sizeof buff, &fp)) != NULL) {
+//					strstr_res = strstr(buff, SPLIT);
+//					if(strstr_res != NULL) {
+//						strstr_res[0] = 0;
+//						strstr_res[1] = 0;
+//						strstr_res[2] = 0;
+//						strstr_res[3] = 0;
+//						strstr_res[4] = 0;
+//						printf("%s", buff);
+//						sys_counter_delay(0, 68000); // 100ms
+//						printf("%s", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+//						printf("%s", &strstr_res[5]);
+//					} else {
+//						printf("%s", buff);
+//					}
+//				}
+//
+//				f_close(&fp);
+//
+//			} else {
+//				printf(" Not: %s\n", file_type);
+//			}
+//		}
+//	}
+//
+//	f_closedir(&dp);
+//}
+
 void sdcard_ls_dir(const char* dirname)
 {
 	FRESULT res = FR_OK;
@@ -98,9 +174,7 @@ void sdcard_ls_dir(const char* dirname)
 	FIL fp;
 	FSIZE_t total_tize = 0;
 	const char* file_type = ".txt";
-	const char* SPLIT = "SPLIT";
 	char* strstr_res = NULL;
-	char* f_gets_res = NULL;
 
 	res = f_opendir(&dp, dirname);
 	if(res != FR_OK){
@@ -138,22 +212,9 @@ void sdcard_ls_dir(const char* dirname)
 					break;
 				}
 
-				while((f_gets_res = f_gets(buff, sizeof buff, &fp)) != NULL) {
-					strstr_res = strstr(buff, SPLIT);
-					if(strstr_res != NULL) {
-						strstr_res[0] = 0;
-						strstr_res[1] = 0;
-						strstr_res[2] = 0;
-						strstr_res[3] = 0;
-						strstr_res[4] = 0;
-						printf("%s", buff);
-						sys_counter_delay(0, 68000); // 100ms
-						printf("%s", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-						printf("%s", &strstr_res[5]);
-					} else {
-						printf("%s", buff);
-					}
-				}
+				//Begin
+
+				//End
 
 				f_close(&fp);
 

@@ -248,40 +248,40 @@ REG(REG_ID_DO_NCV7608_IN_DATA, &do_ncv7608.in_data, REG_TYPE_U32, REG_FLAG_NONE,
 REG(REG_ID_DIGITAL_IN_COUNT, &CO_data.digital_in.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_DIGITAL_IN_CONTROL, &digital_in.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_DIGITAL_IN_STATUS, &digital_in.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_DIGITAL_IN_OUT_DATA, &digital_in.out_data, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_INVERT, &digital_in.p_invert, REG_TYPE_U32, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT0, &digital_in.p_select[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT1, &digital_in.p_select[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT2, &digital_in.p_select[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT3, &digital_in.p_select[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT4, &digital_in.p_select[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT5, &digital_in.p_select[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT6, &digital_in.p_select[6], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT7, &digital_in.p_select[7], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT8, &digital_in.p_select[8], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT9, &digital_in.p_select[9], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT10, &digital_in.p_select[10], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT11, &digital_in.p_select[11], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT12, &digital_in.p_select[12], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT13, &digital_in.p_select[13], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT14, &digital_in.p_select[14], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT15, &digital_in.p_select[15], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT16, &digital_in.p_select[16], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT17, &digital_in.p_select[17], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT18, &digital_in.p_select[18], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT19, &digital_in.p_select[19], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT20, &digital_in.p_select[20], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT21, &digital_in.p_select[21], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT22, &digital_in.p_select[22], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT23, &digital_in.p_select[23], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT24, &digital_in.p_select[24], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT25, &digital_in.p_select[25], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT26, &digital_in.p_select[26], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT27, &digital_in.p_select[27], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT28, &digital_in.p_select[28], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT29, &digital_in.p_select[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT30, &digital_in.p_select[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
-REG(REG_ID_DIGITAL_IN_SELECT31, &digital_in.p_select[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /*  */
+REG(REG_ID_DIGITAL_IN_OUT_DATA, &digital_in.out_data, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Выход дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT, &digital_in.p_invert, REG_TYPE_U32, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT0, &digital_in.p_select[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT1, &digital_in.p_select[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT2, &digital_in.p_select[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT3, &digital_in.p_select[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT4, &digital_in.p_select[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT5, &digital_in.p_select[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT6, &digital_in.p_select[6], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT7, &digital_in.p_select[7], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT8, &digital_in.p_select[8], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT9, &digital_in.p_select[9], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT10, &digital_in.p_select[10], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT11, &digital_in.p_select[11], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT12, &digital_in.p_select[12], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT13, &digital_in.p_select[13], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT14, &digital_in.p_select[14], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT15, &digital_in.p_select[15], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT16, &digital_in.p_select[16], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT17, &digital_in.p_select[17], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT18, &digital_in.p_select[18], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT19, &digital_in.p_select[19], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT20, &digital_in.p_select[20], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT21, &digital_in.p_select[21], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT22, &digital_in.p_select[22], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT23, &digital_in.p_select[23], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT24, &digital_in.p_select[24], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT25, &digital_in.p_select[25], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT26, &digital_in.p_select[26], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT27, &digital_in.p_select[27], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT28, &digital_in.p_select[28], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT29, &digital_in.p_select[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT30, &digital_in.p_select[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_SELECT31, &digital_in.p_select[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
 REG(REG_ID_DIGITAL_OUT_COUNT, &CO_data.digital_out.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_DIGITAL_OUT_CONTROL, &digital_out.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_DIGITAL_OUT_STATUS, &digital_out.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */

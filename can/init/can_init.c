@@ -304,9 +304,9 @@ void can_process_callback(void* arg) {
 	can_bus_rx_process(&can_bus_2);
 
 	//CANopen
-	can_CO_process(can1_co, 1000, NULL);
-	can_CO_sdo_cli_process(&can1_cli_driver, 1000);
-	can_CO_process(can2_co, 1000, NULL);
+	can_CO_process(can1_co, CAN_TIMER_TICKS_FREQ, NULL);
+	can_CO_sdo_cli_process(&can1_cli_driver, CAN_TIMER_TICKS_FREQ);
+	can_CO_process(can2_co, CAN_TIMER_TICKS_FREQ, NULL);
 
 	//CAN1 CAN2 TX
 	can_bus_tx_process(&can_bus_1);

@@ -32,7 +32,7 @@ enum _E_Can_Timer_Status {
 };
 
 
-#define CAN_TIMER_TICKS_FREQ 1000
+#define CAN_TIMER_TICKS_FREQ 2000
 //! Период таймера в тиках.
 #define CAN_TIMER_TICKS_PERIOD_US (1000000 / CAN_TIMER_TICKS_FREQ)
 //! Предделитель таймера.

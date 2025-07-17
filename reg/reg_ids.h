@@ -244,40 +244,40 @@
 #define REG_ID_DIGITAL_IN_COUNT 0x20a000 /* Number of sub entries count */
 #define REG_ID_DIGITAL_IN_CONTROL 0x20a001 /* Слово управления. */
 #define REG_ID_DIGITAL_IN_STATUS 0x20a002 /* Слово состояния. */
-#define REG_ID_DIGITAL_IN_OUT_DATA 0x20a003 /*  */
-#define REG_ID_DIGITAL_IN_INVERT 0x20a004 /*  */
-#define REG_ID_DIGITAL_IN_SELECT0 0x20a005 /*  */
-#define REG_ID_DIGITAL_IN_SELECT1 0x20a006 /*  */
-#define REG_ID_DIGITAL_IN_SELECT2 0x20a007 /*  */
-#define REG_ID_DIGITAL_IN_SELECT3 0x20a008 /*  */
-#define REG_ID_DIGITAL_IN_SELECT4 0x20a009 /*  */
-#define REG_ID_DIGITAL_IN_SELECT5 0x20a00a /*  */
-#define REG_ID_DIGITAL_IN_SELECT6 0x20a00b /*  */
-#define REG_ID_DIGITAL_IN_SELECT7 0x20a00c /*  */
-#define REG_ID_DIGITAL_IN_SELECT8 0x20a00d /*  */
-#define REG_ID_DIGITAL_IN_SELECT9 0x20a00e /*  */
-#define REG_ID_DIGITAL_IN_SELECT10 0x20a00f /*  */
-#define REG_ID_DIGITAL_IN_SELECT11 0x20a010 /*  */
-#define REG_ID_DIGITAL_IN_SELECT12 0x20a011 /*  */
-#define REG_ID_DIGITAL_IN_SELECT13 0x20a012 /*  */
-#define REG_ID_DIGITAL_IN_SELECT14 0x20a013 /*  */
-#define REG_ID_DIGITAL_IN_SELECT15 0x20a014 /*  */
-#define REG_ID_DIGITAL_IN_SELECT16 0x20a015 /*  */
-#define REG_ID_DIGITAL_IN_SELECT17 0x20a016 /*  */
-#define REG_ID_DIGITAL_IN_SELECT18 0x20a017 /*  */
-#define REG_ID_DIGITAL_IN_SELECT19 0x20a018 /*  */
-#define REG_ID_DIGITAL_IN_SELECT20 0x20a019 /*  */
-#define REG_ID_DIGITAL_IN_SELECT21 0x20a01a /*  */
-#define REG_ID_DIGITAL_IN_SELECT22 0x20a01b /*  */
-#define REG_ID_DIGITAL_IN_SELECT23 0x20a01c /*  */
-#define REG_ID_DIGITAL_IN_SELECT24 0x20a01d /*  */
-#define REG_ID_DIGITAL_IN_SELECT25 0x20a01e /*  */
-#define REG_ID_DIGITAL_IN_SELECT26 0x20a01f /*  */
-#define REG_ID_DIGITAL_IN_SELECT27 0x20a020 /*  */
-#define REG_ID_DIGITAL_IN_SELECT28 0x20a021 /*  */
-#define REG_ID_DIGITAL_IN_SELECT29 0x20a022 /*  */
-#define REG_ID_DIGITAL_IN_SELECT30 0x20a023 /*  */
-#define REG_ID_DIGITAL_IN_SELECT31 0x20a024 /*  */
+#define REG_ID_DIGITAL_IN_OUT_DATA 0x20a003 /* Выход дискретных входов */
+#define REG_ID_DIGITAL_IN_INVERT 0x20a004 /* Параметр инверсии дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT0 0x20a005 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT1 0x20a006 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT2 0x20a007 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT3 0x20a008 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT4 0x20a009 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT5 0x20a00a /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT6 0x20a00b /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT7 0x20a00c /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT8 0x20a00d /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT9 0x20a00e /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT10 0x20a00f /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT11 0x20a010 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT12 0x20a011 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT13 0x20a012 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT14 0x20a013 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT15 0x20a014 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT16 0x20a015 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT17 0x20a016 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT18 0x20a017 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT19 0x20a018 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT20 0x20a019 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT21 0x20a01a /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT22 0x20a01b /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT23 0x20a01c /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT24 0x20a01d /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT25 0x20a01e /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT26 0x20a01f /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT27 0x20a020 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT28 0x20a021 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT29 0x20a022 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT30 0x20a023 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_SELECT31 0x20a024 /* Параметр выбора дискретных входов */
 #define REG_ID_DIGITAL_OUT_COUNT 0x20b000 /* Number of sub entries count */
 #define REG_ID_DIGITAL_OUT_CONTROL 0x20b001 /* Слово управления. */
 #define REG_ID_DIGITAL_OUT_STATUS 0x20b002 /* Слово состояния. */
