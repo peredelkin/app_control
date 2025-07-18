@@ -58,7 +58,7 @@ typedef struct {
     OD_obj_record_t o_2070_ntc_temp[15];
     OD_obj_record_t o_2080_do_relay[4];
     OD_obj_record_t o_2090_do_ncv7608[4];
-    OD_obj_record_t o_20A0_digital_in[37];
+    OD_obj_record_t o_20A0_digital_in[68];
     OD_obj_record_t o_20B0_digital_out[37];
     OD_obj_record_t o_20C0_mso[35];
     OD_obj_record_t o_20D0_ao_dac7562[5];
@@ -1343,200 +1343,386 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     },
     {
-    .dataOrig = &digital_in.p_invert,
+    .dataOrig = &digital_in.p_invert[0],
     .subIndex = 4,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[0],
+    .dataOrig = &digital_in.p_invert[1],
     .subIndex = 5,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[1],
+    .dataOrig = &digital_in.p_invert[2],
     .subIndex = 6,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[2],
+    .dataOrig = &digital_in.p_invert[3],
     .subIndex = 7,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[3],
+    .dataOrig = &digital_in.p_invert[4],
     .subIndex = 8,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[4],
+    .dataOrig = &digital_in.p_invert[5],
     .subIndex = 9,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[5],
+    .dataOrig = &digital_in.p_invert[6],
     .subIndex = 10,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[6],
+    .dataOrig = &digital_in.p_invert[7],
     .subIndex = 11,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[7],
+    .dataOrig = &digital_in.p_invert[8],
     .subIndex = 12,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[8],
+    .dataOrig = &digital_in.p_invert[9],
     .subIndex = 13,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[9],
+    .dataOrig = &digital_in.p_invert[10],
     .subIndex = 14,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[10],
+    .dataOrig = &digital_in.p_invert[11],
     .subIndex = 15,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[11],
+    .dataOrig = &digital_in.p_invert[12],
     .subIndex = 16,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[12],
+    .dataOrig = &digital_in.p_invert[13],
     .subIndex = 17,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[13],
+    .dataOrig = &digital_in.p_invert[14],
     .subIndex = 18,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[14],
+    .dataOrig = &digital_in.p_invert[15],
     .subIndex = 19,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[15],
+    .dataOrig = &digital_in.p_invert[16],
     .subIndex = 20,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[16],
+    .dataOrig = &digital_in.p_invert[17],
     .subIndex = 21,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[17],
+    .dataOrig = &digital_in.p_invert[18],
     .subIndex = 22,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[18],
+    .dataOrig = &digital_in.p_invert[19],
     .subIndex = 23,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[19],
+    .dataOrig = &digital_in.p_invert[20],
     .subIndex = 24,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[20],
+    .dataOrig = &digital_in.p_invert[21],
     .subIndex = 25,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[21],
+    .dataOrig = &digital_in.p_invert[22],
     .subIndex = 26,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[22],
+    .dataOrig = &digital_in.p_invert[23],
     .subIndex = 27,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[23],
+    .dataOrig = &digital_in.p_invert[24],
     .subIndex = 28,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[24],
+    .dataOrig = &digital_in.p_invert[25],
     .subIndex = 29,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[25],
+    .dataOrig = &digital_in.p_invert[26],
     .subIndex = 30,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[26],
+    .dataOrig = &digital_in.p_invert[27],
     .subIndex = 31,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[27],
+    .dataOrig = &digital_in.p_invert[28],
     .subIndex = 32,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[28],
+    .dataOrig = &digital_in.p_invert[29],
     .subIndex = 33,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[29],
+    .dataOrig = &digital_in.p_invert[30],
     .subIndex = 34,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[30],
+    .dataOrig = &digital_in.p_invert[31],
     .subIndex = 35,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &digital_in.p_select[31],
+    .dataOrig = &digital_in.p_select[0],
     .subIndex = 36,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[1],
+    .subIndex = 37,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[2],
+    .subIndex = 38,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[3],
+    .subIndex = 39,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[4],
+    .subIndex = 40,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[5],
+    .subIndex = 41,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[6],
+    .subIndex = 42,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[7],
+    .subIndex = 43,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[8],
+    .subIndex = 44,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[9],
+    .subIndex = 45,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[10],
+    .subIndex = 46,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[11],
+    .subIndex = 47,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[12],
+    .subIndex = 48,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[13],
+    .subIndex = 49,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[14],
+    .subIndex = 50,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[15],
+    .subIndex = 51,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[16],
+    .subIndex = 52,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[17],
+    .subIndex = 53,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[18],
+    .subIndex = 54,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[19],
+    .subIndex = 55,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[20],
+    .subIndex = 56,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[21],
+    .subIndex = 57,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[22],
+    .subIndex = 58,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[23],
+    .subIndex = 59,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[24],
+    .subIndex = 60,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[25],
+    .subIndex = 61,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[26],
+    .subIndex = 62,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[27],
+    .subIndex = 63,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[28],
+    .subIndex = 64,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[29],
+    .subIndex = 65,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[30],
+    .subIndex = 66,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &digital_in.p_select[31],
+    .subIndex = 67,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     }
@@ -2107,7 +2293,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x2070, 0x0f, ODT_REC, &ODObjs.o_2070_ntc_temp, NULL},
     {0x2080, 0x04, ODT_REC, &ODObjs.o_2080_do_relay, NULL},
     {0x2090, 0x04, ODT_REC, &ODObjs.o_2090_do_ncv7608, NULL},
-    {0x20a0, 0x25, ODT_REC, &ODObjs.o_20A0_digital_in, NULL},
+    {0x20a0, 0x44, ODT_REC, &ODObjs.o_20A0_digital_in, NULL},
     {0x20b0, 0x25, ODT_REC, &ODObjs.o_20B0_digital_out, NULL},
     {0x20c0, 0x23, ODT_REC, &ODObjs.o_20C0_mso, NULL},
     {0x20d0, 0x05, ODT_REC, &ODObjs.o_20D0_ao_dac7562, NULL},

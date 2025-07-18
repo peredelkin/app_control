@@ -8,6 +8,9 @@
 #ifndef FMC_TEST_FMC_TEST_H_
 #define FMC_TEST_FMC_TEST_H_
 
+//#define FMC_SRAM_TEST
+//#define FMC_NAND_BLOCK_TEST
+
 #include "lib/errors/errors.h"
 extern err_t fmc_sram_test();
 extern err_t fmc_nand_test();

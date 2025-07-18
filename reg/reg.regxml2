@@ -3239,7 +3239,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>36</default>
+                <default>67</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -3289,10 +3289,10 @@
                 <description>Выход дискретных входов</description>
             </RegVar>
             <RegVar subindex="4">
-                <name>invert</name>
-                <type>3</type>
+                <name>invert0</name>
+                <type>5</type>
                 <count>1</count>
-                <memory>digital_in.p_invert</memory>
+                <memory>digital_in.p_invert[0]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -3303,6 +3303,440 @@
                 <description>Параметр инверсии дискретных входов</description>
             </RegVar>
             <RegVar subindex="5">
+                <name>invert1</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="6">
+                <name>invert2</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="7">
+                <name>invert3</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="8">
+                <name>invert4</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="9">
+                <name>invert5</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="10">
+                <name>invert6</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[6]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="11">
+                <name>invert7</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[7]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="12">
+                <name>invert8</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[8]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="13">
+                <name>invert9</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[9]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="14">
+                <name>invert10</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[10]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="15">
+                <name>invert11</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[11]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="16">
+                <name>invert12</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[12]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="17">
+                <name>invert13</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[13]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="18">
+                <name>invert14</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[14]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="19">
+                <name>invert15</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[15]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="20">
+                <name>invert16</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[16]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="21">
+                <name>invert17</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[17]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="22">
+                <name>invert18</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[18]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="23">
+                <name>invert19</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[19]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="24">
+                <name>invert20</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[20]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="25">
+                <name>invert21</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[21]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="26">
+                <name>invert22</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[22]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="27">
+                <name>invert23</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[23]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="28">
+                <name>invert24</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[24]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="29">
+                <name>invert25</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[25]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="30">
+                <name>invert26</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[26]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="31">
+                <name>invert27</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[27]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="32">
+                <name>invert28</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[28]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="33">
+                <name>invert29</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[29]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="34">
+                <name>invert30</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[30]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="35">
+                <name>invert31</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_invert[31]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретных входов</description>
+            </RegVar>
+            <RegVar subindex="36">
                 <name>select0</name>
                 <type>5</type>
                 <count>1</count>
@@ -3316,7 +3750,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="6">
+            <RegVar subindex="37">
                 <name>select1</name>
                 <type>5</type>
                 <count>1</count>
@@ -3330,7 +3764,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="7">
+            <RegVar subindex="38">
                 <name>select2</name>
                 <type>5</type>
                 <count>1</count>
@@ -3344,7 +3778,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="8">
+            <RegVar subindex="39">
                 <name>select3</name>
                 <type>5</type>
                 <count>1</count>
@@ -3358,7 +3792,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="9">
+            <RegVar subindex="40">
                 <name>select4</name>
                 <type>5</type>
                 <count>1</count>
@@ -3372,7 +3806,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="10">
+            <RegVar subindex="41">
                 <name>select5</name>
                 <type>5</type>
                 <count>1</count>
@@ -3386,7 +3820,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="11">
+            <RegVar subindex="42">
                 <name>select6</name>
                 <type>5</type>
                 <count>1</count>
@@ -3400,7 +3834,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="12">
+            <RegVar subindex="43">
                 <name>select7</name>
                 <type>5</type>
                 <count>1</count>
@@ -3414,7 +3848,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="13">
+            <RegVar subindex="44">
                 <name>select8</name>
                 <type>5</type>
                 <count>1</count>
@@ -3428,7 +3862,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="14">
+            <RegVar subindex="45">
                 <name>select9</name>
                 <type>5</type>
                 <count>1</count>
@@ -3442,7 +3876,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="15">
+            <RegVar subindex="46">
                 <name>select10</name>
                 <type>5</type>
                 <count>1</count>
@@ -3456,7 +3890,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="16">
+            <RegVar subindex="47">
                 <name>select11</name>
                 <type>5</type>
                 <count>1</count>
@@ -3470,7 +3904,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="17">
+            <RegVar subindex="48">
                 <name>select12</name>
                 <type>5</type>
                 <count>1</count>
@@ -3484,7 +3918,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="18">
+            <RegVar subindex="49">
                 <name>select13</name>
                 <type>5</type>
                 <count>1</count>
@@ -3498,7 +3932,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="19">
+            <RegVar subindex="50">
                 <name>select14</name>
                 <type>5</type>
                 <count>1</count>
@@ -3512,7 +3946,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="20">
+            <RegVar subindex="51">
                 <name>select15</name>
                 <type>5</type>
                 <count>1</count>
@@ -3526,7 +3960,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="21">
+            <RegVar subindex="52">
                 <name>select16</name>
                 <type>5</type>
                 <count>1</count>
@@ -3540,7 +3974,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="22">
+            <RegVar subindex="53">
                 <name>select17</name>
                 <type>5</type>
                 <count>1</count>
@@ -3554,7 +3988,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="23">
+            <RegVar subindex="54">
                 <name>select18</name>
                 <type>5</type>
                 <count>1</count>
@@ -3568,7 +4002,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="24">
+            <RegVar subindex="55">
                 <name>select19</name>
                 <type>5</type>
                 <count>1</count>
@@ -3582,7 +4016,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="25">
+            <RegVar subindex="56">
                 <name>select20</name>
                 <type>5</type>
                 <count>1</count>
@@ -3596,7 +4030,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="26">
+            <RegVar subindex="57">
                 <name>select21</name>
                 <type>5</type>
                 <count>1</count>
@@ -3610,7 +4044,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="27">
+            <RegVar subindex="58">
                 <name>select22</name>
                 <type>5</type>
                 <count>1</count>
@@ -3624,7 +4058,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="28">
+            <RegVar subindex="59">
                 <name>select23</name>
                 <type>5</type>
                 <count>1</count>
@@ -3638,7 +4072,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="29">
+            <RegVar subindex="60">
                 <name>select24</name>
                 <type>5</type>
                 <count>1</count>
@@ -3652,7 +4086,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="30">
+            <RegVar subindex="61">
                 <name>select25</name>
                 <type>5</type>
                 <count>1</count>
@@ -3666,7 +4100,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="31">
+            <RegVar subindex="62">
                 <name>select26</name>
                 <type>5</type>
                 <count>1</count>
@@ -3680,7 +4114,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="32">
+            <RegVar subindex="63">
                 <name>select27</name>
                 <type>5</type>
                 <count>1</count>
@@ -3694,7 +4128,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="33">
+            <RegVar subindex="64">
                 <name>select28</name>
                 <type>5</type>
                 <count>1</count>
@@ -3708,7 +4142,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="34">
+            <RegVar subindex="65">
                 <name>select29</name>
                 <type>5</type>
                 <count>1</count>
@@ -3722,7 +4156,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="35">
+            <RegVar subindex="66">
                 <name>select30</name>
                 <type>5</type>
                 <count>1</count>
@@ -3736,7 +4170,7 @@
                 <eflags>393216</eflags>
                 <description>Параметр выбора дискретных входов</description>
             </RegVar>
-            <RegVar subindex="36">
+            <RegVar subindex="67">
                 <name>select31</name>
                 <type>5</type>
                 <count>1</count>

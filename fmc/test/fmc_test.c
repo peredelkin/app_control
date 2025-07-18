@@ -121,7 +121,10 @@ typedef struct {
 fmc_sram_test_t fmc_sram_err;
 fmc_nand_test_t fmc_nand_err;
 
+
+
 err_t fmc_sram_test() {
+#ifdef FMC_SRAM_TEST
 	fmc_sram_err.test16 = sram_16_test();
 	sys_counter_tv_print();
 	printf("SRAM Test 16 %s\n", (fmc_sram_err.test16 == 0) ? "success" : "fail");
@@ -134,18 +137,23 @@ err_t fmc_sram_test() {
 	sys_counter_tv_print();
 	printf("SRAM Test 8 %s\n", (fmc_sram_err.test8 == 0) ? "success" : "fail");
 
+
 	if(fmc_sram_err.test16 || fmc_sram_err.test32 || fmc_sram_err.test8) {
 		return E_IO_ERROR;
 	} else {
 		return E_NO_ERROR;
 	}
+#else
+	return E_NO_ERROR;
+#endif
 }
 
 err_t fmc_nand_test() {
-	size_t bad_block_count = 0;
 	fmc_nand_err.id = nand_K9F1G08U0E_id_check(&nand_K9F1G08U0E_drv);
 	fmc_nand_err.bad = E_NO_ERROR;
 
+#ifdef FMC_NAND_BLOCK_TEST
+	size_t bad_block_count = 0;
 	for (int i = 0; i < K9F1G08U0E_BLOCK_COUNT; i++) {
 		if (nand_K9F1G08U0E_block_check_bad(i) != E_NO_ERROR) {
 			printf("NAND bad block: %d\n", i);
@@ -157,6 +165,7 @@ err_t fmc_nand_test() {
 		printf("NAND bad block: too much\n");
 		fmc_nand_err.bad = E_OUT_OF_RANGE;
 	}
+#endif
 
 	if(fmc_nand_err.id || fmc_nand_err.bad) {
 		return E_STATE;

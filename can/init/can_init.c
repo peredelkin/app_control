@@ -228,7 +228,7 @@ int create_CO(CO_t** co)
 
     CO_t* co_res = CO_new(NULL, NULL);
 
-    printf("co: 0x%x ", (int)(long)co);
+    //printf("co: 0x%x ", (int)(long)co);
 
     if(co_res == NULL) return -1;
 
@@ -422,44 +422,43 @@ void can_canopen_init(void) {
 	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
 	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
 
-	sys_counter_tv_print();
-	printf("CAN1 CO last index: %u\n", can_bus_1.last_index);
+	//sys_counter_tv_print();
+	//printf("CAN1 CO last index: %u\n", can_bus_1.last_index);
 	can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_index + 1, can_1_to_2_id, can_1_to_2_mask);
-	sys_counter_tv_print();
-	printf("CAN1 BRIDGE last index: %u\n", can_bus_1.last_index);
+	//sys_counter_tv_print();
+	//printf("CAN1 BRIDGE index: %u\n", can_bus_1.last_index);
 	can_bus_1_bridge_index = can_bus_1.last_index;
 
-	sys_counter_tv_print();
-	printf("CAN1 CO last index: %u\n", can_bus_2.last_index);
+	//sys_counter_tv_print();
+	//printf("CAN2 CO last index: %u\n", can_bus_2.last_index);
 	can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2.last_index + 1, can_2_to_1_id, can_2_to_1_mask);
-	sys_counter_tv_print();
-	printf("CAN1 BRIDGE last index: %u\n", can_bus_2.last_index);
+	//sys_counter_tv_print();
+	//printf("CAN2 BRIDGE2 index: %u\n", can_bus_2.last_index);
 	can_bus_2_bridge_index = can_bus_2.last_index;
 #endif
 
 #if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	sys_counter_tv_print();
+	printf("CO timer ");
 	if(can1_co_res == 0 && can2_co_res == 0 && co1_err == CO_ERROR_NO && co2_err == CO_ERROR_NO) {
 		//Настройка CO_process таймера.
 		INIT(can_tim); //TIM5
 		CALLBACK_PROC(can_tim.on_timeout) = can_process_callback;
 		CALLBACK_ARG(can_tim.on_timeout) = NULL; //(void*) can1_co;
 		if (can_tim.status & MS_TIMER_STATUS_ERROR) {
-			printf("CO timer init error(%lu)\n", can_tim.status);
+			printf("init error(%lu)\n", can_tim.status);
 		} else {
-			printf("CO timer inited (%lu)\n", can_tim.status);
 			// Запуск CO_process таймера.
 			can_tim.control = MS_TIMER_CONTROL_ENABLE;
 			CONTROL(can_tim);
-			sys_counter_tv_print();
 			if (can_tim.status & MS_TIMER_STATUS_RUN) {
-				printf("CO timer started (%lu)\n", can_tim.status);
+				printf("started (%lu)\n", can_tim.status);
 			} else {
-				printf("CO timer start error (%lu)\n", can_tim.status);
+				printf("start error (%lu)\n", can_tim.status);
 			}
 		}
 	} else {
-		printf("CO timer NOT started!\n");
+		printf("NOT started!\n");
 	}
 #endif
 }

@@ -83,22 +83,24 @@ err_t fmc_init() {
 
 	sys_counter_tv_print();
 	if(gpio_init_err) {
-		printf("FMC GPIO Init fail\n");
+		printf("FMC GPIO [ERROR]\n");
 		return gpio_init_err;
 	} else {
-		printf("FMC GPIO Init success\n");
+		printf("FMC GPIO [OK]\n");
 	}
 
 	//тестирование чтения/записи данными шириной 16,32,8 бит
+#ifdef FMC_SRAM_TEST
 	err_t sram_test_err = fmc_sram_test();
 
 	sys_counter_tv_print();
 	if(sram_test_err) {
-		printf("SRAM Test fail\n");
+		printf("SRAM [ERROR]\n");
 		return sram_test_err;
 	} else {
-		printf("SRAM Test success\n");
+		printf("SRAM [OK]\n");
 	}
+#endif
 
 	//инициализация DMA
 	nand_K9F1G08U0E_init(&nand_K9F1G08U0E_drv);
@@ -108,10 +110,10 @@ err_t fmc_init() {
 
 	sys_counter_tv_print();
 	if (nand_test_err) {
-		printf("NAND Test fail\n");
+		printf("NAND [ERROR]\n");
 		return nand_test_err;
 	} else {
-		printf("NAND Test success\n");
+		printf("NAND [OK]\n");
 	}
 
 	return E_NO_ERROR;

@@ -249,7 +249,38 @@ REG(REG_ID_DIGITAL_IN_COUNT, &CO_data.digital_in.count, REG_TYPE_U8, REG_FLAG_RE
 REG(REG_ID_DIGITAL_IN_CONTROL, &digital_in.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_DIGITAL_IN_STATUS, &digital_in.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
 REG(REG_ID_DIGITAL_IN_OUT_DATA, &digital_in.out_data, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Выход дискретных входов */
-REG(REG_ID_DIGITAL_IN_INVERT, &digital_in.p_invert, REG_TYPE_U32, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT0, &digital_in.p_invert[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT1, &digital_in.p_invert[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT2, &digital_in.p_invert[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT3, &digital_in.p_invert[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT4, &digital_in.p_invert[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT5, &digital_in.p_invert[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT6, &digital_in.p_invert[6], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT7, &digital_in.p_invert[7], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT8, &digital_in.p_invert[8], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT9, &digital_in.p_invert[9], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT10, &digital_in.p_invert[10], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT11, &digital_in.p_invert[11], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT12, &digital_in.p_invert[12], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT13, &digital_in.p_invert[13], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT14, &digital_in.p_invert[14], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT15, &digital_in.p_invert[15], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT16, &digital_in.p_invert[16], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT17, &digital_in.p_invert[17], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT18, &digital_in.p_invert[18], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT19, &digital_in.p_invert[19], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT20, &digital_in.p_invert[20], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT21, &digital_in.p_invert[21], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT22, &digital_in.p_invert[22], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT23, &digital_in.p_invert[23], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT24, &digital_in.p_invert[24], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT25, &digital_in.p_invert[25], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT26, &digital_in.p_invert[26], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT27, &digital_in.p_invert[27], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT28, &digital_in.p_invert[28], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT29, &digital_in.p_invert[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT30, &digital_in.p_invert[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
+REG(REG_ID_DIGITAL_IN_INVERT31, &digital_in.p_invert[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии дискретных входов */
 REG(REG_ID_DIGITAL_IN_SELECT0, &digital_in.p_select[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
 REG(REG_ID_DIGITAL_IN_SELECT1, &digital_in.p_select[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
 REG(REG_ID_DIGITAL_IN_SELECT2, &digital_in.p_select[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */

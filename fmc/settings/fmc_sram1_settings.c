@@ -7,10 +7,10 @@
 
 #include "fmc_settings.h"
 
-#define FMC_SRAM1_READ_CYCLE_CLK 15	//(180*10^6)/(1/((55+25)*10^-9))
-#define FMC_SRAM1_DATAST_CLK 10		//(180*10^6)/(1/((30+25)*10^-9))
+#define FMC_SRAM1_READ_CYCLE_CLK 14	//(168*10^6)/(1/((55+25)*10^-9))
+#define FMC_SRAM1_DATAST_CLK 10		//(168*10^6)/(1/((30+25)*10^-9))
 #define FMC_SRAM1_ADDSET_CLK (FMC_SRAM1_READ_CYCLE_CLK - FMC_SRAM1_DATAST_CLK)
-#define FMC_SRAM1_BUSTURN_CLK 5		//(180*10^6)/(1/((25)*10^-9))
+#define FMC_SRAM1_BUSTURN_CLK 5		//(168*10^6)/(1/((25)*10^-9))
 
 const FMC_BCТRn_TypeDef FMC_SRAM1_BCTR_CFG = {
 		.CR.bit.MBKEN = 1,		//Corresponding memory bank is enabled

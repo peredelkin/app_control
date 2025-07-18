@@ -248,60 +248,63 @@ int main(void)
 
 	usart6_nvic_init(UART6_IRQ_PRIO);
 	usart6_init(); //Socket3
-	printf("SystemCoreClock: %luMHz\n", SystemCoreClock/1000000);
+	printf("SysCoreClock: %luMHz\n", SystemCoreClock/1000000);
 	sys_counter_tv_print();
-	printf("UART6 initialized\n");
+	printf("UART6\n");
 
 	//FMC, SRAM, NAND, YAFFS2
 	int res;
 	if(fmc_init() == E_NO_ERROR) {
 		res = yaffs_start_up();
 		sys_counter_tv_print();
-		printf("YAFFS Start Up: %d\n", res);
+		printf("Mount /nand ");
 		res = yaffs_mount("/nand");
-		sys_counter_tv_print();
-		printf("YAFFS Mount: %d\n", res);
+		if(res == 0) {
+			printf("[OK]\n");
+		} else {
+			printf("[ERROR]\n");
+		}
 	}
 
 	spi2_nvic_init(SPI2_IRQ_PRIO);
 	spi2_bus_init(); //dac7562
 	sys_counter_tv_print();
-	printf("SPI2 initialized\n");
+	printf("SPI2\n");
 
 	spi4_nvic_init(SPI4_IRQ_PRIO);
 	spi4_bus_init(); //tic12400,ncv7608
 	sys_counter_tv_print();
-	printf("SPI4 initialized\n");
+	printf("SPI4\n");
 
 	spi5_nvic_init(SPI5_IRQ_PRIO);
 	spi5_bus_init(); //Socket3
 	sys_counter_tv_print();
-	printf("SPI5 initialized\n");
+	printf("SPI5\n");
 
 	usart3_dma_nvic_init(UART3_DMA_Stream_IRQ_PRIO);
 	usart3_nvic_init(UART3_IRQ_PRIO);
 	usart3_init(); //RS485_1
 	sys_counter_tv_print();
-	printf("UART3 initialized\n");
+	printf("UART3\n");
 
 	modbus1_init(); //RS485_1
 	sys_counter_tv_print();
-	printf("MODBUS1 initialized\n");
+	printf("MODBUS 1\n");
 
 	uart7_nvic_init(UART7_IRQ_PRIO);
 	uart7_init(); //RS485_Panel
 	sys_counter_tv_print();
-	printf("UART7 initialized\n");
+	printf("UART7\n");
 
 	modbus_panel_init(); //RS485_Panel
 	sys_counter_tv_print();
-	printf("MODBUS Panel initialized\n");
+	printf("MODBUS Panel\n");
 
 	can1_nvic_init(CAN1_IRQ_PRIO);
 	can2_nvic_init(CAN2_IRQ_PRIO);
 	can_canopen_init();
 	sys_counter_tv_print();
-	printf("CAN initialized\n");
+	printf("CAN 1/2\n");
 
 	//eth_init(); //отпаяно
 
