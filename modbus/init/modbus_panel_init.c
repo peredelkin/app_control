@@ -55,7 +55,7 @@ static modbus_rtu_error_t modbus_panel_on_report_slave_id(modbus_rtu_slave_id_t*
     return MODBUS_RTU_ERROR_NONE;
 }
 
-static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* value)
+static modbus_rtu_error_t modbus_panel_on_read_hold_reg(uint16_t address, uint16_t* value)
 {
 	uint16_t addr_h = (address >> 1);
 	uint16_t addr_l = (address & 0x1);
@@ -81,11 +81,36 @@ static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* va
     return MODBUS_RTU_ERROR_NONE;
 }
 
-static modbus_rtu_error_t modbus_on_write_hold_reg(uint16_t address, uint16_t value) {
+static modbus_rtu_error_t modbus_panel_on_write_hold_reg(uint16_t address, uint16_t value) {
 	switch(address) {
 	default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
 	}
 
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+enum {
+	MODBUS_RTU_CUSTOM_FUNC_REG_READ = 0x64,
+	MODBUS_RTU_CUSTOM_FUNC_REG_WRITE,
+};
+
+modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+static modbus_rtu_error_t modbus_panel_custom_function_callback(modbus_rtu_func_t func, const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	switch(func) {
+	case MODBUS_RTU_CUSTOM_FUNC_REG_READ:
+		return modbus_panel_reg_read(rx_data, rx_size, tx_data, tx_size);
+	case MODBUS_RTU_CUSTOM_FUNC_REG_WRITE:
+		return modbus_panel_reg_write(rx_data, rx_size, tx_data, tx_size);
+	default:
+		return MODBUS_RTU_ERROR_FUNC;
+	}
 	return MODBUS_RTU_ERROR_NONE;
 }
 
@@ -121,6 +146,7 @@ void modbus_panel_init(void)
     //modbus_rtu_set_read_coil_callback(&modbus_1, modbus_on_read_coil);
     //modbus_rtu_set_write_coil_callback(&modbus_1, modbus_on_write_coil);
     modbus_rtu_set_report_slave_id_callback(&modbus_panel, modbus_panel_on_report_slave_id);
-    modbus_rtu_set_read_holding_reg_callback(&modbus_panel, modbus_on_read_hold_reg);
-    modbus_rtu_set_write_holding_reg_callback(&modbus_panel, modbus_on_write_hold_reg);
+    modbus_rtu_set_read_holding_reg_callback(&modbus_panel, modbus_panel_on_read_hold_reg);
+    modbus_rtu_set_write_holding_reg_callback(&modbus_panel, modbus_panel_on_write_hold_reg);
+    modbus_rtu_set_custom_function_callback(&modbus_panel, modbus_panel_custom_function_callback);
 }
