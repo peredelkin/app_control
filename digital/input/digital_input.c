@@ -9,22 +9,22 @@ extern CO_SDO_CLI_Driver_t can1_cli_driver; //TODO: тест CANopen SDO CLI
 
 CO_SDO_CLI_Queue* digital_input_mc_queue = NULL;
 
-static void digital_input_can_send(M_digital_input* input) {
-	if(digital_input_mc_queue != NULL) {
-		if (digital_input_mc_queue->m_state == CO_SDO_CLI_State_DONE) {
-			digital_input_mc_queue = NULL;
-		}
-	}
-
-    if(digital_input_mc_queue == NULL) {
-    	digital_input_mc_queue = CO_SDO_CLI_write(
-    			&can1_cli_driver,
-				CAN_BUS_DEV_ID_MC,
-				CAN_BUS_DATA_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
-				CAN_BUS_DATA_SUB_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
-				&input->out_data, 4, 200);
-    }
-}
+//static void digital_input_can_send(M_digital_input* input) {
+//	if(digital_input_mc_queue != NULL) {
+//		if (digital_input_mc_queue->m_state == CO_SDO_CLI_State_DONE) {
+//			digital_input_mc_queue = NULL;
+//		}
+//	}
+//
+//    if(digital_input_mc_queue == NULL) {
+//    	digital_input_mc_queue = CO_SDO_CLI_write(
+//    			&can1_cli_driver,
+//				CAN_BUS_DEV_ID_MC,
+//				CAN_BUS_DATA_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
+//				CAN_BUS_DATA_SUB_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
+//				&input->out_data, 4, 200);
+//    }
+//}
 
 METHOD_INIT_IMPL(M_digital_input, input)
 {
