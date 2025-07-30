@@ -90,6 +90,82 @@ DWORD get_fattime (void) {
 
 TCHAR buff[256];
 
+//void sdcard_ls_dir(const char* dirname)
+//{
+//	FRESULT res = FR_OK;
+//	DIR dp;
+//	FILINFO fno;
+//	FIL fp;
+//	FSIZE_t total_tize = 0;
+//	const char* file_type = ".txt";
+//	const char* SPLIT = "SPLIT";
+//	char* strstr_res = NULL;
+//	char* f_gets_res = NULL;
+//
+//	res = f_opendir(&dp, dirname);
+//	if(res != FR_OK){
+//		printf("Error %d open dir: %s\n", res, dirname);
+//		return;
+//	}
+//
+//	for(;;){
+//		res = f_readdir(&dp, &fno);
+//
+//		if(res != FR_OK || fno.fname[0] == 0){
+//			printf("Total Size: %0.1f kB\n", ((float)total_tize)/1024);
+//			printf("No More Files\n");
+//			break;
+//		}
+//
+//		if(fno.fattrib & AM_DIR) {
+//			printf("Dir: %s\n", fno.fname);
+//		} else {
+//			printf("File: %s, Size: %0.1f kB, ", fno.fname, ((float)fno.fsize)/1024);
+//
+//			total_tize += fno.fsize;
+//
+//			strstr_res = strstr(fno.fname, file_type);
+//
+//			printf("Type Is");
+//
+//			if(strstr_res != NULL) {
+//				printf(": %s\n", file_type);
+//
+//				res = f_open(&fp, fno.fname, FA_READ);
+//
+//				if (res != FR_OK) {
+//					printf("Error %d Open File: %s\n", res, fno.fname);
+//					break;
+//				}
+//
+//				while((f_gets_res = f_gets(buff, sizeof buff, &fp)) != NULL) {
+//					strstr_res = strstr(buff, SPLIT);
+//					if(strstr_res != NULL) {
+//						strstr_res[0] = 0;
+//						strstr_res[1] = 0;
+//						strstr_res[2] = 0;
+//						strstr_res[3] = 0;
+//						strstr_res[4] = 0;
+//						printf("%s", buff);
+//						sys_counter_delay(0, 68000); // 100ms
+//						printf("%s", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+//						printf("%s", &strstr_res[5]);
+//					} else {
+//						printf("%s", buff);
+//					}
+//				}
+//
+//				f_close(&fp);
+//
+//			} else {
+//				printf(" Not: %s\n", file_type);
+//			}
+//		}
+//	}
+//
+//	f_closedir(&dp);
+//}
+
 void sdcard_ls_dir(const char* dirname)
 {
 	FRESULT res = FR_OK;
@@ -98,9 +174,7 @@ void sdcard_ls_dir(const char* dirname)
 	FIL fp;
 	FSIZE_t total_tize = 0;
 	const char* file_type = ".txt";
-	const char* SPLIT = "SPLIT";
 	char* strstr_res = NULL;
-	char* f_gets_res = NULL;
 
 	res = f_opendir(&dp, dirname);
 	if(res != FR_OK){
@@ -138,22 +212,9 @@ void sdcard_ls_dir(const char* dirname)
 					break;
 				}
 
-				while((f_gets_res = f_gets(buff, sizeof buff, &fp)) != NULL) {
-					strstr_res = strstr(buff, SPLIT);
-					if(strstr_res != NULL) {
-						strstr_res[0] = 0;
-						strstr_res[1] = 0;
-						strstr_res[2] = 0;
-						strstr_res[3] = 0;
-						strstr_res[4] = 0;
-						printf("%s", buff);
-						sys_counter_delay(0, 68000); // 100ms
-						printf("%s", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-						printf("%s", &strstr_res[5]);
-					} else {
-						printf("%s", buff);
-					}
-				}
+				//Begin
+
+				//End
 
 				f_close(&fp);
 
@@ -164,21 +225,6 @@ void sdcard_ls_dir(const char* dirname)
 	}
 
 	f_closedir(&dp);
-}
-
-void dma_rcc_init() {
-	//DMA
-	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
-}
-
-void dma_enable_irq() {
-	//UART3 RX
-	NVIC_SetPriority(DMA1_Stream1_IRQn, DMA1_Stream1_IRQ_PRIO);
-	NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-	//UART3 TX
-	NVIC_SetPriority(DMA1_Stream3_IRQn, DMA1_Stream3_IRQ_PRIO);
-	NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 }
 
 int main(void)
@@ -192,71 +238,73 @@ int main(void)
 
 	NVIC_SetPriorityGrouping(0b000);
 
-	gpio_rcc_init();
-	dma_rcc_init();
-	dma_controller_init();
-	dma_enable_irq();
+	gpio_rcc_init(); //RCC of all GPIO
+
+	dma_controller_init(); //DMA1 and DMA2 struct init
 
 	system_counter_init(); //TIM2
 
 	gpio_socket3_cfg_setup(); //OE_App
-	gpio_output_bit_setup(&GPO_OE_App, GPIO_STATE_OFF); //Socket 3 Enable
 
 	usart6_nvic_init(UART6_IRQ_PRIO);
 	usart6_init(); //Socket3
-	printf("SystemCoreClock: %luMHz\n", SystemCoreClock/1000000);
+	printf("SysCoreClock: %luMHz\n", SystemCoreClock/1000000);
 	sys_counter_tv_print();
-	printf("UART6 initialized\n");
-
-	spi2_nvic_init(SPI2_IRQ_PRIO);
-	spi2_bus_init(); //dac7562
-	sys_counter_tv_print();
-	printf("SPI2 initialized\n");
-
-	spi4_nvic_init(SPI4_IRQ_PRIO);
-	spi4_bus_init(); //tic12400,ncv7608
-	sys_counter_tv_print();
-	printf("SPI4 initialized\n");
-
-	spi5_nvic_init(SPI5_IRQ_PRIO);
-	spi5_bus_init(); //Socket3
-	sys_counter_tv_print();
-	printf("SPI5 initialized\n");
-
-	usart3_nvic_init(UART3_IRQ_PRIO);
-	usart3_init(); //RS485_1
-	sys_counter_tv_print();
-	printf("UART3 initialized\n");
-
-	modbus1_init(); //RS485_1
-	sys_counter_tv_print();
-	printf("MODBUS1 initialized\n");
-
-	uart7_nvic_init(UART7_IRQ_PRIO);
-	uart7_init(); //RS485_Panel
-	sys_counter_tv_print();
-	printf("UART7 initialized\n");
-
-	modbus_panel_init(); //RS485_Panel
-	sys_counter_tv_print();
-	printf("MODBUS Panel initialized\n");
-
-	can1_nvic_init(CAN1_IRQ_PRIO);
-	can2_nvic_init(CAN2_IRQ_PRIO);
-	can_canopen_init();
-	sys_counter_tv_print();
-	printf("CAN initialized\n");
+	printf("UART6\n");
 
 	//FMC, SRAM, NAND, YAFFS2
 	int res;
 	if(fmc_init() == E_NO_ERROR) {
 		res = yaffs_start_up();
 		sys_counter_tv_print();
-		printf("YAFFS Start Up: %d\n", res);
+		printf("Mount /nand ");
 		res = yaffs_mount("/nand");
-		sys_counter_tv_print();
-		printf("YAFFS Mount: %d\n", res);
+		if(res == 0) {
+			printf("[OK]\n");
+		} else {
+			printf("[ERROR]\n");
+		}
 	}
+
+	spi2_nvic_init(SPI2_IRQ_PRIO);
+	spi2_bus_init(); //dac7562
+	sys_counter_tv_print();
+	printf("SPI2\n");
+
+	spi4_nvic_init(SPI4_IRQ_PRIO);
+	spi4_bus_init(); //tic12400,ncv7608
+	sys_counter_tv_print();
+	printf("SPI4\n");
+
+	spi5_nvic_init(SPI5_IRQ_PRIO);
+	spi5_bus_init(); //Socket3
+	sys_counter_tv_print();
+	printf("SPI5\n");
+
+	usart3_dma_nvic_init(UART3_DMA_Stream_IRQ_PRIO);
+	usart3_nvic_init(UART3_IRQ_PRIO);
+	usart3_init(); //RS485_1
+	sys_counter_tv_print();
+	printf("UART3\n");
+
+	modbus1_init(); //RS485_1
+	sys_counter_tv_print();
+	printf("MODBUS 1\n");
+
+	uart7_nvic_init(UART7_IRQ_PRIO);
+	uart7_init(); //RS485_Panel
+	sys_counter_tv_print();
+	printf("UART7\n");
+
+	modbus_panel_init(); //RS485_Panel
+	sys_counter_tv_print();
+	printf("MODBUS Panel\n");
+
+	can1_nvic_init(CAN1_IRQ_PRIO);
+	can2_nvic_init(CAN2_IRQ_PRIO);
+	can_canopen_init();
+	sys_counter_tv_print();
+	printf("CAN 1/2\n");
 
 	//eth_init(); //отпаяно
 

@@ -249,7 +249,7 @@ struct _S_CO_data CO_data = {
     .count = 3 /* Number of sub entries count */
 },
 .digital_in = {
-    .count = 36 /* Number of sub entries count */
+    .count = 67 /* Number of sub entries count */
 },
 .digital_out = {
     .count = 36 /* Number of sub entries count */

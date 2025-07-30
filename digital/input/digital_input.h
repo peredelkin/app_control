@@ -43,10 +43,10 @@ struct _S_Digital_Input {
     status_t status; //!< Слово состояния.
     // Входные данные.
     // Выходные данные.
-    reg_u32_t out_data;
+    reg_u32_t out_data; //!< Выход дискретных входов
     // Параметры.
-    reg_u32_t p_invert;
-    reg_u8_t p_select[DIGITAL_INPUT_COUNT];
+    reg_u8_t p_invert[DIGITAL_INPUT_COUNT]; //!< Параметр инверсии дискретных входов
+    reg_u8_t p_select[DIGITAL_INPUT_COUNT]; //!< Параметр выбора дискретных входов
     // Регистры.
     // Методы.
     METHOD_INIT(M_digital_input);
@@ -69,7 +69,7 @@ EXTERN METHOD_CALC_PROTO(M_digital_input);
         /* Выходные данные */\
 		0,\
         /* Параметры */\
-		0,\
+		{0},\
 		{0},\
         /* Регистры */\
         /* Методы */\

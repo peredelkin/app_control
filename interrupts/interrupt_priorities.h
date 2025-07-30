@@ -10,19 +10,19 @@
 
 #define TIM2_IRQ_PRIO 1		//SYS_CNT
 
+#define CAN1_IRQ_PRIO 2	//CAN1 Socket 3
+#define CAN2_IRQ_PRIO 2	//CAN2 RJ-45
+
 #define SPI2_IRQ_PRIO 3		//SPI2
 #define SPI4_IRQ_PRIO 3		//SPI4
 #define SPI5_IRQ_PRIO 3		//SPI5
 
-#define CAN1_IRQ_PRIO 5		//CAN1 Socket 3
-#define CAN2_IRQ_PRIO 5		//CAN2 RJ-45
 #define UART6_IRQ_PRIO 5	//UART6 Socket 3
 #define UART7_IRQ_PRIO 5	//UART7 RS485_Panel
 
 #define UART3_IRQ_PRIO 7	//UART3 RS485_1
 
-#define DMA1_Stream1_IRQ_PRIO 9 //UART3 RX RS485_1
-#define DMA1_Stream3_IRQ_PRIO 9 //UART3 TX RS485_1
+#define UART3_DMA_Stream_IRQ_PRIO 9 //UART3 RX/TX RS485_1
 
 #define TIM4_IRQ_PRIO 11	//MS_TIM
 

@@ -13,6 +13,7 @@
 #include "uart/init/uart_init.h"
 #include "modules/modules.h"
 #include <string.h>
+#include "reg/buf_reg.h"
 
 modbus_rtu_t modbus_panel;
 
@@ -55,9 +56,7 @@ static modbus_rtu_error_t modbus_panel_on_report_slave_id(modbus_rtu_slave_id_t*
     return MODBUS_RTU_ERROR_NONE;
 }
 
-extern reg_iq24_t pid_i_out_value_buffered; //TODO: тест CANopen SDO CLI
-
-static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* value)
+static modbus_rtu_error_t modbus_panel_on_read_hold_reg(uint16_t address, uint16_t* value)
 {
 	uint16_t addr_h = (address >> 1);
 	uint16_t addr_l = (address & 0x1);
@@ -73,7 +72,7 @@ static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* va
     	break;
     case 4: *value = ((uint16_t*)&(ntc_temp.out_temp[4]))[addr_l];
     	break;
-    case 5: *value = ((uint16_t*)&(pid_i_out_value_buffered))[addr_l];
+    case 5: *value = 0;
     	break;
     case 6: *value = panel_led.out_data;
     	break;
@@ -83,11 +82,99 @@ static modbus_rtu_error_t modbus_on_read_hold_reg(uint16_t address, uint16_t* va
     return MODBUS_RTU_ERROR_NONE;
 }
 
-static modbus_rtu_error_t modbus_on_write_hold_reg(uint16_t address, uint16_t value) {
+static modbus_rtu_error_t modbus_panel_on_write_hold_reg(uint16_t address, uint16_t value) {
 	switch(address) {
 	default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
 	}
 
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+enum {
+	MODBUS_RTU_CUSTOM_FUNC_REG_READ = 0x64,
+	MODBUS_RTU_CUSTOM_FUNC_REG_WRITE,
+};
+
+#pragma pack(push, 1)
+struct {
+		reg_id_t id;
+		uint8_t count;
+	} nmbs_reg_request;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+	struct {
+		reg_id_t id;
+		uint8_t count;
+	} nmbs_reg_response;
+#pragma pack(pop)
+
+//TODO: причесать этот колхоз
+modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+
+	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
+
+	size_t index = 0;
+
+	reg_t* reg = regs_find(nmbs_reg_request.id);
+
+	if(reg == NULL) return MODBUS_RTU_ERROR_FUNC;
+
+	int size = buf_put_reg_atomic(tx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, reg);
+
+	if(size <= 0) return MODBUS_RTU_ERROR_FUNC;
+
+	*tx_size = size;
+
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+//TODO: причесать этот колхоз
+modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+
+	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
+
+	//получим смещение заголовка
+	size_t index =  sizeof(nmbs_reg_request);
+	reg_id_t p_id = 0;
+	reg_type_t p_type = 0;
+	size_t p_size = 0;
+	uint8_t p_data[4];
+
+	//найдер регистр
+	reg_t* reg = regs_find(nmbs_reg_request.id);
+
+	if(reg == NULL) return MODBUS_RTU_ERROR_FUNC;
+
+	//прочитаем данные
+	int reg_getted = buf_get_reg_atomic(rx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, &p_id, &p_type, &p_size, p_data, 4);
+	if(reg_getted < 0) return MODBUS_RTU_ERROR_FUNC;
+
+	//сравним на соответствие запросу
+	if((reg->id == p_id) && (reg->type == p_type) && (reg_data_size(reg) == p_size)) {
+		memcpy(reg->data, p_data, p_size);
+	} else {
+		return MODBUS_RTU_ERROR_FUNC;
+	}
+
+	//скопируем ответ
+	memcpy(tx_data, &nmbs_reg_response, sizeof(nmbs_reg_response));
+
+	//укажем размер ответа
+	*tx_size = sizeof(nmbs_reg_response);
+
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+static modbus_rtu_error_t modbus_panel_custom_function_callback(modbus_rtu_func_t func, const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	switch(func) {
+	case MODBUS_RTU_CUSTOM_FUNC_REG_READ:
+		return modbus_panel_reg_read(rx_data, rx_size, tx_data, tx_size);
+	case MODBUS_RTU_CUSTOM_FUNC_REG_WRITE:
+		return modbus_panel_reg_write(rx_data, rx_size, tx_data, tx_size);
+	default:
+		return MODBUS_RTU_ERROR_FUNC;
+	}
 	return MODBUS_RTU_ERROR_NONE;
 }
 
@@ -123,6 +210,7 @@ void modbus_panel_init(void)
     //modbus_rtu_set_read_coil_callback(&modbus_1, modbus_on_read_coil);
     //modbus_rtu_set_write_coil_callback(&modbus_1, modbus_on_write_coil);
     modbus_rtu_set_report_slave_id_callback(&modbus_panel, modbus_panel_on_report_slave_id);
-    modbus_rtu_set_read_holding_reg_callback(&modbus_panel, modbus_on_read_hold_reg);
-    modbus_rtu_set_write_holding_reg_callback(&modbus_panel, modbus_on_write_hold_reg);
+    modbus_rtu_set_read_holding_reg_callback(&modbus_panel, modbus_panel_on_read_hold_reg);
+    modbus_rtu_set_write_holding_reg_callback(&modbus_panel, modbus_panel_on_write_hold_reg);
+    modbus_rtu_set_custom_function_callback(&modbus_panel, modbus_panel_custom_function_callback);
 }

@@ -4,11 +4,11 @@ FileVersion=1
 FileRevision=0
 EDSVersion=4.0
 Description=
-CreationTime=4:1pm
-CreationDate=03-28-2025
+CreationTime=8:33am
+CreationDate=07-18-2025
 CreatedBy=
-ModificationTime=4:1pm
-ModificationDate=03-28-2025
+ModificationTime=8:33am
+ModificationDate=07-18-2025
 ModifiedBy=
 
 [DeviceInfo]
@@ -2583,14 +2583,14 @@ HighLimit=
 [20A0]
 ParameterName=digital_in
 ObjectType=0x9
-SubNumber=0x25
+SubNumber=0x44
 
 [20A0sub0]
 ParameterName=count
 ObjectType=0x7
 DataType=0x5
 AccessType=ro
-DefaultValue=36
+DefaultValue=67
 PDOMapping=0
 LowLimit=
 HighLimit=
@@ -2626,9 +2626,9 @@ LowLimit=
 HighLimit=
 
 [20A0sub4]
-ParameterName=invert
+ParameterName=invert0
 ObjectType=0x7
-DataType=0x7
+DataType=0x5
 AccessType=rw
 DefaultValue=
 PDOMapping=0
@@ -2636,7 +2636,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub5]
-ParameterName=select0
+ParameterName=invert1
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2646,7 +2646,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub6]
-ParameterName=select1
+ParameterName=invert2
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2656,7 +2656,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub7]
-ParameterName=select2
+ParameterName=invert3
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2666,7 +2666,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub8]
-ParameterName=select3
+ParameterName=invert4
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2676,7 +2676,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub9]
-ParameterName=select4
+ParameterName=invert5
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2686,7 +2686,7 @@ LowLimit=
 HighLimit=
 
 [20A0subA]
-ParameterName=select5
+ParameterName=invert6
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2696,7 +2696,7 @@ LowLimit=
 HighLimit=
 
 [20A0subB]
-ParameterName=select6
+ParameterName=invert7
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2706,7 +2706,7 @@ LowLimit=
 HighLimit=
 
 [20A0subC]
-ParameterName=select7
+ParameterName=invert8
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2716,7 +2716,7 @@ LowLimit=
 HighLimit=
 
 [20A0subD]
-ParameterName=select8
+ParameterName=invert9
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2726,7 +2726,7 @@ LowLimit=
 HighLimit=
 
 [20A0subE]
-ParameterName=select9
+ParameterName=invert10
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2736,7 +2736,7 @@ LowLimit=
 HighLimit=
 
 [20A0subF]
-ParameterName=select10
+ParameterName=invert11
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2746,7 +2746,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub10]
-ParameterName=select11
+ParameterName=invert12
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2756,7 +2756,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub11]
-ParameterName=select12
+ParameterName=invert13
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2766,7 +2766,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub12]
-ParameterName=select13
+ParameterName=invert14
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2776,7 +2776,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub13]
-ParameterName=select14
+ParameterName=invert15
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2786,7 +2786,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub14]
-ParameterName=select15
+ParameterName=invert16
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2796,7 +2796,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub15]
-ParameterName=select16
+ParameterName=invert17
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2806,7 +2806,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub16]
-ParameterName=select17
+ParameterName=invert18
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2816,7 +2816,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub17]
-ParameterName=select18
+ParameterName=invert19
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2826,7 +2826,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub18]
-ParameterName=select19
+ParameterName=invert20
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2836,7 +2836,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub19]
-ParameterName=select20
+ParameterName=invert21
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2846,7 +2846,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub1A]
-ParameterName=select21
+ParameterName=invert22
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2856,7 +2856,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub1B]
-ParameterName=select22
+ParameterName=invert23
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2866,7 +2866,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub1C]
-ParameterName=select23
+ParameterName=invert24
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2876,7 +2876,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub1D]
-ParameterName=select24
+ParameterName=invert25
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2886,7 +2886,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub1E]
-ParameterName=select25
+ParameterName=invert26
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2896,7 +2896,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub1F]
-ParameterName=select26
+ParameterName=invert27
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2906,7 +2906,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub20]
-ParameterName=select27
+ParameterName=invert28
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2916,7 +2916,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub21]
-ParameterName=select28
+ParameterName=invert29
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2926,7 +2926,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub22]
-ParameterName=select29
+ParameterName=invert30
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2936,7 +2936,7 @@ LowLimit=
 HighLimit=
 
 [20A0sub23]
-ParameterName=select30
+ParameterName=invert31
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -2946,6 +2946,316 @@ LowLimit=
 HighLimit=
 
 [20A0sub24]
+ParameterName=select0
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub25]
+ParameterName=select1
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub26]
+ParameterName=select2
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub27]
+ParameterName=select3
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub28]
+ParameterName=select4
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub29]
+ParameterName=select5
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub2A]
+ParameterName=select6
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub2B]
+ParameterName=select7
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub2C]
+ParameterName=select8
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub2D]
+ParameterName=select9
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub2E]
+ParameterName=select10
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub2F]
+ParameterName=select11
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub30]
+ParameterName=select12
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub31]
+ParameterName=select13
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub32]
+ParameterName=select14
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub33]
+ParameterName=select15
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub34]
+ParameterName=select16
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub35]
+ParameterName=select17
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub36]
+ParameterName=select18
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub37]
+ParameterName=select19
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub38]
+ParameterName=select20
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub39]
+ParameterName=select21
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub3A]
+ParameterName=select22
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub3B]
+ParameterName=select23
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub3C]
+ParameterName=select24
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub3D]
+ParameterName=select25
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub3E]
+ParameterName=select26
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub3F]
+ParameterName=select27
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub40]
+ParameterName=select28
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub41]
+ParameterName=select29
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub42]
+ParameterName=select30
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[20A0sub43]
 ParameterName=select31
 ObjectType=0x7
 DataType=0x5

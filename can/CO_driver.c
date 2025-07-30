@@ -123,57 +123,28 @@ void CO_CANsetNormalMode(CO_CANmodule_t *CANmodule) {
 	can_interrupts_enable(can);
 }
 
-//for 168MHz
 CO_ReturnError_t CO_CANbitRate_set(void *CANptr, uint16_t CANbitRate) {
 	//проверка указателя CANptr
 	if (CANptr == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
-
 	//приведение указателя CANptr
 	can_bus_t *can_bus = ((can_bus_t*) CANptr);
-
-	//получение указателя CAN
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
-	//проверка указателя CAN
-	if (can == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
-
-	CO_ReturnError_t error = CO_ERROR_NO;
-
-	uint32_t btr = 0xFFFFFFFF; //CAN bit timing
-
-	switch (CANbitRate) {
-	case 10:
-		btr = 0x001b0117;
+	//ошибки CANopen
+	CO_ReturnError_t co_err = CO_ERROR_NO;
+	//настройка битрейта
+	err_t can_err = can_bus_bitrate_set(can_bus, CANbitRate);
+	//трансляция ошибок can в canopen
+	switch(can_err) {
+	case E_NULL_POINTER:
+		co_err = CO_ERROR_ILLEGAL_ARGUMENT;
 		break;
-	case 20:
-		btr = 0x001b008b;
-		break;
-	case 50:
-		btr = 0x001b0037;
-		break;
-	case 100:
-		btr = 0x001b001b;
+	case E_INVALID_VALUE:
+		co_err = CO_ERROR_ILLEGAL_BAUDRATE;
 		break;
 	default:
-		error = CO_ERROR_ILLEGAL_BAUDRATE;
-		//no break
-	case 125:
-		btr = 0x001c0014;
-		break;
-	case 250:
-		btr = 0x001a000b;
-		break;
-	case 500:
-		btr = 0x001a0005;
-		break;
-	case 1000:
-		btr = 0x001a0002;
 		break;
 	}
 
-	can_BTR_set(can, btr);
-
-	return error;
+	return co_err;
 }
 
 CO_ReturnError_t CO_CANmodule_init(CO_CANmodule_t *CANmodule, void *CANptr, CO_CANrx_t rxArray[],
@@ -241,15 +212,15 @@ CO_ReturnError_t CO_CANrxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, u
 	err_t err = E_NO_ERROR;
 
 	/* CAN identifier and CAN mask, bit aligned with CAN module. */
-	uint32_t can_id = (uint32_t) (CAN_FIR_STID & (ident << CAN_FIR_STID_SHIFT));
-	uint32_t can_mask = (uint32_t) (CAN_FIR_STID & (mask << CAN_FIR_STID_SHIFT));
+	uint32_t can_id = CAN_BUS_MAKE_ID(ident); //(uint32_t) (CAN_FIR_STID & (ident << CAN_FIR_STID_SHIFT));
+	uint32_t can_mask = CAN_BUS_MAKE_MASK(mask); //(uint32_t) (CAN_FIR_STID & (mask << CAN_FIR_STID_SHIFT));
 
 	if (rtr) {
 		can_id |= CAN_FIR_RTR;
 		can_mask |= CAN_FIR_RTR;
 	}
 
-	can_bus_t *can_bus = (can_bus_t*) ((can_bus_t*) CANmodule->CANptr);
+	can_bus_t *can_bus = ((can_bus_t*) CANmodule->CANptr);
 
 	err = can_bus_filter_16b_bank_set(can_bus, index, can_id, can_mask);
 	if (err == E_INVALID_VALUE || err == E_OUT_OF_RANGE) return CO_ERROR_ILLEGAL_ARGUMENT;
@@ -275,8 +246,7 @@ CO_CANtx_t* CO_CANtxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, uint16
 
 		/* CAN identifier, DLC and rtr, bit aligned with CAN module transmit buffer, microcontroller specific. */
 		if (rtr) {
-			buffer->ident =
-					(uint32_t) ((CAN_TIR_STID & (ident << CAN_TIR_STID_SHIFT)) | CAN_TIR_RTR);
+			buffer->ident = (uint32_t) ((CAN_TIR_STID & (ident << CAN_TIR_STID_SHIFT)) | CAN_TIR_RTR);
 		} else {
 			buffer->ident = (uint32_t) (CAN_TIR_STID & (ident << CAN_TIR_STID_SHIFT));
 		}
@@ -296,11 +266,7 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
 
 	if (can_bus == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
 
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
 	CO_ReturnError_t co_err = CO_ERROR_NO;
-
-	err_t bus_err = E_NO_ERROR;
 
 	/* Verify overflow */
 	if (buffer->bufferFull) {
@@ -313,30 +279,13 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
 
 	CO_LOCK_CAN_SEND(CANmodule);
 	/* if CAN TX buffer is free, copy message to it */
-	bus_err = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC, buffer->data);
-
-	switch (bus_err) {
-	case E_NULL_POINTER:
-		co_err = CO_ERROR_ILLEGAL_ARGUMENT;
-		break;
-
-	case E_BUSY:
-		buffer->bufferFull = true;
-		CANmodule->CANtxCount++;
-		break;
-
-	case E_OUT_OF_RANGE:
-		co_err = CO_ERROR_ILLEGAL_ARGUMENT;
-		break;
-
-	case E_NO_ERROR:
+	if(can_bus_write(can_bus, buffer->ident, buffer->DLC, buffer->data)) {
 		if (CANmodule->CANtxCount == 0) {
 			CANmodule->bufferInhibitFlag = buffer->syncFlag;
 		}
-		break;
-
-	default:
-		break;
+	} else {
+		buffer->bufferFull = true;
+		CANmodule->CANtxCount++;
 	}
 
 	CO_UNLOCK_CAN_SEND(CANmodule);
@@ -381,7 +330,6 @@ void CO_CANclearPendingSyncPDOs(CO_CANmodule_t *CANmodule) {
 }
 
 //CO_CAN_ERR
-
 void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
 
 	can_bus_t *can_device = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
@@ -440,82 +388,82 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
 //CAN1_RX1_IRQHandler               /* CAN1 RX1                     */
 //CAN1_SCE_IRQHandler               /* CAN1 SCE                     */
 
-void CO_TSR_RQCP_Handler(CO_CANmodule_t *CANmodule, uint32_t TSR) {
-	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
-
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
-	err_t bus_err = E_NO_ERROR;
-
-	int mailbox;
-
-	for (mailbox = 0; mailbox < 3; mailbox++) {
-		if (can_TSR_RQCP_get(TSR, mailbox)) {
-			/* First CAN message (bootup) was sent successfully */
-			CANmodule->firstCANtxMessage = false;
-			/* clear flag from previous message */
-			CANmodule->bufferInhibitFlag = false;
-			/* Are there any new messages waiting to be send */
-			if (CANmodule->CANtxCount > 0U) {
-				uint16_t message_index; /* index of transmitting message */
-
-				/* first buffer */
-				CO_CANtx_t *buffer = &CANmodule->txArray[0];
-				/* search through whole array of pointers to transmit message buffers. */
-				for (message_index = CANmodule->txSize; message_index > 0U; message_index--) {
-					/* if message buffer is full, send it. */
-					if (buffer->bufferFull) {
-						/* if CAN TX buffer is free, copy message to it */
-						bus_err = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC,
-								buffer->data);
-
-						switch (bus_err) {
-						case E_NULL_POINTER:
-							break;
-
-						case E_BUSY:
-							break;
-
-						case E_OUT_OF_RANGE:
-							break;
-
-						case E_NO_ERROR:
-							buffer->bufferFull = false;
-							if (CANmodule->CANtxCount > 0) CANmodule->CANtxCount--;
-							CANmodule->bufferInhibitFlag = buffer->syncFlag;
-							break;
-
-						default:
-							break;
-						}
-					}
-
-					buffer++;
-				} /* end of for loop */
-
-				/* Clear counter if no more messages */
-				if (message_index == 0U) {
-					CANmodule->CANtxCount = 0U;
-				}
-			} else {
-				can_TSR_RQCP_clear(can, mailbox); //TODO: определить условие сброса фалага и место вызова
-			}
-		}
-	}
-}
-
-void CO_TX_IRQHandler(CO_CANmodule_t *CANmodule) {
-
-	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
-
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
-	uint32_t TSR = can_TSR_read(can);
-
-	if (can_IER_TMEIE_read(can)) {
-		CO_TSR_RQCP_Handler(CANmodule, TSR);
-	}
-}
+//void CO_TSR_RQCP_Handler(CO_CANmodule_t *CANmodule, uint32_t TSR) {
+//	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
+//
+//	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+//
+//	err_t bus_err = E_NO_ERROR;
+//
+//	int mailbox;
+//
+//	for (mailbox = 0; mailbox < 3; mailbox++) {
+//		if (can_TSR_RQCP_get(TSR, mailbox)) {
+//			/* First CAN message (bootup) was sent successfully */
+//			CANmodule->firstCANtxMessage = false;
+//			/* clear flag from previous message */
+//			CANmodule->bufferInhibitFlag = false;
+//			/* Are there any new messages waiting to be send */
+//			if (CANmodule->CANtxCount > 0U) {
+//				uint16_t message_index; /* index of transmitting message */
+//
+//				/* first buffer */
+//				CO_CANtx_t *buffer = &CANmodule->txArray[0];
+//				/* search through whole array of pointers to transmit message buffers. */
+//				for (message_index = CANmodule->txSize; message_index > 0U; message_index--) {
+//					/* if message buffer is full, send it. */
+//					if (buffer->bufferFull) {
+//						/* if CAN TX buffer is free, copy message to it */
+//						bus_err = can_tx_mailbox_write_and_request(can, buffer->ident, buffer->DLC,
+//								buffer->data);
+//
+//						switch (bus_err) {
+//						case E_NULL_POINTER:
+//							break;
+//
+//						case E_BUSY:
+//							break;
+//
+//						case E_OUT_OF_RANGE:
+//							break;
+//
+//						case E_NO_ERROR:
+//							buffer->bufferFull = false;
+//							if (CANmodule->CANtxCount > 0) CANmodule->CANtxCount--;
+//							CANmodule->bufferInhibitFlag = buffer->syncFlag;
+//							break;
+//
+//						default:
+//							break;
+//						}
+//					}
+//
+//					buffer++;
+//				} /* end of for loop */
+//
+//				/* Clear counter if no more messages */
+//				if (message_index == 0U) {
+//					CANmodule->CANtxCount = 0U;
+//				}
+//			} else {
+//				can_TSR_RQCP_clear(can, mailbox); //TODO: определить условие сброса фалага и место вызова
+//			}
+//		}
+//	}
+//}
+//
+//void CO_TX_IRQHandler(CO_CANmodule_t *CANmodule) {
+//
+//	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
+//
+//	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+//
+//	uint32_t TSR = can_TSR_read(can);
+//
+//	if (can_IER_TMEIE_read(can)) {
+//		CO_TSR_RQCP_Handler(CANmodule, TSR);
+//	}
+//}
 
 void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
 	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
@@ -531,19 +479,10 @@ void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
 
 	CO_CANrxMsg_t rcvMsg = { 0 };
 
-	err = can_rx_mailbox_read_and_release(can, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
+	err = can_rx_mailbox_read(can, fifo, &rcvMsg.ident, &rcvMsg.DLC, &index,
 			rcvMsg.data);
 
-	switch (fifo) {
-	case 0:
-		CO_index = can_bus->fifo_0_filter[can_bus->can_n][index];
-		break;
-	case 1:
-		CO_index = can_bus->fifo_1_filter[can_bus->can_n][index];
-		break;
-	default:
-		break;
-	}
+	CO_index = can_bus->index_array[fifo][index];
 
 	switch (err) {
 	case E_NO_ERROR:
@@ -556,143 +495,6 @@ void CO_can_rx_mailbox_read_and_release(CO_CANmodule_t *CANmodule, int fifo) {
 	/* Call specific function, which will process the message */
 	if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
 		buffer->pCANrx_callback(buffer->object, (void*) &rcvMsg);
-	}
-}
-
-void CO_RX_IRQHandler(CO_CANmodule_t *CANmodule, int fifo) {
-
-	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
-
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
-	uint32_t RFR = can_RFR_read(can, fifo);
-
-	//FMPIE0: FIFO message pending interrupt enabled
-	if (can_IER_FMPIE_read(can, fifo)) {
-		//FIFO 0 message pending
-		if (can_RFR_FMP_read(RFR)) {
-			CO_can_rx_mailbox_read_and_release(CANmodule, fifo);
-		}
-	}
-
-	//FULL: FIFO full
-	if (can_RFR_FULL_read(RFR)) {
-		switch (fifo) {
-		case CAN_RX_MAILBOX_0:
-			can_bus->error |= CAN_ERROR_RX0_FULL;
-			break;
-
-		case CAN_RX_MAILBOX_1:
-			can_bus->error |= CAN_ERROR_RX1_FULL;
-			break;
-
-		default:
-			break;
-		}
-
-		//FFIE0: FIFO full interrupt enabled
-		if (can_IER_FFIE_read(can, fifo)) {
-
-		}
-
-		can_RFR_FULL_clear(can, fifo);
-	}
-
-	//FOVR: FIFO overrun
-	if (can_RFR_FOVR_read(RFR)) {
-		switch (fifo) {
-		case CAN_RX_MAILBOX_0:
-			can_bus->error |= CAN_ERROR_RX0_OVERRUN;
-			break;
-
-		case CAN_RX_MAILBOX_1:
-			can_bus->error |= CAN_ERROR_RX1_OVERRUN;
-			break;
-
-		default:
-			break;
-		}
-
-		//FOVIE0: FIFO overrun interrupt enabled
-		if (can_IER_FOVIE_read(can, fifo)) {
-
-		}
-
-		can_RFR_FOVR_clear(can, fifo);
-	}
-}
-
-void CO_SCE_IRQHandler(CO_CANmodule_t *CANmodule) {
-
-	can_bus_t *can_bus = (can_bus_t*) (CANmodule->CANptr); //Pointer to CAN device.
-
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
-
-	uint32_t MSR = can_MSR_read(can);
-
-	uint32_t ESR = can_ESR_read(can);
-
-	can_bus->rx_error_counter = can_ESR_REC_read(ESR);
-
-	can_bus->tx_error_counter = can_ESR_TEC_read(ESR);
-
-	if (can_IER_ERRIE_read(can)) {
-		if (can_MSR_ERRI_read(MSR)) {
-			if (can_IER_EWGIE_read(can)) {
-				if (can_ESR_EWGF_read(ESR)) {
-					if (can_bus->rx_error_counter >= 96) {
-						can_bus->error |= CAN_ERROR_RX_WARNING;
-					}
-
-					if (can_bus->tx_error_counter >= 96) {
-						can_bus->error |= CAN_ERROR_TX_WARNING;
-					}
-				} else {
-					can_bus->error &= ~(CAN_ERROR_TX_WARNING | CAN_ERROR_RX_WARNING);
-				}
-			}
-
-			if (can_IER_EPVIE_read(can)) {
-				if (can_ESR_EPVF_read(ESR)) {
-					if (can_bus->rx_error_counter > 127) {
-						can_bus->error |= CAN_ERROR_RX_PASSIVE;
-					}
-
-					if (can_bus->tx_error_counter > 127) {
-						can_bus->error |= CAN_ERROR_TX_PASSIVE;
-					}
-				} else {
-					can_bus->error &= ~(CAN_ERROR_TX_PASSIVE | CAN_ERROR_RX_PASSIVE);
-				}
-			}
-
-			if (can_IER_BOFIE_read(can)) {
-				if (can_ESR_BOFF_read(ESR)) {
-					can_bus->error |= CAN_ERROR_TX_BUSSOFF;
-				} else {
-					can_bus->error &= ~CAN_ERROR_TX_BUSSOFF;
-				}
-			}
-
-			if (can_IER_LECIE_read(can)) {
-				can_bus->last_error_code = can_ESR_LEC_read(ESR);
-			}
-
-			can_MSR_ERRI_clear(can);
-		}
-	}
-
-	if (can_MSR_WKUI_read(MSR)) {
-		if (can_IER_WKUIE_read(can)) {
-		}
-		can_MSR_WKUI_clear(can);
-	}
-
-	if (can_IER_SLKIE_read(can)) {
-		if (can_MSR_SLAKI_read(MSR)) {
-
-			can_MSR_SLAKI_clear(can);
-		}
 	}
 }
 

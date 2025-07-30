@@ -18,7 +18,7 @@
  */
 
 // User static variables for allocation.
-#define CO_USE_GLOBALS 1
+//#define CO_USE_GLOBALS 1
 
 // crc16.
 #define CO_CONFIG_CRC16 CO_CONFIG_CRC16_ENABLE
@@ -201,11 +201,6 @@ typedef struct {
     uint32_t primask_emcy; /* Primask register for interrupts for emergency operation */
     uint32_t primask_od;   /* Primask register for interrupts for send operation */
 } CO_CANmodule_t;
-
-
-extern void CO_TX_IRQHandler(CO_CANmodule_t* CANmodule);
-extern void CO_RX_IRQHandler(CO_CANmodule_t* CANmodule, int fifo);
-extern void CO_SCE_IRQHandler(CO_CANmodule_t* CANmodule);
 
 
 /* (un)lock critical section in CO_CANsend() */

@@ -18,11 +18,20 @@
 #include "OD.h"
 
 
-//CAN1_TX_IRQHandler                /* CAN1 TX                      */
-//CAN1_RX0_IRQHandler               /* CAN1 RX0                     */
-//CAN1_RX1_IRQHandler               /* CAN1 RX1                     */
-//CAN1_SCE_IRQHandler               /* CAN1 SCE                     */
+CO_t* can1_co = NULL;
+CO_t* can2_co = NULL;
 
+CO_SDO_CLI_Queue can1_cli_Queue[16];
+
+CO_SDO_CLI_Driver_t can1_cli_driver;
+
+#define CAN_BUS_QUEUE_SIZE 56
+
+can_rx_frame_queue_t can_bus_1_rx_queue[CAN_BUS_QUEUE_SIZE];
+can_tx_frame_queue_t can_bus_1_tx_queue[CAN_BUS_QUEUE_SIZE];
+
+can_rx_frame_queue_t can_bus_2_rx_queue[CAN_BUS_QUEUE_SIZE];
+can_tx_frame_queue_t can_bus_2_tx_queue[CAN_BUS_QUEUE_SIZE];
 
 can_bus_t can_bus_1 = {
 		.can_ptr[0] = CAN1,
@@ -31,7 +40,8 @@ can_bus_t can_bus_1 = {
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
-		.last_error_code  = 0
+		.last_error_code  = 0,
+		.last_index = 0
 };
 
 can_bus_t can_bus_2 = {
@@ -41,48 +51,100 @@ can_bus_t can_bus_2 = {
 		.error = 0,
 		.tx_error_counter  = 0,
 		.rx_error_counter = 0,
-		.last_error_code  = 0
+		.last_error_code  = 0,
+		.last_index = 0
 };
 
-CO_t* can1_co = NULL;
-CO_t* can2_co = NULL;
+int can_bus_1_bridge_index;
 
-CO_SDO_CLI_Queue can1_cli_Queue[16];
+err_t can_bus_1_rx_callback(void* bus, void* head) {
 
-CO_SDO_CLI_Driver_t can1_cli_driver;
+	//can_bus_t* can_bus = (can_bus_t*)bus;
+	can_rx_frame_queue_t* frame = (can_rx_frame_queue_t*)head;
+
+	//если индекс принадлежит мосту
+	if(can_bus_1_bridge_index == frame->index) {
+		can_bus_write(&can_bus_2, frame->id, frame->dlc, frame->data);
+	} else {
+		if((can1_co == NULL) || (can1_co->CANmodule == NULL) || (can1_co->CANmodule->rxArray) == NULL) return E_NULL_POINTER;
+
+		CO_CANrx_t *buffer = &can1_co->CANmodule->rxArray[frame->index];
+
+		CO_CANrxMsg_t rcvMsg = { 0 };
+
+		rcvMsg.ident = frame->id;
+		rcvMsg.DLC = frame->dlc;
+		memcpy(rcvMsg.data, frame->data, frame->dlc); //copy DATA
+
+		if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
+			buffer->pCANrx_callback(buffer->object, (void*) &rcvMsg);
+		}
+	}
+
+	return E_NO_ERROR;
+}
+
+int can_bus_2_bridge_index;
+
+err_t can_bus_2_rx_callback(void* bus, void* head) {
+
+	//can_bus_t* can_bus = (can_bus_t*)bus;
+	can_rx_frame_queue_t* frame = (can_rx_frame_queue_t*)head;
+
+	//если индекс принадлежит мосту
+	if(can_bus_2_bridge_index == frame->index) {
+		can_bus_write(&can_bus_1, frame->id, frame->dlc, frame->data);
+	} else {
+		if((can2_co == NULL) || (can2_co->CANmodule == NULL) || (can2_co->CANmodule->rxArray) == NULL) return E_NULL_POINTER;
+
+		CO_CANrx_t *buffer = &can2_co->CANmodule->rxArray[frame->index];
+
+		CO_CANrxMsg_t rcvMsg = { 0 };
+
+		rcvMsg.ident = frame->id;
+		rcvMsg.DLC = frame->dlc;
+		memcpy(rcvMsg.data, frame->data, frame->dlc); //copy DATA
+
+		if ((buffer != NULL) && (buffer->pCANrx_callback != NULL)) {
+			buffer->pCANrx_callback(buffer->object, (void*) &rcvMsg);
+		}
+	}
+
+	return E_NO_ERROR;
+}
 
 //CAN1
 void CAN1_TX_IRQHandler() {
-	CO_TX_IRQHandler(can1_co->CANmodule);
+	CAN_TX_IRQHandler(&can_bus_1);
 }
 
 void CAN1_RX0_IRQHandler() {
-	CO_RX_IRQHandler(can1_co->CANmodule, CAN_RX_MAILBOX_0);
+	CAN_RX_IRQHandler(&can_bus_1, CAN_RX_MAILBOX_0);
 }
 
 void CAN1_RX1_IRQHandler() {
-	CO_RX_IRQHandler(can1_co->CANmodule, CAN_RX_MAILBOX_1);
+	CAN_RX_IRQHandler(&can_bus_1, CAN_RX_MAILBOX_1);
 }
 
 void CAN1_SCE_IRQHandler() {
-	CO_SCE_IRQHandler(can1_co->CANmodule);
+	CAN_SCE_IRQHandler(&can_bus_1);
 }
 
 //CAN2
 void CAN2_TX_IRQHandler() {
-	CO_TX_IRQHandler(can2_co->CANmodule);
+	CAN_TX_IRQHandler(&can_bus_2);
 }
 
 void CAN2_RX0_IRQHandler() {
-	CO_RX_IRQHandler(can2_co->CANmodule, CAN_RX_MAILBOX_0);
+	CAN_RX_IRQHandler(&can_bus_2, CAN_RX_MAILBOX_0);
 }
 
 void CAN2_RX1_IRQHandler() {
-	CO_RX_IRQHandler(can2_co->CANmodule, CAN_RX_MAILBOX_1);
+	CAN_RX_IRQHandler(&can_bus_2, CAN_RX_MAILBOX_1);
 }
 
 void CAN2_SCE_IRQHandler() {
-	CO_SCE_IRQHandler(can2_co->CANmodule);
+	CAN_SCE_IRQHandler(&can_bus_2);
 }
 
 
@@ -166,7 +228,7 @@ int create_CO(CO_t** co)
 
     CO_t* co_res = CO_new(NULL, NULL);
 
-    //printf("co: 0x%x\n", (int)(long)co);
+    //printf("co: 0x%x ", (int)(long)co);
 
     if(co_res == NULL) return -1;
 
@@ -236,10 +298,19 @@ void can_CO_sdo_cli_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 	CO_SDO_CLI_process(drv, dt);
 }
 
-void can_tim_handler(void* arg) {
-	can_CO_process(can1_co, 1000, NULL);
-	can_CO_sdo_cli_process(&can1_cli_driver, 1000);
-	can_CO_process(can2_co, 1000, NULL);
+void can_process_callback(void* arg) {
+	//CAN1 CAN2 RX
+	can_bus_rx_process(&can_bus_1);
+	can_bus_rx_process(&can_bus_2);
+
+	//CANopen
+	can_CO_process(can1_co, CAN_TIMER_TICKS_FREQ, NULL);
+	can_CO_sdo_cli_process(&can1_cli_driver, CAN_TIMER_TICKS_FREQ);
+	can_CO_process(can2_co, CAN_TIMER_TICKS_FREQ, NULL);
+
+	//CAN1 CAN2 TX
+	can_bus_tx_process(&can_bus_1);
+	can_bus_tx_process(&can_bus_2);
 }
 
 void can1_sdo_cli_init(void) {
@@ -259,31 +330,38 @@ void can1_init(void) {
 	can1_reset();
 	gpio_can1_cfg_setup();
 	can_setup(&can_bus_1);
+	can_bus_rx_queue_init(&can_bus_1, can_bus_1_rx_queue, CAN_BUS_QUEUE_SIZE);
+	can_bus_tx_queue_init(&can_bus_1, can_bus_1_tx_queue, CAN_BUS_QUEUE_SIZE);
+	can_bus_1.rx_callback = can_bus_1_rx_callback;
 }
 
 void can2_init(void) {
 	can2_reset();
 	gpio_can2_cfg_setup();
 	can_setup(&can_bus_2);
+	can_bus_rx_queue_init(&can_bus_2, can_bus_2_rx_queue, CAN_BUS_QUEUE_SIZE);
+	can_bus_tx_queue_init(&can_bus_2, can_bus_2_tx_queue, CAN_BUS_QUEUE_SIZE);
+	can_bus_2.rx_callback = can_bus_2_rx_callback;
 }
 
 void can_filter_init(void) {
 	can_filter_setup(14);
 }
 
-//#define CAN1_CO_ENABLE
+#define CAN1_CO_ENABLE
 #define CAN2_CO_ENABLE
 
-void can_canopen_init(void) {
-	sys_counter_tv_print();
+#define CAN_BRIDGE_CLIENT_TO_SERVER (0x641)
+#define CAN_BRIDGE_SERVER_TO_CLIENT (0x621)
 
+void can_canopen_init(void) {
 	int can1_co_res = 0;
 	CO_ReturnError_t co1_err = CO_ERROR_NO;
 
 	int can2_co_res = 0;
 	CO_ReturnError_t co2_err = CO_ERROR_NO;
 
-#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+#if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	can1_rcc_init();
 	can2_rcc_init();
 #endif
@@ -296,13 +374,12 @@ void can_canopen_init(void) {
 	can2_init();
 #endif
 
-#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+#if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	can_filter_init();
 #endif
 
-	printf("\n");
-
 #ifdef CAN1_CO_ENABLE
+	sys_counter_tv_print();
 	can1_co_res = create_CO(&can1_co);
 
 	if(can1_co_res == -1 || can1_co == NULL) {
@@ -321,6 +398,7 @@ void can_canopen_init(void) {
 #endif
 
 #ifdef CAN2_CO_ENABLE
+	sys_counter_tv_print();
 	can2_co_res = create_CO(&can2_co);
 
 	if(can2_co_res == -1 || can2_co == NULL) {
@@ -337,27 +415,50 @@ void can_canopen_init(void) {
 	}
 #endif
 
-#if  defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+#if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
+	uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_SERVER_TO_CLIENT); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
+	uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+
+	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
+	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+
+	//sys_counter_tv_print();
+	//printf("CAN1 CO last index: %u\n", can_bus_1.last_index);
+	can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_index + 1, can_1_to_2_id, can_1_to_2_mask);
+	//sys_counter_tv_print();
+	//printf("CAN1 BRIDGE index: %u\n", can_bus_1.last_index);
+	can_bus_1_bridge_index = can_bus_1.last_index;
+
+	//sys_counter_tv_print();
+	//printf("CAN2 CO last index: %u\n", can_bus_2.last_index);
+	can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2.last_index + 1, can_2_to_1_id, can_2_to_1_mask);
+	//sys_counter_tv_print();
+	//printf("CAN2 BRIDGE2 index: %u\n", can_bus_2.last_index);
+	can_bus_2_bridge_index = can_bus_2.last_index;
+#endif
+
+#if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
+	sys_counter_tv_print();
+	printf("CO timer ");
 	if(can1_co_res == 0 && can2_co_res == 0 && co1_err == CO_ERROR_NO && co2_err == CO_ERROR_NO) {
 		//Настройка CO_process таймера.
 		INIT(can_tim); //TIM5
-		CALLBACK_PROC(can_tim.on_timeout) = can_tim_handler;
+		CALLBACK_PROC(can_tim.on_timeout) = can_process_callback;
 		CALLBACK_ARG(can_tim.on_timeout) = NULL; //(void*) can1_co;
 		if (can_tim.status & MS_TIMER_STATUS_ERROR) {
-			printf("CO timer init error(%lu)\n", can_tim.status);
+			printf("init error(%lu)\n", can_tim.status);
 		} else {
-			printf("CO timer inited (%lu)\n", can_tim.status);
 			// Запуск CO_process таймера.
 			can_tim.control = MS_TIMER_CONTROL_ENABLE;
 			CONTROL(can_tim);
 			if (can_tim.status & MS_TIMER_STATUS_RUN) {
-				printf("CO timer started (%lu)\n", can_tim.status);
+				printf("started (%lu)\n", can_tim.status);
 			} else {
-				printf("CO timer start error (%lu)\n", can_tim.status);
+				printf("start error (%lu)\n", can_tim.status);
 			}
 		}
 	} else {
-		printf("CO timer NOT started!\n");
+		printf("NOT started!\n");
 	}
 #endif
 }

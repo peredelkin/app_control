@@ -112,6 +112,15 @@ void can_TDHR_write(CAN_TypeDef* CAN, int mailbox, uint32_t data) {
 	}
 }
 
+void can_raw_tx_mailbox_write_and_request(CAN_TypeDef* CAN, int mailbox, uint32_t TIR, uint32_t TDTR, uint32_t TDLR, uint32_t TDHR) {
+	can_TIR_write(CAN, mailbox, TIR);	//TX mailbox identifier
+	can_TDTR_write(CAN, mailbox, TDTR);	//CAN mailbox data length control and time stamp
+	can_TDLR_write(CAN, mailbox, TDLR);	//CAN mailbox data low
+	can_TDHR_write(CAN, mailbox, TDHR);	//CAN mailbox data high
+
+	can_tx_request(CAN, mailbox);	//Transmit mailbox request
+}
+
 err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dlc, uint8_t* data) {
 	if(CAN == NULL) return E_NULL_POINTER;
 
@@ -122,10 +131,6 @@ err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dl
 	uint32_t TSR = can_TSR_read(CAN);
 
 	int tx_empty = can_TSR_TME_get(TSR);
-
-	if(tx_empty < 0) {
-		return E_BUSY;
-	}
 
 	uint32_t TIR = 0;
 	uint32_t TDTR = 0;
@@ -140,12 +145,11 @@ err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dl
 	//DATA
 	memcpy(TDLHR, data, dlc); //copy DATA
 
-	can_TIR_write(CAN, tx_empty, TIR);			//TX mailbox identifier
-	can_TDTR_write(CAN, tx_empty, TDTR);		//CAN mailbox data length control and time stamp
-	can_TDLR_write(CAN, tx_empty, TDLHR[0]);	//CAN mailbox data low
-	can_TDHR_write(CAN, tx_empty, TDLHR[1]);	//CAN mailbox data high
+	if (tx_empty < 0) {
+		return E_BUSY;
+	}
 
-	can_tx_request(CAN, tx_empty);	//Transmit mailbox request
+	can_raw_tx_mailbox_write_and_request(CAN, tx_empty, TIR, TDTR, TDLHR[0], TDLHR[1]);
 
 	return E_NO_ERROR;
 }
