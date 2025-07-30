@@ -99,23 +99,24 @@ enum {
 struct {
 		reg_id_t id;
 		uint8_t count;
-	} panel_request;
+	} nmbs_reg_request;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 	struct {
 		reg_id_t id;
 		uint8_t count;
-	} panel_response;
+	} nmbs_reg_response;
 #pragma pack(pop)
 
+//TODO: причесать этот колхоз
 modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
 
-	memcpy(&panel_request, rx_data, sizeof(panel_request));
+	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
 
 	size_t index = 0;
 
-	reg_t* reg = regs_find(panel_request.id);
+	reg_t* reg = regs_find(nmbs_reg_request.id);
 
 	if(reg == NULL) return MODBUS_RTU_ERROR_FUNC;
 
@@ -128,7 +129,40 @@ modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, vo
 	return MODBUS_RTU_ERROR_NONE;
 }
 
+//TODO: причесать этот колхоз
 modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+
+	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
+
+	//получим смещение заголовка
+	size_t index =  sizeof(nmbs_reg_request);
+	reg_id_t p_id = 0;
+	reg_type_t p_type = 0;
+	size_t p_size = 0;
+	uint8_t p_data[4];
+
+	//найдер регистр
+	reg_t* reg = regs_find(nmbs_reg_request.id);
+
+	if(reg == NULL) return MODBUS_RTU_ERROR_FUNC;
+
+	//прочитаем данные
+	int reg_getted = buf_get_reg_atomic(rx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, &p_id, &p_type, &p_size, p_data, 4);
+	if(reg_getted < 0) return MODBUS_RTU_ERROR_FUNC;
+
+	//сравним на соответствие запросу
+	if((reg->id == p_id) && (reg->type == p_type) && (reg_data_size(reg) == p_size)) {
+		memcpy(reg->data, p_data, p_size);
+	} else {
+		return MODBUS_RTU_ERROR_FUNC;
+	}
+
+	//скопируем ответ
+	memcpy(tx_data, &nmbs_reg_response, sizeof(nmbs_reg_response));
+
+	//укажем размер ответа
+	*tx_size = sizeof(nmbs_reg_response);
+
 	return MODBUS_RTU_ERROR_NONE;
 }
 

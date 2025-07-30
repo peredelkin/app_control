@@ -30,7 +30,7 @@ size_t buf_put_reg(void* data_to, size_t index, size_t index_max, const void *da
 	return i;
 }
 
-size_t buf_get_reg(void* data_from, size_t index, size_t index_max, void *data_to, size_t size) {
+size_t buf_get_reg(const void* data_from, size_t index, size_t index_max, void *data_to, size_t size) {
 	uint8_t *data_from_bytes = (uint8_t*) data_from;
 	uint8_t *data_to_bytes = (uint8_t*) data_to;
 
@@ -91,7 +91,7 @@ int buf_put_reg_atomic(void* data_to, size_t* m_index, size_t index_max, reg_t* 
     return (int)(sizeof(id) + sizeof(type) + sizeof(size) + data_size);
 }
 
-int buf_get_reg_atomic(void* data_from, size_t* m_index, size_t index_max, reg_id_t* p_id, reg_type_t* p_type, size_t* p_size, void* p_data, size_t data_size_max)
+int buf_get_reg_atomic(const void* data_from, size_t* m_index, size_t index_max, reg_id_t* p_id, reg_type_t* p_type, size_t* p_size, void* p_data, size_t data_size_max)
 {
     size_t id_getted = 0;
     size_t type_getted = 0;
