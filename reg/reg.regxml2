@@ -5360,7 +5360,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>6</default>
+                <default>5</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -5396,10 +5396,10 @@
                 <description>Слово состояния.</description>
             </RegVar>
             <RegVar subindex="3">
-                <name>reg_dev_id</name>
+                <name>reg_id</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>modbus_reg_can.reg_dev_id</memory>
+                <memory>modbus_reg_can.reg_id</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -5410,10 +5410,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="4">
-                <name>reg_reg_id</name>
-                <type>3</type>
+                <name>reg_size</name>
+                <type>5</type>
                 <count>1</count>
-                <memory>modbus_reg_can.reg_reg_id</memory>
+                <memory>modbus_reg_can.reg_size</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -5424,24 +5424,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="5">
-                <name>reg_reg_size</name>
-                <type>5</type>
-                <count>1</count>
-                <memory>modbus_reg_can.reg_reg_size</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="6">
-                <name>reg_reg_data</name>
+                <name>reg_data</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>modbus_reg_can.reg_reg_data</memory>
+                <memory>modbus_reg_can.reg_data</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>

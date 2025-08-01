@@ -63,7 +63,7 @@ typedef struct {
     OD_obj_record_t o_20C0_mso[35];
     OD_obj_record_t o_20D0_ao_dac7562[5];
     OD_obj_record_t o_20E0_panel_led[4];
-    OD_obj_record_t o_20F0_modbus_reg_can[7];
+    OD_obj_record_t o_20F0_modbus_reg_can[6];
     OD_obj_record_t o_2100_can_tim[4];
 } ODObjs_t;
 
@@ -2242,26 +2242,20 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     },
     {
-    .dataOrig = &modbus_reg_can.reg_dev_id,
+    .dataOrig = &modbus_reg_can.reg_id,
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = &modbus_reg_can.reg_reg_id,
+    .dataOrig = &modbus_reg_can.reg_size,
     .subIndex = 4,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = &modbus_reg_can.reg_reg_size,
-    .subIndex = 5,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &modbus_reg_can.reg_reg_data,
-    .subIndex = 6,
+    .dataOrig = &modbus_reg_can.reg_data,
+    .subIndex = 5,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     }
@@ -2343,7 +2337,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x20c0, 0x23, ODT_REC, &ODObjs.o_20C0_mso, NULL},
     {0x20d0, 0x05, ODT_REC, &ODObjs.o_20D0_ao_dac7562, NULL},
     {0x20e0, 0x04, ODT_REC, &ODObjs.o_20E0_panel_led, NULL},
-    {0x20f0, 0x07, ODT_REC, &ODObjs.o_20F0_modbus_reg_can, NULL},
+    {0x20f0, 0x06, ODT_REC, &ODObjs.o_20F0_modbus_reg_can, NULL},
     {0x2100, 0x04, ODT_REC, &ODObjs.o_2100_can_tim, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };

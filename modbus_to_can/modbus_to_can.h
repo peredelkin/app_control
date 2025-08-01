@@ -38,10 +38,9 @@ struct _S_Modbus_To_Can {
     // Выходные данные.
     // Параметры.
     // Регистры.
-    reg_u32_t reg_dev_id;
-    reg_u32_t reg_reg_id;
-    reg_u8_t reg_reg_size;
-    reg_u32_t reg_reg_data;
+    reg_u32_t reg_id;
+    reg_u8_t reg_size;
+    reg_u32_t reg_data;
     // Методы.
     METHOD_INIT(M_modbus_to_can);
     METHOD_DEINIT(M_modbus_to_can);
@@ -62,7 +61,6 @@ EXTERN METHOD_CALC_PROTO(M_modbus_to_can);
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\
-		0,\
 		0,\
 		0,\
 		0,\

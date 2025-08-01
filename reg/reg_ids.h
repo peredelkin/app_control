@@ -393,10 +393,9 @@
 #define REG_ID_MODBUS_REG_CAN_COUNT 0x20f000 /* Number of sub entries count */
 #define REG_ID_MODBUS_REG_CAN_CONTROL 0x20f001 /* Слово управления. */
 #define REG_ID_MODBUS_REG_CAN_STATUS 0x20f002 /* Слово состояния. */
-#define REG_ID_MODBUS_REG_CAN_REG_DEV_ID 0x20f003 /*  */
-#define REG_ID_MODBUS_REG_CAN_REG_REG_ID 0x20f004 /*  */
-#define REG_ID_MODBUS_REG_CAN_REG_REG_SIZE 0x20f005 /*  */
-#define REG_ID_MODBUS_REG_CAN_REG_REG_DATA 0x20f006 /*  */
+#define REG_ID_MODBUS_REG_CAN_REG_ID 0x20f003 /*  */
+#define REG_ID_MODBUS_REG_CAN_REG_SIZE 0x20f004 /*  */
+#define REG_ID_MODBUS_REG_CAN_REG_DATA 0x20f005 /*  */
 #define REG_ID_CAN_TIM_COUNT 0x210000 /* Number of sub entries count */
 #define REG_ID_CAN_TIM_CONTROL 0x210001 /* Слово управления. */
 #define REG_ID_CAN_TIM_STATUS 0x210002 /* Слово состояния. */

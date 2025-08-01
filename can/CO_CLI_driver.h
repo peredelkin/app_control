@@ -16,6 +16,15 @@
 
 #define CAN_BUS_DEV_ID_MC 1
 
+#pragma pack(push, 1)
+typedef struct {
+	uint8_t dev_id;
+	uint16_t index;
+	uint8_t sub_index;
+} CO_SDO_CLI_id_t;
+#pragma pack(pop)
+
+#define CAN_BUS_DATA_ID_FROM_ID(ID) ((uint8_t)(ID >> 24))
 #define CAN_BUS_DATA_INDEX_FROM_ID(ID) ((uint16_t)(ID >> 8))
 #define CAN_BUS_DATA_SUB_INDEX_FROM_ID(ID) ((uint8_t)(ID & 0xFF))
 

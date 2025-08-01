@@ -4,10 +4,10 @@ FileVersion=1
 FileRevision=0
 EDSVersion=4.0
 Description=
-CreationTime=2:9pm
+CreationTime=3:47pm
 CreationDate=07-31-2025
 CreatedBy=
-ModificationTime=2:9pm
+ModificationTime=3:47pm
 ModificationDate=07-31-2025
 ModifiedBy=
 
@@ -4099,14 +4099,14 @@ HighLimit=
 [20F0]
 ParameterName=modbus_reg_can
 ObjectType=0x9
-SubNumber=0x7
+SubNumber=0x6
 
 [20F0sub0]
 ParameterName=count
 ObjectType=0x7
 DataType=0x5
 AccessType=ro
-DefaultValue=6
+DefaultValue=5
 PDOMapping=0
 LowLimit=
 HighLimit=
@@ -4132,7 +4132,7 @@ LowLimit=
 HighLimit=
 
 [20F0sub3]
-ParameterName=reg_dev_id
+ParameterName=reg_id
 ObjectType=0x7
 DataType=0x7
 AccessType=rw
@@ -4142,17 +4142,7 @@ LowLimit=
 HighLimit=
 
 [20F0sub4]
-ParameterName=reg_reg_id
-ObjectType=0x7
-DataType=0x7
-AccessType=rw
-DefaultValue=
-PDOMapping=0
-LowLimit=
-HighLimit=
-
-[20F0sub5]
-ParameterName=reg_reg_size
+ParameterName=reg_size
 ObjectType=0x7
 DataType=0x5
 AccessType=rw
@@ -4161,8 +4151,8 @@ PDOMapping=0
 LowLimit=
 HighLimit=
 
-[20F0sub6]
-ParameterName=reg_reg_data
+[20F0sub5]
+ParameterName=reg_data
 ObjectType=0x7
 DataType=0x7
 AccessType=rw

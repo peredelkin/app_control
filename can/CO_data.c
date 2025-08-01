@@ -264,7 +264,7 @@ struct _S_CO_data CO_data = {
     .count = 3 /* Number of sub entries count */
 },
 .modbus_reg_can = {
-    .count = 6 /* Number of sub entries count */
+    .count = 5 /* Number of sub entries count */
 },
 .can_tim = {
     .count = 3 /* Number of sub entries count */

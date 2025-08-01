@@ -12,10 +12,9 @@ void modbus_to_can_reset(M_modbus_to_can* modbus_to_can) {
 	modbus_to_can->status = MODBUS_TO_CAN_STATUS_NONE; //Reset All Status
 	modbus_to_can->control = MODBUS_TO_CAN_CONTROL_NONE; //Reset All Control
 
-	modbus_to_can->reg_dev_id = 0;
-	modbus_to_can->reg_reg_id = 0;
-	modbus_to_can->reg_reg_size = 0;
-	modbus_to_can->reg_reg_data = 0;
+	modbus_to_can->reg_id = 0;
+	modbus_to_can->reg_size = 0;
+	modbus_to_can->reg_data = 0;
 
 	modbus_to_can->status = MODBUS_TO_CAN_STATUS_READY; //Set Ready Status
 }
@@ -33,11 +32,11 @@ void modbus_to_can_read(M_modbus_to_can* modbus_to_can) {
     	//добавим в очередь задание
     	modbus_to_can_read_queue = CO_SDO_CLI_read(
     			&can1_cli_driver,
-				modbus_to_can->reg_dev_id,
-				CAN_BUS_DATA_INDEX_FROM_ID(modbus_to_can->reg_reg_id),
-				CAN_BUS_DATA_SUB_INDEX_FROM_ID(modbus_to_can->reg_reg_id),
-				&modbus_to_can->reg_reg_data,
-				modbus_to_can->reg_reg_size, 200); //200ms timeout
+				CAN_BUS_DATA_ID_FROM_ID(modbus_to_can->reg_id),
+				CAN_BUS_DATA_INDEX_FROM_ID(modbus_to_can->reg_id),
+				CAN_BUS_DATA_SUB_INDEX_FROM_ID(modbus_to_can->reg_id),
+				&modbus_to_can->reg_data,
+				modbus_to_can->reg_size, 200); //200ms timeout
     } else {
     	//если задание выполнено
 		if (modbus_to_can_read_queue->m_state == CO_SDO_CLI_State_DONE) {
@@ -72,11 +71,11 @@ void modbus_to_can_write(M_modbus_to_can* modbus_to_can) {
     	//добавим в очередь задание
     	modbus_to_can_write_queue = CO_SDO_CLI_write(
     			&can1_cli_driver,
-				modbus_to_can->reg_dev_id,
-				CAN_BUS_DATA_INDEX_FROM_ID(modbus_to_can->reg_reg_id),
-				CAN_BUS_DATA_SUB_INDEX_FROM_ID(modbus_to_can->reg_reg_id),
-				&modbus_to_can->reg_reg_data,
-				modbus_to_can->reg_reg_size, 200); //200ms timeout
+				CAN_BUS_DATA_ID_FROM_ID(modbus_to_can->reg_id),
+				CAN_BUS_DATA_INDEX_FROM_ID(modbus_to_can->reg_id),
+				CAN_BUS_DATA_SUB_INDEX_FROM_ID(modbus_to_can->reg_id),
+				&modbus_to_can->reg_data,
+				modbus_to_can->reg_size, 200); //200ms timeout
     } else {
     	//если задание выполнено
 		if (modbus_to_can_write_queue->m_state == CO_SDO_CLI_State_DONE) {
