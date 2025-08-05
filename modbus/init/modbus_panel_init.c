@@ -112,19 +112,31 @@ struct {
 //TODO: причесать этот колхоз
 modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
 
+	//прочитаем заголовок
 	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
 
-	size_t index = 0;
+	//заполним заголовок
+	nmbs_reg_response.id = nmbs_reg_request.id;
+	nmbs_reg_response.count = nmbs_reg_request.count;
 
-	reg_t* reg = regs_find(nmbs_reg_request.id);
+	//скопируем заголовок
+	memcpy(tx_data, &nmbs_reg_response, sizeof(nmbs_reg_response));
 
-	if(reg == NULL) return MODBUS_RTU_ERROR_FUNC;
+	//получим смещение заголовка
+	size_t index = sizeof(nmbs_reg_response);
+	reg_t* reg_ptr = regs_find(nmbs_reg_request.id);
+	int reg_putted = 0;
 
-	int size = buf_put_reg_atomic(tx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, reg);
+	size_t response_data_size = index;
+	for(int reg_count = 0; reg_count < nmbs_reg_request.count; reg_count++) {
+		if(reg_ptr == NULL) return MODBUS_RTU_ERROR_FUNC;
+		reg_putted = buf_put_reg_atomic(tx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, reg_ptr);
+		if(reg_putted < 0) return MODBUS_RTU_ERROR_FUNC;
+		response_data_size += reg_putted;
+		reg_ptr = regs_next(reg_ptr);
+	}
 
-	if(size <= 0) return MODBUS_RTU_ERROR_FUNC;
-
-	*tx_size = size;
+	*tx_size = response_data_size;
 
 	return MODBUS_RTU_ERROR_NONE;
 }
@@ -132,33 +144,42 @@ modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, vo
 //TODO: причесать этот колхоз
 modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
 
+	//прочтем заголовок
 	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
+
+	//заполним заголовок
+	nmbs_reg_response.id = nmbs_reg_request.id;
+	nmbs_reg_response.count = nmbs_reg_request.count;
+
+	//скопируем заголовок
+	memcpy(tx_data, &nmbs_reg_response, sizeof(nmbs_reg_response));
 
 	//получим смещение заголовка
 	size_t index =  sizeof(nmbs_reg_request);
+	reg_t* reg_ptr = NULL;
+	int reg_getted = 0;
+
+	//буфер принятых данных
 	reg_id_t p_id = 0;
 	reg_type_t p_type = 0;
 	size_t p_size = 0;
 	uint8_t p_data[4];
 
-	//найдер регистр
-	reg_t* reg = regs_find(nmbs_reg_request.id);
+	for(int reg_count = 0; reg_count < nmbs_reg_request.count; reg_count++) {
+		//прочитаем данные
+		reg_getted = buf_get_reg_atomic(rx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, &p_id, &p_type, &p_size, p_data, 4);
+		if(reg_getted < 0) return MODBUS_RTU_ERROR_FUNC;
 
-	if(reg == NULL) return MODBUS_RTU_ERROR_FUNC;
+		reg_ptr = regs_find(p_id);
+		if(reg_ptr == NULL) return MODBUS_RTU_ERROR_FUNC;
 
-	//прочитаем данные
-	int reg_getted = buf_get_reg_atomic(rx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, &p_id, &p_type, &p_size, p_data, 4);
-	if(reg_getted < 0) return MODBUS_RTU_ERROR_FUNC;
-
-	//сравним на соответствие запросу
-	if((reg->id == p_id) && (reg->type == p_type) && (reg_data_size(reg) == p_size)) {
-		memcpy(reg->data, p_data, p_size);
-	} else {
-		return MODBUS_RTU_ERROR_FUNC;
+		//сравним на соответствие запросу
+		if ((reg_ptr->type == p_type) && (reg_data_size(reg_ptr) == p_size)) {
+			memcpy(reg_ptr->data, p_data, p_size);
+		} else {
+			return MODBUS_RTU_ERROR_FUNC;
+		}
 	}
-
-	//скопируем ответ
-	memcpy(tx_data, &nmbs_reg_response, sizeof(nmbs_reg_response));
 
 	//укажем размер ответа
 	*tx_size = sizeof(nmbs_reg_response);
