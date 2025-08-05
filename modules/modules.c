@@ -17,5 +17,6 @@ M_digital_output digital_out = DIGITAL_OUTPUT_DEFAULTS;
 M_mso mso = MSO_DEFAULTS;
 M_dac7562 ao_dac7562 = DAC7562_DEFAULTS;
 M_panel_led panel_led = PANEL_LED_DEFAULTS;
+M_modbus_to_can modbus_reg_can = MODBUS_TO_CAN_DEFAULTS;
 
 M_can_timer can_tim = CAN_TIMER_DEFAULTS;

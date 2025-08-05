@@ -39,7 +39,7 @@ bool uart7_tc_callback(void)
 void uart7_int_init() {
     uart_7.usart_device = UART7;
 
-    usart_baud_rate_set(uart_7.usart_device,/*45000000*/SystemCoreClock/4, 9600);
+    usart_baud_rate_set(uart_7.usart_device,/*45000000*/SystemCoreClock/4, 115200);
 
     usart_int_transmitter_enable(&uart_7);
 

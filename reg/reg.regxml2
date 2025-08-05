@@ -5349,6 +5349,97 @@
         </RegVars>
     </RegEntry>
     <RegEntry index="8432">
+        <name>modbus_reg_can</name>
+        <type>2</type>
+        <description></description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>5</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>modbus_reg_can.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>modbus_reg_can.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>reg_id</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>modbus_reg_can.reg_id</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="4">
+                <name>reg_size</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>modbus_reg_can.reg_size</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="5">
+                <name>reg_data</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>modbus_reg_can.reg_data</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="8448">
         <name>can_tim</name>
         <type>2</type>
         <description></description>

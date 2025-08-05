@@ -315,6 +315,10 @@ struct _S_panel_led {
     uint8_t count; /* Number of sub entries count */
 } panel_led;
 
+struct _S_modbus_reg_can {
+    uint8_t count; /* Number of sub entries count */
+} modbus_reg_can;
+
 struct _S_can_tim {
     uint8_t count; /* Number of sub entries count */
 } can_tim;
