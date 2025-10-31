@@ -17,6 +17,14 @@
 #include "CANopenNode/CANopen.h"
 #include "OD.h"
 
+#define CAN1_CO_ENABLE
+#define CAN2_CO_ENABLE
+
+#define CAN_BRIDGE_ID_CLIENT_TO_SERVER	(0x641)
+#define CAN_BRIDGE_ID_SERVER_TO_CLIENT	(0x621)
+
+#define CAN1_SDO_CLI_ID_ClientToServer	(0x600)
+#define CAN1_SDO_CLI_ID_ServerToClient	(0x580)
 
 CO_t* can1_co = NULL;
 CO_t* can2_co = NULL;
@@ -317,13 +325,17 @@ void can1_sdo_cli_init(void) {
 	if(can1_co == NULL) return;
 	can1_cli_driver.sdo_cli = can1_co->SDOclient;
 	can1_cli_driver.m_SDOclientBlockTransfer = SDO_CLIENT_BLOCK_TRANSFER;
-	can1_cli_driver.m_cobidClientToServer = 0x600;
-	can1_cli_driver.m_cobidServerToClient = 0x580;
+	can1_cli_driver.m_cobidClientToServer = CAN1_SDO_CLI_ID_ClientToServer;
+	can1_cli_driver.m_cobidServerToClient = CAN1_SDO_CLI_ID_ServerToClient;
 	can1_cli_driver.m_defaultTimeout = 20;
 	can1_cli_driver.queue = can1_cli_Queue;
 	can1_cli_driver.queue_size = 16;
 	can1_cli_driver.queue_head = 0;
 	can1_cli_driver.queue_tail = 0;
+}
+
+void can1_sdo_srv_init(void) {
+	if(can1_co == NULL) return;
 }
 
 void can1_init(void) {
@@ -347,12 +359,6 @@ void can2_init(void) {
 void can_filter_init(void) {
 	can_filter_setup(14);
 }
-
-#define CAN1_CO_ENABLE
-#define CAN2_CO_ENABLE
-
-#define CAN_BRIDGE_CLIENT_TO_SERVER (0x641)
-#define CAN_BRIDGE_SERVER_TO_CLIENT (0x621)
 
 void can_canopen_init(void) {
 	int can1_co_res = 0;
@@ -416,10 +422,10 @@ void can_canopen_init(void) {
 #endif
 
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
-	uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_SERVER_TO_CLIENT); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
+	uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_SERVER_TO_CLIENT); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
 	uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
 
-	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
+	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
 	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
 
 	//sys_counter_tv_print();
