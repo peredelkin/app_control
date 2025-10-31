@@ -4,16 +4,42 @@
 
 void settings_reset(M_settings* settings) {
 	settings->m_reg_fisrt = regs_first();
-	settings->m_reg_current = settings->m_reg_fisrt;
+	settings->m_reg_current = NULL;
 	settings->m_reg_end = regs_end();
 }
 
 void settings_read(M_settings* settings) {
+	//указатель текущего регистра не установлен
+	if(settings->m_reg_current == NULL) {
+		//установим статус RUN
+		settings->status |= SETTINGS_STATUS_RUN;
+		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
+		settings->status &= ~(SETTINGS_STATUS_VALID |
+				SETTINGS_STATUS_ERROR |
+				SETTINGS_STATUS_WARNING |
+				SETTINGS_STATUS_READ_DONE);
+		//установим указатель текущего регистра
+		settings->m_reg_current = settings->m_reg_fisrt;
+	} else {
 
+	}
 }
 
 void settings_write(M_settings* settings) {
+	//указатель текущего регистра не установлен
+	if(settings->m_reg_current == NULL) {
+		//установим статус RUN
+		settings->status |= SETTINGS_STATUS_RUN;
+		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
+		settings->status &= ~(SETTINGS_STATUS_VALID |
+				SETTINGS_STATUS_ERROR |
+				SETTINGS_STATUS_WARNING |
+				SETTINGS_STATUS_WRITE_DONE);
+		//установим указатель текущего регистра
+		settings->m_reg_current = settings->m_reg_fisrt;
+	} else {
 
+	}
 }
 
 METHOD_INIT_IMPL(M_settings, settings)
