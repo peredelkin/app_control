@@ -20,6 +20,7 @@
 #include "can/timer/can_timer.h"
 #include "led/panel/panel_led.h"
 #include "modbus_to_can/modbus_to_can.h"
+#include "settings/settings.h"
 
 extern M_conf conf;
 extern M_sys_main sys;
@@ -38,6 +39,7 @@ extern M_mso mso;
 extern M_dac7562 ao_dac7562;
 extern M_panel_led panel_led;
 extern M_modbus_to_can modbus_reg_can;
+extern M_settings settings;
 
 extern M_can_timer can_tim;
 

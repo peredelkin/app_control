@@ -3,9 +3,14 @@
 #include "lib/errors/errors.h"
 
 void settings_reset(M_settings* settings) {
+	settings->status = SETTINGS_STATUS_NONE; //Reset All Status
+	settings->control = SETTINGS_CONTROL_NONE; //Reset All Control
+
 	settings->m_reg_fisrt = regs_first();
 	settings->m_reg_current = NULL;
 	settings->m_reg_end = regs_end();
+
+	settings->status = SETTINGS_STATUS_READY; //Set Ready Status
 }
 
 void settings_read(M_settings* settings) {
@@ -14,14 +19,26 @@ void settings_read(M_settings* settings) {
 		//установим статус RUN
 		settings->status |= SETTINGS_STATUS_RUN;
 		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
-		settings->status &= ~(SETTINGS_STATUS_VALID |
-				SETTINGS_STATUS_ERROR |
-				SETTINGS_STATUS_WARNING |
-				SETTINGS_STATUS_READ_DONE);
+		settings->status &= ~(SETTINGS_STATUS_VALID | SETTINGS_STATUS_ERROR |
+				SETTINGS_STATUS_WARNING | SETTINGS_STATUS_READ_DONE);
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 	} else {
-
+		//если задание выполнено
+		//if(DONE)
+			//сбросим управляющие биты
+			settings->control &= ~(SETTINGS_CONTROL_START | SETTINGS_CONTROL_READ);
+			//проверим статус задания
+			//if(NO ERROR)
+				//установим статусы VALID, READ_DONE
+				//settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_READ_DONE);
+			//else
+				//установим статусы ERROR, READ_DONE
+				//settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_READ_DONE);
+			//сбросим статус RUN
+			settings->status &= ~SETTINGS_STATUS_RUN;
+			//сбросим указатель на регистр
+			settings->m_reg_current = NULL;
 	}
 }
 
@@ -31,14 +48,26 @@ void settings_write(M_settings* settings) {
 		//установим статус RUN
 		settings->status |= SETTINGS_STATUS_RUN;
 		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
-		settings->status &= ~(SETTINGS_STATUS_VALID |
-				SETTINGS_STATUS_ERROR |
-				SETTINGS_STATUS_WARNING |
-				SETTINGS_STATUS_WRITE_DONE);
+		settings->status &= ~(SETTINGS_STATUS_VALID | SETTINGS_STATUS_ERROR |
+				SETTINGS_STATUS_WARNING | SETTINGS_STATUS_WRITE_DONE);
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 	} else {
-
+		//если задание выполнено
+		//if(DONE)
+			//сбросим управляющие биты
+			settings->control &= ~(SETTINGS_CONTROL_START | SETTINGS_CONTROL_WRITE);
+			//проверим статус задания
+			//if(NO ERROR)
+				//установим статусы VALID, READ_DONE
+				//settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_WRITE_DONE);
+			//else
+				//установим статусы ERROR, READ_DONE
+				//settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
+			//сбросим статус RUN
+			settings->status &= ~SETTINGS_STATUS_RUN;
+			//сбросим указатель на регистр
+			settings->m_reg_current = NULL;
 	}
 }
 

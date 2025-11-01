@@ -49,6 +49,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(rgb_led);
     INIT(panel_led);
     INIT(modbus_reg_can);
+    INIT(settings);
 
     // Таймеры.
     // Системный таймер.
@@ -115,6 +116,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(rgb_led);
     DEINIT(panel_led);
     DEINIT(modbus_reg_can);
+    DEINIT(settings);
 
     // Вычислительные модули.
 
@@ -247,5 +249,6 @@ METHOD_IDLE_IMPL(M_sys_main, sys)
     IDLE(conf);
     IDLE(mso);
     CALC(cli);
+    CALC(settings);
 }
 
