@@ -1,6 +1,16 @@
 #include "settings.h"
 #include "reg/reg.h"
 #include "lib/errors/errors.h"
+#include "yaffs2/yaffsfs.h"
+
+char* settings_filename = "/nand/settings.ini";
+int settings_file;
+
+#define SETTINGS_O_RFLAG	O_RDONLY
+#define SETTINGS_S_RMODE	S_IRUSR
+
+#define SETTINGS_O_WFLAG	(O_CREAT | O_TRUNC | O_WRONLY)
+#define SETTINGS_S_WMODE	S_IWUSR
 
 void settings_reset(M_settings* settings) {
 	settings->status = SETTINGS_STATUS_NONE; //Reset All Status
@@ -23,6 +33,8 @@ void settings_read(M_settings* settings) {
 				SETTINGS_STATUS_WARNING | SETTINGS_STATUS_READ_DONE);
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
+		//откроем файл для чтения
+		settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
 	} else {
 		//если задание выполнено
 		//if(DONE)
@@ -39,6 +51,8 @@ void settings_read(M_settings* settings) {
 			settings->status &= ~SETTINGS_STATUS_RUN;
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
+			//закроем файл
+			yaffs_close(settings_file);
 	}
 }
 
@@ -52,6 +66,8 @@ void settings_write(M_settings* settings) {
 				SETTINGS_STATUS_WARNING | SETTINGS_STATUS_WRITE_DONE);
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
+		//откроем файл для записи
+		settings_file = yaffs_open(settings_filename, SETTINGS_O_WFLAG, SETTINGS_S_WMODE);
 	} else {
 		//если задание выполнено
 		//if(DONE)
@@ -68,6 +84,8 @@ void settings_write(M_settings* settings) {
 			settings->status &= ~SETTINGS_STATUS_RUN;
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
+			//закроем файл
+			yaffs_close(settings_file);
 	}
 }
 
