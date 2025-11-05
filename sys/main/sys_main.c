@@ -183,19 +183,6 @@ static void FSM_state(M_sys_main* sys)
     }
 }
 
-/*=========================================================================*/
-//#include "can/init/can_init.h" //CANopen
-//#include "CO_CLI_driver.h"
-//extern CO_SDO_CLI_Driver_t can1_cli_driver; //TODO: тест CANopen SDO CLI
-//
-//CO_SDO_CLI_Queue* mc_pid_i_ptr = NULL;
-//reg_iq24_t pid_i_out_value;
-//reg_iq24_t pid_i_out_value_buffered;
-//
-//CO_SDO_CLI_Queue* mc_mot_pot_ptr = NULL;
-//reg_iq24_t mc_mot_pot;
-/*=========================================================================*/
-
 struct timeval sys_main_execution_time; //TODO: определить куда засунуть
 
 METHOD_CALC_IMPL(M_sys_main, sys)
@@ -207,35 +194,12 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
     // Вычислительные модули.
     CALC(digital_in);
-    CALC(ntc_temp); //должен стоять после CALC(digital_in);
-
-//    //TODO: тест CANopen SDO CLI
-//    if(mc_pid_i_ptr == NULL) {
-//    	mc_pid_i_ptr = CO_SDO_CLI_read(&can1_cli_driver, 1, 0x2740, 5, &pid_i_out_value, 4, 20);
-//    } else {
-//    	if(mc_pid_i_ptr->m_state == CO_SDO_CLI_State_DONE) {
-//    		pid_i_out_value_buffered = pid_i_out_value/256;
-//    		mc_pid_i_ptr = NULL;
-//    	}
-//    }
-//
-//
-//
-//	if (mc_mot_pot_ptr == NULL) {
-//		mc_mot_pot_ptr = CO_SDO_CLI_write(&can1_cli_driver, 1, 0x2720, 8, &mc_mot_pot, 4, 20);
-//	} else {
-//		if (mc_mot_pot_ptr->m_state == CO_SDO_CLI_State_DONE) {
-//			mc_mot_pot = ao_dac7562.in_ch_a * 256;
-//			mc_mot_pot_ptr = NULL;
-//		}
-//	}
-
+    CALC(ntc_temp);
     CALC(ao_dac7562);
     CALC(digital_out);
     CALC(rgb_led);
     CALC(panel_led);
     CALC(modbus_reg_can);
-
     CALC(mso);
 
     struct timeval tv_stop; //время конца
@@ -246,9 +210,9 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
 METHOD_IDLE_IMPL(M_sys_main, sys)
 {
+	CALC(cli);
+	CALC(settings);
     IDLE(conf);
     IDLE(mso);
-    CALC(cli);
-    CALC(settings);
 }
 

@@ -5440,6 +5440,55 @@
         </RegVars>
     </RegEntry>
     <RegEntry index="8448">
+        <name>settings</name>
+        <type>2</type>
+        <description></description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>2</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>settings.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>settings.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="8464">
         <name>can_tim</name>
         <type>2</type>
         <description></description>

@@ -9,7 +9,7 @@
 
 // user code end
 
-struct _S_CO_data CO_data = {
+struct _S_regs_data regs_data = {
 .deviceType = {
     .value = 0 /*  */
 },
@@ -265,6 +265,9 @@ struct _S_CO_data CO_data = {
 },
 .modbus_reg_can = {
     .count = 5 /* Number of sub entries count */
+},
+.settings = {
+    .count = 2 /* Number of sub entries count */
 },
 .can_tim = {
     .count = 3 /* Number of sub entries count */

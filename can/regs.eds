@@ -4,11 +4,11 @@ FileVersion=1
 FileRevision=0
 EDSVersion=4.0
 Description=
-CreationTime=3:47pm
-CreationDate=07-31-2025
+CreationTime=9:58am
+CreationDate=11-05-2025
 CreatedBy=
-ModificationTime=3:47pm
-ModificationDate=07-31-2025
+ModificationTime=9:58am
+ModificationDate=11-05-2025
 ModifiedBy=
 
 [DeviceInfo]
@@ -1902,7 +1902,7 @@ LowLimit=0
 HighLimit=0
 
 [ManufacturerObjects]
-SupportedObjects=17
+SupportedObjects=18
 1=0x2000
 2=0x2010
 3=0x2020
@@ -1920,6 +1920,7 @@ SupportedObjects=17
 15=0x20E0
 16=0x20F0
 17=0x2100
+18=0x2110
 
 [2000]
 ParameterName=conf
@@ -4162,16 +4163,16 @@ LowLimit=
 HighLimit=
 
 [2100]
-ParameterName=can_tim
+ParameterName=settings
 ObjectType=0x9
-SubNumber=0x4
+SubNumber=0x3
 
 [2100sub0]
 ParameterName=count
 ObjectType=0x7
 DataType=0x5
 AccessType=ro
-DefaultValue=3
+DefaultValue=2
 PDOMapping=0
 LowLimit=
 HighLimit=
@@ -4196,7 +4197,42 @@ PDOMapping=0
 LowLimit=
 HighLimit=
 
-[2100sub3]
+[2110]
+ParameterName=can_tim
+ObjectType=0x9
+SubNumber=0x4
+
+[2110sub0]
+ParameterName=count
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=3
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[2110sub1]
+ParameterName=control
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[2110sub2]
+ParameterName=status
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
+[2110sub3]
 ParameterName=out_counter
 ObjectType=0x7
 DataType=0x7

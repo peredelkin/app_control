@@ -1,5 +1,5 @@
-#ifndef CO_DATA_H
-#define CO_DATA_H
+#ifndef REGS_DATA_H
+#define REGS_DATA_H
 
 #include <stdint.h>
 
@@ -12,7 +12,7 @@
 
 // user code end
 
-struct _S_CO_data {
+struct _S_regs_data {
 
 struct _S_deviceType {
     uint32_t value; /*  */
@@ -319,12 +319,16 @@ struct _S_modbus_reg_can {
     uint8_t count; /* Number of sub entries count */
 } modbus_reg_can;
 
+struct _S_settings {
+    uint8_t count; /* Number of sub entries count */
+} settings;
+
 struct _S_can_tim {
     uint8_t count; /* Number of sub entries count */
 } can_tim;
 
 };
-extern struct _S_CO_data CO_data;
+extern struct _S_regs_data regs_data;
 
 
-#endif /* CO_DATA_H */
+#endif /* REGS_DATA_H */

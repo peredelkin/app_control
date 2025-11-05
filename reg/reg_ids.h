@@ -396,9 +396,12 @@
 #define REG_ID_MODBUS_REG_CAN_REG_ID 0x20f003 /*  */
 #define REG_ID_MODBUS_REG_CAN_REG_SIZE 0x20f004 /*  */
 #define REG_ID_MODBUS_REG_CAN_REG_DATA 0x20f005 /*  */
-#define REG_ID_CAN_TIM_COUNT 0x210000 /* Number of sub entries count */
-#define REG_ID_CAN_TIM_CONTROL 0x210001 /* Слово управления. */
-#define REG_ID_CAN_TIM_STATUS 0x210002 /* Слово состояния. */
-#define REG_ID_CAN_TIM_OUT_COUNTER 0x210003 /* Счётчик тиков. */
+#define REG_ID_SETTINGS_COUNT 0x210000 /* Number of sub entries count */
+#define REG_ID_SETTINGS_CONTROL 0x210001 /* Слово управления. */
+#define REG_ID_SETTINGS_STATUS 0x210002 /* Слово состояния. */
+#define REG_ID_CAN_TIM_COUNT 0x211000 /* Number of sub entries count */
+#define REG_ID_CAN_TIM_CONTROL 0x211001 /* Слово управления. */
+#define REG_ID_CAN_TIM_STATUS 0x211002 /* Слово состояния. */
+#define REG_ID_CAN_TIM_OUT_COUNTER 0x211003 /* Счётчик тиков. */
 
 #endif /* REG_IDS_H */

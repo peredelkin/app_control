@@ -2,6 +2,7 @@
 #include "reg/reg.h"
 #include "lib/errors/errors.h"
 #include "yaffs2/yaffsfs.h"
+#include "sys/counter/sys_counter.h"
 
 char* settings_filename = "/nand/settings.ini";
 int settings_file;
@@ -33,7 +34,7 @@ void settings_read(M_settings *settings) {
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
-			yaffs_close(settings_file);
+			//yaffs_close(settings_file);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 		} else {
@@ -46,13 +47,11 @@ void settings_read(M_settings *settings) {
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
 					//парсим ini файл
 				}
-				//если регистр последний
-				if (settings->m_reg_current == settings->m_reg_end) {
-					//установим статусы VALID, READ_DONE
+				//установим следующий регистр
+				settings->m_reg_current = regs_next(settings->m_reg_current);
+				//если регистр был последним
+				if(settings->m_reg_current == NULL) {
 					settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_READ_DONE);
-				} else {
-					//установим следующий регистр
-					settings->m_reg_current = regs_next(settings->m_reg_current);
 				}
 			}
 		}
@@ -65,7 +64,7 @@ void settings_read(M_settings *settings) {
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 		//откроем файл для чтения
-		settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
+		//settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
 		//если произошла ошибка, завершим работу с файлом
 		if (settings_file == -1) {
 			//установим статусы ERROR, READ_DONE
@@ -84,43 +83,41 @@ void settings_write(M_settings *settings) {
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
-			yaffs_close(settings_file);
+			//yaffs_close(settings_file);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 		} else {
 			//если указатель на регистр NULL
 			if (settings->m_reg_current == NULL) {
-				//установим статусы ERROR, READ_DONE
+				//установим статусы ERROR, WRITE_DONE
 				settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
 			} else {
 				//если регистр имеет флаг настройки
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
 					//парсим ini файл
 				}
-				//если регистр последний
-				if (settings->m_reg_current == settings->m_reg_end) {
-					//установим статусы VALID, READ_DONE
+				//установим следующий регистр
+				settings->m_reg_current = regs_next(settings->m_reg_current);
+				//если регистр был последним
+				if(settings->m_reg_current == NULL) {
 					settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_WRITE_DONE);
-				} else {
-					//установим следующий регистр
-					settings->m_reg_current = regs_next(settings->m_reg_current);
 				}
 			}
 		}
 	} else {
 		//установим статус RUN
 		settings->status |= SETTINGS_STATUS_RUN;
-		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
+		//сбросим статусы VALID, ERROR, WARNING, WRITE_DONE
 		settings->status &= ~(SETTINGS_STATUS_VALID | SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WARNING
-				| SETTINGS_STATUS_READ_DONE);
+				| SETTINGS_STATUS_WRITE_DONE);
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 		//откроем файл для чтения
-		settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
+		//settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
 		//если произошла ошибка, завершим работу с файлом
 		if (settings_file == -1) {
-			//установим статусы ERROR, READ_DONE
-			settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_READ_DONE);
+			//установим статусы ERROR, WRITE_DONE
+			settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
 		}
 	}
 }
