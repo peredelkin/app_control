@@ -48,8 +48,23 @@ size_t strnlen(const char *s, size_t maxlen);
 
 #define yaffs_strcat(a, b)	strcat(a, b)
 #define yaffs_strcpy(a, b)	strcpy(a, b)
-#define yaffs_strncpy(a, b, c)	strncpy(a, b, c)
-#define yaffs_strnlen(s, m)	strnlen(s, m)
+
+static inline char* yaffs_strncpy_impl(char* a, const char* b, size_t c) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+	return strncpy(a, b, c);
+#pragma GCC diagnostic pop
+}
+#define yaffs_strncpy(a, b, c)	yaffs_strncpy_impl(a, b, c)
+
+static inline size_t yaffs_strnlen_impl(const char* s, size_t m) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overread"
+	return strnlen(s, m);
+#pragma GCC diagnostic pop
+}
+#define yaffs_strnlen(s, m)	yaffs_strnlen_impl(s, m)
+
 #ifdef CONFIG_YAFFS_CASE_INSENSITIVE
 #define yaffs_strcmp(a, b)	strcasecmp(a, b)
 #define yaffs_strncmp(a, b, c)	strncasecmp(a, b, c)
