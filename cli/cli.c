@@ -59,8 +59,8 @@ int cli_free_ram(int argc, char* argv[]) {
 	ptrdiff_t free_ram = end - cur;
 	ptrdiff_t used_ram = SRAM_WORDS_8 - free_ram;
 
-	printf("External ram free: %u byte(s)\n", free_ram);
-	printf("External ram used: %u byte(s)\n", used_ram);
+	printf("External ram free: %u byte(s)\n", (unsigned)free_ram);
+	printf("External ram used: %u byte(s)\n", (unsigned)used_ram);
 
 	return 0;
 }

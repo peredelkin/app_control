@@ -149,7 +149,7 @@ typedef union _FMC_BWTR_REG {
 typedef struct {
 	FMC_BCR_REG_TypeDef CR;
 	FMC_BTR_REG_TypeDef TR;
-} FMC_BCТRn_TypeDef;
+} FMC_BCTRn_TypeDef;
 
 
 typedef struct {
@@ -159,7 +159,7 @@ typedef struct {
 
 
 typedef struct {
-	FMC_BCТRn_TypeDef BCTR[4];
+	FMC_BCTRn_TypeDef BCTR[4];
 } FMC_BANK1_TypeDef;
 
 typedef struct {

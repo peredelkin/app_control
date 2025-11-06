@@ -248,7 +248,7 @@ int main(void)
 
 	usart6_nvic_init(UART6_IRQ_PRIO);
 	usart6_init(); //Socket3
-	printf("SysCoreClock: %luMHz\n", SystemCoreClock/1000000);
+	printf("SysCoreClock: %uMHz\n", (unsigned)(SystemCoreClock/1000000));
 	sys_counter_tv_print();
 	printf("UART6\n");
 
@@ -387,7 +387,7 @@ int main(void)
 					}
 
 				} else {
-					printf("SD Card Init Error: %lu\n", sdcard_init_err);
+					printf("SD Card Init Error: %u\n", (unsigned)sdcard_init_err);
 				}
 			}
 		} else {

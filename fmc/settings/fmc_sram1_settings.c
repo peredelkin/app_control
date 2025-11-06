@@ -12,7 +12,7 @@
 #define FMC_SRAM1_ADDSET_CLK (FMC_SRAM1_READ_CYCLE_CLK - FMC_SRAM1_DATAST_CLK)
 #define FMC_SRAM1_BUSTURN_CLK 5		//(168*10^6)/(1/((25)*10^-9))
 
-const FMC_BCТRn_TypeDef FMC_SRAM1_BCTR_CFG = {
+const FMC_BCTRn_TypeDef FMC_SRAM1_BCTR_CFG = {
 		.CR.bit.MBKEN = 1,		//Corresponding memory bank is enabled
 		.CR.bit.MUXEN = 0,		//Address/Data nonmultiplexed
 		.CR.bit.MTYP = 0,		//SRAM

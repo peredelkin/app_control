@@ -8,7 +8,7 @@ void rgb_led_set(bool R, bool G, bool B) {
 }
 
 //! Перечисление цветов
-enum _Rgb_Led_Сolor {
+enum _Rgb_Led_Color {
 	RGB_LED_COLOR_BLACK,
 	RGB_LED_COLOR_VIOLET,
 	RGB_LED_COLOR_BLUE_DARK,

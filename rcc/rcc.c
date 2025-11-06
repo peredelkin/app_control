@@ -75,44 +75,44 @@ void print_rcc_info() {
 	rcc_cr.all = RCC->CR;
 
 	printf("RCC_CR: ");
-	printf("HSION %i, ", rcc_cr.bit.hsi_on);
-	printf("HSIRDY %i, ", rcc_cr.bit.hsi_rdy);
-	printf("HSITRIM %i, ", rcc_cr.bit.hsi_trim);
-	printf("HSICAL %i, ", rcc_cr.bit.hsi_cal);
-	printf("HSEON %i, ", rcc_cr.bit.hse_on);
-	printf("HSERDY %i, ", rcc_cr.bit.hse_rdy);
-	printf("HSEBYP %i, ", rcc_cr.bit.hse_byp);
-	printf("CSSON %i, ", rcc_cr.bit.css_on);
-	printf("PLLON %i, ", rcc_cr.bit.pll_on);
-	printf("PLLRDY %i, ", rcc_cr.bit.pll_rdy);
-	printf("PLLI2SON %i, ", rcc_cr.bit.pll_i2s_on);
-	printf("PLLI2SRDY %i, ", rcc_cr.bit.pll_i2s_rdy);
-	printf("PLLSAION %i, ", rcc_cr.bit.pll_sai_on);
-	printf("PLLSAIRDY %i\n", rcc_cr.bit.pll_sai_rdy);
+	printf("HSION %u, ", rcc_cr.bit.hsi_on);
+	printf("HSIRDY %u, ", rcc_cr.bit.hsi_rdy);
+	printf("HSITRIM %u, ", rcc_cr.bit.hsi_trim);
+	printf("HSICAL %u, ", rcc_cr.bit.hsi_cal);
+	printf("HSEON %u, ", rcc_cr.bit.hse_on);
+	printf("HSERDY %u, ", rcc_cr.bit.hse_rdy);
+	printf("HSEBYP %u, ", rcc_cr.bit.hse_byp);
+	printf("CSSON %u, ", rcc_cr.bit.css_on);
+	printf("PLLON %u, ", rcc_cr.bit.pll_on);
+	printf("PLLRDY %u, ", rcc_cr.bit.pll_rdy);
+	printf("PLLI2SON %u, ", rcc_cr.bit.pll_i2s_on);
+	printf("PLLI2SRDY %u, ", rcc_cr.bit.pll_i2s_rdy);
+	printf("PLLSAION %u, ", rcc_cr.bit.pll_sai_on);
+	printf("PLLSAIRDY %u\n", rcc_cr.bit.pll_sai_rdy);
 
 	rcc_pllcfgr_reg_t rcc_pllcfgr;
 	rcc_pllcfgr.all = RCC->PLLCFGR;
 
 	printf("RCC_PLLCFGR: ");
-	printf("PLLM %i, ", rcc_pllcfgr.bit.pll_m);
-	printf("PLLN %i, ", rcc_pllcfgr.bit.pll_n);
-	printf("PLLP %i, ", rcc_pllcfgr.bit.pll_p);
-	printf("PLLSRC %i, ", rcc_pllcfgr.bit.pll_src);
-	printf("PLLQ %i\n", rcc_pllcfgr.bit.pll_q);
+	printf("PLLM %u, ", rcc_pllcfgr.bit.pll_m);
+	printf("PLLN %u, ", rcc_pllcfgr.bit.pll_n);
+	printf("PLLP %u, ", rcc_pllcfgr.bit.pll_p);
+	printf("PLLSRC %u, ", rcc_pllcfgr.bit.pll_src);
+	printf("PLLQ %u\n", rcc_pllcfgr.bit.pll_q);
 
 	rcc_cfgr_reg_t rcc_cfgr;
 	rcc_cfgr.all = RCC->CFGR;
 
 	printf("RCC_CFGR: ");
-	printf("SW %i, ", rcc_cfgr.bit.sw);
-	printf("SWS %i, ", rcc_cfgr.bit.sws);
-	printf("HPRE %i, ", rcc_cfgr.bit.hpre);
-	printf("PPRE1 %i, ", rcc_cfgr.bit.p_pre1);
-	printf("PPRE2 %i, ", rcc_cfgr.bit.p_pre2);
-	printf("RTCPRE %i, ", rcc_cfgr.bit.rtc_pre);
-	printf("MCO1 %i, ", rcc_cfgr.bit.mco1);
-	printf("I2SSRC %i, ", rcc_cfgr.bit.i2s_src);
-	printf("MCO1PRE %i, ", rcc_cfgr.bit.mco1_pre);
-	printf("MCO2PRE %i, ", rcc_cfgr.bit.mco2_pre);
-	printf("MCO2 %i\n", rcc_cfgr.bit.mco2);
+	printf("SW %u, ", rcc_cfgr.bit.sw);
+	printf("SWS %u, ", rcc_cfgr.bit.sws);
+	printf("HPRE %u, ", rcc_cfgr.bit.hpre);
+	printf("PPRE1 %u, ", rcc_cfgr.bit.p_pre1);
+	printf("PPRE2 %u, ", rcc_cfgr.bit.p_pre2);
+	printf("RTCPRE %u, ", rcc_cfgr.bit.rtc_pre);
+	printf("MCO1 %u, ", rcc_cfgr.bit.mco1);
+	printf("I2SSRC %u, ", rcc_cfgr.bit.i2s_src);
+	printf("MCO1PRE %u, ", rcc_cfgr.bit.mco1_pre);
+	printf("MCO2PRE %u, ", rcc_cfgr.bit.mco2_pre);
+	printf("MCO2 %u\n", rcc_cfgr.bit.mco2);
 }

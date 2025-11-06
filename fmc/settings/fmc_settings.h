@@ -10,7 +10,7 @@
 
 #include "../fmc.h"
 
-extern const FMC_BCТRn_TypeDef FMC_SRAM1_BCTR_CFG;
+extern const FMC_BCTRn_TypeDef FMC_SRAM1_BCTR_CFG;
 extern const FMC_BWTRn_TypeDef FMC_SRAM1_BWTR_CFG;
 
 extern const FMC_BANK23_TypeDef FMC_NAND3_CFG;

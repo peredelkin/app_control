@@ -66,7 +66,7 @@ METHOD_CALC_IMPL(M_digital_input, input)
 
 	uint32_t raw_mask;
 	uint32_t out_mask;
-	for(int i = 0; i < DIGITAL_INPUT_COUNT; i++) {
+	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
 		raw_mask = (1 << input->p_select[i]);
 		out_mask = (1 << i);
 		if(input->m_in_data.all & raw_mask) {

@@ -30,7 +30,7 @@ ALWAYS_INLINE static diskfs_t* rootfs_diskfs(size_t n)
 //! Создаёт путь диска по номеру.
 static void rootfs_make_disk_path(char* path, size_t path_len, size_t n)
 {
-	snprintf(path, path_len, "%u:", n);
+	snprintf(path, path_len, "%u:", (unsigned)n);
 }
 
 //! Монтирует диск.

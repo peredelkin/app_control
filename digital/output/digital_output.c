@@ -34,7 +34,7 @@ METHOD_CALC_IMPL(M_digital_output, output)
 	uint32_t raw_mask;
 	uint32_t in_mask;
 	uint32_t invert_res;
-	for(int i = 0; i < DIGITAL_INPUT_COUNT; i++) {
+	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
 		raw_mask = (1 << output->p_select[i]);
 		in_mask = (1 << i);
 		invert_res = (in_mask & output->p_invert);

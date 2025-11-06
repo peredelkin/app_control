@@ -452,15 +452,15 @@ void can_canopen_init(void) {
 		CALLBACK_PROC(can_tim.on_timeout) = can_process_callback;
 		CALLBACK_ARG(can_tim.on_timeout) = NULL; //(void*) can1_co;
 		if (can_tim.status & MS_TIMER_STATUS_ERROR) {
-			printf("init error(%lu)\n", can_tim.status);
+			printf("init error(%u)\n", (unsigned)can_tim.status);
 		} else {
 			// Запуск CO_process таймера.
 			can_tim.control = MS_TIMER_CONTROL_ENABLE;
 			CONTROL(can_tim);
 			if (can_tim.status & MS_TIMER_STATUS_RUN) {
-				printf("started (%lu)\n", can_tim.status);
+				printf("started (%u)\n", (unsigned)can_tim.status);
 			} else {
-				printf("start error (%lu)\n", can_tim.status);
+				printf("start error (%u)\n", (unsigned)can_tim.status);
 			}
 		}
 	} else {

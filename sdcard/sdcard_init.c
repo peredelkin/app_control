@@ -448,9 +448,22 @@ err_t sdcard_card_CSD_read(sdcard_t* sdcard) {
 			break;
 
 		case sdcard_card_CSD_read_state_CPY:
-			memcpy(sdcard->CSD.v1.all, sdcard->response.r2.all, sizeof(sdcard_reg_CSD_v1_t));
-			memcpy(sdcard->CSD.v2.all, sdcard->response.r2.all, sizeof(sdcard_reg_CSD_v2_t));
-			memcpy(sdcard->CSD.v3.all, sdcard->response.r2.all, sizeof(sdcard_reg_CSD_v3_t));
+			sdcard->CSD.v1.all[0] = sdcard->response.r2.all[0];
+			sdcard->CSD.v2.all[0] = sdcard->response.r2.all[0];
+			sdcard->CSD.v3.all[0] = sdcard->response.r2.all[0];
+
+			sdcard->CSD.v1.all[1] = sdcard->response.r2.all[1];
+			sdcard->CSD.v2.all[1] = sdcard->response.r2.all[1];
+			sdcard->CSD.v3.all[1] = sdcard->response.r2.all[1];
+
+			sdcard->CSD.v1.all[2] = sdcard->response.r2.all[2];
+			sdcard->CSD.v2.all[2] = sdcard->response.r2.all[2];
+			sdcard->CSD.v3.all[2] = sdcard->response.r2.all[2];
+
+			sdcard->CSD.v1.all[3] = sdcard->response.r2.all[3];
+			sdcard->CSD.v2.all[3] = sdcard->response.r2.all[3];
+			sdcard->CSD.v3.all[3] = sdcard->response.r2.all[3];
+
 			sdcard->cmd_err = E_NO_ERROR;
 			break;
 
