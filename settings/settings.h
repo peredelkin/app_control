@@ -3,6 +3,8 @@
 
 #include "module/base.h"
 
+#include "ini/ini.h"
+
 //! Перечисление возможных бит управления.
 enum _E_Settings_Control {
 	SETTINGS_CONTROL_NONE = CONTROL_NONE,
@@ -47,6 +49,7 @@ struct _S_Settings {
     reg_t* m_reg_fisrt;
     reg_t* m_reg_current;
     reg_t* m_reg_end;
+    ini_t m_ini;
 };
 
 EXTERN METHOD_INIT_PROTO(M_settings);
@@ -67,6 +70,10 @@ EXTERN METHOD_CALC_PROTO(M_settings);
         METHOD_CALC_PTR(M_settings),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		0,\
+		0,\
+		0,\
+		{0}\
     }
 
 #endif /* SETTINGS_H */

@@ -13,6 +13,69 @@ int settings_file;
 #define SETTINGS_O_WFLAG	(O_CREAT | O_TRUNC | O_WRONLY)
 #define SETTINGS_S_WMODE	S_IWUSR
 
+//! Функция чтения очередной линии файла.
+static char* ini_get_line(char* line, int num, void* fd)
+{
+	int nc = 0;
+	int len = num;
+	char *p = line;
+	char s;
+	int rc;
+
+	/* Byte-by-byte read without any conversion (ANSI/OEM API) */
+	len -= 1;	/* Make a room for the terminator */
+	while (nc < len) {
+		rc = yaffs_read(*((int*)fd), &s, 1); /* Get a byte */
+		if (rc != 1) break;		/* EOF? */
+		//if (s == '\r') continue; //Enable with LF - CRLF conversion.
+		*p++ = s; nc++;
+		if (s == '\n') break;
+	}
+
+	*p = 0;		/* Terminate the string */
+	return nc ? line : 0;	/* When no data read due to EOF or error, return with error. */
+}
+
+//! Функция записи очередной линии файла.
+static int ini_put_line(char* line, void* fd)
+{
+	int nc = 0;
+	int len = sizeof(line);
+	char *p = line;
+	char s;
+	int rc;
+
+	/* Byte-by-byte write without any conversion (ANSI/OEM API) */
+	while(nc < len) {
+		s = *p++;
+		if(s == 0) s = '\n';
+		rc = yaffs_write(*((int*)fd), &s, 1); /* Put a byte */
+		if(rc != 1) {
+			nc = -1;
+			break;
+		}
+		nc++;
+		if(s == '\n') break;
+	}
+
+	*p = 0;		/* Terminate the string */
+	return nc;
+}
+
+//! Функция установки на начало файла.
+static void ini_rewind(void* fd)
+{
+	yaffs_lseek(*((int*)fd), 0, SEEK_SET);
+}
+
+void settings_read_conf(M_settings* settings) {
+
+}
+
+void settings_write_conf(M_settings* settings) {
+
+}
+
 void settings_reset(M_settings* settings) {
 	settings->status = SETTINGS_STATUS_NONE; //Reset All Status
 	settings->control = SETTINGS_CONTROL_NONE; //Reset All Control
@@ -34,7 +97,7 @@ void settings_read(M_settings *settings) {
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
-			//yaffs_close(settings_file);
+			yaffs_close(settings_file);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 		} else {
@@ -45,7 +108,8 @@ void settings_read(M_settings *settings) {
 			} else {
 				//если регистр имеет флаг настройки
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
-					//парсим ini файл
+					//читаем ini файл
+					settings_read_conf(settings);
 				}
 				//установим следующий регистр
 				settings->m_reg_current = regs_next(settings->m_reg_current);
@@ -64,11 +128,14 @@ void settings_read(M_settings *settings) {
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 		//откроем файл для чтения
-		//settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
+		settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
 		//если произошла ошибка, завершим работу с файлом
 		if (settings_file == -1) {
 			//установим статусы ERROR, READ_DONE
 			settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_READ_DONE);
+		} else {
+			//установим поток ini
+			ini_set_stream(&settings->m_ini, &settings_file);
 		}
 	}
 }
@@ -83,7 +150,7 @@ void settings_write(M_settings *settings) {
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
-			//yaffs_close(settings_file);
+			yaffs_close(settings_file);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 		} else {
@@ -94,7 +161,8 @@ void settings_write(M_settings *settings) {
 			} else {
 				//если регистр имеет флаг настройки
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
-					//парсим ini файл
+					//пишем ini файл
+					settings_write_conf(settings);
 				}
 				//установим следующий регистр
 				settings->m_reg_current = regs_next(settings->m_reg_current);
@@ -113,11 +181,14 @@ void settings_write(M_settings *settings) {
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 		//откроем файл для чтения
-		//settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
+		settings_file = yaffs_open(settings_filename, SETTINGS_O_WFLAG, SETTINGS_S_WMODE);
 		//если произошла ошибка, завершим работу с файлом
 		if (settings_file == -1) {
 			//установим статусы ERROR, WRITE_DONE
 			settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
+		} else {
+			//установим поток ini
+			ini_set_stream(&settings->m_ini, &settings_file);
 		}
 	}
 }
@@ -126,6 +197,24 @@ METHOD_INIT_IMPL(M_settings, settings)
 {
 	settings->status = SETTINGS_STATUS_NONE;
 	settings->control = SETTINGS_CONTROL_RESET;
+
+	ini_init_t init;
+
+	//buf
+	init.line = NULL;
+	init.line_size = 0;
+
+	//i/o
+	init.get_line = ini_get_line;
+	init.put_line = ini_put_line;
+	init.rewind = ini_rewind;
+
+	//callbacks
+	init.on_section = NULL;
+	init.on_keyvalue = NULL;
+	init.on_error = NULL;
+
+	ini_init(&settings->m_ini, &init);
 }
 
 METHOD_DEINIT_IMPL(M_settings, settings)

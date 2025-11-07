@@ -10,6 +10,12 @@
 #include "yaffs2/yaffs_ecc.h"
 #include "lib/utils/barrier.h"
 
+#define NAND_WRITE_DEBUG
+
+#ifdef NAND_WRITE_DEBUG
+#include <stdio.h>
+#endif
+
 //mem to mem -> Source:PAR to Destination:M0AR
 //MINC for Read
 //PINC for Write
@@ -400,6 +406,10 @@ int drv_K9F1G08U0E_write_chunk_fn(struct yaffs_dev *dev, int nand_chunk, const u
 	//page program
 	if(nand_K9F1G08U0E_page_program(&nand_K9F1G08U0E_drv, (uint16_t) nand_chunk) != E_NO_ERROR)
 		return YAFFS_FAIL;
+
+#ifdef NAND_WRITE_DEBUG
+	printf("NAND W: %d", nand_chunk);
+#endif
 
 	return YAFFS_OK;
 }
