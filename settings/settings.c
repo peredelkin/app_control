@@ -39,33 +39,35 @@ static char* ini_get_line(char* line, int num, void* fd)
 //! Функция записи очередной линии файла.
 static int ini_put_line(char* line, void* fd)
 {
-	int nc = 0;
-	int len = sizeof(line);
-	char *p = line;
-	char s;
-	int rc;
-
-	/* Byte-by-byte write without any conversion (ANSI/OEM API) */
-	while(nc < len) {
-		s = *p++;
-		if(s == 0) s = '\n';
-		rc = yaffs_write(*((int*)fd), &s, 1); /* Put a byte */
-		if(rc != 1) {
-			nc = -1;
-			break;
-		}
-		nc++;
-		if(s == '\n') break;
-	}
-
-	*p = 0;		/* Terminate the string */
-	return nc;
+	size_t len = strlen(line);
+	line[len] = '\n';
+	return yaffs_write(*((int*)fd), line, len);
 }
 
 //! Функция установки на начало файла.
 static void ini_rewind(void* fd)
 {
 	yaffs_lseek(*((int*)fd), 0, SEEK_SET);
+}
+
+void settings_set_read_error(M_settings* settings) {
+	settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_READ_DONE);
+}
+
+void settings_set_read_done(M_settings* settings) {
+	settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_READ_DONE);
+}
+
+void settings_set_write_error(M_settings* settings) {
+	settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
+}
+
+void settings_set_write_done(M_settings* settings) {
+	settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_WRITE_DONE);
+}
+
+void settings_negs_next(M_settings* settings) {
+	settings->m_reg_current = regs_next(settings->m_reg_current);
 }
 
 void settings_read_conf(M_settings* settings) {
@@ -104,18 +106,20 @@ void settings_read(M_settings *settings) {
 			//если указатель на регистр NULL
 			if (settings->m_reg_current == NULL) {
 				//установим статусы ERROR, READ_DONE
-				settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_READ_DONE);
+				settings_set_read_error(settings);
 			} else {
 				//если регистр имеет флаг настройки
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
 					//читаем ini файл
 					settings_read_conf(settings);
+				} else {
+					//установим следующий регистр
+					settings_negs_next(settings);
 				}
-				//установим следующий регистр
-				settings->m_reg_current = regs_next(settings->m_reg_current);
 				//если регистр был последним
 				if(settings->m_reg_current == NULL) {
-					settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_READ_DONE);
+					//установим статусы VALID, READ_DONE
+					settings_set_read_done(settings);
 				}
 			}
 		}
@@ -132,7 +136,7 @@ void settings_read(M_settings *settings) {
 		//если произошла ошибка, завершим работу с файлом
 		if (settings_file == -1) {
 			//установим статусы ERROR, READ_DONE
-			settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_READ_DONE);
+			settings_set_read_error(settings);
 		} else {
 			//установим поток ini
 			ini_set_stream(&settings->m_ini, &settings_file);
@@ -157,18 +161,20 @@ void settings_write(M_settings *settings) {
 			//если указатель на регистр NULL
 			if (settings->m_reg_current == NULL) {
 				//установим статусы ERROR, WRITE_DONE
-				settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
+				settings_set_write_error(settings);
 			} else {
 				//если регистр имеет флаг настройки
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
 					//пишем ini файл
 					settings_write_conf(settings);
+				} else {
+					//установим следующий регистр
+					settings_negs_next(settings);
 				}
-				//установим следующий регистр
-				settings->m_reg_current = regs_next(settings->m_reg_current);
 				//если регистр был последним
 				if(settings->m_reg_current == NULL) {
-					settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_WRITE_DONE);
+					//установим статусы VALID, WRITE_DONE
+					settings_set_write_done(settings);
 				}
 			}
 		}
@@ -185,7 +191,7 @@ void settings_write(M_settings *settings) {
 		//если произошла ошибка, завершим работу с файлом
 		if (settings_file == -1) {
 			//установим статусы ERROR, WRITE_DONE
-			settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
+			settings_set_write_error(settings);
 		} else {
 			//установим поток ini
 			ini_set_stream(&settings->m_ini, &settings_file);
