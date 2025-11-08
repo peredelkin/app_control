@@ -107,7 +107,9 @@ void settings_negs_next(M_settings* settings) {
 
 //! Функция чтения блока параметров
 void settings_read_conf(M_settings* settings) {
-	ini_parse(&settings->m_ini);
+	if (ini_parse(&settings->m_ini) != E_NO_ERROR) {
+		settings_set_read_error(settings);
+	}
 }
 
 //! Функция записи блока параметров
@@ -121,6 +123,7 @@ void settings_reset(M_settings* settings) {
 	settings->control = SETTINGS_CONTROL_NONE; //Reset All Control
 
 	settings->m_reg_current = NULL;
+	settings_file = -1;
 
 	settings->status = SETTINGS_STATUS_READY; //Set Ready Status
 }
