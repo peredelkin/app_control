@@ -441,9 +441,10 @@ ini_error_t ini_parse_line(char* line, ini_expr_type_t* expr_type,
  * @param pos Символ.
  * @param line_str Начало ошибки.
  */
-ALWAYS_INLINE static void ini_on_error(ini_t* ini, ini_error_t error, size_t line, size_t pos, const char* line_str)
+ALWAYS_INLINE static bool ini_on_error(ini_t* ini, ini_error_t error, size_t line, size_t pos, const char* line_str)
 {
-    if(ini->on_error) ini->on_error(error, line, pos, line_str);
+    if(ini->on_error) return ini->on_error(error, line, pos, line_str);
+    else return false;
 }
 
 /**
@@ -451,9 +452,10 @@ ALWAYS_INLINE static void ini_on_error(ini_t* ini, ini_error_t error, size_t lin
  * @param ini Парсер ini.
  * @param section Имя секции.
  */
-ALWAYS_INLINE static void ini_on_section(ini_t* ini, const char* section)
+ALWAYS_INLINE static bool ini_on_section(ini_t* ini, const char* section)
 {
-    if(ini->on_section) ini->on_section(section);
+    if(ini->on_section) return ini->on_section(section);
+    else return false;
 }
 
 /**
@@ -462,9 +464,10 @@ ALWAYS_INLINE static void ini_on_section(ini_t* ini, const char* section)
  * @param key Имя ключ.
  * @param value Значение.
  */
-ALWAYS_INLINE static void ini_on_keyvalue(ini_t* ini, const char* key, const char* value)
+ALWAYS_INLINE static bool ini_on_keyvalue(ini_t* ini, const char* key, const char* value)
 {
-    if(ini->on_keyvalue) ini->on_keyvalue(key, value);
+    if(ini->on_keyvalue) return ini->on_keyvalue(key, value);
+    else return false;
 }
 
 err_t ini_parse(ini_t* ini)
@@ -474,12 +477,13 @@ err_t ini_parse(ini_t* ini)
     ini_error_t ini_err = INI_ERROR_NONE;
     ini_expr_type_t type = INI_EXPR_EMPTY;
     char* section = NULL;
-    char* key = NULL, *value = NULL;
-
+    char* key = NULL;
+    char* value = NULL;
     char* err_pos = NULL;
     size_t line = 0;
+    bool parse_continue = true;
 
-    while(ini_get_line(ini)){
+    while(ini_get_line(ini) && parse_continue){
         line ++;
         ini_err = ini_parse_line(ini->line, &type, &section, &key, &value, &err_pos);
         if(ini_err == INI_ERROR_NONE){
@@ -487,15 +491,15 @@ err_t ini_parse(ini_t* ini)
             default:
                 break;
             case INI_EXPR_SECTION:
-                ini_on_section(ini, section);
+            	parse_continue = ini_on_section(ini, section);
                 break;
             case INI_EXPR_KEYVALUE:
-                ini_on_keyvalue(ini, key, value);
+            	parse_continue = ini_on_keyvalue(ini, key, value);
                 break;
             }
         }else{
             //printf("Parse error %d at line %d: %s\n", (int)ini_err, (int)line, err_pos);
-            ini_on_error(ini, ini_err, line, err_pos - ini->line, ini->line);
+        	parse_continue = ini_on_error(ini, ini_err, line, err_pos - ini->line, ini->line);
         }
     }
 

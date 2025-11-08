@@ -14,7 +14,7 @@ int settings_file;
 #define SETTINGS_S_WMODE	S_IWUSR
 
 //! Функция чтения очередной линии файла.
-static char* ini_get_line(char* line, int num, void* fd)
+static char* settings_get_line(char* line, int num, void* fd)
 {
 	int nc = 0;
 	int len = num;
@@ -22,22 +22,20 @@ static char* ini_get_line(char* line, int num, void* fd)
 	char s;
 	int rc;
 
-	/* Byte-by-byte read without any conversion (ANSI/OEM API) */
-	len -= 1;	/* Make a room for the terminator */
+	len -= 1;
 	while (nc < len) {
-		rc = yaffs_read(*((int*)fd), &s, 1); /* Get a byte */
-		if (rc != 1) break;		/* EOF? */
-		//if (s == '\r') continue; //Enable with LF - CRLF conversion.
+		rc = yaffs_read(*((int*)fd), &s, 1);
+		if (rc != 1) break;
 		*p++ = s; nc++;
 		if (s == '\n') break;
 	}
 
-	*p = 0;		/* Terminate the string */
-	return nc ? line : 0;	/* When no data read due to EOF or error, return with error. */
+	*p = 0;
+	return nc ? line : 0;
 }
 
 //! Функция записи очередной линии файла.
-static int ini_put_line(char* line, void* fd)
+static int settings_put_line(char* line, void* fd)
 {
 	size_t len = strlen(line);
 	line[len] = '\n';
@@ -45,46 +43,84 @@ static int ini_put_line(char* line, void* fd)
 }
 
 //! Функция установки на начало файла.
-static void ini_rewind(void* fd)
+static void settings_rewind(void* fd)
 {
 	yaffs_lseek(*((int*)fd), 0, SEEK_SET);
 }
 
+//! Функция начала секции.
+bool settings_on_section (const char* section) {
+
+	return false;
+}
+//! Функция пары "ключ-значение".
+bool settings_on_keyvalue (const char* key, const char* value) {
+
+	return false;
+}
+//! Функция ошибки.
+bool settings_on_error (ini_error_t error, size_t line, size_t pos, const char* line_str) {
+
+	return false;
+}
+
+//! Функция установки статуса ошибки чтения
 void settings_set_read_error(M_settings* settings) {
 	settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_READ_DONE);
 }
 
+//! Функция установки статуса чтения без ошибок
 void settings_set_read_done(M_settings* settings) {
 	settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_READ_DONE);
 }
 
+//! Функция сброса статусов чтения
+void settings_reset_read_status(M_settings* settings) {
+	settings->status &= ~(	SETTINGS_STATUS_VALID |
+							SETTINGS_STATUS_ERROR |
+							SETTINGS_STATUS_WARNING |
+							SETTINGS_STATUS_READ_DONE);
+}
+
+//! Функция установки статуса ошибки записи
 void settings_set_write_error(M_settings* settings) {
 	settings->status |= (SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WRITE_DONE);
 }
 
+//! Функция установки статуса записи без ошибок
 void settings_set_write_done(M_settings* settings) {
 	settings->status |= (SETTINGS_STATUS_VALID | SETTINGS_STATUS_WRITE_DONE);
 }
 
+//! Функция сброса статусов записи
+void settings_reset_write_status(M_settings* settings) {
+	settings->status &= ~(	SETTINGS_STATUS_VALID |
+							SETTINGS_STATUS_ERROR |
+							SETTINGS_STATUS_WARNING |
+							SETTINGS_STATUS_WRITE_DONE);
+}
+
+//! Функция перехода к следующему регистру
 void settings_negs_next(M_settings* settings) {
 	settings->m_reg_current = regs_next(settings->m_reg_current);
 }
 
+//! Функция чтения блока параметров
 void settings_read_conf(M_settings* settings) {
-
+	ini_parse(&settings->m_ini);
 }
 
+//! Функция записи блока параметров
 void settings_write_conf(M_settings* settings) {
 
 }
 
+//! Функция сброса модуля
 void settings_reset(M_settings* settings) {
 	settings->status = SETTINGS_STATUS_NONE; //Reset All Status
 	settings->control = SETTINGS_CONTROL_NONE; //Reset All Control
 
-	settings->m_reg_fisrt = regs_first();
 	settings->m_reg_current = NULL;
-	settings->m_reg_end = regs_end();
 
 	settings->status = SETTINGS_STATUS_READY; //Set Ready Status
 }
@@ -110,12 +146,11 @@ void settings_read(M_settings *settings) {
 			} else {
 				//если регистр имеет флаг настройки
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
-					//читаем ini файл
+					//парсим блок ini файла
 					settings_read_conf(settings);
-				} else {
-					//установим следующий регистр
-					settings_negs_next(settings);
 				}
+				//установим следующий регистр
+				settings_negs_next(settings);
 				//если регистр был последним
 				if(settings->m_reg_current == NULL) {
 					//установим статусы VALID, READ_DONE
@@ -127,8 +162,7 @@ void settings_read(M_settings *settings) {
 		//установим статус RUN
 		settings->status |= SETTINGS_STATUS_RUN;
 		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
-		settings->status &= ~(SETTINGS_STATUS_VALID | SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WARNING
-				| SETTINGS_STATUS_READ_DONE);
+		settings_reset_read_status(settings);
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 		//откроем файл для чтения
@@ -165,12 +199,11 @@ void settings_write(M_settings *settings) {
 			} else {
 				//если регистр имеет флаг настройки
 				if (settings->m_reg_current->flags & REG_FLAG_CONF) {
-					//пишем ini файл
+					//запишем блок в ini файл
 					settings_write_conf(settings);
-				} else {
-					//установим следующий регистр
-					settings_negs_next(settings);
 				}
+				//установим следующий регистр
+				settings_negs_next(settings);
 				//если регистр был последним
 				if(settings->m_reg_current == NULL) {
 					//установим статусы VALID, WRITE_DONE
@@ -182,8 +215,7 @@ void settings_write(M_settings *settings) {
 		//установим статус RUN
 		settings->status |= SETTINGS_STATUS_RUN;
 		//сбросим статусы VALID, ERROR, WARNING, WRITE_DONE
-		settings->status &= ~(SETTINGS_STATUS_VALID | SETTINGS_STATUS_ERROR | SETTINGS_STATUS_WARNING
-				| SETTINGS_STATUS_WRITE_DONE);
+		settings_reset_write_status(settings);
 		//установим указатель текущего регистра
 		settings->m_reg_current = settings->m_reg_fisrt;
 		//откроем файл для чтения
@@ -204,6 +236,9 @@ METHOD_INIT_IMPL(M_settings, settings)
 	settings->status = SETTINGS_STATUS_NONE;
 	settings->control = SETTINGS_CONTROL_RESET;
 
+	settings->m_reg_fisrt = regs_first();
+	settings->m_reg_end = regs_end();
+
 	ini_init_t init;
 
 	//buf
@@ -211,9 +246,9 @@ METHOD_INIT_IMPL(M_settings, settings)
 	init.line_size = 0;
 
 	//i/o
-	init.get_line = ini_get_line;
-	init.put_line = ini_put_line;
-	init.rewind = ini_rewind;
+	init.get_line = settings_get_line;
+	init.put_line = settings_put_line;
+	init.rewind = settings_rewind;
 
 	//callbacks
 	init.on_section = NULL;
