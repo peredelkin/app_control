@@ -4,14 +4,17 @@
 #include "yaffs2/yaffsfs.h"
 #include "sys/counter/sys_counter.h"
 
-char* settings_filename = "/nand/settings.ini";
+char* settings_filename = "/nand/settings";
 int settings_file;
 
+#define SETTINGS_STR_SIZE 256
+char settings_str_buffer[SETTINGS_STR_SIZE];
+
 #define SETTINGS_O_RFLAG	O_RDONLY
-#define SETTINGS_S_RMODE	S_IRUSR
+#define SETTINGS_S_RMODE	(S_IRUSR | S_IWUSR)
 
 #define SETTINGS_O_WFLAG	(O_CREAT | O_TRUNC | O_WRONLY)
-#define SETTINGS_S_WMODE	S_IWUSR
+#define SETTINGS_S_WMODE	(S_IWUSR | S_IRUSR)
 
 //! Функция чтения очередной линии файла.
 static char* settings_get_line(char* line, int num, void* fd)
@@ -38,7 +41,6 @@ static char* settings_get_line(char* line, int num, void* fd)
 static int settings_put_line(char* line, void* fd)
 {
 	size_t len = strlen(line);
-	line[len] = '\n';
 	return yaffs_write(*((int*)fd), line, len);
 }
 
@@ -107,14 +109,48 @@ void settings_negs_next(M_settings* settings) {
 
 //! Функция чтения блока параметров
 void settings_read_conf(M_settings* settings) {
-	if (ini_parse(&settings->m_ini) != E_NO_ERROR) {
-		settings_set_read_error(settings);
-	}
+//	if (ini_parse(&settings->m_ini) != E_NO_ERROR) {
+//		settings_set_read_error(settings);
+//	}
 }
 
 //! Функция записи блока параметров
 void settings_write_conf(M_settings* settings) {
+	err_t err = E_NO_ERROR;
 
+	memset(settings->m_regs_id, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_regs_data, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_regs_type, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_regs_size, 0, SETTINGS_STR_VAL_SIZE);
+
+	snprintf(settings->m_regs_id, SETTINGS_STR_VAL_SIZE, "%u", settings->m_reg_current->id);
+	snprintf(settings->m_regs_data, SETTINGS_STR_VAL_SIZE, "%i", reg_valuel(settings->m_reg_current));
+	snprintf(settings->m_regs_type, SETTINGS_STR_VAL_SIZE, "%u", settings->m_reg_current->id);
+	snprintf(settings->m_regs_size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
+
+	err = ini_write_section(&settings->m_ini, settings->m_regs_id);
+	if(err != E_NO_ERROR) {
+		settings_set_write_error(settings);
+		return;
+	}
+
+	err = ini_write_keyvalue(&settings->m_ini, "data", settings->m_regs_data);
+	if(err != E_NO_ERROR) {
+		settings_set_write_error(settings);
+		return;
+	}
+
+	err = ini_write_keyvalue(&settings->m_ini, "type", settings->m_regs_type);
+	if(err != E_NO_ERROR) {
+		settings_set_write_error(settings);
+		return;
+	}
+
+	err = ini_write_keyvalue(&settings->m_ini, "size", settings->m_regs_size);
+	if(err != E_NO_ERROR) {
+		settings_set_write_error(settings);
+		return;
+	}
 }
 
 //! Функция сброса модуля
@@ -245,8 +281,8 @@ METHOD_INIT_IMPL(M_settings, settings)
 	ini_init_t init;
 
 	//buf
-	init.line = NULL;
-	init.line_size = 0;
+	init.line = settings_str_buffer;
+	init.line_size = SETTINGS_STR_SIZE;
 
 	//i/o
 	init.get_line = settings_get_line;

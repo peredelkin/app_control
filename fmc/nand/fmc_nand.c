@@ -10,7 +10,7 @@
 #include "yaffs2/yaffs_ecc.h"
 #include "lib/utils/barrier.h"
 
-#define NAND_WRITE_DEBUG
+//#define NAND_WRITE_DEBUG
 
 #ifdef NAND_WRITE_DEBUG
 #include <stdio.h>

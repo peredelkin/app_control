@@ -5,6 +5,8 @@
 
 #include "ini/ini.h"
 
+#define SETTINGS_STR_VAL_SIZE 12
+
 //! Перечисление возможных бит управления.
 enum _E_Settings_Control {
 	SETTINGS_CONTROL_NONE = CONTROL_NONE,
@@ -50,6 +52,10 @@ struct _S_Settings {
     reg_t* m_reg_current;
     reg_t* m_reg_end;
     ini_t m_ini;
+    char m_regs_id[SETTINGS_STR_VAL_SIZE];
+    char m_regs_data[SETTINGS_STR_VAL_SIZE];
+    char m_regs_type[SETTINGS_STR_VAL_SIZE];
+    char m_regs_size[SETTINGS_STR_VAL_SIZE];
 };
 
 EXTERN METHOD_INIT_PROTO(M_settings);
@@ -70,10 +76,14 @@ EXTERN METHOD_CALC_PROTO(M_settings);
         METHOD_CALC_PTR(M_settings),\
         /* Коллбэки */\
         /* Внутренние данные */\
-		0,\
-		0,\
-		0,\
-		{0}\
+		0,/*m_reg_fisrt*/\
+		0,/*m_reg_current*/\
+		0,/*m_reg_end*/\
+		{0},/*m_ini*/\
+		{0},/*m_regs_id*/\
+		{0},/*m_regs_data*/\
+		{0},/*m_regs_type*/\
+		{0},/*m_regs_size*/\
     }
 
 #endif /* SETTINGS_H */
