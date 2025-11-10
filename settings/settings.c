@@ -125,7 +125,7 @@ void settings_write_conf(M_settings* settings) {
 
 	snprintf(settings->m_regs_id, SETTINGS_STR_VAL_SIZE, "%u", settings->m_reg_current->id);
 	snprintf(settings->m_regs_data, SETTINGS_STR_VAL_SIZE, "%i", reg_valuel(settings->m_reg_current));
-	snprintf(settings->m_regs_type, SETTINGS_STR_VAL_SIZE, "%u", settings->m_reg_current->id);
+	snprintf(settings->m_regs_type, SETTINGS_STR_VAL_SIZE, "%u", settings->m_reg_current->type);
 	snprintf(settings->m_regs_size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
 
 	err = ini_write_section(&settings->m_ini, settings->m_regs_id);
