@@ -8,7 +8,6 @@
 #include "errors/errors.h"
 #include "defs/defs.h"
 #include <stdint.h>
-#include <stdbool.h>
 #include <stddef.h>
 
 
@@ -57,11 +56,11 @@ typedef enum _Ini_Expr_Type {
 
 
 //! Каллбэк начала секции.
-typedef bool (*ini_on_section_t)(const char* section);
+typedef void (*ini_on_section_t)(const char* section);
 //! Каллбэк пары "ключ-значение".
-typedef bool (*ini_on_keyvalue_t)(const char* key, const char* value);
+typedef void (*ini_on_keyvalue_t)(const char* key, const char* value);
 //! Каллбэк ошибки.
-typedef bool (*ini_on_error_t)(ini_error_t error, size_t line, size_t pos, const char* line_str);
+typedef void (*ini_on_error_t)(ini_error_t error, size_t line, size_t pos, const char* line_str);
 
 
 //! Структура ini.

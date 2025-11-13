@@ -50,19 +50,53 @@ static void settings_rewind(void* fd)
 	yaffs_lseek(*((int*)fd), 0, SEEK_SET);
 }
 
+static unsigned int ini_reg_id;
+static int ini_reg_data;
+static unsigned int ini_reg_type;
+static unsigned int ini_reg_size;
+
 //! Функция начала секции.
 bool settings_on_section (const char* section) {
+	char* end_val = NULL;
 
-	return false;
+	ini_reg_id = strtoul(section, &end_val, 0);
+	if(end_val == NULL ||  *end_val != '\0') ini_reg_id = 0;
+
+	printf("Parse section: %u\n", ini_reg_id);
+	sys_counter_delay(0, 10000); //10ms
+
+	ini_reg_data = 0;
+	ini_reg_type = 0;
+	ini_reg_size = 0;
+
+	return true;
 }
 //! Функция пары "ключ-значение".
-bool settings_on_keyvalue (const char* key, const char* value) {
+bool settings_on_keyvalue(const char *key, const char *value) {
+	char *end_val = NULL;
 
-	return false;
+	if (strcmp(key, "data") == 0) {
+		ini_reg_data = strtol(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') ini_reg_data = 0;
+	}
+
+	if (strcmp(key, "type") == 0) {
+		ini_reg_type = strtoul(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') ini_reg_type = 0;
+	}
+
+	if (strcmp(key, "size") == 0) {
+		ini_reg_size = strtoul(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') ini_reg_size = 0;
+		return false; //end of section
+	}
+
+	return true;
 }
 //! Функция ошибки.
 bool settings_on_error (ini_error_t error, size_t line, size_t pos, const char* line_str) {
-
+	printf("Parse error %d at line %d: %s\n", (int)error, (int)line, line_str);
+	sys_counter_delay(0, 10000); //10ms
 	return false;
 }
 
@@ -109,9 +143,32 @@ void settings_negs_next(M_settings* settings) {
 
 //! Функция чтения блока параметров
 void settings_read_conf(M_settings* settings) {
-//	if (ini_parse(&settings->m_ini) != E_NO_ERROR) {
-//		settings_set_read_error(settings);
-//	}
+	if (ini_parse(&settings->m_ini) != E_NO_ERROR) {
+		settings_set_read_error(settings);
+	} else {
+		unsigned int cur_reg_id = reg_id(settings->m_reg_current);
+		unsigned int cur_reg_type = reg_type(settings->m_reg_current);
+		unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
+
+		if(ini_reg_id == cur_reg_id) {
+			if(ini_reg_type == cur_reg_type) {
+				if(ini_reg_size == cur_reg_size) {
+					memcpy(settings->m_reg_current->data, &ini_reg_data, cur_reg_size);
+					printf("Parse ok id: reg %u\n", cur_reg_id);
+					sys_counter_delay(0, 10000); //10ms
+				} else {
+					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, ini_reg_size);
+					sys_counter_delay(0, 10000); //10ms
+				}
+			} else {
+				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, ini_reg_type);
+				sys_counter_delay(0, 10000); //10ms
+			}
+		} else {
+			printf("Compare error id: reg %u vs ini %u \n", cur_reg_id, ini_reg_id);
+			sys_counter_delay(0, 10000); //10ms
+		}
+	}
 }
 
 //! Функция записи блока параметров
@@ -123,9 +180,9 @@ void settings_write_conf(M_settings* settings) {
 	memset(settings->m_regs_type, 0, SETTINGS_STR_VAL_SIZE);
 	memset(settings->m_regs_size, 0, SETTINGS_STR_VAL_SIZE);
 
-	snprintf(settings->m_regs_id, SETTINGS_STR_VAL_SIZE, "%u", settings->m_reg_current->id);
+	snprintf(settings->m_regs_id, SETTINGS_STR_VAL_SIZE, "%u", reg_id(settings->m_reg_current));
 	snprintf(settings->m_regs_data, SETTINGS_STR_VAL_SIZE, "%i", reg_valuel(settings->m_reg_current));
-	snprintf(settings->m_regs_type, SETTINGS_STR_VAL_SIZE, "%u", settings->m_reg_current->type);
+	snprintf(settings->m_regs_type, SETTINGS_STR_VAL_SIZE, "%u", reg_type(settings->m_reg_current));
 	snprintf(settings->m_regs_size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
 
 	err = ini_write_section(&settings->m_ini, settings->m_regs_id);
@@ -290,9 +347,9 @@ METHOD_INIT_IMPL(M_settings, settings)
 	init.rewind = settings_rewind;
 
 	//callbacks
-	init.on_section = NULL;
-	init.on_keyvalue = NULL;
-	init.on_error = NULL;
+	init.on_section = settings_on_section;
+	init.on_keyvalue = settings_on_keyvalue;
+	init.on_error = settings_on_error;
 
 	ini_init(&settings->m_ini, &init);
 }
