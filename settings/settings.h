@@ -5,6 +5,7 @@
 
 #include "ini/ini.h"
 
+#define SETTINGS_STR_SIZE 256
 #define SETTINGS_STR_VAL_SIZE 12
 
 //! Перечисление возможных бит управления.
@@ -50,12 +51,16 @@ struct _S_Settings {
     // Внутренние данные.
     reg_t* m_reg_fisrt;
     reg_t* m_reg_current;
-    reg_t* m_reg_end;
     ini_t m_ini;
-    char m_regs_id[SETTINGS_STR_VAL_SIZE];
-    char m_regs_data[SETTINGS_STR_VAL_SIZE];
-    char m_regs_type[SETTINGS_STR_VAL_SIZE];
-    char m_regs_size[SETTINGS_STR_VAL_SIZE];
+    char m_str_buf[SETTINGS_STR_SIZE];
+    char m_str_id[SETTINGS_STR_VAL_SIZE];
+    char m_str_data[SETTINGS_STR_VAL_SIZE];
+    char m_str_type[SETTINGS_STR_VAL_SIZE];
+    char m_str_size[SETTINGS_STR_VAL_SIZE];
+    reg_id_t m_buf_id;
+    int m_buf_data;
+    reg_type_t m_buf_type;
+    size_t m_buf_size;
 };
 
 EXTERN METHOD_INIT_PROTO(M_settings);
@@ -78,12 +83,16 @@ EXTERN METHOD_CALC_PROTO(M_settings);
         /* Внутренние данные */\
 		0,/*m_reg_fisrt*/\
 		0,/*m_reg_current*/\
-		0,/*m_reg_end*/\
 		{0},/*m_ini*/\
-		{0},/*m_regs_id*/\
-		{0},/*m_regs_data*/\
-		{0},/*m_regs_type*/\
-		{0},/*m_regs_size*/\
+		{0},/*m_str_buf*/\
+		{0},/*m_str_id*/\
+		{0},/*m_str_data*/\
+		{0},/*m_str_type*/\
+		{0},/*m_str_size*/\
+		0,/*m_buf_id*/\
+		0,/*m_buf_data*/\
+		0,/*m_buf_type*/\
+		0,/*m_buf_size*/\
     }
 
 #endif /* SETTINGS_H */

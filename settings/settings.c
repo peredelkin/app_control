@@ -7,9 +7,6 @@
 char* settings_filename = "/nand/settings";
 int settings_file;
 
-#define SETTINGS_STR_SIZE 256
-char settings_str_buffer[SETTINGS_STR_SIZE];
-
 #define SETTINGS_O_RFLAG	O_RDONLY
 #define SETTINGS_S_RMODE	(S_IRUSR | S_IWUSR)
 
@@ -50,35 +47,30 @@ static void settings_rewind(void* fd)
 	yaffs_lseek(*((int*)fd), 0, SEEK_SET);
 }
 
-static unsigned int ini_reg_id;
-static int ini_reg_data;
-static unsigned int ini_reg_type;
-static unsigned int ini_reg_size;
-
 //! Функция начала секции.
-void settings_on_section (const char* section) {
+void settings_on_section (M_settings* settings, const char* section) {
 	char* end_val = NULL;
 
-	ini_reg_id = strtoul(section, &end_val, 0);
-	if(end_val == NULL ||  *end_val != '\0') ini_reg_id = 0;
+	settings->m_buf_id = strtoul(section, &end_val, 0);
+	if(end_val == NULL ||  *end_val != '\0') settings->m_buf_id = 0;
 }
 //! Функция пары "ключ-значение".
-void settings_on_keyvalue(const char *key, const char *value) {
+void settings_on_keyvalue(M_settings* settings, const char *key, const char *value) {
 	char *end_val = NULL;
 
 	if (strcmp(key, "data") == 0) {
-		ini_reg_data = strtol(value, &end_val, 0);
-		if (end_val == NULL || *end_val != '\0') ini_reg_data = 0;
+		settings->m_buf_data = strtol(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') settings->m_buf_data = 0;
 	}
 
 	if (strcmp(key, "type") == 0) {
-		ini_reg_type = strtoul(value, &end_val, 0);
-		if (end_val == NULL || *end_val != '\0') ini_reg_type = 0;
+		settings->m_buf_type = strtoul(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') settings->m_buf_type = 0;
 	}
 
 	if (strcmp(key, "size") == 0) {
-		ini_reg_size = strtoul(value, &end_val, 0);
-		if (end_val == NULL || *end_val != '\0') ini_reg_size = 0;
+		settings->m_buf_size = strtoul(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') settings->m_buf_size = 0;
 	}
 }
 //! Функция ошибки.
@@ -102,7 +94,8 @@ void settings_reset_read_status(M_settings* settings) {
 	settings->status &= ~(	SETTINGS_STATUS_VALID |
 							SETTINGS_STATUS_ERROR |
 							SETTINGS_STATUS_WARNING |
-							SETTINGS_STATUS_READ_DONE);
+							SETTINGS_STATUS_READ_DONE |
+							SETTINGS_STATUS_WRITE_DONE);
 }
 
 //! Функция установки статуса ошибки записи
@@ -120,7 +113,8 @@ void settings_reset_write_status(M_settings* settings) {
 	settings->status &= ~(	SETTINGS_STATUS_VALID |
 							SETTINGS_STATUS_ERROR |
 							SETTINGS_STATUS_WARNING |
-							SETTINGS_STATUS_WRITE_DONE);
+							SETTINGS_STATUS_WRITE_DONE |
+							SETTINGS_STATUS_READ_DONE);
 }
 
 //! Функция перехода к следующему регистру
@@ -147,10 +141,10 @@ void settings_read_conf(M_settings* settings) {
             default:
                 break;
             case INI_EXPR_SECTION:
-            	settings_on_section(section);
+            	settings_on_section(settings, section);
                 break;
             case INI_EXPR_KEYVALUE:
-            	settings_on_keyvalue(key, value);
+            	settings_on_keyvalue(settings, key, value);
             	keyvalue_count--;
                 break;
             }
@@ -167,20 +161,20 @@ void settings_read_conf(M_settings* settings) {
         		unsigned int cur_reg_type = reg_type(settings->m_reg_current);
         		unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
 
-        		if(ini_reg_id == cur_reg_id) {
-        			if(ini_reg_type == cur_reg_type) {
-        				if(ini_reg_size == cur_reg_size) {
-        					memcpy(settings->m_reg_current->data, &ini_reg_data, cur_reg_size);
+        		if(settings->m_buf_id == cur_reg_id) {
+        			if(settings->m_buf_type == cur_reg_type) {
+        				if(settings->m_buf_size == cur_reg_size) {
+        					memcpy(settings->m_reg_current->data, &settings->m_buf_data, cur_reg_size);
         				} else {
-        					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, ini_reg_size);
+        					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, settings->m_buf_size);
         					sys_counter_delay(0, 10000); //10ms
         				}
         			} else {
-        				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, ini_reg_type);
+        				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, settings->m_buf_type);
         				sys_counter_delay(0, 10000); //10ms
         			}
         		} else {
-        			printf("Compare error id: reg %u vs ini %u \n", cur_reg_id, ini_reg_id);
+        			printf("Compare error id: reg %u vs ini %lu \n", cur_reg_id, settings->m_buf_id);
         			sys_counter_delay(0, 10000); //10ms
         		}
         	}
@@ -194,35 +188,35 @@ void settings_read_conf(M_settings* settings) {
 void settings_write_conf(M_settings* settings) {
 	err_t err = E_NO_ERROR;
 
-	memset(settings->m_regs_id, 0, SETTINGS_STR_VAL_SIZE);
-	memset(settings->m_regs_data, 0, SETTINGS_STR_VAL_SIZE);
-	memset(settings->m_regs_type, 0, SETTINGS_STR_VAL_SIZE);
-	memset(settings->m_regs_size, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str_id, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str_data, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str_type, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str_size, 0, SETTINGS_STR_VAL_SIZE);
 
-	snprintf(settings->m_regs_id, SETTINGS_STR_VAL_SIZE, "%u", reg_id(settings->m_reg_current));
-	snprintf(settings->m_regs_data, SETTINGS_STR_VAL_SIZE, "%i", reg_valuel(settings->m_reg_current));
-	snprintf(settings->m_regs_type, SETTINGS_STR_VAL_SIZE, "%u", reg_type(settings->m_reg_current));
-	snprintf(settings->m_regs_size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
+	snprintf(settings->m_str_id, SETTINGS_STR_VAL_SIZE, "%lu", reg_id(settings->m_reg_current));
+	snprintf(settings->m_str_data, SETTINGS_STR_VAL_SIZE, "%li", reg_valuel(settings->m_reg_current));
+	snprintf(settings->m_str_type, SETTINGS_STR_VAL_SIZE, "%u", reg_type(settings->m_reg_current));
+	snprintf(settings->m_str_size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
 
-	err = ini_write_section(&settings->m_ini, settings->m_regs_id);
+	err = ini_write_section(&settings->m_ini, settings->m_str_id);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
 	}
 
-	err = ini_write_keyvalue(&settings->m_ini, "data", settings->m_regs_data);
+	err = ini_write_keyvalue(&settings->m_ini, "data", settings->m_str_data);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
 	}
 
-	err = ini_write_keyvalue(&settings->m_ini, "type", settings->m_regs_type);
+	err = ini_write_keyvalue(&settings->m_ini, "type", settings->m_str_type);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
 	}
 
-	err = ini_write_keyvalue(&settings->m_ini, "size", settings->m_regs_size);
+	err = ini_write_keyvalue(&settings->m_ini, "size", settings->m_str_size);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
@@ -264,12 +258,19 @@ void settings_read(M_settings *settings) {
 					//парсим блок ini файла
 					settings_read_conf(settings);
 				}
-				//установим следующий регистр
-				settings_negs_next(settings);
-				//если регистр был последним
-				if(settings->m_reg_current == NULL) {
-					//установим статусы VALID, READ_DONE
-					settings_set_read_done(settings);
+				/**
+				 * если в ходе выполнения чтения был установлен статус READ DONE,
+				 * пропустим инкремент указателя регистра,
+				 * для корректной установки статуса.
+				 */
+				if (!(settings->status & SETTINGS_STATUS_READ_DONE)) {
+					//установим следующий регистр
+					settings_negs_next(settings);
+					//если регистр был последним
+					if(settings->m_reg_current == NULL) {
+						//установим статусы VALID, READ_DONE
+						settings_set_read_done(settings);
+					}
 				}
 			}
 		}
@@ -317,12 +318,19 @@ void settings_write(M_settings *settings) {
 					//запишем блок в ini файл
 					settings_write_conf(settings);
 				}
-				//установим следующий регистр
-				settings_negs_next(settings);
-				//если регистр был последним
-				if(settings->m_reg_current == NULL) {
-					//установим статусы VALID, WRITE_DONE
-					settings_set_write_done(settings);
+				/**
+				 * Если в ходе выполнения записи был установлен WRITE DONE,
+				 * пропустим инкремент указателя регистра,
+				 * для корректной установки статуса
+				 */
+				if (!(settings->status & SETTINGS_STATUS_WRITE_DONE)) {
+					//установим следующий регистр
+					settings_negs_next(settings);
+					//если регистр был последним
+					if (settings->m_reg_current == NULL) {
+						//установим статусы VALID, WRITE_DONE
+						settings_set_write_done(settings);
+					}
 				}
 			}
 		}
@@ -352,12 +360,11 @@ METHOD_INIT_IMPL(M_settings, settings)
 	settings->control = SETTINGS_CONTROL_RESET;
 
 	settings->m_reg_fisrt = regs_first();
-	settings->m_reg_end = regs_end();
 
 	ini_init_t init;
 
 	//buf
-	init.line = settings_str_buffer;
+	init.line = settings->m_str_buf;
 	init.line_size = SETTINGS_STR_SIZE;
 
 	//i/o
@@ -366,9 +373,9 @@ METHOD_INIT_IMPL(M_settings, settings)
 	init.rewind = settings_rewind;
 
 	//callbacks
-	init.on_section = settings_on_section;
-	init.on_keyvalue = settings_on_keyvalue;
-	init.on_error = settings_on_error;
+	init.on_section = NULL;
+	init.on_keyvalue = NULL;
+	init.on_error = NULL;
 
 	ini_init(&settings->m_ini, &init);
 }
