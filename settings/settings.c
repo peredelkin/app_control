@@ -56,23 +56,14 @@ static unsigned int ini_reg_type;
 static unsigned int ini_reg_size;
 
 //! Функция начала секции.
-bool settings_on_section (const char* section) {
+void settings_on_section (const char* section) {
 	char* end_val = NULL;
 
 	ini_reg_id = strtoul(section, &end_val, 0);
 	if(end_val == NULL ||  *end_val != '\0') ini_reg_id = 0;
-
-	printf("Parse section: %u\n", ini_reg_id);
-	sys_counter_delay(0, 10000); //10ms
-
-	ini_reg_data = 0;
-	ini_reg_type = 0;
-	ini_reg_size = 0;
-
-	return true;
 }
 //! Функция пары "ключ-значение".
-bool settings_on_keyvalue(const char *key, const char *value) {
+void settings_on_keyvalue(const char *key, const char *value) {
 	char *end_val = NULL;
 
 	if (strcmp(key, "data") == 0) {
@@ -88,16 +79,12 @@ bool settings_on_keyvalue(const char *key, const char *value) {
 	if (strcmp(key, "size") == 0) {
 		ini_reg_size = strtoul(value, &end_val, 0);
 		if (end_val == NULL || *end_val != '\0') ini_reg_size = 0;
-		return false; //end of section
 	}
-
-	return true;
 }
 //! Функция ошибки.
-bool settings_on_error (ini_error_t error, size_t line, size_t pos, const char* line_str) {
+void settings_on_error (ini_error_t error, size_t line, size_t pos, const char* line_str) {
 	printf("Parse error %d at line %d: %s\n", (int)error, (int)line, line_str);
 	sys_counter_delay(0, 10000); //10ms
-	return false;
 }
 
 //! Функция установки статуса ошибки чтения
@@ -143,32 +130,64 @@ void settings_negs_next(M_settings* settings) {
 
 //! Функция чтения блока параметров
 void settings_read_conf(M_settings* settings) {
-	if (ini_parse(&settings->m_ini) != E_NO_ERROR) {
-		settings_set_read_error(settings);
-	} else {
-		unsigned int cur_reg_id = reg_id(settings->m_reg_current);
-		unsigned int cur_reg_type = reg_type(settings->m_reg_current);
-		unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
 
-		if(ini_reg_id == cur_reg_id) {
-			if(ini_reg_type == cur_reg_type) {
-				if(ini_reg_size == cur_reg_size) {
-					memcpy(settings->m_reg_current->data, &ini_reg_data, cur_reg_size);
-					printf("Parse ok id: reg %u\n", cur_reg_id);
-					sys_counter_delay(0, 10000); //10ms
-				} else {
-					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, ini_reg_size);
-					sys_counter_delay(0, 10000); //10ms
-				}
-			} else {
-				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, ini_reg_type);
-				sys_counter_delay(0, 10000); //10ms
-			}
-		} else {
-			printf("Compare error id: reg %u vs ini %u \n", cur_reg_id, ini_reg_id);
-			sys_counter_delay(0, 10000); //10ms
-		}
-	}
+    ini_error_t ini_err = INI_ERROR_NONE;
+    ini_expr_type_t type = INI_EXPR_EMPTY;
+    char* section = NULL;
+    char* key = NULL;
+    char* value = NULL;
+    char* err_pos = NULL;
+
+    int keyvalue_count = 3;
+
+    while(settings_get_line(settings->m_ini.line, settings->m_ini.line_size, settings->m_ini.stream)){
+        ini_err = ini_parse_line(settings->m_ini.line, &type, &section, &key, &value, &err_pos);
+        if(ini_err == INI_ERROR_NONE){
+            switch(type){
+            default:
+                break;
+            case INI_EXPR_SECTION:
+            	settings_on_section(section);
+                break;
+            case INI_EXPR_KEYVALUE:
+            	settings_on_keyvalue(key, value);
+            	keyvalue_count--;
+                break;
+            }
+        }else{
+        	printf("Parse error %d: %s\n", (int)ini_err, err_pos);
+        	sys_counter_delay(0, 10000); //10ms
+        }
+
+        if(keyvalue_count == 0) {
+        	if (ini_err != INI_ERROR_NONE) {
+        		settings_set_read_error(settings);
+        	} else {
+        		unsigned int cur_reg_id = reg_id(settings->m_reg_current);
+        		unsigned int cur_reg_type = reg_type(settings->m_reg_current);
+        		unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
+
+        		if(ini_reg_id == cur_reg_id) {
+        			if(ini_reg_type == cur_reg_type) {
+        				if(ini_reg_size == cur_reg_size) {
+        					memcpy(settings->m_reg_current->data, &ini_reg_data, cur_reg_size);
+        				} else {
+        					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, ini_reg_size);
+        					sys_counter_delay(0, 10000); //10ms
+        				}
+        			} else {
+        				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, ini_reg_type);
+        				sys_counter_delay(0, 10000); //10ms
+        			}
+        		} else {
+        			printf("Compare error id: reg %u vs ini %u \n", cur_reg_id, ini_reg_id);
+        			sys_counter_delay(0, 10000); //10ms
+        		}
+        	}
+
+        	break;
+        }
+    }
 }
 
 //! Функция записи блока параметров

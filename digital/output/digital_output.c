@@ -7,20 +7,6 @@ METHOD_INIT_IMPL(M_digital_output, output)
 {
     INIT(do_ncv7608);
     INIT(do_relay);
-
-	//TODO: тестовые настройки!
-    output->p_select[0] = 0;
-    output->p_select[1] = 1;
-    output->p_select[2] = 2;
-    output->p_select[3] = 3;
-    output->p_select[4] = 4;
-    output->p_select[5] = 5;
-    output->p_select[6] = 6;
-    output->p_select[7] = 7;
-    output->p_select[8] = 8;
-    output->p_select[9] = 9;
-    output->p_select[10] = 10;
-    output->p_select[11] = 11;
 }
 
 METHOD_DEINIT_IMPL(M_digital_output, output)

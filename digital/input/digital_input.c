@@ -32,13 +32,6 @@ METHOD_INIT_IMPL(M_digital_input, input)
 
 	gpio_em_stop_cfg_setup(); //EmStop_App
 	gpio_ac_dc_lost_cfg_setup(); //AC DC Lost
-
-	//TODO: тестовые настройки!
-	input->p_select[0] = 2;
-	input->p_select[1] = 2;
-
-	input->p_invert[0] = 1;
-	input->p_invert[1] = 0;
 }
 
 METHOD_DEINIT_IMPL(M_digital_input, input)
