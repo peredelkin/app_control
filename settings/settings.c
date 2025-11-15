@@ -118,7 +118,7 @@ void settings_reset_write_status(M_settings* settings) {
 }
 
 //! Функция перехода к следующему регистру
-void settings_negs_next(M_settings* settings) {
+void settings_regs_next(M_settings* settings) {
 	settings->m_reg_current = regs_next(settings->m_reg_current);
 }
 
@@ -265,7 +265,7 @@ void settings_read(M_settings *settings) {
 				 */
 				if (!(settings->status & SETTINGS_STATUS_READ_DONE)) {
 					//установим следующий регистр
-					settings_negs_next(settings);
+					settings_regs_next(settings);
 					//если регистр был последним
 					if(settings->m_reg_current == NULL) {
 						//установим статусы VALID, READ_DONE
@@ -325,7 +325,7 @@ void settings_write(M_settings *settings) {
 				 */
 				if (!(settings->status & SETTINGS_STATUS_WRITE_DONE)) {
 					//установим следующий регистр
-					settings_negs_next(settings);
+					settings_regs_next(settings);
 					//если регистр был последним
 					if (settings->m_reg_current == NULL) {
 						//установим статусы VALID, WRITE_DONE
