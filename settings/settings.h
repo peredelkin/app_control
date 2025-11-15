@@ -6,7 +6,7 @@
 #include "ini/ini.h"
 
 #define SETTINGS_STR_SIZE 256
-#define SETTINGS_STR_VAL_SIZE 12
+#define SETTINGS_STR_VAL_SIZE 32
 
 //! Перечисление возможных бит управления.
 enum _E_Settings_Control {
