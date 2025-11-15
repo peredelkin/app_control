@@ -51,26 +51,26 @@ static void settings_rewind(void* fd)
 void settings_on_section (M_settings* settings, const char* section) {
 	char* end_val = NULL;
 
-	settings->m_buf_id = strtoul(section, &end_val, 0);
-	if(end_val == NULL ||  *end_val != '\0') settings->m_buf_id = 0;
+	settings->m_buf.id = strtoul(section, &end_val, 0);
+	if(end_val == NULL ||  *end_val != '\0') settings->m_buf.id = 0;
 }
 //! Функция пары "ключ-значение".
 void settings_on_keyvalue(M_settings* settings, const char *key, const char *value) {
 	char *end_val = NULL;
 
 	if (strcmp(key, "data") == 0) {
-		settings->m_buf_data = strtol(value, &end_val, 0);
-		if (end_val == NULL || *end_val != '\0') settings->m_buf_data = 0;
+		settings->m_buf.data = strtol(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') settings->m_buf.data = 0;
 	}
 
 	if (strcmp(key, "type") == 0) {
-		settings->m_buf_type = strtoul(value, &end_val, 0);
-		if (end_val == NULL || *end_val != '\0') settings->m_buf_type = 0;
+		settings->m_buf.type = strtoul(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') settings->m_buf.type = 0;
 	}
 
 	if (strcmp(key, "size") == 0) {
-		settings->m_buf_size = strtoul(value, &end_val, 0);
-		if (end_val == NULL || *end_val != '\0') settings->m_buf_size = 0;
+		settings->m_buf.size = strtoul(value, &end_val, 0);
+		if (end_val == NULL || *end_val != '\0') settings->m_buf.size = 0;
 	}
 }
 //! Функция ошибки.
@@ -161,20 +161,20 @@ void settings_read_conf(M_settings* settings) {
         		unsigned int cur_reg_type = reg_type(settings->m_reg_current);
         		unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
 
-        		if(settings->m_buf_id == cur_reg_id) {
-        			if(settings->m_buf_type == cur_reg_type) {
-        				if(settings->m_buf_size == cur_reg_size) {
-        					memcpy(settings->m_reg_current->data, &settings->m_buf_data, cur_reg_size);
+        		if(settings->m_buf.id == cur_reg_id) {
+        			if(settings->m_buf.type == cur_reg_type) {
+        				if(settings->m_buf.size == cur_reg_size) {
+        					memcpy(settings->m_reg_current->data, &settings->m_buf.data, cur_reg_size);
         				} else {
-        					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, settings->m_buf_size);
+        					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, settings->m_buf.size);
         					sys_counter_delay(0, 10000); //10ms
         				}
         			} else {
-        				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, settings->m_buf_type);
+        				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, settings->m_buf.type);
         				sys_counter_delay(0, 10000); //10ms
         			}
         		} else {
-        			printf("Compare error id: reg %u vs ini %lu \n", cur_reg_id, settings->m_buf_id);
+        			printf("Compare error id: reg %u vs ini %lu \n", cur_reg_id, settings->m_buf.id);
         			sys_counter_delay(0, 10000); //10ms
         		}
         	}
@@ -188,35 +188,35 @@ void settings_read_conf(M_settings* settings) {
 void settings_write_conf(M_settings* settings) {
 	err_t err = E_NO_ERROR;
 
-	memset(settings->m_str_id, 0, SETTINGS_STR_VAL_SIZE);
-	memset(settings->m_str_data, 0, SETTINGS_STR_VAL_SIZE);
-	memset(settings->m_str_type, 0, SETTINGS_STR_VAL_SIZE);
-	memset(settings->m_str_size, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str.id, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str.data, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str.type, 0, SETTINGS_STR_VAL_SIZE);
+	memset(settings->m_str.size, 0, SETTINGS_STR_VAL_SIZE);
 
-	snprintf(settings->m_str_id, SETTINGS_STR_VAL_SIZE, "%lu", reg_id(settings->m_reg_current));
-	snprintf(settings->m_str_data, SETTINGS_STR_VAL_SIZE, "%li", reg_valuel(settings->m_reg_current));
-	snprintf(settings->m_str_type, SETTINGS_STR_VAL_SIZE, "%u", reg_type(settings->m_reg_current));
-	snprintf(settings->m_str_size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
+	snprintf(settings->m_str.id, SETTINGS_STR_VAL_SIZE, "%lu", reg_id(settings->m_reg_current));
+	snprintf(settings->m_str.data, SETTINGS_STR_VAL_SIZE, "%li", reg_valuel(settings->m_reg_current));
+	snprintf(settings->m_str.type, SETTINGS_STR_VAL_SIZE, "%u", reg_type(settings->m_reg_current));
+	snprintf(settings->m_str.size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
 
-	err = ini_write_section(&settings->m_ini, settings->m_str_id);
+	err = ini_write_section(&settings->m_ini, settings->m_str.id);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
 	}
 
-	err = ini_write_keyvalue(&settings->m_ini, "data", settings->m_str_data);
+	err = ini_write_keyvalue(&settings->m_ini, "data", settings->m_str.data);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
 	}
 
-	err = ini_write_keyvalue(&settings->m_ini, "type", settings->m_str_type);
+	err = ini_write_keyvalue(&settings->m_ini, "type", settings->m_str.type);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
 	}
 
-	err = ini_write_keyvalue(&settings->m_ini, "size", settings->m_str_size);
+	err = ini_write_keyvalue(&settings->m_ini, "size", settings->m_str.size);
 	if(err != E_NO_ERROR) {
 		settings_set_write_error(settings);
 		return;
@@ -280,7 +280,7 @@ void settings_read(M_settings *settings) {
 		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
 		settings_reset_read_status(settings);
 		//установим указатель текущего регистра
-		settings->m_reg_current = settings->m_reg_fisrt;
+		settings->m_reg_current = regs_first();
 		//откроем файл для чтения
 		settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
 		//если произошла ошибка, завершим работу с файлом
@@ -340,7 +340,7 @@ void settings_write(M_settings *settings) {
 		//сбросим статусы VALID, ERROR, WARNING, WRITE_DONE
 		settings_reset_write_status(settings);
 		//установим указатель текущего регистра
-		settings->m_reg_current = settings->m_reg_fisrt;
+		settings->m_reg_current = regs_first();
 		//откроем файл для чтения
 		settings_file = yaffs_open(settings_filename, SETTINGS_O_WFLAG, SETTINGS_S_WMODE);
 		//если произошла ошибка, завершим работу с файлом
@@ -359,12 +359,10 @@ METHOD_INIT_IMPL(M_settings, settings)
 	settings->status = SETTINGS_STATUS_NONE;
 	settings->control = SETTINGS_CONTROL_RESET;
 
-	settings->m_reg_fisrt = regs_first();
-
 	ini_init_t init;
 
 	//buf
-	init.line = settings->m_str_buf;
+	init.line = settings->m_str.buf;
 	init.line_size = SETTINGS_STR_SIZE;
 
 	//i/o

@@ -31,6 +31,21 @@ enum _E_Settings_Status {
 	SETTINGS_STATUS_WRITE_DONE = (STATUS_USER << 1)
 };
 
+typedef struct {
+    char buf[SETTINGS_STR_SIZE];
+    char id[SETTINGS_STR_VAL_SIZE];
+    char data[SETTINGS_STR_VAL_SIZE];
+    char type[SETTINGS_STR_VAL_SIZE];
+    char size[SETTINGS_STR_VAL_SIZE];
+} settings_str_t;
+
+typedef struct {
+    reg_id_t id;
+    int data;
+    reg_type_t type;
+    size_t size;
+} settings_buf_t;
+
 //! Предварительная декларация типа модуля.
 typedef struct _S_Settings M_settings;
 
@@ -49,18 +64,10 @@ struct _S_Settings {
     METHOD_CALC(M_settings);
     // Коллбэки.
     // Внутренние данные.
-    reg_t* m_reg_fisrt;
     reg_t* m_reg_current;
     ini_t m_ini;
-    char m_str_buf[SETTINGS_STR_SIZE];
-    char m_str_id[SETTINGS_STR_VAL_SIZE];
-    char m_str_data[SETTINGS_STR_VAL_SIZE];
-    char m_str_type[SETTINGS_STR_VAL_SIZE];
-    char m_str_size[SETTINGS_STR_VAL_SIZE];
-    reg_id_t m_buf_id;
-    int m_buf_data;
-    reg_type_t m_buf_type;
-    size_t m_buf_size;
+    settings_str_t m_str;
+    settings_buf_t m_buf;
 };
 
 EXTERN METHOD_INIT_PROTO(M_settings);
@@ -81,18 +88,10 @@ EXTERN METHOD_CALC_PROTO(M_settings);
         METHOD_CALC_PTR(M_settings),\
         /* Коллбэки */\
         /* Внутренние данные */\
-		0,/*m_reg_fisrt*/\
 		0,/*m_reg_current*/\
 		{0},/*m_ini*/\
-		{0},/*m_str_buf*/\
-		{0},/*m_str_id*/\
-		{0},/*m_str_data*/\
-		{0},/*m_str_type*/\
-		{0},/*m_str_size*/\
-		0,/*m_buf_id*/\
-		0,/*m_buf_data*/\
-		0,/*m_buf_type*/\
-		0,/*m_buf_size*/\
+		{0},/*m_str*/\
+		{0},/*m_buf*/\
     }
 
 #endif /* SETTINGS_H */
