@@ -90,7 +90,7 @@ EXTERN METHOD_CALC_PROTO(M_settings);
         /* Внутренние данные */\
 		0,/*m_reg_current*/\
 		{0},/*m_ini*/\
-		{0},/*m_str*/\
+		{{0}},/*m_str*/\
 		{0},/*m_buf*/\
     }
 
