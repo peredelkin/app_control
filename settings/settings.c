@@ -148,21 +148,12 @@ void settings_read_conf(M_settings* settings) {
             	keyvalue_count--;
             	//если последний keyvalue
             	if (keyvalue_count == 0) {
-					unsigned int cur_reg_id = reg_id(settings->m_reg_current);
-					unsigned int cur_reg_type = reg_type(settings->m_reg_current);
 					unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
 
-					if (settings->m_buf.id == cur_reg_id) {
-						if (settings->m_buf.type == cur_reg_type) {
-							if (settings->m_buf.size == cur_reg_size) {
-								memcpy(settings->m_reg_current->data, &settings->m_buf.data,
-										cur_reg_size);
-							} else {
-								settings_set_read_error(settings);
-							}
-						} else {
-							settings_set_read_error(settings);
-						}
+					if ((settings->m_buf.id == reg_id(settings->m_reg_current)) &&
+						(settings->m_buf.type == reg_type(settings->m_reg_current)) &&
+						(settings->m_buf.size == cur_reg_size)) {
+						memcpy(settings->m_reg_current->data, &settings->m_buf.data, cur_reg_size);
 					} else {
 						settings_set_read_error(settings);
 					}
@@ -172,7 +163,7 @@ void settings_read_conf(M_settings* settings) {
 
                 break;
             }
-        }else{
+        } else {
         	settings_set_read_error(settings);
         	return;
         }
