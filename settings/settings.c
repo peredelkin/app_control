@@ -146,37 +146,35 @@ void settings_read_conf(M_settings* settings) {
             case INI_EXPR_KEYVALUE:
             	settings_on_keyvalue(settings, key, value);
             	keyvalue_count--;
+            	//если последний keyvalue
+            	if (keyvalue_count == 0) {
+					unsigned int cur_reg_id = reg_id(settings->m_reg_current);
+					unsigned int cur_reg_type = reg_type(settings->m_reg_current);
+					unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
+
+					if (settings->m_buf.id == cur_reg_id) {
+						if (settings->m_buf.type == cur_reg_type) {
+							if (settings->m_buf.size == cur_reg_size) {
+								memcpy(settings->m_reg_current->data, &settings->m_buf.data,
+										cur_reg_size);
+							} else {
+								settings_set_read_error(settings);
+							}
+						} else {
+							settings_set_read_error(settings);
+						}
+					} else {
+						settings_set_read_error(settings);
+					}
+
+					return;
+				}
+
                 break;
             }
         }else{
-        	printf("Parse error %d: %s\n", (int)ini_err, err_pos);
-        	sys_counter_delay(0, 10000); //10ms
-        }
-
-        if(keyvalue_count == 0) {
-        	if (ini_err != INI_ERROR_NONE) {
-        		settings_set_read_error(settings);
-        	} else {
-        		unsigned int cur_reg_id = reg_id(settings->m_reg_current);
-        		unsigned int cur_reg_type = reg_type(settings->m_reg_current);
-        		unsigned int cur_reg_size = reg_data_size(settings->m_reg_current);
-
-        		if(settings->m_buf.id == cur_reg_id) {
-        			if(settings->m_buf.type == cur_reg_type) {
-        				if(settings->m_buf.size == cur_reg_size) {
-        					memcpy(settings->m_reg_current->data, &settings->m_buf.data, cur_reg_size);
-        				} else {
-        					settings_set_read_error(settings);
-        				}
-        			} else {
-        				settings_set_read_error(settings);
-        			}
-        		} else {
-        			settings_set_read_error(settings);
-        		}
-        	}
-
-        	break;
+        	settings_set_read_error(settings);
+        	return;
         }
     }
 }
