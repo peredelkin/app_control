@@ -166,16 +166,13 @@ void settings_read_conf(M_settings* settings) {
         				if(settings->m_buf.size == cur_reg_size) {
         					memcpy(settings->m_reg_current->data, &settings->m_buf.data, cur_reg_size);
         				} else {
-        					printf("Compare error size: reg %u vs ini %u \n", cur_reg_size, settings->m_buf.size);
-        					sys_counter_delay(0, 10000); //10ms
+        					settings_set_read_error(settings);
         				}
         			} else {
-        				printf("Compare error type: reg %u vs ini %u \n", cur_reg_type, settings->m_buf.type);
-        				sys_counter_delay(0, 10000); //10ms
+        				settings_set_read_error(settings);
         			}
         		} else {
-        			printf("Compare error id: reg %u vs ini %lu \n", cur_reg_id, settings->m_buf.id);
-        			sys_counter_delay(0, 10000); //10ms
+        			settings_set_read_error(settings);
         		}
         	}
 
@@ -229,7 +226,7 @@ void settings_reset(M_settings* settings) {
 	settings->control = SETTINGS_CONTROL_NONE; //Reset All Control
 
 	settings->m_reg_current = NULL;
-	settings_file = -1;
+	settings_file = -1; //TODO: следует закрыть файл, если он все еще открыт
 
 	settings->status = SETTINGS_STATUS_READY; //Set Ready Status
 }
