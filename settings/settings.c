@@ -5,7 +5,7 @@
 #include "sys/counter/sys_counter.h"
 
 char* settings_filename = "/nand/settings";
-int settings_file;
+int settings_fd;
 
 #define SETTINGS_O_RFLAG	O_RDONLY
 #define SETTINGS_S_RMODE	(S_IRUSR | S_IWUSR)
@@ -226,7 +226,11 @@ void settings_reset(M_settings* settings) {
 	settings->control = SETTINGS_CONTROL_NONE; //Reset All Control
 
 	settings->m_reg_current = NULL;
-	settings_file = -1; //TODO: следует закрыть файл, если он все еще открыт
+
+	if(!(settings_fd < 0)) {
+		//закроем файл
+		yaffs_close(settings_fd);
+	}
 
 	settings->status = SETTINGS_STATUS_READY; //Set Ready Status
 }
@@ -241,7 +245,7 @@ void settings_read(M_settings *settings) {
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
-			yaffs_close(settings_file);
+			yaffs_close(settings_fd);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 		} else {
@@ -279,14 +283,14 @@ void settings_read(M_settings *settings) {
 		//установим указатель текущего регистра
 		settings->m_reg_current = regs_first();
 		//откроем файл для чтения
-		settings_file = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
+		settings_fd = yaffs_open(settings_filename, SETTINGS_O_RFLAG, SETTINGS_S_RMODE);
 		//если произошла ошибка, завершим работу с файлом
-		if (settings_file == -1) {
+		if (settings_fd < 0) {
 			//установим статусы ERROR, READ_DONE
 			settings_set_read_error(settings);
 		} else {
 			//установим поток ini
-			ini_set_stream(&settings->m_ini, &settings_file);
+			ini_set_stream(&settings->m_ini, &settings_fd);
 		}
 	}
 }
@@ -301,7 +305,7 @@ void settings_write(M_settings *settings) {
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
-			yaffs_close(settings_file);
+			yaffs_close(settings_fd);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 		} else {
@@ -339,14 +343,14 @@ void settings_write(M_settings *settings) {
 		//установим указатель текущего регистра
 		settings->m_reg_current = regs_first();
 		//откроем файл для чтения
-		settings_file = yaffs_open(settings_filename, SETTINGS_O_WFLAG, SETTINGS_S_WMODE);
+		settings_fd = yaffs_open(settings_filename, SETTINGS_O_WFLAG, SETTINGS_S_WMODE);
 		//если произошла ошибка, завершим работу с файлом
-		if (settings_file == -1) {
+		if (settings_fd < 0) {
 			//установим статусы ERROR, WRITE_DONE
 			settings_set_write_error(settings);
 		} else {
 			//установим поток ini
-			ini_set_stream(&settings->m_ini, &settings_file);
+			ini_set_stream(&settings->m_ini, &settings_fd);
 		}
 	}
 }
@@ -355,6 +359,8 @@ METHOD_INIT_IMPL(M_settings, settings)
 {
 	settings->status = SETTINGS_STATUS_NONE;
 	settings->control = SETTINGS_CONTROL_RESET;
+
+	settings_fd = -1;
 
 	ini_init_t init;
 
