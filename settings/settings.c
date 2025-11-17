@@ -180,7 +180,7 @@ void settings_write_conf(M_settings* settings) {
 	memset(settings->m_str.size, 0, SETTINGS_STR_VAL_SIZE);
 
 	snprintf(settings->m_str.id, SETTINGS_STR_VAL_SIZE, "%#08x", (unsigned int)(reg_id(settings->m_reg_current)));
-	snprintf(settings->m_str.data, SETTINGS_STR_VAL_SIZE, "%li", reg_valuel(settings->m_reg_current));
+	snprintf(settings->m_str.data, SETTINGS_STR_VAL_SIZE, "%i", (int)(reg_valuel(settings->m_reg_current)));
 	snprintf(settings->m_str.type, SETTINGS_STR_VAL_SIZE, "%u", reg_type(settings->m_reg_current));
 	snprintf(settings->m_str.size, SETTINGS_STR_VAL_SIZE, "%u", reg_data_size(settings->m_reg_current));
 
