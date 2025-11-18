@@ -9,7 +9,7 @@
 
 // user code end
 
-struct _S_regs_data regs_data = {
+struct _S_CO_data CO_data = {
 .deviceType = {
     .value = 0 /*  */
 },
@@ -252,7 +252,7 @@ struct _S_regs_data regs_data = {
     .count = 131 /* Number of sub entries count */
 },
 .digital_out = {
-    .count = 36 /* Number of sub entries count */
+    .count = 131 /* Number of sub entries count */
 },
 .mso = {
     .count = 34 /* Number of sub entries count */

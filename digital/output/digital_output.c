@@ -19,22 +19,34 @@ METHOD_CALC_IMPL(M_digital_output, output)
 {
 	uint32_t raw_mask;
 	uint32_t in_mask;
-	uint32_t invert_res;
 	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
 		raw_mask = (1 << output->p_select[i]);
 		in_mask = (1 << i);
-		invert_res = (in_mask & output->p_invert);
 		if(output->in_data & raw_mask) {
-			if(invert_res) {
-				output->m_out_data.all &= ~in_mask;
+			//сбросим счетчик сброса О_о
+			output->m_cnt_reset[i] = output->p_t_reset[i];
+			//проверим счетчик установки
+			if (output->m_cnt_set[i]) {
+				output->m_cnt_set[i]--;
 			} else {
-				output->m_out_data.all |= in_mask;
+				if(output->p_invert[i] == 0x1) {
+					output->m_out_data.all &= ~in_mask;
+				} else {
+					output->m_out_data.all |= in_mask;
+				}
 			}
 		} else {
-			if(invert_res) {
-				output->m_out_data.all |= in_mask;
+			//сбросим счетчик установки
+			output->m_cnt_set[i] = output->p_t_set[i];
+			//проверим счетчик сброса
+			if(output->m_cnt_reset[i]) {
+				output->m_cnt_reset[i]--;
 			} else {
-				output->m_out_data.all &= ~in_mask;
+				if(output->p_invert[i] == 0x1) {
+					output->m_out_data.all |= in_mask;
+				} else {
+					output->m_out_data.all &= ~in_mask;
+				}
 			}
 		}
 	}

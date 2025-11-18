@@ -1,5 +1,5 @@
-#ifndef REGS_DATA_H
-#define REGS_DATA_H
+#ifndef CO_DATA_H
+#define CO_DATA_H
 
 #include <stdint.h>
 
@@ -12,7 +12,7 @@
 
 // user code end
 
-struct _S_regs_data {
+struct _S_CO_data {
 
 struct _S_deviceType {
     uint32_t value; /*  */
@@ -328,7 +328,7 @@ struct _S_can_tim {
 } can_tim;
 
 };
-extern struct _S_regs_data regs_data;
+extern struct _S_CO_data CO_data;
 
 
-#endif /* REGS_DATA_H */
+#endif /* CO_DATA_H */

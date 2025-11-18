@@ -3300,7 +3300,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="5">
                 <name>invert1</name>
@@ -3314,7 +3314,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="6">
                 <name>invert2</name>
@@ -3328,7 +3328,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="7">
                 <name>invert3</name>
@@ -3342,7 +3342,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="8">
                 <name>invert4</name>
@@ -3356,7 +3356,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="9">
                 <name>invert5</name>
@@ -3370,7 +3370,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="10">
                 <name>invert6</name>
@@ -3384,7 +3384,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="11">
                 <name>invert7</name>
@@ -3398,7 +3398,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="12">
                 <name>invert8</name>
@@ -3412,7 +3412,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="13">
                 <name>invert9</name>
@@ -3426,7 +3426,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="14">
                 <name>invert10</name>
@@ -3440,7 +3440,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="15">
                 <name>invert11</name>
@@ -3454,7 +3454,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="16">
                 <name>invert12</name>
@@ -3468,7 +3468,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="17">
                 <name>invert13</name>
@@ -3482,7 +3482,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="18">
                 <name>invert14</name>
@@ -3496,7 +3496,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="19">
                 <name>invert15</name>
@@ -3510,7 +3510,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="20">
                 <name>invert16</name>
@@ -3524,7 +3524,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="21">
                 <name>invert17</name>
@@ -3538,7 +3538,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="22">
                 <name>invert18</name>
@@ -3552,7 +3552,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="23">
                 <name>invert19</name>
@@ -3566,7 +3566,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="24">
                 <name>invert20</name>
@@ -3580,7 +3580,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="25">
                 <name>invert21</name>
@@ -3594,7 +3594,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="26">
                 <name>invert22</name>
@@ -3608,7 +3608,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="27">
                 <name>invert23</name>
@@ -3622,7 +3622,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="28">
                 <name>invert24</name>
@@ -3636,7 +3636,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="29">
                 <name>invert25</name>
@@ -3650,7 +3650,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="30">
                 <name>invert26</name>
@@ -3664,7 +3664,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="31">
                 <name>invert27</name>
@@ -3678,7 +3678,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="32">
                 <name>invert28</name>
@@ -3692,7 +3692,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="33">
                 <name>invert29</name>
@@ -3706,7 +3706,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="34">
                 <name>invert30</name>
@@ -3720,7 +3720,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="35">
                 <name>invert31</name>
@@ -3734,7 +3734,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр инверсии дискретных входов</description>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
             <RegVar subindex="36">
                 <name>select0</name>
@@ -3748,7 +3748,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="37">
                 <name>select1</name>
@@ -3762,7 +3762,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="38">
                 <name>select2</name>
@@ -3776,7 +3776,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="39">
                 <name>select3</name>
@@ -3790,7 +3790,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="40">
                 <name>select4</name>
@@ -3804,7 +3804,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="41">
                 <name>select5</name>
@@ -3818,7 +3818,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="42">
                 <name>select6</name>
@@ -3832,7 +3832,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="43">
                 <name>select7</name>
@@ -3846,7 +3846,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="44">
                 <name>select8</name>
@@ -3860,7 +3860,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="45">
                 <name>select9</name>
@@ -3874,7 +3874,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="46">
                 <name>select10</name>
@@ -3888,7 +3888,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="47">
                 <name>select11</name>
@@ -3902,7 +3902,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="48">
                 <name>select12</name>
@@ -3916,7 +3916,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="49">
                 <name>select13</name>
@@ -3930,7 +3930,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="50">
                 <name>select14</name>
@@ -3944,7 +3944,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="51">
                 <name>select15</name>
@@ -3958,7 +3958,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="52">
                 <name>select16</name>
@@ -3972,7 +3972,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="53">
                 <name>select17</name>
@@ -3986,7 +3986,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="54">
                 <name>select18</name>
@@ -4000,7 +4000,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="55">
                 <name>select19</name>
@@ -4014,7 +4014,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="56">
                 <name>select20</name>
@@ -4028,7 +4028,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="57">
                 <name>select21</name>
@@ -4042,7 +4042,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="58">
                 <name>select22</name>
@@ -4056,7 +4056,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="59">
                 <name>select23</name>
@@ -4070,7 +4070,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="60">
                 <name>select24</name>
@@ -4084,7 +4084,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="61">
                 <name>select25</name>
@@ -4098,7 +4098,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="62">
                 <name>select26</name>
@@ -4112,7 +4112,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="63">
                 <name>select27</name>
@@ -4126,7 +4126,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="64">
                 <name>select28</name>
@@ -4140,7 +4140,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="65">
                 <name>select29</name>
@@ -4154,7 +4154,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="66">
                 <name>select30</name>
@@ -4168,7 +4168,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="67">
                 <name>select31</name>
@@ -4182,7 +4182,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр выбора дискретных входов</description>
+                <description>Параметр выбора дискретного входа</description>
             </RegVar>
             <RegVar subindex="68">
                 <name>t_set0</name>
@@ -4196,7 +4196,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="69">
                 <name>t_set1</name>
@@ -4210,7 +4210,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="70">
                 <name>t_set2</name>
@@ -4224,7 +4224,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="71">
                 <name>t_set3</name>
@@ -4238,7 +4238,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="72">
                 <name>t_set4</name>
@@ -4252,7 +4252,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="73">
                 <name>t_set5</name>
@@ -4266,7 +4266,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="74">
                 <name>t_set6</name>
@@ -4280,7 +4280,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="75">
                 <name>t_set7</name>
@@ -4294,7 +4294,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="76">
                 <name>t_set8</name>
@@ -4308,7 +4308,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="77">
                 <name>t_set9</name>
@@ -4322,7 +4322,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="78">
                 <name>t_set10</name>
@@ -4336,7 +4336,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="79">
                 <name>t_set11</name>
@@ -4350,7 +4350,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="80">
                 <name>t_set12</name>
@@ -4364,7 +4364,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="81">
                 <name>t_set13</name>
@@ -4378,7 +4378,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="82">
                 <name>t_set14</name>
@@ -4392,7 +4392,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="83">
                 <name>t_set15</name>
@@ -4406,7 +4406,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="84">
                 <name>t_set16</name>
@@ -4420,7 +4420,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="85">
                 <name>t_set17</name>
@@ -4434,7 +4434,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="86">
                 <name>t_set18</name>
@@ -4448,7 +4448,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="87">
                 <name>t_set19</name>
@@ -4462,7 +4462,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="88">
                 <name>t_set20</name>
@@ -4476,7 +4476,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="89">
                 <name>t_set21</name>
@@ -4490,7 +4490,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="90">
                 <name>t_set22</name>
@@ -4504,7 +4504,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="91">
                 <name>t_set23</name>
@@ -4518,7 +4518,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="92">
                 <name>t_set24</name>
@@ -4532,7 +4532,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="93">
                 <name>t_set25</name>
@@ -4546,7 +4546,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="94">
                 <name>t_set26</name>
@@ -4560,7 +4560,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="95">
                 <name>t_set27</name>
@@ -4574,7 +4574,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="96">
                 <name>t_set28</name>
@@ -4588,7 +4588,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="97">
                 <name>t_set29</name>
@@ -4602,7 +4602,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="98">
                 <name>t_set30</name>
@@ -4616,7 +4616,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="99">
                 <name>t_set31</name>
@@ -4630,7 +4630,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки установки</description>
+                <description>Параметр задержки установки бита выхода</description>
             </RegVar>
             <RegVar subindex="100">
                 <name>t_reset0</name>
@@ -4644,7 +4644,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="101">
                 <name>t_reset1</name>
@@ -4658,7 +4658,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="102">
                 <name>t_reset2</name>
@@ -4672,7 +4672,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="103">
                 <name>t_reset3</name>
@@ -4686,7 +4686,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="104">
                 <name>t_reset4</name>
@@ -4700,7 +4700,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="105">
                 <name>t_reset5</name>
@@ -4714,7 +4714,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="106">
                 <name>t_reset6</name>
@@ -4728,7 +4728,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="107">
                 <name>t_reset7</name>
@@ -4742,7 +4742,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="108">
                 <name>t_reset8</name>
@@ -4756,7 +4756,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="109">
                 <name>t_reset9</name>
@@ -4770,7 +4770,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="110">
                 <name>t_reset10</name>
@@ -4784,7 +4784,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="111">
                 <name>t_reset11</name>
@@ -4798,7 +4798,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="112">
                 <name>t_reset12</name>
@@ -4812,7 +4812,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="113">
                 <name>t_reset13</name>
@@ -4826,7 +4826,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="114">
                 <name>t_reset14</name>
@@ -4840,7 +4840,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="115">
                 <name>t_reset15</name>
@@ -4854,7 +4854,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="116">
                 <name>t_reset16</name>
@@ -4868,7 +4868,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="117">
                 <name>t_reset17</name>
@@ -4882,7 +4882,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="118">
                 <name>t_reset18</name>
@@ -4896,7 +4896,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="119">
                 <name>t_reset19</name>
@@ -4910,7 +4910,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="120">
                 <name>t_reset20</name>
@@ -4924,7 +4924,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="121">
                 <name>t_reset21</name>
@@ -4938,7 +4938,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="122">
                 <name>t_reset22</name>
@@ -4952,7 +4952,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="123">
                 <name>t_reset23</name>
@@ -4966,7 +4966,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="124">
                 <name>t_reset24</name>
@@ -4980,7 +4980,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="125">
                 <name>t_reset25</name>
@@ -4994,7 +4994,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="126">
                 <name>t_reset26</name>
@@ -5008,7 +5008,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="127">
                 <name>t_reset27</name>
@@ -5022,7 +5022,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="128">
                 <name>t_reset28</name>
@@ -5036,7 +5036,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="129">
                 <name>t_reset29</name>
@@ -5050,7 +5050,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="130">
                 <name>t_reset30</name>
@@ -5064,7 +5064,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
             <RegVar subindex="131">
                 <name>t_reset31</name>
@@ -5078,7 +5078,7 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description>Параметр задержки сброса</description>
+                <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
         </RegVars>
     </RegEntry>
@@ -5094,7 +5094,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>36</default>
+                <default>131</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -5141,13 +5141,13 @@
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Вход дискретных выходов</description>
             </RegVar>
             <RegVar subindex="4">
-                <name>invert</name>
-                <type>3</type>
+                <name>invert0</name>
+                <type>5</type>
                 <count>1</count>
-                <memory>digital_out.p_invert</memory>
+                <memory>digital_out.p_invert[0]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -5155,9 +5155,443 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр инверсии дискретного выхода</description>
             </RegVar>
             <RegVar subindex="5">
+                <name>invert1</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="6">
+                <name>invert2</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="7">
+                <name>invert3</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="8">
+                <name>invert4</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="9">
+                <name>invert5</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="10">
+                <name>invert6</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[6]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="11">
+                <name>invert7</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[7]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="12">
+                <name>invert8</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[8]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="13">
+                <name>invert9</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[9]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="14">
+                <name>invert10</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[10]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="15">
+                <name>invert11</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[11]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="16">
+                <name>invert12</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[12]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="17">
+                <name>invert13</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[13]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="18">
+                <name>invert14</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[14]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="19">
+                <name>invert15</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[15]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="20">
+                <name>invert16</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[16]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="21">
+                <name>invert17</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[17]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="22">
+                <name>invert18</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[18]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="23">
+                <name>invert19</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[19]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="24">
+                <name>invert20</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[20]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="25">
+                <name>invert21</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[21]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="26">
+                <name>invert22</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[22]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="27">
+                <name>invert23</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[23]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="28">
+                <name>invert24</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[24]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="29">
+                <name>invert25</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[25]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="30">
+                <name>invert26</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[26]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="31">
+                <name>invert27</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[27]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="32">
+                <name>invert28</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[28]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="33">
+                <name>invert29</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[29]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="34">
+                <name>invert30</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[30]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="35">
+                <name>invert31</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_invert[31]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="36">
                 <name>select0</name>
                 <type>5</type>
                 <count>1</count>
@@ -5169,9 +5603,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="6">
+            <RegVar subindex="37">
                 <name>select1</name>
                 <type>5</type>
                 <count>1</count>
@@ -5183,9 +5617,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="7">
+            <RegVar subindex="38">
                 <name>select2</name>
                 <type>5</type>
                 <count>1</count>
@@ -5197,9 +5631,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="8">
+            <RegVar subindex="39">
                 <name>select3</name>
                 <type>5</type>
                 <count>1</count>
@@ -5211,9 +5645,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="9">
+            <RegVar subindex="40">
                 <name>select4</name>
                 <type>5</type>
                 <count>1</count>
@@ -5225,9 +5659,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="10">
+            <RegVar subindex="41">
                 <name>select5</name>
                 <type>5</type>
                 <count>1</count>
@@ -5239,9 +5673,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="11">
+            <RegVar subindex="42">
                 <name>select6</name>
                 <type>5</type>
                 <count>1</count>
@@ -5253,9 +5687,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="12">
+            <RegVar subindex="43">
                 <name>select7</name>
                 <type>5</type>
                 <count>1</count>
@@ -5267,9 +5701,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="13">
+            <RegVar subindex="44">
                 <name>select8</name>
                 <type>5</type>
                 <count>1</count>
@@ -5281,9 +5715,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="14">
+            <RegVar subindex="45">
                 <name>select9</name>
                 <type>5</type>
                 <count>1</count>
@@ -5295,9 +5729,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="15">
+            <RegVar subindex="46">
                 <name>select10</name>
                 <type>5</type>
                 <count>1</count>
@@ -5309,9 +5743,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="16">
+            <RegVar subindex="47">
                 <name>select11</name>
                 <type>5</type>
                 <count>1</count>
@@ -5323,9 +5757,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="17">
+            <RegVar subindex="48">
                 <name>select12</name>
                 <type>5</type>
                 <count>1</count>
@@ -5337,9 +5771,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="18">
+            <RegVar subindex="49">
                 <name>select13</name>
                 <type>5</type>
                 <count>1</count>
@@ -5351,9 +5785,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="19">
+            <RegVar subindex="50">
                 <name>select14</name>
                 <type>5</type>
                 <count>1</count>
@@ -5365,9 +5799,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="20">
+            <RegVar subindex="51">
                 <name>select15</name>
                 <type>5</type>
                 <count>1</count>
@@ -5379,9 +5813,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="21">
+            <RegVar subindex="52">
                 <name>select16</name>
                 <type>5</type>
                 <count>1</count>
@@ -5393,9 +5827,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="22">
+            <RegVar subindex="53">
                 <name>select17</name>
                 <type>5</type>
                 <count>1</count>
@@ -5407,9 +5841,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="23">
+            <RegVar subindex="54">
                 <name>select18</name>
                 <type>5</type>
                 <count>1</count>
@@ -5421,9 +5855,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="24">
+            <RegVar subindex="55">
                 <name>select19</name>
                 <type>5</type>
                 <count>1</count>
@@ -5435,9 +5869,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="25">
+            <RegVar subindex="56">
                 <name>select20</name>
                 <type>5</type>
                 <count>1</count>
@@ -5449,9 +5883,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="26">
+            <RegVar subindex="57">
                 <name>select21</name>
                 <type>5</type>
                 <count>1</count>
@@ -5463,9 +5897,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="27">
+            <RegVar subindex="58">
                 <name>select22</name>
                 <type>5</type>
                 <count>1</count>
@@ -5477,9 +5911,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="28">
+            <RegVar subindex="59">
                 <name>select23</name>
                 <type>5</type>
                 <count>1</count>
@@ -5491,9 +5925,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="29">
+            <RegVar subindex="60">
                 <name>select24</name>
                 <type>5</type>
                 <count>1</count>
@@ -5505,9 +5939,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="30">
+            <RegVar subindex="61">
                 <name>select25</name>
                 <type>5</type>
                 <count>1</count>
@@ -5519,9 +5953,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="31">
+            <RegVar subindex="62">
                 <name>select26</name>
                 <type>5</type>
                 <count>1</count>
@@ -5533,9 +5967,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="32">
+            <RegVar subindex="63">
                 <name>select27</name>
                 <type>5</type>
                 <count>1</count>
@@ -5547,9 +5981,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="33">
+            <RegVar subindex="64">
                 <name>select28</name>
                 <type>5</type>
                 <count>1</count>
@@ -5561,9 +5995,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="34">
+            <RegVar subindex="65">
                 <name>select29</name>
                 <type>5</type>
                 <count>1</count>
@@ -5575,9 +6009,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="35">
+            <RegVar subindex="66">
                 <name>select30</name>
                 <type>5</type>
                 <count>1</count>
@@ -5589,9 +6023,9 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
             </RegVar>
-            <RegVar subindex="36">
+            <RegVar subindex="67">
                 <name>select31</name>
                 <type>5</type>
                 <count>1</count>
@@ -5603,7 +6037,903 @@
                 <base_subindex>0</base_subindex>
                 <flags>1</flags>
                 <eflags>393216</eflags>
-                <description></description>
+                <description>Параметр выбора входного бита</description>
+            </RegVar>
+            <RegVar subindex="68">
+                <name>t_set0</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="69">
+                <name>t_set1</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="70">
+                <name>t_set2</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="71">
+                <name>t_set3</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="72">
+                <name>t_set4</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="73">
+                <name>t_set5</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="74">
+                <name>t_set6</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[6]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="75">
+                <name>t_set7</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[7]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="76">
+                <name>t_set8</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[8]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="77">
+                <name>t_set9</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[9]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="78">
+                <name>t_set10</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[10]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="79">
+                <name>t_set11</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[11]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="80">
+                <name>t_set12</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[12]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="81">
+                <name>t_set13</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[13]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="82">
+                <name>t_set14</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[14]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="83">
+                <name>t_set15</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[15]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="84">
+                <name>t_set16</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[16]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="85">
+                <name>t_set17</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[17]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="86">
+                <name>t_set18</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[18]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="87">
+                <name>t_set19</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[19]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="88">
+                <name>t_set20</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[20]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="89">
+                <name>t_set21</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[21]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="90">
+                <name>t_set22</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[22]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="91">
+                <name>t_set23</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[23]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="92">
+                <name>t_set24</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[24]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="93">
+                <name>t_set25</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[25]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="94">
+                <name>t_set26</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[26]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="95">
+                <name>t_set27</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[27]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="96">
+                <name>t_set28</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[28]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="97">
+                <name>t_set29</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[29]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="98">
+                <name>t_set30</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[30]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="99">
+                <name>t_set31</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_set[31]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="100">
+                <name>t_reset0</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="101">
+                <name>t_reset1</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="102">
+                <name>t_reset2</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="103">
+                <name>t_reset3</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="104">
+                <name>t_reset4</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="105">
+                <name>t_reset5</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="106">
+                <name>t_reset6</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[6]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="107">
+                <name>t_reset7</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[7]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="108">
+                <name>t_reset8</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[8]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="109">
+                <name>t_reset9</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[9]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="110">
+                <name>t_reset10</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[10]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="111">
+                <name>t_reset11</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[11]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="112">
+                <name>t_reset12</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[12]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="113">
+                <name>t_reset13</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[13]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="114">
+                <name>t_reset14</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[14]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="115">
+                <name>t_reset15</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[15]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="116">
+                <name>t_reset16</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[16]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="117">
+                <name>t_reset17</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[17]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="118">
+                <name>t_reset18</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[18]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="119">
+                <name>t_reset19</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[19]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="120">
+                <name>t_reset20</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[20]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="121">
+                <name>t_reset21</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[21]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="122">
+                <name>t_reset22</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[22]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="123">
+                <name>t_reset23</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[23]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="124">
+                <name>t_reset24</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[24]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="125">
+                <name>t_reset25</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[25]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="126">
+                <name>t_reset26</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[26]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="127">
+                <name>t_reset27</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[27]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="128">
+                <name>t_reset28</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[28]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="129">
+                <name>t_reset29</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[29]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="130">
+                <name>t_reset30</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[30]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
+            </RegVar>
+            <RegVar subindex="131">
+                <name>t_reset31</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_out.p_t_reset[31]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки сброса дискретного выхода</description>
             </RegVar>
         </RegVars>
     </RegEntry>

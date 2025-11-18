@@ -39,11 +39,13 @@ struct _S_Digital_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u32_t in_data;
+    reg_u32_t in_data; //!< Вход дискретных выходов
     // Выходные данные.
     // Параметры.
-    reg_u32_t p_invert;
-    reg_u8_t p_select[DIGITAL_OUTPUT_COUNT];
+    reg_u8_t p_invert[DIGITAL_OUTPUT_COUNT]; //!< Параметр инверсии дискретного выхода
+    reg_u8_t p_select[DIGITAL_OUTPUT_COUNT]; //!< Параметр выбора входного бита
+    reg_u8_t p_t_set[DIGITAL_OUTPUT_COUNT]; //!< Параметр задержки установки дискретного выхода
+    reg_u8_t p_t_reset[DIGITAL_OUTPUT_COUNT]; //!< Параметр задержки сброса дискретного выхода
     // Регистры.
     // Методы.
     METHOD_INIT(M_digital_output);
@@ -52,6 +54,8 @@ struct _S_Digital_Output {
     // Коллбэки.
     // Внутренние данные.
     _digital_output_reg_t m_out_data;
+	reg_u8_t m_cnt_set[DIGITAL_OUTPUT_COUNT];
+	reg_u8_t m_cnt_reset[DIGITAL_OUTPUT_COUNT];
 };
 
 EXTERN METHOD_INIT_PROTO(M_digital_output);
@@ -66,7 +70,9 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
 		0,\
         /* Выходные данные */\
         /* Параметры */\
-		0,\
+		{0},\
+		{0},\
+		{0},\
 		{0},\
         /* Регистры */\
         /* Методы */\
@@ -75,6 +81,8 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
         METHOD_CALC_PTR(M_digital_output),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		{0},\
+		{0},\
 		{0},\
     }
 

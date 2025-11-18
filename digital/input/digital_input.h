@@ -45,10 +45,10 @@ struct _S_Digital_Input {
 	// Выходные данные.
 	reg_u32_t out_data; //!< Выход дискретных входов
 	// Параметры.
-	reg_u8_t p_invert[DIGITAL_INPUT_COUNT]; //!< Параметр инверсии дискретных входов
-	reg_u8_t p_select[DIGITAL_INPUT_COUNT]; //!< Параметр выбора дискретных входов
-	reg_u8_t p_t_set[DIGITAL_INPUT_COUNT]; //!< Параметр задержки установки
-	reg_u8_t p_t_reset[DIGITAL_INPUT_COUNT]; //!< Параметр задержки сброса
+	reg_u8_t p_invert[DIGITAL_INPUT_COUNT]; //!< Параметр инверсии бита выхода
+	reg_u8_t p_select[DIGITAL_INPUT_COUNT]; //!< Параметр выбора дискретного входа
+	reg_u8_t p_t_set[DIGITAL_INPUT_COUNT]; //!< Параметр задержки установки бита выхода
+	reg_u8_t p_t_reset[DIGITAL_INPUT_COUNT]; //!< Параметр задержки сброса бита выхода
 	// Регистры.
 	// Методы.
 	METHOD_INIT(M_digital_input);
