@@ -309,6 +309,70 @@
 #define REG_ID_DIGITAL_IN_SELECT29 0x20a041 /* Параметр выбора дискретных входов */
 #define REG_ID_DIGITAL_IN_SELECT30 0x20a042 /* Параметр выбора дискретных входов */
 #define REG_ID_DIGITAL_IN_SELECT31 0x20a043 /* Параметр выбора дискретных входов */
+#define REG_ID_DIGITAL_IN_T_SET0 0x20a044 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET1 0x20a045 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET2 0x20a046 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET3 0x20a047 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET4 0x20a048 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET5 0x20a049 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET6 0x20a04a /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET7 0x20a04b /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET8 0x20a04c /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET9 0x20a04d /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET10 0x20a04e /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET11 0x20a04f /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET12 0x20a050 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET13 0x20a051 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET14 0x20a052 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET15 0x20a053 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET16 0x20a054 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET17 0x20a055 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET18 0x20a056 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET19 0x20a057 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET20 0x20a058 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET21 0x20a059 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET22 0x20a05a /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET23 0x20a05b /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET24 0x20a05c /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET25 0x20a05d /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET26 0x20a05e /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET27 0x20a05f /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET28 0x20a060 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET29 0x20a061 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET30 0x20a062 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_SET31 0x20a063 /* Параметр задержки установки */
+#define REG_ID_DIGITAL_IN_T_RESET0 0x20a064 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET1 0x20a065 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET2 0x20a066 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET3 0x20a067 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET4 0x20a068 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET5 0x20a069 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET6 0x20a06a /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET7 0x20a06b /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET8 0x20a06c /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET9 0x20a06d /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET10 0x20a06e /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET11 0x20a06f /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET12 0x20a070 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET13 0x20a071 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET14 0x20a072 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET15 0x20a073 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET16 0x20a074 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET17 0x20a075 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET18 0x20a076 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET19 0x20a077 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET20 0x20a078 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET21 0x20a079 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET22 0x20a07a /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET23 0x20a07b /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET24 0x20a07c /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET25 0x20a07d /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET26 0x20a07e /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET27 0x20a07f /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET28 0x20a080 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET29 0x20a081 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET30 0x20a082 /* Параметр задержки сброса */
+#define REG_ID_DIGITAL_IN_T_RESET31 0x20a083 /* Параметр задержки сброса */
 #define REG_ID_DIGITAL_OUT_COUNT 0x20b000 /* Number of sub entries count */
 #define REG_ID_DIGITAL_OUT_CONTROL 0x20b001 /* Слово управления. */
 #define REG_ID_DIGITAL_OUT_STATUS 0x20b002 /* Слово состояния. */

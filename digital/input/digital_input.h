@@ -38,23 +38,27 @@ typedef struct _S_Digital_Input M_digital_input;
 
 //! Структура модуля.
 struct _S_Digital_Input {
-    // Базовые поля.
-    control_t control; //!< Слово управления.
-    status_t status; //!< Слово состояния.
-    // Входные данные.
-    // Выходные данные.
-    reg_u32_t out_data; //!< Выход дискретных входов
-    // Параметры.
-    reg_u8_t p_invert[DIGITAL_INPUT_COUNT]; //!< Параметр инверсии дискретных входов
-    reg_u8_t p_select[DIGITAL_INPUT_COUNT]; //!< Параметр выбора дискретных входов
-    // Регистры.
-    // Методы.
-    METHOD_INIT(M_digital_input);
-    METHOD_DEINIT(M_digital_input);
-    METHOD_CALC(M_digital_input);
-    // Коллбэки.
-    // Внутренние данные.
-    _digital_input_in_reg_t m_in_data;
+	// Базовые поля.
+	control_t control; //!< Слово управления.
+	status_t status; //!< Слово состояния.
+	// Входные данные.
+	// Выходные данные.
+	reg_u32_t out_data; //!< Выход дискретных входов
+	// Параметры.
+	reg_u8_t p_invert[DIGITAL_INPUT_COUNT]; //!< Параметр инверсии дискретных входов
+	reg_u8_t p_select[DIGITAL_INPUT_COUNT]; //!< Параметр выбора дискретных входов
+	reg_u8_t p_t_set[DIGITAL_INPUT_COUNT]; //!< Параметр задержки установки
+	reg_u8_t p_t_reset[DIGITAL_INPUT_COUNT]; //!< Параметр задержки сброса
+	// Регистры.
+	// Методы.
+	METHOD_INIT(M_digital_input);
+	METHOD_DEINIT(M_digital_input);
+	METHOD_CALC(M_digital_input);
+	// Коллбэки.
+	// Внутренние данные.
+	_digital_input_in_reg_t m_in_data;
+	reg_u8_t m_cnt_set[DIGITAL_INPUT_COUNT];
+	reg_u8_t m_cnt_reset[DIGITAL_INPUT_COUNT];
 };
 
 EXTERN METHOD_INIT_PROTO(M_digital_input);
@@ -71,6 +75,8 @@ EXTERN METHOD_CALC_PROTO(M_digital_input);
         /* Параметры */\
 		{0},\
 		{0},\
+		{0},\
+		{0},\
         /* Регистры */\
         /* Методы */\
         METHOD_INIT_PTR(M_digital_input),\
@@ -78,6 +84,8 @@ EXTERN METHOD_CALC_PROTO(M_digital_input);
         METHOD_CALC_PTR(M_digital_input),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		{0},\
+		{0},\
 		{0},\
     }
 

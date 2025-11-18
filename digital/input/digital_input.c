@@ -3,28 +3,28 @@
 #include "modules/modules.h"
 
 //CANopen
-#include "CO_CLI_driver.h"
-#include "reg_mc/reg_mc_ids.h"
-extern CO_SDO_CLI_Driver_t can1_cli_driver;
-
-static CO_SDO_CLI_Queue* digital_input_can_queue = NULL;
-
-static void digital_input_can_send(M_digital_input* input) {
-	if(digital_input_can_queue != NULL) {
-		if (digital_input_can_queue->m_state == CO_SDO_CLI_State_DONE) {
-			digital_input_can_queue = NULL;
-		}
-	}
-
-    if(digital_input_can_queue == NULL) {
-    	digital_input_can_queue = CO_SDO_CLI_write(
-    			&can1_cli_driver,
-				CAN_BUS_DEV_ID_MC,
-				CAN_BUS_DATA_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
-				CAN_BUS_DATA_SUB_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
-				&input->out_data, 4, 200); //200ms timeout
-    }
-}
+//#include "CO_CLI_driver.h"
+//#include "reg_mc/reg_mc_ids.h"
+//extern CO_SDO_CLI_Driver_t can1_cli_driver;
+//
+//static CO_SDO_CLI_Queue* digital_input_can_queue = NULL;
+//
+//static void digital_input_can_send(M_digital_input* input) {
+//	if(digital_input_can_queue != NULL) {
+//		if (digital_input_can_queue->m_state == CO_SDO_CLI_State_DONE) {
+//			digital_input_can_queue = NULL;
+//		}
+//	}
+//
+//    if(digital_input_can_queue == NULL) {
+//    	digital_input_can_queue = CO_SDO_CLI_write(
+//    			&can1_cli_driver,
+//				CAN_BUS_DEV_ID_MC,
+//				CAN_BUS_DATA_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
+//				CAN_BUS_DATA_SUB_INDEX_FROM_ID(REG_ID_SYS_CMD_OUT_COMMAND),
+//				&input->out_data, 4, 200); //200ms timeout
+//    }
+//}
 
 METHOD_INIT_IMPL(M_digital_input, input)
 {
@@ -63,16 +63,30 @@ METHOD_CALC_IMPL(M_digital_input, input)
 		raw_mask = (1 << input->p_select[i]);
 		out_mask = (1 << i);
 		if(input->m_in_data.all & raw_mask) {
-			if(input->p_invert[i] == 0x1) {
-				input->out_data &= ~out_mask;
+			//сбросим счетчик сброса О_о
+			input->m_cnt_reset[i] = input->p_t_reset[i];
+			//проверим счетчик установки
+			if(input->m_cnt_set[i]) {
+				input->m_cnt_set[i]--;
 			} else {
-				input->out_data |= out_mask;
+				if (input->p_invert[i] == 0x1) {
+					input->out_data &= ~out_mask;
+				} else {
+					input->out_data |= out_mask;
+				}
 			}
 		} else {
-			if(input->p_invert[i] == 0x1) {
-				input->out_data |= out_mask;
+			//сбросим счетчик установки
+			input->m_cnt_set[i] = input->p_t_set[i];
+			//проверим счетчик сброса
+			if(input->m_cnt_reset[i]) {
+				input->m_cnt_reset[i]--;
 			} else {
-				input->out_data &= ~out_mask;
+				if(input->p_invert[i] == 0x1) {
+					input->out_data |= out_mask;
+				} else {
+					input->out_data &= ~out_mask;
+				}
 			}
 		}
 	}

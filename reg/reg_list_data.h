@@ -313,6 +313,70 @@ REG(REG_ID_DIGITAL_IN_SELECT28, &digital_in.p_select[28], REG_TYPE_U8, REG_FLAG_
 REG(REG_ID_DIGITAL_IN_SELECT29, &digital_in.p_select[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
 REG(REG_ID_DIGITAL_IN_SELECT30, &digital_in.p_select[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
 REG(REG_ID_DIGITAL_IN_SELECT31, &digital_in.p_select[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр выбора дискретных входов */
+REG(REG_ID_DIGITAL_IN_T_SET0, &digital_in.p_t_set[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET1, &digital_in.p_t_set[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET2, &digital_in.p_t_set[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET3, &digital_in.p_t_set[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET4, &digital_in.p_t_set[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET5, &digital_in.p_t_set[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET6, &digital_in.p_t_set[6], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET7, &digital_in.p_t_set[7], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET8, &digital_in.p_t_set[8], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET9, &digital_in.p_t_set[9], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET10, &digital_in.p_t_set[10], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET11, &digital_in.p_t_set[11], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET12, &digital_in.p_t_set[12], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET13, &digital_in.p_t_set[13], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET14, &digital_in.p_t_set[14], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET15, &digital_in.p_t_set[15], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET16, &digital_in.p_t_set[16], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET17, &digital_in.p_t_set[17], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET18, &digital_in.p_t_set[18], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET19, &digital_in.p_t_set[19], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET20, &digital_in.p_t_set[20], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET21, &digital_in.p_t_set[21], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET22, &digital_in.p_t_set[22], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET23, &digital_in.p_t_set[23], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET24, &digital_in.p_t_set[24], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET25, &digital_in.p_t_set[25], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET26, &digital_in.p_t_set[26], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET27, &digital_in.p_t_set[27], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET28, &digital_in.p_t_set[28], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET29, &digital_in.p_t_set[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET30, &digital_in.p_t_set[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_SET31, &digital_in.p_t_set[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки */
+REG(REG_ID_DIGITAL_IN_T_RESET0, &digital_in.p_t_reset[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET1, &digital_in.p_t_reset[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET2, &digital_in.p_t_reset[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET3, &digital_in.p_t_reset[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET4, &digital_in.p_t_reset[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET5, &digital_in.p_t_reset[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET6, &digital_in.p_t_reset[6], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET7, &digital_in.p_t_reset[7], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET8, &digital_in.p_t_reset[8], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET9, &digital_in.p_t_reset[9], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET10, &digital_in.p_t_reset[10], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET11, &digital_in.p_t_reset[11], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET12, &digital_in.p_t_reset[12], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET13, &digital_in.p_t_reset[13], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET14, &digital_in.p_t_reset[14], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET15, &digital_in.p_t_reset[15], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET16, &digital_in.p_t_reset[16], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET17, &digital_in.p_t_reset[17], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET18, &digital_in.p_t_reset[18], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET19, &digital_in.p_t_reset[19], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET20, &digital_in.p_t_reset[20], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET21, &digital_in.p_t_reset[21], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET22, &digital_in.p_t_reset[22], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET23, &digital_in.p_t_reset[23], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET24, &digital_in.p_t_reset[24], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET25, &digital_in.p_t_reset[25], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET26, &digital_in.p_t_reset[26], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET27, &digital_in.p_t_reset[27], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET28, &digital_in.p_t_reset[28], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET29, &digital_in.p_t_reset[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET30, &digital_in.p_t_reset[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
+REG(REG_ID_DIGITAL_IN_T_RESET31, &digital_in.p_t_reset[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса */
 REG(REG_ID_DIGITAL_OUT_COUNT, &regs_data.digital_out.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_DIGITAL_OUT_CONTROL, &digital_out.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_DIGITAL_OUT_STATUS, &digital_out.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
