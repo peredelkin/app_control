@@ -209,19 +209,21 @@ void settings_write_conf(M_settings* settings) {
 	}
 }
 
-//! Функция сброса модуля
-void settings_reset(M_settings* settings) {
-	settings->status = SETTINGS_STATUS_NONE; //Reset All Status
-	settings->control = SETTINGS_CONTROL_NONE; //Reset All Control
+void settings_cmd_read(M_settings* settings) {
+	settings->control |= (SETTINGS_CONTROL_ENABLE | SETTINGS_CONTROL_START | SETTINGS_CONTROL_READ);
+}
 
-	settings->m_reg_current = NULL;
+void settings_cmd_write(M_settings* settings) {
+	settings->control |= (SETTINGS_CONTROL_ENABLE | SETTINGS_CONTROL_START | SETTINGS_CONTROL_WRITE);
+}
 
-	if(!(settings_fd < 0)) {
-		//закроем файл
-		yaffs_close(settings_fd);
-	}
-
-	settings->status = SETTINGS_STATUS_READY; //Set Ready Status
+void settings_reset(M_settings *settings) {
+	//сбросим статус READY
+	settings->status &= ~SETTINGS_STATUS_READY;
+	//сбросим control
+	settings->control = SETTINGS_CONTROL_NONE;
+	//установим статус READY
+	settings->status |= SETTINGS_STATUS_READY;
 }
 
 void settings_read(M_settings *settings) {
@@ -230,13 +232,15 @@ void settings_read(M_settings *settings) {
 		//если задание выполнено
 		if (settings->status & SETTINGS_STATUS_READ_DONE) {
 			//сбросим управляющие биты
-			settings->control &= ~(SETTINGS_CONTROL_START | SETTINGS_CONTROL_READ);
+			settings->control &= ~(SETTINGS_CONTROL_ENABLE | SETTINGS_CONTROL_START | SETTINGS_CONTROL_READ);
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
 			yaffs_close(settings_fd);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
+			//установим статус READY
+			settings->status |= SETTINGS_STATUS_READY;
 		} else {
 			//если указатель на регистр NULL
 			if (settings->m_reg_current == NULL) {
@@ -265,6 +269,8 @@ void settings_read(M_settings *settings) {
 			}
 		}
 	} else {
+		//сбросим статус READY
+		settings->status &= ~SETTINGS_STATUS_READY;
 		//установим статус RUN
 		settings->status |= SETTINGS_STATUS_RUN;
 		//сбросим статусы VALID, ERROR, WARNING, READ_DONE
@@ -290,13 +296,15 @@ void settings_write(M_settings *settings) {
 		//если задание выполнено
 		if (settings->status & SETTINGS_STATUS_WRITE_DONE) {
 			//сбросим управляющие биты
-			settings->control &= ~(SETTINGS_CONTROL_START | SETTINGS_CONTROL_WRITE);
+			settings->control &= ~(SETTINGS_CONTROL_ENABLE | SETTINGS_CONTROL_START | SETTINGS_CONTROL_WRITE);
 			//сбросим указатель на регистр
 			settings->m_reg_current = NULL;
 			//закроем файл
 			yaffs_close(settings_fd);
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
+			//установим статус READY
+			settings->status |= SETTINGS_STATUS_READY;
 		} else {
 			//если указатель на регистр NULL
 			if (settings->m_reg_current == NULL) {
@@ -325,6 +333,8 @@ void settings_write(M_settings *settings) {
 			}
 		}
 	} else {
+		//сбросим статус READY
+		settings->status &= ~SETTINGS_STATUS_READY;
 		//установим статус RUN
 		settings->status |= SETTINGS_STATUS_RUN;
 		//сбросим статусы VALID, ERROR, WARNING, WRITE_DONE
@@ -347,7 +357,9 @@ void settings_write(M_settings *settings) {
 METHOD_INIT_IMPL(M_settings, settings)
 {
 	settings->status = SETTINGS_STATUS_NONE;
-	settings->control = SETTINGS_CONTROL_RESET;
+	settings->control = SETTINGS_CONTROL_NONE;
+
+	settings->m_reg_current = NULL;
 
 	settings_fd = -1;
 
@@ -368,6 +380,8 @@ METHOD_INIT_IMPL(M_settings, settings)
 	init.on_error = NULL;
 
 	ini_init(&settings->m_ini, &init);
+
+	settings_cmd_read(settings); //предварительная загрузка настроек
 }
 
 METHOD_DEINIT_IMPL(M_settings, settings)
