@@ -429,14 +429,14 @@ void can_canopen_init(void) {
 	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
 
 	//sys_counter_tv_print();
-	//printf("CAN1 CO last index: %u\n", can_bus_1.last_index);
+	printf("CAN1 CO last index: %u\n", can_bus_1.last_index);
 	can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_index + 1, can_1_to_2_id, can_1_to_2_mask);
 	//sys_counter_tv_print();
 	//printf("CAN1 BRIDGE index: %u\n", can_bus_1.last_index);
 	can_bus_1_bridge_index = can_bus_1.last_index;
 
 	//sys_counter_tv_print();
-	//printf("CAN2 CO last index: %u\n", can_bus_2.last_index);
+	printf("CAN2 CO last index: %u\n", can_bus_2.last_index);
 	can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2.last_index + 1, can_2_to_1_id, can_2_to_1_mask);
 	//sys_counter_tv_print();
 	//printf("CAN2 BRIDGE2 index: %u\n", can_bus_2.last_index);
