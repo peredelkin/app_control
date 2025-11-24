@@ -275,6 +275,21 @@ CO_ReturnError_t init_CO(CO_t *co, can_bus_t *can_bus) {
 		return coerr;
 	}
 
+	//последовательная настройка фильтров на основе массива фильтров
+	err_t err = can_bus_filter_16b_bank_init(can_bus);
+
+	//обработка ошибок настройки фильтров CAN
+	switch(err) {
+	default:
+		return CO_ERROR_INVALID_STATE;
+	case E_INVALID_VALUE:
+		//no break
+	case E_OUT_OF_RANGE:
+		return CO_ERROR_ILLEGAL_ARGUMENT;
+	case E_NO_ERROR:
+		break;
+	}
+
 	/* Разрешение работы */
 	CO_CANsetNormalMode(co->CANmodule);
 
@@ -416,7 +431,6 @@ void can_canopen_init(void) {
 		if (co2_err != CO_ERROR_NO) {
 			printf("Error init CO (%d)\n", (int) co2_err);
 		} else {
-
 		}
 	}
 #endif

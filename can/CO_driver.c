@@ -222,7 +222,7 @@ CO_ReturnError_t CO_CANrxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, u
 
 	can_bus_t *can_bus = ((can_bus_t*) CANmodule->CANptr);
 
-	err = can_bus_filter_16b_bank_set(can_bus, index, can_id, can_mask);
+	err = can_bus_filter_array_set(can_bus, index, can_id, can_mask);
 
 	//обработка ошибок настройки фильтров CAN
 	switch(err) {

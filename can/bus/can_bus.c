@@ -59,7 +59,7 @@ err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, 
 
 err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
 	if (filter < 0) return E_INVALID_VALUE;
-	if (filter > 55) return E_OUT_OF_RANGE;
+	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
 
 #ifdef CAN_BUS_FILTER_DEBUG
 	printf("CAN%d FILTER:%d ID:%#08x MASK:%#08x\n", bus->can_n, filter, (unsigned int)id, (unsigned int)mask);
@@ -167,6 +167,29 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	can_master_filter_active_mode(can_master);
 
 	return E_NO_ERROR;
+}
+
+err_t can_bus_filter_array_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
+	if (filter < 0) return E_INVALID_VALUE;
+	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
+
+	bus->filter_array[filter].id = id;
+	bus->filter_array[filter].mask = mask;
+
+	bus->filter_enable[filter] = 1;
+
+	return E_NO_ERROR;
+}
+
+err_t can_bus_filter_16b_bank_init(can_bus_t* bus) {
+	err_t err = E_NO_ERROR;
+
+	for(int index = 0; bus->filter_enable[index]; index++) {
+		err = can_bus_filter_16b_bank_set(bus, index, bus->filter_array[index].id, bus->filter_array[index].mask);
+		if(err != E_NO_ERROR) break;
+	}
+
+	return err;
 }
 
 //Bitrate
