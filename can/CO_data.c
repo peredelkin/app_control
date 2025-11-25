@@ -76,31 +76,31 @@ struct _S_CO_data CO_data = {
 },
 .RPDOCommunicationParameter = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x80000200 /*  */,
+    .COB_IDUsedByRPDO = 0x200 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
 .RPDOCommunicationParameter_1401 = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x80000300 /*  */,
+    .COB_IDUsedByRPDO = 0x80000000 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
 .RPDOCommunicationParameter_1402 = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x80000400 /*  */,
+    .COB_IDUsedByRPDO = 0x80000000 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
 .RPDOCommunicationParameter_1403 = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x80000500 /*  */,
+    .COB_IDUsedByRPDO = 0x80000000 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
 .RPDOMappingParameter = {
-    .numberOfMappedApplicationObjectsInPDO = 0 /* Number of sub-entries */,
-    .applicationObject1 = 0 /*  */,
+    .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
+    .applicationObject1 = 0x20b00320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,
