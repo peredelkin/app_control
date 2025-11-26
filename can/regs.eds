@@ -4,10 +4,10 @@ FileVersion=1
 FileRevision=0
 EDSVersion=4.0
 Description=
-CreationTime=1:25pm
+CreationTime=1:30pm
 CreationDate=11-26-2025
 CreatedBy=
-ModificationTime=1:25pm
+ModificationTime=1:30pm
 ModificationDate=11-26-2025
 ModifiedBy=
 
@@ -3948,7 +3948,7 @@ ObjectType=0x7
 DataType=0x7
 AccessType=rw
 DefaultValue=
-PDOMapping=0
+PDOMapping=1
 LowLimit=
 HighLimit=
 

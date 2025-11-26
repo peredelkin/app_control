@@ -2135,7 +2135,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     {
     .dataOrig = &digital_out.in_data,
     .subIndex = 3,
-    .attribute = ODA_SDO_RW | ODA_MB,
+    .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
     .dataLength = 4
     },
     {

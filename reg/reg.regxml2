@@ -5140,7 +5140,7 @@
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
-                <eflags>393216</eflags>
+                <eflags>1441792</eflags>
                 <description>Вход дискретных выходов</description>
             </RegVar>
             <RegVar subindex="4">
