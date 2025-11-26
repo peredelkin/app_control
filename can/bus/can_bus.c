@@ -17,46 +17,6 @@
 #include "sys/counter/sys_counter.h"
 #endif
 
-err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, uint32_t mask) {
-	if (filter_bank < 0) return E_INVALID_VALUE;
-	if (filter_bank > 27) return E_OUT_OF_RANGE;
-
-	CAN_TypeDef* can_master = bus->can_ptr[0];
-
-	int fifo_n = (filter_bank & 0x1);
-	int fifo_index = (filter_bank >> 1);
-
-	can_master_filter_init_mode(can_master);
-
-	can_master_filter_set_inactive(can_master, filter_bank);
-
-	can_master_filter_set_mask_mode(can_master, filter_bank);
-
-	can_master_filter_set_single_scale(can_master, filter_bank);
-
-	switch (fifo_n) {
-	case CAN_RX_MAILBOX_0:
-		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
-		break;
-	case CAN_RX_MAILBOX_1:
-		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
-		break;
-	default:
-		return E_INVALID_VALUE;
-	}
-
-	bus->index_array[fifo_n][fifo_index] = filter_bank;
-
-	can_master->sFilterRegister[filter_bank].FR1 = id;
-	can_master->sFilterRegister[filter_bank].FR2 = mask;
-
-	can_master_filter_set_active(can_master, filter_bank);
-
-	can_master_filter_active_mode(can_master);
-
-	return E_NO_ERROR;
-}
-
 err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
 	if (filter < 0) return E_INVALID_VALUE;
 	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
@@ -97,8 +57,6 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 
 	can_master_filter_is_single_scale(can_master, filter_bank, &filter_was_single);
 
-	can_master_filter_init_mode(can_master);
-
 	can_master_filter_set_inactive(can_master, filter_bank);
 
 	can_master_filter_set_mask_mode(can_master, filter_bank);
@@ -115,9 +73,6 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	}
 
 	bus->index_array[fifo_n][fifo_index] = filter;
-
-	/* Last CANopen Index for CAN bridge */
-	bus->last_index = filter;
 
 	if (filter_bank_subindex) {
 		//фильтры должны быть настроены последовательно!
@@ -164,30 +119,34 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 
 	can_master_filter_set_active(can_master, filter_bank);
 
-	can_master_filter_active_mode(can_master);
+	/* Last CANopen Index for CAN bridge */
+	bus->last_index = filter;
 
 	return E_NO_ERROR;
 }
 
-err_t can_bus_filter_array_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
+err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
 	if (filter < 0) return E_INVALID_VALUE;
 	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
 
-	bus->filter_array[filter].id = id;
-	bus->filter_array[filter].mask = mask;
 
-	bus->filter_enable[filter] = 1;
 
 	return E_NO_ERROR;
 }
 
-err_t can_bus_filter_16b_bank_init(can_bus_t* bus) {
+err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count) {
 	err_t err = E_NO_ERROR;
 
-	for(int index = 0; bus->filter_enable[index]; index++) {
-		err = can_bus_filter_16b_bank_set(bus, index, bus->filter_array[index].id, bus->filter_array[index].mask);
+	CAN_TypeDef* can_master = bus->can_ptr[0];
+
+	can_master_filter_init_mode(can_master);
+
+	for(int index = 0; index < count; index++) {
+		err = can_bus_filter_16b_bank_set(bus, index, 0, 0);
 		if(err != E_NO_ERROR) break;
 	}
+
+	can_master_filter_active_mode(can_master);
 
 	return err;
 }

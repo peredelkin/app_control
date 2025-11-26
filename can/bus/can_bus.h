@@ -103,8 +103,6 @@ typedef struct {
 	can_n_t can_n;
 	can_rx_queue_t queue_rx;
 	can_tx_queue_t queue_tx;
-	can_filter_t filter_array[CAN_FILTER_MAX_COUNT];
-	uint8_t filter_enable[CAN_FILTER_MAX_COUNT];
 	uint8_t index_array[CAN_RX_MAILBOX_COUNT][CAN_FILTER_MAX_COUNT];
 	uint32_t error;
 	uint32_t tx_error_counter;
@@ -140,10 +138,9 @@ typedef union {
 	} bit;
 } can_filter_16b_t;
 
-extern err_t can_bus_filter_32b_bank_set(can_bus_t* bus, int filter_bank, uint32_t id, uint32_t mask);
 extern err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
-err_t can_bus_filter_array_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
-err_t can_bus_filter_16b_bank_init(can_bus_t* bus);
+err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count);
+err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
 
 extern err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate);
 

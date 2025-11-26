@@ -181,6 +181,14 @@ CO_ReturnError_t CO_CANmodule_init(CO_CANmodule_t *CANmodule, void *CANptr, CO_C
 		txArray[i].bufferFull = false;
 	}
 
+	//приведение указателя CANptr
+	can_bus_t *can_bus = ((can_bus_t*) CANptr);
+
+	//Выделение фильтров
+	err_t err = can_bus_filter_16b_bank_alloc(can_bus, rxSize);
+
+	if(err != E_NO_ERROR) return CO_ERROR_INVALID_STATE;
+
 	error = CO_CANbitRate_set(CANptr, CANbitRate);
 
 	return error;
@@ -222,7 +230,7 @@ CO_ReturnError_t CO_CANrxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, u
 
 	can_bus_t *can_bus = ((can_bus_t*) CANmodule->CANptr);
 
-	err = can_bus_filter_array_set(can_bus, index, can_id, can_mask);
+	err = can_bus_filter_set(can_bus, index, can_id, can_mask);
 
 	//обработка ошибок настройки фильтров CAN
 	switch(err) {
