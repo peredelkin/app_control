@@ -397,6 +397,13 @@ void can_canopen_init(void) {
 		if (co1_err != CO_ERROR_NO) {
 			printf("Error init CO (%d)\n", (int) co1_err);
 		} else {
+			//настройка моста
+#if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
+			uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_SERVER_TO_CLIENT); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
+			uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+			can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_index + 1, can_1_to_2_id, can_1_to_2_mask);
+			can_bus_1_bridge_index = can_bus_1.last_index;
+#endif
 			//Настройка клиента
 			can1_sdo_cli_init();
 		}
@@ -416,30 +423,15 @@ void can_canopen_init(void) {
 		if (co2_err != CO_ERROR_NO) {
 			printf("Error init CO (%d)\n", (int) co2_err);
 		} else {
+			//настройка моста
+#if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
+			uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
+			uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
+			can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2.last_index + 1, can_2_to_1_id, can_2_to_1_mask);
+			can_bus_2_bridge_index = can_bus_2.last_index;
+#endif
 		}
 	}
-#endif
-
-#if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
-	uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_SERVER_TO_CLIENT); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
-	uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
-
-	uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
-	uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
-
-	//sys_counter_tv_print();
-	printf("CAN1 CO last index: %u\n", can_bus_1.last_index);
-	can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_index + 1, can_1_to_2_id, can_1_to_2_mask);
-	//sys_counter_tv_print();
-	//printf("CAN1 BRIDGE index: %u\n", can_bus_1.last_index);
-	can_bus_1_bridge_index = can_bus_1.last_index;
-
-	//sys_counter_tv_print();
-	printf("CAN2 CO last index: %u\n", can_bus_2.last_index);
-	can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2.last_index + 1, can_2_to_1_id, can_2_to_1_mask);
-	//sys_counter_tv_print();
-	//printf("CAN2 BRIDGE2 index: %u\n", can_bus_2.last_index);
-	can_bus_2_bridge_index = can_bus_2.last_index;
 #endif
 
 #if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)

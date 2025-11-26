@@ -10,7 +10,7 @@
 #include "can_bus.h"
 #include "can_master_filter.h"
 
-#define CAN_BUS_FILTER_DEBUG
+//#define CAN_BUS_FILTER_DEBUG
 
 #ifdef CAN_BUS_FILTER_DEBUG
 #include <stdio.h>
@@ -22,7 +22,7 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
 
 #ifdef CAN_BUS_FILTER_DEBUG
-	printf("CAN%d FILTER:%d ID:%#08x MASK:%#08x\n", bus->can_n, filter, (unsigned int)id, (unsigned int)mask);
+	printf("ALLOC CAN%d FILTER:%d ID:%#08x MASK:%#08x\n", bus->can_n, filter, (unsigned int)id, (unsigned int)mask);
 	sys_counter_delay(0, 10000); //10ms
 #endif
 
@@ -129,7 +129,63 @@ err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask)
 	if (filter < 0) return E_INVALID_VALUE;
 	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
 
+#ifdef CAN_BUS_FILTER_DEBUG
+	printf("SET CAN%d FILTER:%d ID:%#08x MASK:%#08x\n", bus->can_n, filter, (unsigned int)id, (unsigned int)mask);
+	sys_counter_delay(0, 10000); //10ms
+#endif
 
+	CAN_TypeDef* can_master = bus->can_ptr[0];
+
+	int filter_bank = (filter >> 1);
+
+	if(bus->can_n == CAN_BUS_SLAVE) {
+		filter_bank += can_master_can2_filter_start_bank_get(can_master);
+	}
+
+	if (filter_bank > 27) return E_OUT_OF_RANGE;
+
+	int filter_bank_subindex = (filter & 0b1);
+
+	bool filter_was_active = false;
+
+	can_master_filter_is_active(can_master, filter_bank, &filter_was_active);
+
+	if(filter_was_active == false) return E_INVALID_OPERATION;
+
+	can_master_filter_set_inactive(can_master, filter_bank);
+
+	bool filter_was_single = false;
+
+	can_master_filter_is_single_scale(can_master, filter_bank, &filter_was_single);
+
+	if(filter_was_single) {
+		can_master->sFilterRegister[filter_bank].FR1 = id;
+		can_master->sFilterRegister[filter_bank].FR2 = mask;
+	} else {
+		can_filter_32b_t new_32b_id = {id};
+		can_filter_32b_t new_32b_mask = {mask};
+
+		can_filter_16b_t new_16b;
+
+		//id
+		new_16b.bit.id_exid_15_17 = new_32b_id.bit.exid_15_17;
+		new_16b.bit.id_ide = new_32b_id.bit.ide;
+		new_16b.bit.id_rtr = new_32b_id.bit.rtr;
+		new_16b.bit.id_stid_0_10 = new_32b_id.bit.stid_0_10;
+		//mask
+		new_16b.bit.mask_exid_15_17 = new_32b_mask.bit.exid_15_17;
+		new_16b.bit.mask_ide = new_32b_mask.bit.ide;
+		new_16b.bit.mask_rtr = new_32b_mask.bit.rtr;
+		new_16b.bit.mask_stid_0_10 = new_32b_mask.bit.stid_0_10;
+
+		if (filter_bank_subindex) {
+			can_master->sFilterRegister[filter_bank].FR2 = new_16b.all;
+		} else {
+			can_master->sFilterRegister[filter_bank].FR1 = new_16b.all;
+		}
+	}
+
+	can_master_filter_set_active(can_master, filter_bank);
 
 	return E_NO_ERROR;
 }
