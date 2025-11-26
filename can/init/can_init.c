@@ -268,12 +268,14 @@ CO_ReturnError_t init_CO(CO_t *co, can_bus_t *can_bus) {
 		return coerr;
 	}
 
+#if (((CO_CONFIG_PDO)&CO_CONFIG_RPDO_ENABLE) != 0) || (((CO_CONFIG_PDO)&CO_CONFIG_TPDO_ENABLE) != 0)
 	coerr = CO_CANopenInitPDO(co, co->em, OD, NODE_ID, &errInfo);
 
 	if (coerr != CO_ERROR_NO) {
 		printf("CANopen init PDO fail! (err: %d err_info: %d)\n", (int) coerr, (int) errInfo);
 		return coerr;
 	}
+#endif
 
 	/* Разрешение работы */
 	CO_CANsetNormalMode(co->CANmodule);
@@ -289,15 +291,37 @@ void can_CO_process(CO_t *co, uint32_t timeDifference_us, uint32_t* timerNext_us
 
 	reset_cmd = CO_process(co, false, timeDifference_us, timerNext_us);
 
-	if (reset_cmd == CO_RESET_NOT) {
-		//printf("CO_NMT_NO_COMMAND");
-	} else if (reset_cmd == CO_RESET_COMM) {
-		printf("CO_RESET_COMM");
-	} else if (reset_cmd == CO_RESET_APP) {
-		printf("CO_RESET_APP");
-	} else if (reset_cmd == CO_RESET_QUIT) {
-		printf("CO_RESET_QUIT");
+	switch(reset_cmd) {
+	default:
+		break;
+	case CO_RESET_NOT:
+		break;
+	case CO_RESET_COMM:
+		break;
+	case CO_RESET_APP:
+		break;
+	case CO_RESET_QUIT:
+		break;
 	}
+
+#if (((CO_CONFIG_PDO)&CO_CONFIG_RPDO_ENABLE) != 0) || (((CO_CONFIG_PDO)&CO_CONFIG_TPDO_ENABLE) != 0)
+    bool_t syncWas = false;
+#endif
+
+#if (((CO_CONFIG_SYNC)&CO_CONFIG_SYNC_ENABLE) != 0)
+#if (((CO_CONFIG_PDO)&CO_CONFIG_RPDO_ENABLE) != 0) || (((CO_CONFIG_PDO)&CO_CONFIG_TPDO_ENABLE) != 0)
+    syncWas =
+#endif
+    CO_process_SYNC(co->m_co_ss, NET_TIMER_TICKS_PERIOD_US, NULL);
+#endif
+
+#if (((CO_CONFIG_PDO)&CO_CONFIG_RPDO_ENABLE) != 0)
+    CO_process_RPDO(co, syncWas, timeDifference_us, NULL);
+#endif
+
+#if (((CO_CONFIG_PDO)&CO_CONFIG_TPDO_ENABLE) != 0)
+    CO_process_TPDO(co, syncWas, timeDifference_us, NULL);
+#endif
 }
 
 void can_CO_sdo_cli_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
@@ -313,8 +337,10 @@ void can_process_callback(void* arg) {
 
 	//CANopen
 	can_CO_process(can1_co, CAN_TIMER_TICKS_FREQ, NULL);
-	can_CO_sdo_cli_process(&can1_cli_driver, CAN_TIMER_TICKS_FREQ);
 	can_CO_process(can2_co, CAN_TIMER_TICKS_FREQ, NULL);
+
+	//CANopen CLIent
+	can_CO_sdo_cli_process(&can1_cli_driver, CAN_TIMER_TICKS_FREQ);
 
 	//CAN1 CAN2 TX
 	can_bus_tx_process(&can_bus_1);

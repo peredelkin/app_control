@@ -76,7 +76,7 @@ struct _S_CO_data CO_data = {
 },
 .RPDOCommunicationParameter = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x200 /*  */,
+    .COB_IDUsedByRPDO = 0x40000181 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
@@ -144,10 +144,10 @@ struct _S_CO_data CO_data = {
 },
 .TPDOCommunicationParameter = {
     .highestSub_indexSupported = 6 /* Number of sub-entries */,
-    .COB_IDUsedByTPDO = 0xC0000180 /*  */,
+    .COB_IDUsedByTPDO = 0x40000180 /*  */,
     .transmissionType = 254 /*  */,
     .inhibitTime = 0 /*  */,
-    .eventTimer = 0 /*  */,
+    .eventTimer = 10 /*  */,
     .SYNCStartValue = 0 /*  */
 },
 .TPDOCommunicationParameter_1801 = {
@@ -175,8 +175,8 @@ struct _S_CO_data CO_data = {
     .SYNCStartValue = 0 /*  */
 },
 .TPDOMappingParameter = {
-    .numberOfMappedApplicationObjectsInPDO = 0 /* Number of sub-entries */,
-    .applicationObject1 = 0 /*  */,
+    .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
+    .applicationObject1 = 0x20a00320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,

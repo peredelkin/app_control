@@ -649,7 +649,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x200</default>
+                <default>0x40000181</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -1433,7 +1433,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0xC0000180</default>
+                <default>0x40000180</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -1475,7 +1475,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0</default>
+                <default>10</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -1783,7 +1783,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0</default>
+                <default>1</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -1797,7 +1797,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0</default>
+                <default>0x20a00320</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -3285,7 +3285,7 @@
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
-                <eflags>393216</eflags>
+                <eflags>917504</eflags>
                 <description>Выход дискретных входов</description>
             </RegVar>
             <RegVar subindex="4">
