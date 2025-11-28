@@ -19,7 +19,7 @@ void modbus_to_can_reset(M_modbus_to_can* modbus_to_can) {
 	modbus_to_can->status = MODBUS_TO_CAN_STATUS_READY; //Set Ready Status
 }
 
-void modbus_to_can_read(M_modbus_to_can* modbus_to_can) {
+static void modbus_to_can_read(M_modbus_to_can* modbus_to_can) {
 	//если очередь не задана
     if(modbus_to_can_read_queue == NULL) {
        	//установим статус RUN
@@ -58,7 +58,7 @@ void modbus_to_can_read(M_modbus_to_can* modbus_to_can) {
     }
 }
 
-void modbus_to_can_write(M_modbus_to_can* modbus_to_can) {
+static void modbus_to_can_write(M_modbus_to_can* modbus_to_can) {
 	//если очередь не задана
     if(modbus_to_can_write_queue == NULL) {
        	//установим статус RUN

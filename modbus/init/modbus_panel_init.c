@@ -91,44 +91,47 @@ static modbus_rtu_error_t modbus_panel_on_write_hold_reg(uint16_t address, uint1
 }
 
 enum {
-	MODBUS_RTU_CUSTOM_FUNC_REG_READ = 0x64,
-	MODBUS_RTU_CUSTOM_FUNC_REG_WRITE,
+	MODBUS_RTU_CUSTOM_FUNC_REGS_READ = 0x64,
+	MODBUS_RTU_CUSTOM_FUNC_REGS_WRITE,
+	MODBUS_RTU_CUSTOM_FUNC_REG_READ,
+	MODBUS_RTU_CUSTOM_FUNC_REG_WRITE
 };
+
+//modbus to local regs
+#pragma pack(push, 1)
+struct {
+	reg_id_t id;
+	uint8_t count;
+} modbus_regs_request;
+#pragma pack(pop)
 
 #pragma pack(push, 1)
 struct {
-		reg_id_t id;
-		uint8_t count;
-	} nmbs_reg_request;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-	struct {
-		reg_id_t id;
-		uint8_t count;
-	} nmbs_reg_response;
+	reg_id_t id;
+	uint8_t count;
+} modbus_regs_response;
 #pragma pack(pop)
 
 //TODO: причесать этот колхоз
-modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+modbus_rtu_error_t modbus_panel_regs_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
 
 	//прочитаем заголовок
-	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
+	memcpy(&modbus_regs_request, rx_data, sizeof(modbus_regs_request));
 
 	//заполним заголовок
-	nmbs_reg_response.id = nmbs_reg_request.id;
-	nmbs_reg_response.count = nmbs_reg_request.count;
+	modbus_regs_response.id = modbus_regs_request.id;
+	modbus_regs_response.count = modbus_regs_request.count;
 
 	//скопируем заголовок
-	memcpy(tx_data, &nmbs_reg_response, sizeof(nmbs_reg_response));
+	memcpy(tx_data, &modbus_regs_response, sizeof(modbus_regs_response));
 
 	//получим смещение заголовка
-	size_t index = sizeof(nmbs_reg_response);
-	reg_t* reg_ptr = regs_find(nmbs_reg_request.id);
+	size_t index = sizeof(modbus_regs_response);
+	reg_t* reg_ptr = regs_find(modbus_regs_request.id);
 	int reg_putted = 0;
 
 	size_t response_data_size = index;
-	for(int reg_count = 0; reg_count < nmbs_reg_request.count; reg_count++) {
+	for(int reg_count = 0; reg_count < modbus_regs_request.count; reg_count++) {
 		if(reg_ptr == NULL) return MODBUS_RTU_ERROR_FUNC;
 		reg_putted = buf_put_reg_atomic(tx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, reg_ptr);
 		if(reg_putted < 0) return MODBUS_RTU_ERROR_FUNC;
@@ -142,20 +145,20 @@ modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, vo
 }
 
 //TODO: причесать этот колхоз
-modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+modbus_rtu_error_t modbus_panel_regs_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
 
 	//прочтем заголовок
-	memcpy(&nmbs_reg_request, rx_data, sizeof(nmbs_reg_request));
+	memcpy(&modbus_regs_request, rx_data, sizeof(modbus_regs_request));
 
 	//заполним заголовок
-	nmbs_reg_response.id = nmbs_reg_request.id;
-	nmbs_reg_response.count = nmbs_reg_request.count;
+	modbus_regs_response.id = modbus_regs_request.id;
+	modbus_regs_response.count = modbus_regs_request.count;
 
 	//скопируем заголовок
-	memcpy(tx_data, &nmbs_reg_response, sizeof(nmbs_reg_response));
+	memcpy(tx_data, &modbus_regs_response, sizeof(modbus_regs_response));
 
 	//получим смещение заголовка
-	size_t index =  sizeof(nmbs_reg_request);
+	size_t index =  sizeof(modbus_regs_request);
 	reg_t* reg_ptr = NULL;
 	int reg_getted = 0;
 
@@ -165,7 +168,7 @@ modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, v
 	size_t p_size = 0;
 	uint8_t p_data[4];
 
-	for(int reg_count = 0; reg_count < nmbs_reg_request.count; reg_count++) {
+	for(int reg_count = 0; reg_count < modbus_regs_request.count; reg_count++) {
 		//прочитаем данные
 		reg_getted = buf_get_reg_atomic(rx_data, &index, MODBUS_RTU_DATA_SIZE_MAX, &p_id, &p_type, &p_size, p_data, 4);
 		if(reg_getted < 0) return MODBUS_RTU_ERROR_FUNC;
@@ -182,13 +185,144 @@ modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, v
 	}
 
 	//укажем размер ответа
-	*tx_size = sizeof(nmbs_reg_response);
+	*tx_size = sizeof(modbus_regs_response);
+
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+//modbus to local regs or remote via canopen
+typedef struct {
+    // Базовые поля.
+    status_t status;
+    // Регистры.
+    uint8_t dev_id;
+    reg_id_t reg_id;
+    size_t reg_size;
+    iql_t reg_data;
+} modbus_to_can_t;
+
+static modbus_to_can_t modbus_to_can;
+
+static CO_SDO_CLI_Queue* modbus_to_can_read_queue = NULL;
+static CO_SDO_CLI_Queue* modbus_to_can_write_queue = NULL;
+
+#pragma pack(push, 1)
+struct {
+	uint8_t dev_id;
+	reg_id_t reg_id;
+	size_t reg_size;
+} modbus_reg_request;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct {
+	uint8_t dev_id;
+	reg_id_t reg_id;
+	iql_t reg_data;
+	status_t status;
+} modbus_reg_response;
+#pragma pack(pop)
+
+static void modbus_to_can_read(modbus_to_can_t* ptr) {
+	//если очередь не задана
+    if(modbus_to_can_read_queue == NULL) {
+       	//установим статус RUN
+        ptr->status |= MODBUS_TO_CAN_STATUS_RUN;
+    	//сбросим статусы VALID, ERROR, WARNING, READ_DONE
+    	ptr->status &= ~(MODBUS_TO_CAN_STATUS_VALID |
+    			MODBUS_TO_CAN_STATUS_ERROR |
+				MODBUS_TO_CAN_STATUS_WARNING |
+				MODBUS_TO_CAN_STATUS_READ_DONE);
+    	//добавим в очередь задание
+    	modbus_to_can_read_queue = CO_SDO_CLI_read(
+    			&can1_cli_driver,
+				CAN_BUS_DATA_ID_FROM_ID(ptr->reg_id),
+				CAN_BUS_DATA_INDEX_FROM_ID(ptr->reg_id),
+				CAN_BUS_DATA_SUB_INDEX_FROM_ID(ptr->reg_id),
+				&ptr->reg_data,
+				ptr->reg_size, 200); //200ms timeout
+    } else {
+    	//если задание выполнено
+		if (modbus_to_can_read_queue->m_state == CO_SDO_CLI_State_DONE) {
+			//проверим статус задания
+			if (modbus_to_can_read_queue->m_error == CO_SDO_CLI_Error_NONE) {
+				//установим статусы VALID, WRITE_DONE
+				ptr->status |= (MODBUS_TO_CAN_STATUS_VALID | MODBUS_TO_CAN_STATUS_READ_DONE);
+			} else {
+				//установим статусы ERROR, WRITE_DONE
+				ptr->status |= (MODBUS_TO_CAN_STATUS_ERROR | MODBUS_TO_CAN_STATUS_READ_DONE);
+			}
+			//сбросим статус RUN
+			ptr->status &= ~MODBUS_TO_CAN_STATUS_RUN;
+			//сбросим указатель на очередь
+			modbus_to_can_read_queue = NULL;
+		}
+    }
+}
+
+static void modbus_to_can_write(modbus_to_can_t* ptr) {
+	//если очередь не задана
+    if(modbus_to_can_write_queue == NULL) {
+       	//установим статус RUN
+        ptr->status |= MODBUS_TO_CAN_STATUS_RUN;
+    	//сбросим статусы VALID, ERROR, WARNING, WRITE_DONE
+    	ptr->status &= ~(MODBUS_TO_CAN_STATUS_VALID |
+    			MODBUS_TO_CAN_STATUS_ERROR |
+				MODBUS_TO_CAN_STATUS_WARNING |
+				MODBUS_TO_CAN_STATUS_WRITE_DONE);
+    	//добавим в очередь задание
+    	modbus_to_can_write_queue = CO_SDO_CLI_write(
+    			&can1_cli_driver,
+				CAN_BUS_DATA_ID_FROM_ID(ptr->reg_id),
+				CAN_BUS_DATA_INDEX_FROM_ID(ptr->reg_id),
+				CAN_BUS_DATA_SUB_INDEX_FROM_ID(ptr->reg_id),
+				&ptr->reg_data,
+				ptr->reg_size, 200); //200ms timeout
+    } else {
+    	//если задание выполнено
+		if (modbus_to_can_write_queue->m_state == CO_SDO_CLI_State_DONE) {
+			//проверим статус задания
+			if (modbus_to_can_write_queue->m_error == CO_SDO_CLI_Error_NONE) {
+				//установим статусы VALID, WRITE_DONE
+				ptr->status |= (MODBUS_TO_CAN_STATUS_VALID | MODBUS_TO_CAN_STATUS_WRITE_DONE);
+			} else {
+				//установим статусы ERROR, WRITE_DONE
+				ptr->status |= (MODBUS_TO_CAN_STATUS_ERROR | MODBUS_TO_CAN_STATUS_WRITE_DONE);
+			}
+			//сбросим статус RUN
+			ptr->status &= ~MODBUS_TO_CAN_STATUS_RUN;
+			//сбросим указатель на очередь
+			modbus_to_can_write_queue = NULL;
+		}
+    }
+}
+
+modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	//прочитаем заголовок
+	memcpy(&modbus_reg_request, rx_data, sizeof(modbus_reg_request));
+
+	//обработчик чтения
+	modbus_to_can_read(&modbus_to_can);
+
+	return MODBUS_RTU_ERROR_NONE;
+}
+
+modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	//прочитаем заголовок
+	memcpy(&modbus_reg_request, rx_data, sizeof(modbus_reg_request));
+
+	//обработчик записи
+	modbus_to_can_write(&modbus_to_can);
 
 	return MODBUS_RTU_ERROR_NONE;
 }
 
 static modbus_rtu_error_t modbus_panel_custom_function_callback(modbus_rtu_func_t func, const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
 	switch(func) {
+	case MODBUS_RTU_CUSTOM_FUNC_REGS_READ:
+		return modbus_panel_regs_read(rx_data, rx_size, tx_data, tx_size);
+	case MODBUS_RTU_CUSTOM_FUNC_REGS_WRITE:
+		return modbus_panel_regs_write(rx_data, rx_size, tx_data, tx_size);
 	case MODBUS_RTU_CUSTOM_FUNC_REG_READ:
 		return modbus_panel_reg_read(rx_data, rx_size, tx_data, tx_size);
 	case MODBUS_RTU_CUSTOM_FUNC_REG_WRITE:
