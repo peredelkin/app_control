@@ -38,15 +38,17 @@ struct _S_Modbus_To_Can {
     // Выходные данные.
     // Параметры.
     // Регистры.
-    reg_u32_t reg_id;
-    reg_u8_t reg_size;
-    reg_u32_t reg_data;
     // Методы.
     METHOD_INIT(M_modbus_to_can);
     METHOD_DEINIT(M_modbus_to_can);
     METHOD_CALC(M_modbus_to_can);
     // Коллбэки.
     // Внутренние данные.
+    uint8_t m_id;
+    uint16_t m_index;
+    uint8_t m_subindex;
+    size_t m_size;
+    iql_t m_data;
 };
 
 EXTERN METHOD_INIT_PROTO(M_modbus_to_can);
@@ -61,15 +63,17 @@ EXTERN METHOD_CALC_PROTO(M_modbus_to_can);
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\
-		0,\
-		0,\
-		0,\
         /* Методы */\
         METHOD_INIT_PTR(M_modbus_to_can),\
         METHOD_DEINIT_PTR(M_modbus_to_can),\
         METHOD_CALC_PTR(M_modbus_to_can),\
         /* Коллбэки */\
         /* Внутренние данные */\
+	    0, /*m_id*/\
+	    0, /*m_index*/\
+	    0, /*m_subindex*/\
+	    0, /*m_size*/\
+	    0, /*m_data*/\
     }
 
 #endif /* MODBUS_TO_CAN_H */

@@ -49,52 +49,18 @@ static modbus_rtu_error_t modbus_panel_on_report_slave_id(modbus_rtu_slave_id_t*
     // Идентификатор - для пример возьмём 0xaa.
     slave_id->id = 32;
     // В дополнительных данных передадим наше имя.
-    slave_id->data = "STM32 MCU Modbus v1.0";
+    slave_id->data = "Panel Modbus";
     // Длина имени.
     slave_id->data_size = strlen(slave_id->data);
 
     return MODBUS_RTU_ERROR_NONE;
 }
 
-static modbus_rtu_error_t modbus_panel_on_read_hold_reg(uint16_t address, uint16_t* value)
-{
-	uint16_t addr_h = (address >> 1);
-	uint16_t addr_l = (address & 0x1);
-
-    switch(addr_h) {
-    case 0: *value = ((uint16_t*)&(ntc_temp.out_temp[0]))[addr_l];
-    	break;
-    case 1: *value = ((uint16_t*)&(ntc_temp.out_temp[1]))[addr_l];
-    	break;
-    case 2: *value = ((uint16_t*)&(ntc_temp.out_temp[2]))[addr_l];
-    	break;
-    case 3: *value = ((uint16_t*)&(ntc_temp.out_temp[3]))[addr_l];
-    	break;
-    case 4: *value = ((uint16_t*)&(ntc_temp.out_temp[4]))[addr_l];
-    	break;
-    case 5: *value = 0;
-    	break;
-    case 6: *value = panel_led.out_data;
-    	break;
-    default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
-    }
-
-    return MODBUS_RTU_ERROR_NONE;
-}
-
-static modbus_rtu_error_t modbus_panel_on_write_hold_reg(uint16_t address, uint16_t value) {
-	switch(address) {
-	default: return MODBUS_RTU_ERROR_INVALID_ADDRESS;
-	}
-
-	return MODBUS_RTU_ERROR_NONE;
-}
-
 enum {
 	MODBUS_RTU_CUSTOM_FUNC_REGS_READ = 0x64,
 	MODBUS_RTU_CUSTOM_FUNC_REGS_WRITE,
-	MODBUS_RTU_CUSTOM_FUNC_REG_READ,
-	MODBUS_RTU_CUSTOM_FUNC_REG_WRITE
+	MODBUS_RTU_CUSTOM_FUNC_CAN_READ,
+	MODBUS_RTU_CUSTOM_FUNC_CAN_WRITE
 };
 
 //modbus to local regs
@@ -190,28 +156,13 @@ modbus_rtu_error_t modbus_panel_regs_write(const void* rx_data, size_t rx_size, 
 	return MODBUS_RTU_ERROR_NONE;
 }
 
-//modbus to local regs or remote via canopen
-typedef struct {
-    // Базовые поля.
-    status_t status;
-    // Регистры.
-    uint8_t dev_id;
-    reg_id_t reg_id;
-    size_t reg_size;
-    iql_t reg_data;
-} modbus_to_can_t;
-
-static modbus_to_can_t modbus_to_can;
-
-static CO_SDO_CLI_Queue* modbus_to_can_read_queue = NULL;
-static CO_SDO_CLI_Queue* modbus_to_can_write_queue = NULL;
-
+//modbus to can read
 #pragma pack(push, 1)
 struct {
 	uint8_t dev_id;
 	reg_id_t reg_id;
 	size_t reg_size;
-} modbus_reg_request;
+} modbus_to_can_read_request;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
@@ -220,99 +171,92 @@ struct {
 	reg_id_t reg_id;
 	iql_t reg_data;
 	status_t status;
-} modbus_reg_response;
+} modbus_to_can_read_response;
 #pragma pack(pop)
 
-static void modbus_to_can_read(modbus_to_can_t* ptr) {
-	//если очередь не задана
-    if(modbus_to_can_read_queue == NULL) {
-       	//установим статус RUN
-        ptr->status |= MODBUS_TO_CAN_STATUS_RUN;
-    	//сбросим статусы VALID, ERROR, WARNING, READ_DONE
-    	ptr->status &= ~(MODBUS_TO_CAN_STATUS_VALID |
-    			MODBUS_TO_CAN_STATUS_ERROR |
-				MODBUS_TO_CAN_STATUS_WARNING |
-				MODBUS_TO_CAN_STATUS_READ_DONE);
-    	//добавим в очередь задание
-    	modbus_to_can_read_queue = CO_SDO_CLI_read(
-    			&can1_cli_driver,
-				CAN_BUS_DATA_ID_FROM_ID(ptr->reg_id),
-				CAN_BUS_DATA_INDEX_FROM_ID(ptr->reg_id),
-				CAN_BUS_DATA_SUB_INDEX_FROM_ID(ptr->reg_id),
-				&ptr->reg_data,
-				ptr->reg_size, 200); //200ms timeout
-    } else {
-    	//если задание выполнено
-		if (modbus_to_can_read_queue->m_state == CO_SDO_CLI_State_DONE) {
-			//проверим статус задания
-			if (modbus_to_can_read_queue->m_error == CO_SDO_CLI_Error_NONE) {
-				//установим статусы VALID, WRITE_DONE
-				ptr->status |= (MODBUS_TO_CAN_STATUS_VALID | MODBUS_TO_CAN_STATUS_READ_DONE);
+//modbus to can write
+#pragma pack(push, 1)
+struct {
+	uint8_t dev_id;
+	reg_id_t reg_id;
+	iql_t reg_data;
+	size_t reg_size;
+} modbus_to_can_write_request;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct {
+	uint8_t dev_id;
+	reg_id_t reg_id;
+	status_t status;
+} modbus_to_can_write_response;
+#pragma pack(pop)
+
+modbus_rtu_error_t modbus_panel_can_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	//прочитаем запрос
+	memcpy(&modbus_to_can_read_request, rx_data, sizeof(modbus_to_can_read_request));
+
+	//заполним статус ответа
+	modbus_to_can_read_response.status = modbus_to_can_panel.status;
+
+	//если модуль готов
+	if(modbus_to_can_read_response.status & MODBUS_TO_CAN_STATUS_READY) {
+		//не выполняет задание и задание на задано
+		if(!(modbus_to_can_read_response.status & MODBUS_TO_CAN_STATUS_RUN)
+				&& !(modbus_to_can_panel.control & MODBUS_TO_CAN_CONTROL_START)) {
+			//задание было задано ранее
+			if(modbus_to_can_panel.control & MODBUS_TO_CAN_CONTROL_ENABLE) {
+				//выполним сброс ENABLE
+				modbus_to_can_panel.control &= ~MODBUS_TO_CAN_CONTROL_ENABLE;
 			} else {
-				//установим статусы ERROR, WRITE_DONE
-				ptr->status |= (MODBUS_TO_CAN_STATUS_ERROR | MODBUS_TO_CAN_STATUS_READ_DONE);
+				//заполним поля
+				modbus_to_can_panel.m_id = modbus_to_can_read_request.dev_id;
+				modbus_to_can_panel.m_index = CAN_BUS_DATA_INDEX_FROM_ID(modbus_to_can_read_request.reg_id);
+				modbus_to_can_panel.m_subindex = CAN_BUS_DATA_SUB_INDEX_FROM_ID(modbus_to_can_read_request.reg_id);
+				modbus_to_can_panel.m_size = modbus_to_can_read_request.reg_size;
+
+				//скомандуем
+				modbus_to_can_panel.control |= (MODBUS_TO_CAN_CONTROL_ENABLE | MODBUS_TO_CAN_CONTROL_START
+						| MODBUS_TO_CAN_CONTROL_READ);
 			}
-			//сбросим статус RUN
-			ptr->status &= ~MODBUS_TO_CAN_STATUS_RUN;
-			//сбросим указатель на очередь
-			modbus_to_can_read_queue = NULL;
 		}
-    }
-}
+	}
 
-static void modbus_to_can_write(modbus_to_can_t* ptr) {
-	//если очередь не задана
-    if(modbus_to_can_write_queue == NULL) {
-       	//установим статус RUN
-        ptr->status |= MODBUS_TO_CAN_STATUS_RUN;
-    	//сбросим статусы VALID, ERROR, WARNING, WRITE_DONE
-    	ptr->status &= ~(MODBUS_TO_CAN_STATUS_VALID |
-    			MODBUS_TO_CAN_STATUS_ERROR |
-				MODBUS_TO_CAN_STATUS_WARNING |
-				MODBUS_TO_CAN_STATUS_WRITE_DONE);
-    	//добавим в очередь задание
-    	modbus_to_can_write_queue = CO_SDO_CLI_write(
-    			&can1_cli_driver,
-				CAN_BUS_DATA_ID_FROM_ID(ptr->reg_id),
-				CAN_BUS_DATA_INDEX_FROM_ID(ptr->reg_id),
-				CAN_BUS_DATA_SUB_INDEX_FROM_ID(ptr->reg_id),
-				&ptr->reg_data,
-				ptr->reg_size, 200); //200ms timeout
-    } else {
-    	//если задание выполнено
-		if (modbus_to_can_write_queue->m_state == CO_SDO_CLI_State_DONE) {
-			//проверим статус задания
-			if (modbus_to_can_write_queue->m_error == CO_SDO_CLI_Error_NONE) {
-				//установим статусы VALID, WRITE_DONE
-				ptr->status |= (MODBUS_TO_CAN_STATUS_VALID | MODBUS_TO_CAN_STATUS_WRITE_DONE);
-			} else {
-				//установим статусы ERROR, WRITE_DONE
-				ptr->status |= (MODBUS_TO_CAN_STATUS_ERROR | MODBUS_TO_CAN_STATUS_WRITE_DONE);
-			}
-			//сбросим статус RUN
-			ptr->status &= ~MODBUS_TO_CAN_STATUS_RUN;
-			//сбросим указатель на очередь
-			modbus_to_can_write_queue = NULL;
-		}
-    }
-}
+	//заполним ответ
+	modbus_to_can_read_response.dev_id = modbus_to_can_panel.m_id;
+	modbus_to_can_read_response.reg_id = (modbus_to_can_panel.m_index << 8) | (modbus_to_can_panel.m_subindex);
+	modbus_to_can_read_response.reg_data = modbus_to_can_panel.m_data;
 
-modbus_rtu_error_t modbus_panel_reg_read(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
-	//прочитаем заголовок
-	memcpy(&modbus_reg_request, rx_data, sizeof(modbus_reg_request));
+	//скопируем ответ
+	memcpy(tx_data, &modbus_to_can_read_response, sizeof(modbus_to_can_read_response));
 
-	//обработчик чтения
-	modbus_to_can_read(&modbus_to_can);
+	//передадим размер ответа
+	*tx_size = sizeof(modbus_to_can_read_response);
 
 	return MODBUS_RTU_ERROR_NONE;
 }
 
-modbus_rtu_error_t modbus_panel_reg_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
-	//прочитаем заголовок
-	memcpy(&modbus_reg_request, rx_data, sizeof(modbus_reg_request));
+modbus_rtu_error_t modbus_panel_can_write(const void* rx_data, size_t rx_size, void* tx_data, size_t* tx_size) {
+	//прочитаем запрос
+	memcpy(&modbus_to_can_write_request, rx_data, sizeof(modbus_to_can_write_request));
+
+	//заполним статус ответа
+	modbus_to_can_write_response.status = modbus_to_can_panel.status;
 
 	//обработчик записи
-	modbus_to_can_write(&modbus_to_can);
+	if(modbus_to_can_read_response.status & MODBUS_TO_CAN_STATUS_READY) {
+
+	}
+
+	//заполним ответ
+	modbus_to_can_write_response.dev_id = modbus_to_can_panel.m_id;
+	modbus_to_can_write_response.reg_id = (modbus_to_can_panel.m_index << 8) | (modbus_to_can_panel.m_subindex);
+
+	//скопируем ответ
+	memcpy(tx_data, &modbus_to_can_write_response, sizeof(modbus_to_can_write_response));
+
+	//передадим размер ответа
+	*tx_size = sizeof(modbus_to_can_write_response);
 
 	return MODBUS_RTU_ERROR_NONE;
 }
@@ -323,10 +267,10 @@ static modbus_rtu_error_t modbus_panel_custom_function_callback(modbus_rtu_func_
 		return modbus_panel_regs_read(rx_data, rx_size, tx_data, tx_size);
 	case MODBUS_RTU_CUSTOM_FUNC_REGS_WRITE:
 		return modbus_panel_regs_write(rx_data, rx_size, tx_data, tx_size);
-	case MODBUS_RTU_CUSTOM_FUNC_REG_READ:
-		return modbus_panel_reg_read(rx_data, rx_size, tx_data, tx_size);
-	case MODBUS_RTU_CUSTOM_FUNC_REG_WRITE:
-		return modbus_panel_reg_write(rx_data, rx_size, tx_data, tx_size);
+	case MODBUS_RTU_CUSTOM_FUNC_CAN_READ:
+		return modbus_panel_can_read(rx_data, rx_size, tx_data, tx_size);
+	case MODBUS_RTU_CUSTOM_FUNC_CAN_WRITE:
+		return modbus_panel_can_write(rx_data, rx_size, tx_data, tx_size);
 	default:
 		return MODBUS_RTU_ERROR_FUNC;
 	}
@@ -365,7 +309,7 @@ void modbus_panel_init(void)
     //modbus_rtu_set_read_coil_callback(&modbus_1, modbus_on_read_coil);
     //modbus_rtu_set_write_coil_callback(&modbus_1, modbus_on_write_coil);
     modbus_rtu_set_report_slave_id_callback(&modbus_panel, modbus_panel_on_report_slave_id);
-    modbus_rtu_set_read_holding_reg_callback(&modbus_panel, modbus_panel_on_read_hold_reg);
-    modbus_rtu_set_write_holding_reg_callback(&modbus_panel, modbus_panel_on_write_hold_reg);
+    //modbus_rtu_set_read_holding_reg_callback(&modbus_panel, modbus_panel_on_read_hold_reg);
+    //modbus_rtu_set_write_holding_reg_callback(&modbus_panel, modbus_panel_on_write_hold_reg);
     modbus_rtu_set_custom_function_callback(&modbus_panel, modbus_panel_custom_function_callback);
 }

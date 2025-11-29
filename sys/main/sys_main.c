@@ -48,7 +48,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(mso);
     INIT(rgb_led);
     INIT(panel_led);
-    INIT(modbus_reg_can);
+    INIT(modbus_to_can_panel);
     INIT(settings);
 
     // Таймеры.
@@ -115,7 +115,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(ao_dac7562);
     DEINIT(rgb_led);
     DEINIT(panel_led);
-    DEINIT(modbus_reg_can);
+    DEINIT(modbus_to_can_panel);
     DEINIT(settings);
 
     // Вычислительные модули.
@@ -199,7 +199,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(digital_out);
     CALC(rgb_led);
     CALC(panel_led);
-    CALC(modbus_reg_can);
+    CALC(modbus_to_can_panel);
     CALC(mso);
 
     struct timeval tv_stop; //время конца

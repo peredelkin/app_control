@@ -38,7 +38,7 @@ extern M_digital_output digital_out;
 extern M_mso mso;
 extern M_dac7562 ao_dac7562;
 extern M_panel_led panel_led;
-extern M_modbus_to_can modbus_reg_can;
+extern M_modbus_to_can modbus_to_can_panel;
 extern M_settings settings;
 
 extern M_can_timer can_tim;
