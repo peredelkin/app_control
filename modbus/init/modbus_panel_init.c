@@ -244,9 +244,28 @@ modbus_rtu_error_t modbus_panel_can_write(const void* rx_data, size_t rx_size, v
 	//заполним статус ответа
 	modbus_to_can_write_response.status = modbus_to_can_panel.status;
 
-	//обработчик записи
-	if(modbus_to_can_read_response.status & MODBUS_TO_CAN_STATUS_READY) {
+	//если модуль готов
+	if(modbus_to_can_write_response.status & MODBUS_TO_CAN_STATUS_READY) {
+		//не выполняет задание и задание на задано
+		if(!(modbus_to_can_write_response.status & MODBUS_TO_CAN_STATUS_RUN)
+				&& !(modbus_to_can_panel.control & MODBUS_TO_CAN_CONTROL_START)) {
+			//задание было задано ранее
+			if(modbus_to_can_panel.control & MODBUS_TO_CAN_CONTROL_ENABLE) {
+				//выполним сброс ENABLE
+				modbus_to_can_panel.control &= ~MODBUS_TO_CAN_CONTROL_ENABLE;
+			} else {
+				//заполним поля
+				modbus_to_can_panel.m_id = modbus_to_can_write_request.dev_id;
+				modbus_to_can_panel.m_index = CAN_BUS_DATA_INDEX_FROM_ID(modbus_to_can_write_request.reg_id);
+				modbus_to_can_panel.m_subindex = CAN_BUS_DATA_SUB_INDEX_FROM_ID(modbus_to_can_write_request.reg_id);
+				modbus_to_can_panel.m_size = modbus_to_can_write_request.reg_size;
+				modbus_to_can_panel.m_data = modbus_to_can_write_request.reg_data;
 
+				//скомандуем
+				modbus_to_can_panel.control |= (MODBUS_TO_CAN_CONTROL_ENABLE | MODBUS_TO_CAN_CONTROL_START
+						| MODBUS_TO_CAN_CONTROL_WRITE);
+			}
+		}
 	}
 
 	//заполним ответ
