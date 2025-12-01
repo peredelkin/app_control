@@ -12,8 +12,9 @@
 #include "gpio/init/gpio_init.h"
 #include "uart/init/uart_init.h"
 #include "modules/modules.h"
-#include <string.h>
 #include "reg/buf_reg.h"
+#include "CO_CLI_driver.h"
+#include <string.h>
 
 modbus_rtu_t modbus_panel;
 

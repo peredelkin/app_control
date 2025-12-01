@@ -556,9 +556,9 @@ REG(REG_ID_PANEL_LED_OUT_DATA, &panel_led.out_data, REG_TYPE_U16, REG_FLAG_NONE,
 REG(REG_ID_MODBUS_REG_CAN_COUNT, &CO_data.modbus_reg_can.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_MODBUS_REG_CAN_CONTROL, &modbus_to_can_panel.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_MODBUS_REG_CAN_STATUS, &modbus_to_can_panel.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_MODBUS_REG_CAN_REG_ID, &modbus_to_can_panel.reg_id, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MODBUS_REG_CAN_REG_SIZE, &modbus_to_can_panel.reg_size, REG_TYPE_U8, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MODBUS_REG_CAN_REG_DATA, &modbus_to_can_panel.reg_data, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_MODBUS_REG_CAN_REG_ID, &modbus_to_can_panel.m_id, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_MODBUS_REG_CAN_REG_SIZE, &modbus_to_can_panel.m_size, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_MODBUS_REG_CAN_REG_DATA, &modbus_to_can_panel.m_data, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_SETTINGS_COUNT, &CO_data.settings.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_SETTINGS_CONTROL, &settings.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_SETTINGS_STATUS, &settings.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */

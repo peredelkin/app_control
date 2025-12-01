@@ -3197,19 +3197,19 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     },
     {
-    .dataOrig = &modbus_to_can_panel.reg_id,
+    .dataOrig = &modbus_to_can_panel.m_id,
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = &modbus_to_can_panel.reg_size,
+    .dataOrig = &modbus_to_can_panel.m_size,
     .subIndex = 4,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     },
     {
-    .dataOrig = &modbus_to_can_panel.reg_data,
+    .dataOrig = &modbus_to_can_panel.m_data,
     .subIndex = 5,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
