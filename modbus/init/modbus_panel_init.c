@@ -171,6 +171,7 @@ struct {
 	uint8_t dev_id;
 	reg_id_t reg_id;
 	iql_t reg_data;
+	control_t control;
 	status_t status;
 } modbus_to_can_read_response;
 #pragma pack(pop)
@@ -189,6 +190,7 @@ struct {
 struct {
 	uint8_t dev_id;
 	reg_id_t reg_id;
+	control_t control;
 	status_t status;
 } modbus_to_can_write_response;
 #pragma pack(pop)
@@ -227,6 +229,7 @@ modbus_rtu_error_t modbus_panel_can_read(const void* rx_data, size_t rx_size, vo
 	modbus_to_can_read_response.dev_id = modbus_to_can_panel.m_id;
 	modbus_to_can_read_response.reg_id = (modbus_to_can_panel.m_index << 8) | (modbus_to_can_panel.m_subindex);
 	modbus_to_can_read_response.reg_data = modbus_to_can_panel.m_data;
+	modbus_to_can_read_response.control = modbus_to_can_panel.control;
 
 	//скопируем ответ
 	memcpy(tx_data, &modbus_to_can_read_response, sizeof(modbus_to_can_read_response));
@@ -271,6 +274,7 @@ modbus_rtu_error_t modbus_panel_can_write(const void* rx_data, size_t rx_size, v
 	//заполним ответ
 	modbus_to_can_write_response.dev_id = modbus_to_can_panel.m_id;
 	modbus_to_can_write_response.reg_id = (modbus_to_can_panel.m_index << 8) | (modbus_to_can_panel.m_subindex);
+	modbus_to_can_write_response.control = modbus_to_can_panel.control;
 
 	//скопируем ответ
 	memcpy(tx_data, &modbus_to_can_write_response, sizeof(modbus_to_can_write_response));
