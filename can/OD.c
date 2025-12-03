@@ -52,20 +52,21 @@ typedef struct {
     OD_obj_record_t o_2010_sys[6];
     OD_obj_record_t o_2020_sys_tim[4];
     OD_obj_record_t o_2030_ms_tim[4];
-    OD_obj_record_t o_2040_cli[3];
-    OD_obj_record_t o_2050_rgb_led[4];
-    OD_obj_record_t o_2060_msdi[14];
-    OD_obj_record_t o_2070_ntc_temp[15];
-    OD_obj_record_t o_2080_do_relay[4];
-    OD_obj_record_t o_2090_do_ncv7608[4];
-    OD_obj_record_t o_20A0_digital_in[132];
-    OD_obj_record_t o_20B0_digital_out[132];
-    OD_obj_record_t o_20C0_mso[35];
-    OD_obj_record_t o_20D0_ao_dac7562[5];
-    OD_obj_record_t o_20E0_panel_led[4];
-    OD_obj_record_t o_20F0_modbus_reg_can[6];
-    OD_obj_record_t o_2100_settings[3];
-    OD_obj_record_t o_2110_can_tim[4];
+    OD_obj_record_t o_2040_can_tim[4];
+    OD_obj_record_t o_2050_cli[3];
+    OD_obj_record_t o_2060_rgb_led[4];
+    OD_obj_record_t o_2070_msdi[14];
+    OD_obj_record_t o_2080_ntc_temp[15];
+    OD_obj_record_t o_2090_do_relay[4];
+    OD_obj_record_t o_20A0_do_ncv7608[4];
+    OD_obj_record_t o_20B0_digital_in[132];
+    OD_obj_record_t o_20C0_digital_out[132];
+    OD_obj_record_t o_20D0_mso[35];
+    OD_obj_record_t o_20E0_ao_dac7562[5];
+    OD_obj_record_t o_20F0_panel_led[4];
+    OD_obj_record_t o_2100_modbus_to_can_panel[3];
+    OD_obj_record_t o_2110_settings[3];
+    OD_obj_record_t o_2120_temp_comp[34];
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -1043,7 +1044,33 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2040_cli = {
+.o_2040_can_tim = {
+    {
+    .dataOrig = &CO_data.can_tim.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &can_tim.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &can_tim.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &can_tim.out_counter,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    }
+},
+.o_2050_cli = {
     {
     .dataOrig = &CO_data.cli.count,
     .subIndex = 0,
@@ -1063,7 +1090,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2050_rgb_led = {
+.o_2060_rgb_led = {
     {
     .dataOrig = &CO_data.rgb_led.count,
     .subIndex = 0,
@@ -1089,7 +1116,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 2
     }
 },
-.o_2060_msdi = {
+.o_2070_msdi = {
     {
     .dataOrig = &CO_data.msdi.count,
     .subIndex = 0,
@@ -1175,7 +1202,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2070_ntc_temp = {
+.o_2080_ntc_temp = {
     {
     .dataOrig = &CO_data.ntc_temp.count,
     .subIndex = 0,
@@ -1267,7 +1294,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2080_do_relay = {
+.o_2090_do_relay = {
     {
     .dataOrig = &CO_data.do_relay.count,
     .subIndex = 0,
@@ -1293,7 +1320,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2090_do_ncv7608 = {
+.o_20A0_do_ncv7608 = {
     {
     .dataOrig = &CO_data.do_ncv7608.count,
     .subIndex = 0,
@@ -1319,7 +1346,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_20A0_digital_in = {
+.o_20B0_digital_in = {
     {
     .dataOrig = &CO_data.digital_in.count,
     .subIndex = 0,
@@ -2113,7 +2140,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 1
     }
 },
-.o_20B0_digital_out = {
+.o_20C0_digital_out = {
     {
     .dataOrig = &CO_data.digital_out.count,
     .subIndex = 0,
@@ -2907,7 +2934,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 1
     }
 },
-.o_20C0_mso = {
+.o_20D0_mso = {
     {
     .dataOrig = &CO_data.mso.count,
     .subIndex = 0,
@@ -3119,7 +3146,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_20D0_ao_dac7562 = {
+.o_20E0_ao_dac7562 = {
     {
     .dataOrig = &CO_data.ao_dac7562.count,
     .subIndex = 0,
@@ -3151,7 +3178,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 2
     }
 },
-.o_20E0_panel_led = {
+.o_20F0_panel_led = {
     {
     .dataOrig = &CO_data.panel_led.count,
     .subIndex = 0,
@@ -3177,9 +3204,9 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 2
     }
 },
-.o_20F0_modbus_reg_can = {
+.o_2100_modbus_to_can_panel = {
     {
-    .dataOrig = &CO_data.modbus_reg_can.count,
+    .dataOrig = &CO_data.modbus_to_can_panel.count,
     .subIndex = 0,
     .attribute = ODA_SDO_R,
     .dataLength = 1
@@ -3195,27 +3222,9 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .subIndex = 2,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
-    },
-    {
-    .dataOrig = &modbus_to_can_panel.m_id,
-    .subIndex = 3,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = &modbus_to_can_panel.m_size,
-    .subIndex = 4,
-    .attribute = ODA_SDO_RW,
-    .dataLength = 1
-    },
-    {
-    .dataOrig = &modbus_to_can_panel.m_data,
-    .subIndex = 5,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
     }
 },
-.o_2100_settings = {
+.o_2110_settings = {
     {
     .dataOrig = &CO_data.settings.count,
     .subIndex = 0,
@@ -3235,30 +3244,210 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2110_can_tim = {
+.o_2120_temp_comp = {
     {
-    .dataOrig = &CO_data.can_tim.count,
+    .dataOrig = &CO_data.temp_comp.count,
     .subIndex = 0,
     .attribute = ODA_SDO_R,
     .dataLength = 1
     },
     {
-    .dataOrig = &can_tim.control,
+    .dataOrig = &temp_comp.control,
     .subIndex = 1,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = &can_tim.status,
+    .dataOrig = &temp_comp.status,
     .subIndex = 2,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = &can_tim.out_counter,
+    .dataOrig = &temp_comp.out_data,
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_high_resist[0],
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_high_resist[1],
+    .subIndex = 5,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_high_resist[2],
+    .subIndex = 6,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_high_resist[3],
+    .subIndex = 7,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_high_resist[4],
+    .subIndex = 8,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_high_resist[5],
+    .subIndex = 9,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_low_resist[0],
+    .subIndex = 10,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_low_resist[1],
+    .subIndex = 11,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_low_resist[2],
+    .subIndex = 12,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_low_resist[3],
+    .subIndex = 13,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_low_resist[4],
+    .subIndex = 14,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_low_resist[5],
+    .subIndex = 15,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = &temp_comp.p_high_time[0],
+    .subIndex = 16,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_high_time[1],
+    .subIndex = 17,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_high_time[2],
+    .subIndex = 18,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_high_time[3],
+    .subIndex = 19,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_high_time[4],
+    .subIndex = 20,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_high_time[5],
+    .subIndex = 21,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_low_time[0],
+    .subIndex = 22,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_low_time[1],
+    .subIndex = 23,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_low_time[2],
+    .subIndex = 24,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_low_time[3],
+    .subIndex = 25,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_low_time[4],
+    .subIndex = 26,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_low_time[5],
+    .subIndex = 27,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_invert[0],
+    .subIndex = 28,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_invert[1],
+    .subIndex = 29,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_invert[2],
+    .subIndex = 30,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_invert[3],
+    .subIndex = 31,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_invert[4],
+    .subIndex = 32,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = &temp_comp.p_invert[5],
+    .subIndex = 33,
+    .attribute = ODA_SDO_RW,
+    .dataLength = 1
     }
 }
 };
@@ -3301,20 +3490,21 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x2010, 0x06, ODT_REC, &ODObjs.o_2010_sys, NULL},
     {0x2020, 0x04, ODT_REC, &ODObjs.o_2020_sys_tim, NULL},
     {0x2030, 0x04, ODT_REC, &ODObjs.o_2030_ms_tim, NULL},
-    {0x2040, 0x03, ODT_REC, &ODObjs.o_2040_cli, NULL},
-    {0x2050, 0x04, ODT_REC, &ODObjs.o_2050_rgb_led, NULL},
-    {0x2060, 0x0e, ODT_REC, &ODObjs.o_2060_msdi, NULL},
-    {0x2070, 0x0f, ODT_REC, &ODObjs.o_2070_ntc_temp, NULL},
-    {0x2080, 0x04, ODT_REC, &ODObjs.o_2080_do_relay, NULL},
-    {0x2090, 0x04, ODT_REC, &ODObjs.o_2090_do_ncv7608, NULL},
-    {0x20a0, 0x84, ODT_REC, &ODObjs.o_20A0_digital_in, NULL},
-    {0x20b0, 0x84, ODT_REC, &ODObjs.o_20B0_digital_out, NULL},
-    {0x20c0, 0x23, ODT_REC, &ODObjs.o_20C0_mso, NULL},
-    {0x20d0, 0x05, ODT_REC, &ODObjs.o_20D0_ao_dac7562, NULL},
-    {0x20e0, 0x04, ODT_REC, &ODObjs.o_20E0_panel_led, NULL},
-    {0x20f0, 0x06, ODT_REC, &ODObjs.o_20F0_modbus_reg_can, NULL},
-    {0x2100, 0x03, ODT_REC, &ODObjs.o_2100_settings, NULL},
-    {0x2110, 0x04, ODT_REC, &ODObjs.o_2110_can_tim, NULL},
+    {0x2040, 0x04, ODT_REC, &ODObjs.o_2040_can_tim, NULL},
+    {0x2050, 0x03, ODT_REC, &ODObjs.o_2050_cli, NULL},
+    {0x2060, 0x04, ODT_REC, &ODObjs.o_2060_rgb_led, NULL},
+    {0x2070, 0x0e, ODT_REC, &ODObjs.o_2070_msdi, NULL},
+    {0x2080, 0x0f, ODT_REC, &ODObjs.o_2080_ntc_temp, NULL},
+    {0x2090, 0x04, ODT_REC, &ODObjs.o_2090_do_relay, NULL},
+    {0x20a0, 0x04, ODT_REC, &ODObjs.o_20A0_do_ncv7608, NULL},
+    {0x20b0, 0x84, ODT_REC, &ODObjs.o_20B0_digital_in, NULL},
+    {0x20c0, 0x84, ODT_REC, &ODObjs.o_20C0_digital_out, NULL},
+    {0x20d0, 0x23, ODT_REC, &ODObjs.o_20D0_mso, NULL},
+    {0x20e0, 0x05, ODT_REC, &ODObjs.o_20E0_ao_dac7562, NULL},
+    {0x20f0, 0x04, ODT_REC, &ODObjs.o_20F0_panel_led, NULL},
+    {0x2100, 0x03, ODT_REC, &ODObjs.o_2100_modbus_to_can_panel, NULL},
+    {0x2110, 0x03, ODT_REC, &ODObjs.o_2110_settings, NULL},
+    {0x2120, 0x22, ODT_REC, &ODObjs.o_2120_temp_comp, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

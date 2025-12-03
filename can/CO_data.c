@@ -82,25 +82,25 @@ struct _S_CO_data CO_data = {
 },
 .RPDOCommunicationParameter_1401 = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x80000000 /*  */,
+    .COB_IDUsedByRPDO = 0x80000300 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
 .RPDOCommunicationParameter_1402 = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x80000000 /*  */,
+    .COB_IDUsedByRPDO = 0x80000400 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
 .RPDOCommunicationParameter_1403 = {
     .highestSub_indexSupported = 5 /* Number of sub-entries */,
-    .COB_IDUsedByRPDO = 0x80000000 /*  */,
+    .COB_IDUsedByRPDO = 0x80000500 /*  */,
     .transmissionType = 254 /*  */,
     .eventTimer = 0 /*  */
 },
 .RPDOMappingParameter = {
     .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
-    .applicationObject1 = 0x20b00320 /*  */,
+    .applicationObject1 = 0x20c00320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,
@@ -176,7 +176,7 @@ struct _S_CO_data CO_data = {
 },
 .TPDOMappingParameter = {
     .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
-    .applicationObject1 = 0x20a00320 /*  */,
+    .applicationObject1 = 0x20b00320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,
@@ -230,6 +230,9 @@ struct _S_CO_data CO_data = {
 .ms_tim = {
     .count = 3 /* Number of sub entries count */
 },
+.can_tim = {
+    .count = 3 /* Number of sub entries count */
+},
 .cli = {
     .count = 2 /* Number of sub entries count */
 },
@@ -263,13 +266,13 @@ struct _S_CO_data CO_data = {
 .panel_led = {
     .count = 3 /* Number of sub entries count */
 },
-.modbus_reg_can = {
-    .count = 5 /* Number of sub entries count */
+.modbus_to_can_panel = {
+    .count = 2 /* Number of sub entries count */
 },
 .settings = {
     .count = 2 /* Number of sub entries count */
 },
-.can_tim = {
-    .count = 3 /* Number of sub entries count */
+.temp_comp = {
+    .count = 33 /* Number of sub entries count */
 }
 };

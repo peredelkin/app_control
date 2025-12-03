@@ -271,6 +271,10 @@ struct _S_ms_tim {
     uint8_t count; /* Number of sub entries count */
 } ms_tim;
 
+struct _S_can_tim {
+    uint8_t count; /* Number of sub entries count */
+} can_tim;
+
 struct _S_cli {
     uint8_t count; /* Number of sub entries count */
 } cli;
@@ -315,17 +319,17 @@ struct _S_panel_led {
     uint8_t count; /* Number of sub entries count */
 } panel_led;
 
-struct _S_modbus_reg_can {
+struct _S_modbus_to_can_panel {
     uint8_t count; /* Number of sub entries count */
-} modbus_reg_can;
+} modbus_to_can_panel;
 
 struct _S_settings {
     uint8_t count; /* Number of sub entries count */
 } settings;
 
-struct _S_can_tim {
+struct _S_temp_comp {
     uint8_t count; /* Number of sub entries count */
-} can_tim;
+} temp_comp;
 
 };
 extern struct _S_CO_data CO_data;

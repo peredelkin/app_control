@@ -201,6 +201,10 @@ REG(REG_ID_MS_TIM_COUNT, &CO_data.ms_tim.count, REG_TYPE_U8, REG_FLAG_READONLY, 
 REG(REG_ID_MS_TIM_CONTROL, &ms_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_MS_TIM_STATUS, &ms_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
 REG(REG_ID_MS_TIM_OUT_COUNTER, &ms_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
+REG(REG_ID_CAN_TIM_COUNT, &CO_data.can_tim.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
+REG(REG_ID_CAN_TIM_CONTROL, &can_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
+REG(REG_ID_CAN_TIM_STATUS, &can_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
+REG(REG_ID_CAN_TIM_OUT_COUNTER, &can_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
 REG(REG_ID_CLI_COUNT, &CO_data.cli.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_CLI_CONTROL, &cli.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_CLI_STATUS, &cli.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
@@ -553,19 +557,46 @@ REG(REG_ID_PANEL_LED_COUNT, &CO_data.panel_led.count, REG_TYPE_U8, REG_FLAG_READ
 REG(REG_ID_PANEL_LED_CONTROL, &panel_led.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_PANEL_LED_STATUS, &panel_led.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
 REG(REG_ID_PANEL_LED_OUT_DATA, &panel_led.out_data, REG_TYPE_U16, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MODBUS_REG_CAN_COUNT, &CO_data.modbus_reg_can.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_MODBUS_REG_CAN_CONTROL, &modbus_to_can_panel.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_MODBUS_REG_CAN_STATUS, &modbus_to_can_panel.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_MODBUS_REG_CAN_REG_ID, &modbus_to_can_panel.m_id, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MODBUS_REG_CAN_REG_SIZE, &modbus_to_can_panel.m_size, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MODBUS_REG_CAN_REG_DATA, &modbus_to_can_panel.m_data, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_MODBUS_TO_CAN_PANEL_COUNT, &CO_data.modbus_to_can_panel.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
+REG(REG_ID_MODBUS_TO_CAN_PANEL_CONTROL, &modbus_to_can_panel.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
+REG(REG_ID_MODBUS_TO_CAN_PANEL_STATUS, &modbus_to_can_panel.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
 REG(REG_ID_SETTINGS_COUNT, &CO_data.settings.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_SETTINGS_CONTROL, &settings.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_SETTINGS_STATUS, &settings.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_CAN_TIM_COUNT, &CO_data.can_tim.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_CAN_TIM_CONTROL, &can_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_CAN_TIM_STATUS, &can_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_CAN_TIM_OUT_COUNTER, &can_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
+REG(REG_ID_TEMP_COMP_COUNT, &CO_data.temp_comp.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
+REG(REG_ID_TEMP_COMP_CONTROL, &temp_comp.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
+REG(REG_ID_TEMP_COMP_STATUS, &temp_comp.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
+REG(REG_ID_TEMP_COMP_OUT_DATA, &temp_comp.out_data, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Выход компараторов */
+REG(REG_ID_TEMP_COMP_HIGH_RESIST0, &temp_comp.p_high_resist[0], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_RESIST1, &temp_comp.p_high_resist[1], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_RESIST2, &temp_comp.p_high_resist[2], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_RESIST3, &temp_comp.p_high_resist[3], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_RESIST4, &temp_comp.p_high_resist[4], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_RESIST5, &temp_comp.p_high_resist[5], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог верхнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_RESIST0, &temp_comp.p_low_resist[0], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_RESIST1, &temp_comp.p_low_resist[1], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_RESIST2, &temp_comp.p_low_resist[2], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_RESIST3, &temp_comp.p_low_resist[3], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_RESIST4, &temp_comp.p_low_resist[4], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_RESIST5, &temp_comp.p_low_resist[5], REG_TYPE_IQ15, REG_FLAG_CONF, 0x000000) /* Порог нижнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_TIME0, &temp_comp.p_high_time[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_TIME1, &temp_comp.p_high_time[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_TIME2, &temp_comp.p_high_time[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_TIME3, &temp_comp.p_high_time[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_TIME4, &temp_comp.p_high_time[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр верхнего компаратора */
+REG(REG_ID_TEMP_COMP_HIGH_TIME5, &temp_comp.p_high_time[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр верхнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_TIME0, &temp_comp.p_low_time[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_TIME1, &temp_comp.p_low_time[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_TIME2, &temp_comp.p_low_time[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_TIME3, &temp_comp.p_low_time[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_TIME4, &temp_comp.p_low_time[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр нижнего компаратора */
+REG(REG_ID_TEMP_COMP_LOW_TIME5, &temp_comp.p_low_time[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Фильтр нижнего компаратора */
+REG(REG_ID_TEMP_COMP_INVERT0, &temp_comp.p_invert[0], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
+REG(REG_ID_TEMP_COMP_INVERT1, &temp_comp.p_invert[1], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
+REG(REG_ID_TEMP_COMP_INVERT2, &temp_comp.p_invert[2], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
+REG(REG_ID_TEMP_COMP_INVERT3, &temp_comp.p_invert[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
+REG(REG_ID_TEMP_COMP_INVERT4, &temp_comp.p_invert[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
+REG(REG_ID_TEMP_COMP_INVERT5, &temp_comp.p_invert[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
 
 REGS_END()
 

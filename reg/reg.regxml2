@@ -712,7 +712,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x80000000</default>
+                <default>0x80000300</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -775,7 +775,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x80000000</default>
+                <default>0x80000400</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -838,7 +838,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x80000000</default>
+                <default>0x80000500</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -901,7 +901,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x20b00320</default>
+                <default>0x20c00320</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -1797,7 +1797,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x20a00320</default>
+                <default>0x20b00320</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -2570,6 +2570,69 @@
         </RegVars>
     </RegEntry>
     <RegEntry index="8256">
+        <name>can_tim</name>
+        <type>2</type>
+        <description></description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>3</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>can_tim.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>can_tim.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>out_counter</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>can_tim.out_counter</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Счётчик тиков.</description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="8272">
         <name>cli</name>
         <type>2</type>
         <description></description>
@@ -2618,7 +2681,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8272">
+    <RegEntry index="8288">
         <name>rgb_led</name>
         <type>2</type>
         <description></description>
@@ -2681,7 +2744,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8288">
+    <RegEntry index="8304">
         <name>msdi</name>
         <type>2</type>
         <description></description>
@@ -2884,7 +2947,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8304">
+    <RegEntry index="8320">
         <name>ntc_temp</name>
         <type>2</type>
         <description></description>
@@ -3101,7 +3164,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8320">
+    <RegEntry index="8336">
         <name>do_relay</name>
         <type>2</type>
         <description></description>
@@ -3164,7 +3227,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8336">
+    <RegEntry index="8352">
         <name>do_ncv7608</name>
         <type>2</type>
         <description></description>
@@ -3227,7 +3290,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8352">
+    <RegEntry index="8368">
         <name>digital_in</name>
         <type>2</type>
         <description></description>
@@ -5082,7 +5145,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8368">
+    <RegEntry index="8384">
         <name>digital_out</name>
         <type>2</type>
         <description></description>
@@ -6937,7 +7000,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8384">
+    <RegEntry index="8400">
         <name>mso</name>
         <type>2</type>
         <description></description>
@@ -7434,7 +7497,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8400">
+    <RegEntry index="8416">
         <name>ao_dac7562</name>
         <type>2</type>
         <description></description>
@@ -7511,7 +7574,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8416">
+    <RegEntry index="8432">
         <name>panel_led</name>
         <type>2</type>
         <description></description>
@@ -7574,8 +7637,8 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8432">
-        <name>modbus_reg_can</name>
+    <RegEntry index="8448">
+        <name>modbus_to_can_panel</name>
         <type>2</type>
         <description></description>
         <RegVars>
@@ -7586,7 +7649,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>5</default>
+                <default>2</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -7597,7 +7660,7 @@
                 <name>control</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>modbus_reg_can.control</memory>
+                <memory>modbus_to_can_panel.control</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7611,7 +7674,7 @@
                 <name>status</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>modbus_reg_can.status</memory>
+                <memory>modbus_to_can_panel.status</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7621,51 +7684,9 @@
                 <eflags>393216</eflags>
                 <description>Слово состояния.</description>
             </RegVar>
-            <RegVar subindex="3">
-                <name>reg_id</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>modbus_reg_can.reg_id</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="4">
-                <name>reg_size</name>
-                <type>5</type>
-                <count>1</count>
-                <memory>modbus_reg_can.reg_size</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="5">
-                <name>reg_data</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>modbus_reg_can.reg_data</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8448">
+    <RegEntry index="8464">
         <name>settings</name>
         <type>2</type>
         <description></description>
@@ -7714,8 +7735,8 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8464">
-        <name>can_tim</name>
+    <RegEntry index="8480">
+        <name>temp_comp</name>
         <type>2</type>
         <description></description>
         <RegVars>
@@ -7726,7 +7747,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>3</default>
+                <default>33</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -7737,7 +7758,7 @@
                 <name>control</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>can_tim.control</memory>
+                <memory>temp_comp.control</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7751,7 +7772,7 @@
                 <name>status</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>can_tim.status</memory>
+                <memory>temp_comp.status</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7762,10 +7783,10 @@
                 <description>Слово состояния.</description>
             </RegVar>
             <RegVar subindex="3">
-                <name>out_counter</name>
+                <name>out_data</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>can_tim.out_counter</memory>
+                <memory>temp_comp.out_data</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7773,7 +7794,427 @@
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
                 <eflags>393216</eflags>
-                <description>Счётчик тиков.</description>
+                <description>Выход компараторов</description>
+            </RegVar>
+            <RegVar subindex="4">
+                <name>high_resist0</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_resist[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="5">
+                <name>high_resist1</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_resist[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="6">
+                <name>high_resist2</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_resist[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="7">
+                <name>high_resist3</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_resist[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="8">
+                <name>high_resist4</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_resist[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="9">
+                <name>high_resist5</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_resist[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="10">
+                <name>low_resist0</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_resist[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="11">
+                <name>low_resist1</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_resist[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="12">
+                <name>low_resist2</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_resist[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="13">
+                <name>low_resist3</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_resist[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="14">
+                <name>low_resist4</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_resist[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="15">
+                <name>low_resist5</name>
+                <type>7</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_resist[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Порог нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="16">
+                <name>high_time0</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_time[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="17">
+                <name>high_time1</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_time[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="18">
+                <name>high_time2</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_time[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="19">
+                <name>high_time3</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_time[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="20">
+                <name>high_time4</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_time[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="21">
+                <name>high_time5</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_high_time[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр верхнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="22">
+                <name>low_time0</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_time[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="23">
+                <name>low_time1</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_time[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="24">
+                <name>low_time2</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_time[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="25">
+                <name>low_time3</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_time[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="26">
+                <name>low_time4</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_time[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="27">
+                <name>low_time5</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_low_time[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Фильтр нижнего компаратора</description>
+            </RegVar>
+            <RegVar subindex="28">
+                <name>invert0</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_invert[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии бита выхода</description>
+            </RegVar>
+            <RegVar subindex="29">
+                <name>invert1</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_invert[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии бита выхода</description>
+            </RegVar>
+            <RegVar subindex="30">
+                <name>invert2</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_invert[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии бита выхода</description>
+            </RegVar>
+            <RegVar subindex="31">
+                <name>invert3</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_invert[3]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии бита выхода</description>
+            </RegVar>
+            <RegVar subindex="32">
+                <name>invert4</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_invert[4]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии бита выхода</description>
+            </RegVar>
+            <RegVar subindex="33">
+                <name>invert5</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>temp_comp.p_invert[5]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр инверсии бита выхода</description>
             </RegVar>
         </RegVars>
     </RegEntry>
