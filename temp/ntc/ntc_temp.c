@@ -23,7 +23,7 @@ int bsearch_ohm_comparator(const void* ptr1, const void* ptr2) {
 	return 0;
 }
 
-uint32_t ntc_counter;
+static uint32_t ntc_counter;
 
 METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
 	iq15_t vref = (iq15_t)(msdi.out_analog[6] * IQN_BASE(4, int32_t));

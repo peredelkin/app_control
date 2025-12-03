@@ -5,6 +5,7 @@ M_conf conf = CONF_DEFAULTS;
 M_sys_main sys = SYS_MAIN_DEFAULTS;
 M_sys_timer sys_tim = SYS_TIMER_DEFAULTS;
 M_ms_timer ms_tim = MS_TIMER_DEFAULTS;
+M_can_timer can_tim = CAN_TIMER_DEFAULTS;
 
 M_cli cli = CLI_DEFAULTS;
 M_rgb_led rgb_led = RGB_LED_DEFAULTS;
@@ -19,5 +20,4 @@ M_dac7562 ao_dac7562 = DAC7562_DEFAULTS;
 M_panel_led panel_led = PANEL_LED_DEFAULTS;
 M_modbus_to_can modbus_to_can_panel = MODBUS_TO_CAN_DEFAULTS;
 M_settings settings = SETTINGS_DEFAULTS;
-
-M_can_timer can_tim = CAN_TIMER_DEFAULTS;
+M_temp_wind_comp temp_comp = TEMP_WIND_COMP_DEFAULTS;

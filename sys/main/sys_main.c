@@ -42,6 +42,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     // Вычислительные модули.
     INIT(cli);
     INIT(ntc_temp);
+    INIT(temp_comp);
     INIT(digital_in);
     INIT(digital_out);
     INIT(ao_dac7562);
@@ -110,6 +111,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(mso);
     DEINIT(cli);
     DEINIT(ntc_temp);
+    DEINIT(temp_comp);
     DEINIT(digital_in);
     DEINIT(digital_out);
     DEINIT(ao_dac7562);
@@ -195,6 +197,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     // Вычислительные модули.
     CALC(digital_in);
     CALC(ntc_temp);
+    CALC(temp_comp);
     CALC(ao_dac7562);
     CALC(digital_out);
     CALC(rgb_led);

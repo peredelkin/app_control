@@ -21,11 +21,13 @@
 #include "led/panel/panel_led.h"
 #include "modbus_to_can/modbus_to_can.h"
 #include "settings/settings.h"
+#include "temp/comp/temp_wind_comp.h"
 
 extern M_conf conf;
 extern M_sys_main sys;
 extern M_sys_timer sys_tim;
 extern M_ms_timer ms_tim;
+extern M_can_timer can_tim;
 
 extern M_cli cli;
 extern M_rgb_led rgb_led;
@@ -40,7 +42,6 @@ extern M_dac7562 ao_dac7562;
 extern M_panel_led panel_led;
 extern M_modbus_to_can modbus_to_can_panel;
 extern M_settings settings;
-
-extern M_can_timer can_tim;
+extern M_temp_wind_comp temp_comp;
 
 #endif /* MODULES_H */
