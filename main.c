@@ -18,8 +18,8 @@
 #include "fmc/init/fmc_init.h"
 #include "fmc/sram/fmc_sram.h"
 #include "fmc/nand/fmc_nand.h"
-#include "yaffs2/yaffsfs.h"
-#include "yaffs2/yaffs_trace.h"
+#include "fmc/yaffs2/yaffsfs.h"
+#include "fmc/yaffs2/yaffs_trace.h"
 #include "interrupts/interrupt_priorities.h"
 
 #define USE_SDCARD_FATFS_DISKIO

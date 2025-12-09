@@ -1,7 +1,7 @@
 #include "settings.h"
 #include "reg/reg.h"
 #include "lib/errors/errors.h"
-#include "yaffs2/yaffsfs.h"
+#include "fmc/yaffs2/yaffsfs.h"
 #include "sys/counter/sys_counter.h"
 
 char* settings_filename = "/nand/settings";

@@ -6,7 +6,7 @@
  */
 
 #include "cli.h"
-#include "yaffs2/yaffsfs.h"
+#include "fmc/yaffs2/yaffsfs.h"
 
 static void cli_ls_nand_ls_dir(const char* dirname)
 {

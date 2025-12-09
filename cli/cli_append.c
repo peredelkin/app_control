@@ -6,7 +6,7 @@
  */
 
 #include "cli.h"
-#include "yaffs2/yaffsfs.h"
+#include "fmc/yaffs2/yaffsfs.h"
 
 int cli_append_nand_file(int argc, char* argv[])
 {

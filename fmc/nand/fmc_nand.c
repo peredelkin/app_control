@@ -6,8 +6,8 @@
  */
 
 #include "fmc_nand.h"
-#include "yaffs2/yaffs_guts.h"
-#include "yaffs2/yaffs_ecc.h"
+#include "fmc/yaffs2/yaffs_guts.h"
+#include "fmc/yaffs2/yaffs_ecc.h"
 #include "lib/utils/barrier.h"
 
 //#define NAND_WRITE_DEBUG

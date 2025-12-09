@@ -6,7 +6,7 @@
  */
 
 #include "cli.h"
-#include "yaffs2/yaffsfs.h"
+#include "fmc/yaffs2/yaffsfs.h"
 
 int cli_yaffs_freespace(int argc, char* argv[]) {
 	if(argc != 2) return -1;

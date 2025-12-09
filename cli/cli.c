@@ -10,7 +10,7 @@
 #include "uart/init/uart_init.h"
 #include "uart/buf/usart_buf.h"
 #include "modules/modules.h"
-#include "yaffs2/yaffsfs.h"
+#include "fmc/yaffs2/yaffsfs.h"
 
 METHOD_INIT_IMPL(M_cli, cli)
 {
