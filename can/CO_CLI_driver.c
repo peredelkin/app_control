@@ -431,9 +431,11 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 
 			//no break
 		case CO_SDO_CLI_State_DATA:
-			size_ret = CO_SDOclientUploadBufRead(sdo_cli, (CO_SDO_CLI_dataToTransfer(head)),
-					CO_SDO_CLI_dataSizeToTransfer(head));
-			CO_SDO_CLI_dataTransfered(head, size_ret);
+			do {
+				size_ret = CO_SDOclientUploadBufRead(sdo_cli, (CO_SDO_CLI_dataToTransfer(head)),
+						CO_SDO_CLI_dataSizeToTransfer(head));
+				CO_SDO_CLI_dataTransfered(head, size_ret);
+			} while (size_ret != 0);
 
 			if (CO_SDO_CLI_dataTransferDone(head)) {
 				CO_SDO_CLI_setState(head, CO_SDO_CLI_State_DONE);
