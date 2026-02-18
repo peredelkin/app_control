@@ -142,16 +142,13 @@ METHOD_DEINIT_IMPL(M_msdi, msdi)
 {
 }
 
-//TODO: сделать счетчик ошибок обращения к микросхеме
 METHOD_CALC_IMPL(M_msdi, msdi)
 {
 	//Инит SPI
 	spi_bus_open(msdi->m_tic12400.spi_bus, msdi->m_tic12400.spi_cfg);
 
-	//статус RX фрейма
-//	TIC12400_STATUS status = {
-//			.all = 0
-//	};
+	//сброс статуса валидности данных
+	msdi->status &= ~MSDI_STATUS_VALID;
 
 	/*
 	 * Error:
@@ -258,15 +255,11 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 			msdi->status |= MSDI_STATUS_ERROR;
 		}
 		//если нет ошибок и предупреждений
-		if (msdi->status & (MSDI_STATUS_ERROR | MSDI_STATUS_WARNING)) {
-			//данные не валидны
-			msdi->status &= ~MSDI_STATUS_VALID;
-		} else {
+		if (!(msdi->status & (MSDI_STATUS_ERROR | MSDI_STATUS_WARNING))) {
 			//заполяем данные, согласно настройкам
 			msdi_data_fill(msdi);
 			//данные валидны
 			msdi->status |= MSDI_STATUS_VALID;
-
 		}
 	}
 	//Деинициализация SPI
