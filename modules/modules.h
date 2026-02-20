@@ -35,8 +35,8 @@ extern M_msdi msdi;
 extern M_ntc_temp ntc_temp;
 extern M_relay_output do_relay;
 extern M_ncv7608 do_ncv7608;
-extern M_digital_input digital_in;
-extern M_digital_output digital_out;
+extern M_digital_input digital_in;				//!< 0x20b0 -> 8368	@{"id": 8368}
+extern M_digital_output digital_out;			//!< 0x20c0 -> 8384	@{"id": 8384}
 extern M_mso mso;
 extern M_dac7562 ao_dac7562;
 extern M_panel_led panel_led;

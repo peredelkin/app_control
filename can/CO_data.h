@@ -271,10 +271,6 @@ struct _S_ms_tim {
     uint8_t count; /* Number of sub entries count */
 } ms_tim;
 
-struct _S_can_tim {
-    uint8_t count; /* Number of sub entries count */
-} can_tim;
-
 struct _S_cli {
     uint8_t count; /* Number of sub entries count */
 } cli;

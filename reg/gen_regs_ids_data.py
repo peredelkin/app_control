@@ -142,12 +142,12 @@ def reglist_to_entrylist(reglist: list) -> list:
             var['id'] = 0
             var['name'] = 'count'
             var['data'] = None
-            var['type'] = DataType.I8
+            var['type'] = DataType.U8
             var['min'] = 0
             var['max'] = items_count
             var['def'] = items_count
             var['flags'] = RegFlag.NONE
-            var['eflags'] = RegEFlag.CO_COUNT
+            var['eflags'] = RegEFlag.CO_COUNT | RegEFlag.CO_SDO_R
             var['base'] = None
             new_entry['type'] = ObjectType.REC
             new_entry['items'].append(var)
@@ -163,7 +163,7 @@ def reglist_to_entrylist(reglist: list) -> list:
             var['max'] = 0
             var['def'] = 0
             var['flags'] = RegFlag.fromList(reg['flags'])
-            var['eflags'] = RegEFlag.NONE
+            var['eflags'] = RegEFlag.CO_SDO_R | RegEFlag.CO_SDO_W
             var['base'] = reg['base']
             new_entry['items'].append(var)
             cur_id = cur_id + 1
@@ -286,8 +286,23 @@ def make_reg_id_name(group_name, reg_name):
     return make_reg_id("_".join([group_name, reg_name]))
 
 
+def make_reg_id_value(group_id, reg_id):
+    return (group_id << 8) | reg_id
+
+
 def make_reg_type_name(reg_type):
     return "REG_TYPE_%s" % reg_type
+
+
+def make_reg_data(reg_data, reg_type):
+    if reg_type == 'STR':
+        if len(reg_data) == 0 or reg_data[0] != '"' or reg_data[-1] != '"':
+            return "\"%s\"" % reg_data
+        return reg_data
+    elif reg_type == 'MEM':
+        if reg_data == "NULL":
+            return reg_data
+    return "&%s" % reg_data
 
 
 def make_reg_flags_str(reg_flags_list):
@@ -318,7 +333,7 @@ def gen_ids(decls, f=sys.stdout):
 
         elif t == "reg":
             reg_name = d['name']
-            f.write("#define %s    %d\n" % (make_reg_id_name(grp_name, reg_name), grp_id + reg_id))
+            f.write("#define %s    0x%x\n" % (make_reg_id_name(grp_name, reg_name), make_reg_id_value(grp_id, reg_id)))
             reg_id = reg_id + 1
 
         elif t == "blank":
@@ -362,6 +377,7 @@ def gen_regs(decls, f=sys.stdout):
             reg_type = d['type']
             reg_flags_list = d['flags']
             reg_base = d['base']
+            reg_data = make_reg_data(reg_data, reg_type)
             f.write("REG(%s, %s, %s, %s, %s)\n" % (
                 make_reg_id_name(grp_name, reg_name),
                 reg_data,
@@ -474,7 +490,7 @@ def parse_group(line, line_num):
 
 
 def parse_reg(line, line_num):
-    reg_types = ["I32", "I16", "I8", "U32", "U16", "U8", "IQ24", "IQ15", "IQ7"]
+    reg_types = ["I32", "I16", "I8", "U32", "U16", "U8", "IQ24", "IQ15", "IQ7", "STR", "MEM"]
 
     parts = line.partition(" ")
 

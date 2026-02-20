@@ -132,8 +132,8 @@
         <indicatorValue>1</indicatorValue>
         <activateValue>38</activateValue>
     </SDOValueButton>
-    <SDOValueIndicator row="1" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI1</text>
+    <SDOValueIndicator row="1" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 0: Switch NO</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -146,8 +146,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>1</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="2" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI2</text>
+    <SDOValueIndicator row="2" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 1: Switch NC</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -160,8 +160,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>2</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="3" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI3</text>
+    <SDOValueIndicator row="3" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 2: Switch OC/OL</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -174,8 +174,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>4</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="4" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI4</text>
+    <SDOValueIndicator row="4" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 3: Test</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -188,8 +188,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>8</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="5" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI5</text>
+    <SDOValueIndicator row="5" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 4: Enable Run</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -202,8 +202,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>16</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="6" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI6</text>
+    <SDOValueIndicator row="6" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 5: Increase</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -216,8 +216,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>32</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="7" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI7</text>
+    <SDOValueIndicator row="7" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 6: Decrease</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -230,8 +230,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>64</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="8" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI8</text>
+    <SDOValueIndicator row="8" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 7: Man/Auto</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -244,8 +244,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>128</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="9" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI9</text>
+    <SDOValueIndicator row="9" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 8: Loc/Rem</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -258,8 +258,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>256</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="10" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8304" subIndex="3" type="3">
-        <text>Digital Input: DI10</text>
+    <SDOValueIndicator row="10" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 9: FWD/BWD</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -272,386 +272,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>512</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="1" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Switch NO</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>1</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="2" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Switch NC</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>2</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="1" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Ready</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>1</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="1" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO1</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>1</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="9" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
-        <text>Digital Output: Relay 1</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>1</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="2" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO2</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>2</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="3" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO3</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>4</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="4" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO4</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>8</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="5" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO5</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>16</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="10" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
-        <text>Digital Output: Relay 2</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>2</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="11" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
-        <text>Digital Output: Relay 3</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>4</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="12" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
-        <text>Digital Output: Relay 4</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>8</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="6" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO6</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>32</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="7" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO7</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>64</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="8" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8352" subIndex="3" type="3">
-        <text>Digital Output: DO8</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>128</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="2" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Run</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>2</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="3" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Error</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>4</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="4" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Warning</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>8</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="5" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Limit</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>16</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="6" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Switch ON</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>32</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="7" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Man/Auto</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>64</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="8" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Loc/Rem</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>128</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="9" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: FWD/BWD</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>256</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="10" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Fan</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>512</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="12" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Trip</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>2048</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="13" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Ext Brake</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>4096</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="14" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Inv Exciter</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>8192</indicatorValue>
-    </SDOValueIndicator>
-    <SDOValueIndicator row="11" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Contactor</text>
+    <SDOValueIndicator row="11" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 10: Error Reset</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -664,8 +286,50 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>1024</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="15" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Ext Exciter</text>
+    <SDOValueIndicator row="12" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 11: Emergency Off</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>2048</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="13" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 12: Contactor</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>4096</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="14" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 13: Release</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>8192</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="15" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
+        <text>Digital Input 14: Ext Exciter</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -678,8 +342,218 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>16384</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="16" col="4" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
-        <text>Digital Output: Start Resistance</text>
+    <SDOValueIndicator row="1" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 0: Ready</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>1</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="2" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 1: Run</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>2</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="3" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 2: Error</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>4</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="4" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 3: Warning</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>8</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="5" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 4: Limit</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>16</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="6" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 5: Switch ON</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>32</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="7" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 6: Man/Auto</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>64</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="8" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 7: Loc/Rem</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>128</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="9" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 8: FWD/BWD</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>256</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="10" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 9: Fan</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>512</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="11" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 10: Contactor</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>1024</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="12" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 11: Trip</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>2048</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="13" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 12: Ext Brake</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>4096</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="14" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 13: Inv Exciter</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>8192</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="15" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 14: Ext Exciter</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>16384</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="16" col="5" rowSpan="1" colSpan="1" nodeId="2" index="8384" subIndex="3" type="3">
+        <text>Digital Output 15: Start Resistance</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -692,8 +566,36 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>32768</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="3" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Switch OC/OL</text>
+    <SDOValueIndicator row="1" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 2: DI1</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>1</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="2" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 3: DI2</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>2</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="3" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 4: DI3</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -706,8 +608,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>4</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="4" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Test</text>
+    <SDOValueIndicator row="4" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 5: DI4</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -720,8 +622,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>8</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="5" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Enable Run</text>
+    <SDOValueIndicator row="5" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 6: DI5</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -734,8 +636,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>16</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="6" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Increase</text>
+    <SDOValueIndicator row="6" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 7: DI6</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -748,8 +650,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>32</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="7" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Decrease</text>
+    <SDOValueIndicator row="7" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 8: DI7</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -762,8 +664,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>64</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="8" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Man/Auto</text>
+    <SDOValueIndicator row="8" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 9: DI8</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -776,8 +678,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>128</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="9" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Loc/Rem</text>
+    <SDOValueIndicator row="9" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 10: DI9</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -790,8 +692,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>256</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="10" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: FWD/BWD</text>
+    <SDOValueIndicator row="10" col="2" rowSpan="1" colSpan="1" nodeId="2" index="8288" subIndex="3" type="3">
+        <text>Digital Input 11: DI10</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -804,8 +706,8 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>512</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="11" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Error Reset</text>
+    <SDOValueIndicator row="9" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8320" subIndex="3" type="3">
+        <text>Digital Output 8: Relay 1</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -816,10 +718,10 @@
         <fontCapitalization>0</fontCapitalization>
         <fontBold>1</fontBold>
         <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>1024</indicatorValue>
+        <indicatorValue>1</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="12" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Emergency Off</text>
+    <SDOValueIndicator row="10" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8320" subIndex="3" type="3">
+        <text>Digital Output 9: Relay 2</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -830,10 +732,10 @@
         <fontCapitalization>0</fontCapitalization>
         <fontBold>1</fontBold>
         <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>2048</indicatorValue>
+        <indicatorValue>2</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="13" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Contactor</text>
+    <SDOValueIndicator row="11" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8320" subIndex="3" type="3">
+        <text>Digital Output 10: Relay 3</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -844,10 +746,10 @@
         <fontCapitalization>0</fontCapitalization>
         <fontBold>1</fontBold>
         <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>4096</indicatorValue>
+        <indicatorValue>4</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="14" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Release</text>
+    <SDOValueIndicator row="12" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8320" subIndex="3" type="3">
+        <text>Digital Output 11: Relay 4</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -858,10 +760,10 @@
         <fontCapitalization>0</fontCapitalization>
         <fontBold>1</fontBold>
         <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>8192</indicatorValue>
+        <indicatorValue>8</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="15" col="3" rowSpan="1" colSpan="1" nodeId="2" index="8368" subIndex="3" type="3">
-        <text>Digital Input: Ext Exciter</text>
+    <SDOValueIndicator row="1" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 0: DO1</text>
         <backColor>4293388263</backColor>
         <shadowColor>4278190080</shadowColor>
         <indicatorColor>4290574884</indicatorColor>
@@ -872,6 +774,104 @@
         <fontCapitalization>0</fontCapitalization>
         <fontBold>1</fontBold>
         <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>16384</indicatorValue>
+        <indicatorValue>1</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="2" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 1: DO2</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>2</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="3" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 2: DO3</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>4</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="4" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 3: DO4</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>8</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="5" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 4: DO5</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>16</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="6" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 5: DO6</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>32</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="7" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 6: DO7</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>64</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="8" col="6" rowSpan="1" colSpan="1" nodeId="2" index="8336" subIndex="3" type="3">
+        <text>Digital Output 7: DO8</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>128</indicatorValue>
     </SDOValueIndicator>
 </cockpit>

@@ -193,58 +193,56 @@
 #define REG_ID_SYS_TIM_CONTROL 0x202001 /* Слово управления. */
 #define REG_ID_SYS_TIM_STATUS 0x202002 /* Слово состояния. */
 #define REG_ID_SYS_TIM_OUT_COUNTER 0x202003 /* Счётчик тиков. */
+#define REG_ID_SYS_TIM_ON_TIMEOUT 0x202004 /*  */
 #define REG_ID_MS_TIM_COUNT 0x203000 /* Number of sub entries count */
 #define REG_ID_MS_TIM_CONTROL 0x203001 /* Слово управления. */
 #define REG_ID_MS_TIM_STATUS 0x203002 /* Слово состояния. */
 #define REG_ID_MS_TIM_OUT_COUNTER 0x203003 /* Счётчик тиков. */
-#define REG_ID_CAN_TIM_COUNT 0x204000 /* Number of sub entries count */
-#define REG_ID_CAN_TIM_CONTROL 0x204001 /* Слово управления. */
-#define REG_ID_CAN_TIM_STATUS 0x204002 /* Слово состояния. */
-#define REG_ID_CAN_TIM_OUT_COUNTER 0x204003 /* Счётчик тиков. */
-#define REG_ID_CLI_COUNT 0x205000 /* Number of sub entries count */
-#define REG_ID_CLI_CONTROL 0x205001 /* Слово управления. */
-#define REG_ID_CLI_STATUS 0x205002 /* Слово состояния. */
-#define REG_ID_RGB_LED_COUNT 0x206000 /* Number of sub entries count */
-#define REG_ID_RGB_LED_CONTROL 0x206001 /* Слово управления. */
-#define REG_ID_RGB_LED_STATUS 0x206002 /* Слово состояния. */
-#define REG_ID_RGB_LED_IN_DATA 0x206003 /*  */
-#define REG_ID_MSDI_COUNT 0x207000 /* Number of sub entries count */
-#define REG_ID_MSDI_CONTROL 0x207001 /* Слово управления. */
-#define REG_ID_MSDI_STATUS 0x207002 /* Слово состояния. */
-#define REG_ID_MSDI_OUT_DIGITAL 0x207003 /*  */
-#define REG_ID_MSDI_OUT_ANALOG0 0x207004 /*  */
-#define REG_ID_MSDI_OUT_ANALOG1 0x207005 /*  */
-#define REG_ID_MSDI_OUT_ANALOG2 0x207006 /*  */
-#define REG_ID_MSDI_OUT_ANALOG3 0x207007 /*  */
-#define REG_ID_MSDI_OUT_ANALOG4 0x207008 /*  */
-#define REG_ID_MSDI_OUT_ANALOG5 0x207009 /*  */
-#define REG_ID_MSDI_OUT_ANALOG6 0x20700a /*  */
-#define REG_ID_MSDI_OUT_ANALOG7 0x20700b /*  */
-#define REG_ID_MSDI_OUT_REF 0x20700c /*  */
-#define REG_ID_MSDI_OUT_VCC 0x20700d /*  */
-#define REG_ID_NTC_TEMP_COUNT 0x208000 /* Number of sub entries count */
-#define REG_ID_NTC_TEMP_CONTROL 0x208001 /* Слово управления. */
-#define REG_ID_NTC_TEMP_STATUS 0x208002 /* Слово состояния. */
-#define REG_ID_NTC_TEMP_OUT_TEMP0 0x208003 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP1 0x208004 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP2 0x208005 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP3 0x208006 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP4 0x208007 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP5 0x208008 /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM0 0x208009 /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM1 0x20800a /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM2 0x20800b /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM3 0x20800c /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM4 0x20800d /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM5 0x20800e /*  */
-#define REG_ID_DO_RELAY_COUNT 0x209000 /* Number of sub entries count */
-#define REG_ID_DO_RELAY_CONTROL 0x209001 /* Слово управления. */
-#define REG_ID_DO_RELAY_STATUS 0x209002 /* Слово состояния. */
-#define REG_ID_DO_RELAY_IN_DATA 0x209003 /*  */
-#define REG_ID_DO_NCV7608_COUNT 0x20a000 /* Number of sub entries count */
-#define REG_ID_DO_NCV7608_CONTROL 0x20a001 /* Слово управления. */
-#define REG_ID_DO_NCV7608_STATUS 0x20a002 /* Слово состояния. */
-#define REG_ID_DO_NCV7608_IN_DATA 0x20a003 /*  */
+#define REG_ID_MS_TIM_ON_TIMEOUT 0x203004 /*  */
+#define REG_ID_CLI_COUNT 0x204000 /* Number of sub entries count */
+#define REG_ID_CLI_CONTROL 0x204001 /* Слово управления. */
+#define REG_ID_CLI_STATUS 0x204002 /* Слово состояния. */
+#define REG_ID_RGB_LED_COUNT 0x205000 /* Number of sub entries count */
+#define REG_ID_RGB_LED_CONTROL 0x205001 /* Слово управления. */
+#define REG_ID_RGB_LED_STATUS 0x205002 /* Слово состояния. */
+#define REG_ID_RGB_LED_IN_DATA 0x205003 /*  */
+#define REG_ID_MSDI_COUNT 0x206000 /* Number of sub entries count */
+#define REG_ID_MSDI_CONTROL 0x206001 /* Слово управления. */
+#define REG_ID_MSDI_STATUS 0x206002 /* Слово состояния. */
+#define REG_ID_MSDI_OUT_DIGITAL 0x206003 /*  */
+#define REG_ID_MSDI_OUT_ANALOG0 0x206004 /*  */
+#define REG_ID_MSDI_OUT_ANALOG1 0x206005 /*  */
+#define REG_ID_MSDI_OUT_ANALOG2 0x206006 /*  */
+#define REG_ID_MSDI_OUT_ANALOG3 0x206007 /*  */
+#define REG_ID_MSDI_OUT_ANALOG4 0x206008 /*  */
+#define REG_ID_MSDI_OUT_ANALOG5 0x206009 /*  */
+#define REG_ID_MSDI_OUT_ANALOG6 0x20600a /*  */
+#define REG_ID_MSDI_OUT_ANALOG7 0x20600b /*  */
+#define REG_ID_MSDI_OUT_REF 0x20600c /*  */
+#define REG_ID_MSDI_OUT_VCC 0x20600d /*  */
+#define REG_ID_NTC_TEMP_COUNT 0x207000 /* Number of sub entries count */
+#define REG_ID_NTC_TEMP_CONTROL 0x207001 /* Слово управления. */
+#define REG_ID_NTC_TEMP_STATUS 0x207002 /* Слово состояния. */
+#define REG_ID_NTC_TEMP_OUT_TEMP0 0x207003 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP1 0x207004 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP2 0x207005 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP3 0x207006 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP4 0x207007 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP5 0x207008 /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM0 0x207009 /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM1 0x20700a /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM2 0x20700b /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM3 0x20700c /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM4 0x20700d /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM5 0x20700e /*  */
+#define REG_ID_DO_RELAY_COUNT 0x208000 /* Number of sub entries count */
+#define REG_ID_DO_RELAY_CONTROL 0x208001 /* Слово управления. */
+#define REG_ID_DO_RELAY_STATUS 0x208002 /* Слово состояния. */
+#define REG_ID_DO_RELAY_IN_DATA 0x208003 /*  */
+#define REG_ID_DO_NCV7608_COUNT 0x209000 /* Number of sub entries count */
+#define REG_ID_DO_NCV7608_CONTROL 0x209001 /* Слово управления. */
+#define REG_ID_DO_NCV7608_STATUS 0x209002 /* Слово состояния. */
+#define REG_ID_DO_NCV7608_IN_DATA 0x209003 /*  */
 #define REG_ID_DIGITAL_IN_COUNT 0x20b000 /* Number of sub entries count */
 #define REG_ID_DIGITAL_IN_CONTROL 0x20b001 /* Слово управления. */
 #define REG_ID_DIGITAL_IN_STATUS 0x20b002 /* Слово состояния. */

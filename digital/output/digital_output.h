@@ -39,7 +39,7 @@ struct _S_Digital_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u32_t in_data; //!< Вход дискретных выходов
+    reg_u32_t in_data; //!< Вход дискретных выходов @{"id": 3, "rpdo": true}
     // Выходные данные.
     // Параметры.
     reg_u8_t p_invert[DIGITAL_OUTPUT_COUNT]; //!< Параметр инверсии дискретного выхода

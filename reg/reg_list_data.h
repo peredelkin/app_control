@@ -197,14 +197,12 @@ REG(REG_ID_SYS_TIM_COUNT, &CO_data.sys_tim.count, REG_TYPE_U8, REG_FLAG_READONLY
 REG(REG_ID_SYS_TIM_CONTROL, &sys_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_SYS_TIM_STATUS, &sys_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
 REG(REG_ID_SYS_TIM_OUT_COUNTER, &sys_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
+REG(REG_ID_SYS_TIM_ON_TIMEOUT, &sys_tim.on_timeout, REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_MS_TIM_COUNT, &CO_data.ms_tim.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_MS_TIM_CONTROL, &ms_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_MS_TIM_STATUS, &ms_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
 REG(REG_ID_MS_TIM_OUT_COUNTER, &ms_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
-REG(REG_ID_CAN_TIM_COUNT, &CO_data.can_tim.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_CAN_TIM_CONTROL, &can_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_CAN_TIM_STATUS, &can_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_CAN_TIM_OUT_COUNTER, &can_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
+REG(REG_ID_MS_TIM_ON_TIMEOUT, &ms_tim.on_timeout, REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_CLI_COUNT, &CO_data.cli.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_CLI_CONTROL, &cli.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_CLI_STATUS, &cli.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */

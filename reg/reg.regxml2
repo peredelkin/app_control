@@ -2455,7 +2455,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>3</default>
+                <default>4</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -2504,6 +2504,20 @@
                 <eflags>393216</eflags>
                 <description>Счётчик тиков.</description>
             </RegVar>
+            <RegVar subindex="4">
+                <name>on_timeout</name>
+                <type>0</type>
+                <count>1</count>
+                <memory>sys_tim.on_timeout</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
         </RegVars>
     </RegEntry>
     <RegEntry index="8240">
@@ -2518,7 +2532,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>3</default>
+                <default>4</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -2567,72 +2581,23 @@
                 <eflags>393216</eflags>
                 <description>Счётчик тиков.</description>
             </RegVar>
+            <RegVar subindex="4">
+                <name>on_timeout</name>
+                <type>0</type>
+                <count>1</count>
+                <memory>ms_tim.on_timeout</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
         </RegVars>
     </RegEntry>
     <RegEntry index="8256">
-        <name>can_tim</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>3</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>can_tim.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>can_tim.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-            <RegVar subindex="3">
-                <name>out_counter</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>can_tim.out_counter</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Счётчик тиков.</description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8272">
         <name>cli</name>
         <type>2</type>
         <description></description>
@@ -2681,7 +2646,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8288">
+    <RegEntry index="8272">
         <name>rgb_led</name>
         <type>2</type>
         <description></description>
@@ -2744,7 +2709,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8304">
+    <RegEntry index="8288">
         <name>msdi</name>
         <type>2</type>
         <description></description>
@@ -2947,7 +2912,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8320">
+    <RegEntry index="8304">
         <name>ntc_temp</name>
         <type>2</type>
         <description></description>
@@ -3164,7 +3129,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8336">
+    <RegEntry index="8320">
         <name>do_relay</name>
         <type>2</type>
         <description></description>
@@ -3227,7 +3192,7 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8352">
+    <RegEntry index="8336">
         <name>do_ncv7608</name>
         <type>2</type>
         <description></description>
@@ -3293,7 +3258,7 @@
     <RegEntry index="8368">
         <name>digital_in</name>
         <type>2</type>
-        <description></description>
+        <description>0x20b0 -&gt; 8368</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -3348,7 +3313,7 @@
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
-                <eflags>393216</eflags>
+                <eflags>917504</eflags>
                 <description>Выход дискретных входов</description>
             </RegVar>
             <RegVar subindex="4">
@@ -5162,7 +5127,7 @@
     <RegEntry index="8384">
         <name>digital_out</name>
         <type>2</type>
-        <description></description>
+        <description>0x20c0 -&gt; 8384</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -5217,7 +5182,7 @@
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
-                <eflags>393216</eflags>
+                <eflags>1441792</eflags>
                 <description>Вход дискретных выходов</description>
             </RegVar>
             <RegVar subindex="4">

@@ -50,15 +50,14 @@ typedef struct {
     OD_obj_record_t o_1A03_TPDOMappingParameter[9];
     OD_obj_record_t o_2000_conf[3];
     OD_obj_record_t o_2010_sys[6];
-    OD_obj_record_t o_2020_sys_tim[4];
-    OD_obj_record_t o_2030_ms_tim[4];
-    OD_obj_record_t o_2040_can_tim[4];
-    OD_obj_record_t o_2050_cli[3];
-    OD_obj_record_t o_2060_rgb_led[4];
-    OD_obj_record_t o_2070_msdi[14];
-    OD_obj_record_t o_2080_ntc_temp[15];
-    OD_obj_record_t o_2090_do_relay[4];
-    OD_obj_record_t o_20A0_do_ncv7608[4];
+    OD_obj_record_t o_2020_sys_tim[5];
+    OD_obj_record_t o_2030_ms_tim[5];
+    OD_obj_record_t o_2040_cli[3];
+    OD_obj_record_t o_2050_rgb_led[4];
+    OD_obj_record_t o_2060_msdi[14];
+    OD_obj_record_t o_2070_ntc_temp[15];
+    OD_obj_record_t o_2080_do_relay[4];
+    OD_obj_record_t o_2090_do_ncv7608[4];
     OD_obj_record_t o_20B0_digital_in[133];
     OD_obj_record_t o_20C0_digital_out[132];
     OD_obj_record_t o_20D0_mso[35];
@@ -1016,6 +1015,12 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
+    },
+    {
+    .dataOrig = (void*)&sys_tim.on_timeout,
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
     }
 },
 .o_2030_ms_tim = {
@@ -1042,35 +1047,15 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
-    }
-},
-.o_2040_can_tim = {
-    {
-    .dataOrig = (void*)&CO_data.can_tim.count,
-    .subIndex = 0,
-    .attribute = ODA_SDO_R,
-    .dataLength = 1
     },
     {
-    .dataOrig = (void*)&can_tim.control,
-    .subIndex = 1,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&can_tim.status,
-    .subIndex = 2,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&can_tim.out_counter,
-    .subIndex = 3,
+    .dataOrig = (void*)&ms_tim.on_timeout,
+    .subIndex = 4,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     }
 },
-.o_2050_cli = {
+.o_2040_cli = {
     {
     .dataOrig = (void*)&CO_data.cli.count,
     .subIndex = 0,
@@ -1090,7 +1075,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2060_rgb_led = {
+.o_2050_rgb_led = {
     {
     .dataOrig = (void*)&CO_data.rgb_led.count,
     .subIndex = 0,
@@ -1116,7 +1101,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 2
     }
 },
-.o_2070_msdi = {
+.o_2060_msdi = {
     {
     .dataOrig = (void*)&CO_data.msdi.count,
     .subIndex = 0,
@@ -1202,7 +1187,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2080_ntc_temp = {
+.o_2070_ntc_temp = {
     {
     .dataOrig = (void*)&CO_data.ntc_temp.count,
     .subIndex = 0,
@@ -1294,7 +1279,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2090_do_relay = {
+.o_2080_do_relay = {
     {
     .dataOrig = (void*)&CO_data.do_relay.count,
     .subIndex = 0,
@@ -1320,7 +1305,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_20A0_do_ncv7608 = {
+.o_2090_do_ncv7608 = {
     {
     .dataOrig = (void*)&CO_data.do_ncv7608.count,
     .subIndex = 0,
@@ -1368,7 +1353,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     {
     .dataOrig = (void*)&digital_in.out_data,
     .subIndex = 3,
-    .attribute = ODA_SDO_RW | ODA_MB,
+    .attribute = ODA_SDO_RW | ODA_TPDO | ODA_MB,
     .dataLength = 4
     },
     {
@@ -2168,7 +2153,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     {
     .dataOrig = (void*)&digital_out.in_data,
     .subIndex = 3,
-    .attribute = ODA_SDO_RW | ODA_MB,
+    .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
     .dataLength = 4
     },
     {
@@ -3494,15 +3479,14 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1a03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
     {0x2000, 0x03, ODT_REC, &ODObjs.o_2000_conf, NULL},
     {0x2010, 0x06, ODT_REC, &ODObjs.o_2010_sys, NULL},
-    {0x2020, 0x04, ODT_REC, &ODObjs.o_2020_sys_tim, NULL},
-    {0x2030, 0x04, ODT_REC, &ODObjs.o_2030_ms_tim, NULL},
-    {0x2040, 0x04, ODT_REC, &ODObjs.o_2040_can_tim, NULL},
-    {0x2050, 0x03, ODT_REC, &ODObjs.o_2050_cli, NULL},
-    {0x2060, 0x04, ODT_REC, &ODObjs.o_2060_rgb_led, NULL},
-    {0x2070, 0x0e, ODT_REC, &ODObjs.o_2070_msdi, NULL},
-    {0x2080, 0x0f, ODT_REC, &ODObjs.o_2080_ntc_temp, NULL},
-    {0x2090, 0x04, ODT_REC, &ODObjs.o_2090_do_relay, NULL},
-    {0x20a0, 0x04, ODT_REC, &ODObjs.o_20A0_do_ncv7608, NULL},
+    {0x2020, 0x05, ODT_REC, &ODObjs.o_2020_sys_tim, NULL},
+    {0x2030, 0x05, ODT_REC, &ODObjs.o_2030_ms_tim, NULL},
+    {0x2040, 0x03, ODT_REC, &ODObjs.o_2040_cli, NULL},
+    {0x2050, 0x04, ODT_REC, &ODObjs.o_2050_rgb_led, NULL},
+    {0x2060, 0x0e, ODT_REC, &ODObjs.o_2060_msdi, NULL},
+    {0x2070, 0x0f, ODT_REC, &ODObjs.o_2070_ntc_temp, NULL},
+    {0x2080, 0x04, ODT_REC, &ODObjs.o_2080_do_relay, NULL},
+    {0x2090, 0x04, ODT_REC, &ODObjs.o_2090_do_ncv7608, NULL},
     {0x20b0, 0x85, ODT_REC, &ODObjs.o_20B0_digital_in, NULL},
     {0x20c0, 0x84, ODT_REC, &ODObjs.o_20C0_digital_out, NULL},
     {0x20d0, 0x23, ODT_REC, &ODObjs.o_20D0_mso, NULL},

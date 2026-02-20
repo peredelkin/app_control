@@ -48,7 +48,7 @@ struct _S_Digital_Input {
 	status_t status; //!< Слово состояния.
 	// Входные данные.
 	// Выходные данные.
-	reg_u32_t out_data; //!< Выход дискретных входов
+	reg_u32_t out_data; //!< Выход дискретных входов @{"id": 3, "tpdo": true}
 	// Параметры.
 	reg_u8_t p_invert[DIGITAL_INPUT_COUNT]; //!< Параметр инверсии бита выхода
 	reg_u8_t p_select[DIGITAL_INPUT_COUNT]; //!< Параметр выбора дискретного входа
