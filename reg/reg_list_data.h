@@ -381,6 +381,7 @@ REG(REG_ID_DIGITAL_IN_T_RESET28, &digital_in.p_t_reset[28], REG_TYPE_U8, REG_FLA
 REG(REG_ID_DIGITAL_IN_T_RESET29, &digital_in.p_t_reset[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса бита выхода */
 REG(REG_ID_DIGITAL_IN_T_RESET30, &digital_in.p_t_reset[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса бита выхода */
 REG(REG_ID_DIGITAL_IN_T_RESET31, &digital_in.p_t_reset[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса бита выхода */
+REG(REG_ID_DIGITAL_IN_T_MSDI_INVALID, &digital_in.p_t_msdi_invalid, REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки установки флага невалидности данных от MSDI */
 REG(REG_ID_DIGITAL_OUT_COUNT, &CO_data.digital_out.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_DIGITAL_OUT_CONTROL, &digital_out.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_DIGITAL_OUT_STATUS, &digital_out.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */

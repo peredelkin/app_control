@@ -377,6 +377,7 @@
 #define REG_ID_DIGITAL_IN_T_RESET29 0x20b081 /* Параметр задержки сброса бита выхода */
 #define REG_ID_DIGITAL_IN_T_RESET30 0x20b082 /* Параметр задержки сброса бита выхода */
 #define REG_ID_DIGITAL_IN_T_RESET31 0x20b083 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_MSDI_INVALID 0x20b084 /* Параметр задержки установки флага невалидности данных от MSDI */
 #define REG_ID_DIGITAL_OUT_COUNT 0x20c000 /* Number of sub entries count */
 #define REG_ID_DIGITAL_OUT_CONTROL 0x20c001 /* Слово управления. */
 #define REG_ID_DIGITAL_OUT_STATUS 0x20c002 /* Слово состояния. */

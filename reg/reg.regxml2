@@ -3302,7 +3302,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>131</default>
+                <default>132</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -3348,7 +3348,7 @@
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
-                <eflags>917504</eflags>
+                <eflags>393216</eflags>
                 <description>Выход дискретных входов</description>
             </RegVar>
             <RegVar subindex="4">
@@ -5143,6 +5143,20 @@
                 <eflags>393216</eflags>
                 <description>Параметр задержки сброса бита выхода</description>
             </RegVar>
+            <RegVar subindex="132">
+                <name>t_msdi_invalid</name>
+                <type>5</type>
+                <count>1</count>
+                <memory>digital_in.p_t_msdi_invalid</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>1</flags>
+                <eflags>393216</eflags>
+                <description>Параметр задержки установки флага невалидности данных от MSDI</description>
+            </RegVar>
         </RegVars>
     </RegEntry>
     <RegEntry index="8384">
@@ -5203,7 +5217,7 @@
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
-                <eflags>1441792</eflags>
+                <eflags>393216</eflags>
                 <description>Вход дискретных выходов</description>
             </RegVar>
             <RegVar subindex="4">

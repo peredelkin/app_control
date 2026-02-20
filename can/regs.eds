@@ -4,11 +4,11 @@ FileVersion=1
 FileRevision=0
 EDSVersion=4.0
 Description=
-CreationTime=3:20pm
-CreationDate=12-03-2025
+CreationTime=9:21am
+CreationDate=02-20-2026
 CreatedBy=
-ModificationTime=3:20pm
-ModificationDate=12-03-2025
+ModificationTime=9:21am
+ModificationDate=02-20-2026
 ModifiedBy=
 
 [DeviceInfo]
@@ -2631,14 +2631,14 @@ HighLimit=
 [20B0]
 ParameterName=digital_in
 ObjectType=0x9
-SubNumber=0x84
+SubNumber=0x85
 
 [20B0sub0]
 ParameterName=count
 ObjectType=0x7
 DataType=0x5
 AccessType=ro
-DefaultValue=131
+DefaultValue=132
 PDOMapping=0
 LowLimit=
 HighLimit=
@@ -2669,7 +2669,7 @@ ObjectType=0x7
 DataType=0x7
 AccessType=rw
 DefaultValue=
-PDOMapping=1
+PDOMapping=0
 LowLimit=
 HighLimit=
 
@@ -3953,6 +3953,16 @@ PDOMapping=0
 LowLimit=
 HighLimit=
 
+[20B0sub84]
+ParameterName=t_msdi_invalid
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=
+PDOMapping=0
+LowLimit=
+HighLimit=
+
 [20C0]
 ParameterName=digital_out
 ObjectType=0x9
@@ -3994,7 +4004,7 @@ ObjectType=0x7
 DataType=0x7
 AccessType=rw
 DefaultValue=
-PDOMapping=1
+PDOMapping=0
 LowLimit=
 HighLimit=
 
