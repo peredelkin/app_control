@@ -44,18 +44,19 @@ typedef enum {
 } CO_SDO_CLI_State;
 
 typedef enum {
-    CO_SDO_CLI_Error_NONE          = 0,
-    CO_SDO_CLI_Error_IO            = 1,
-    CO_SDO_CLI_Error_TIMEOUT       = 2,
-    CO_SDO_CLI_Error_CANCEL        = 3,
-    CO_SDO_CLI_Error_INVALID_SIZE  = 4,
-    CO_SDO_CLI_Error_INVALID_VALUE = 5,
-    CO_SDO_CLI_Error_ACCESS        = 6,
-    CO_SDO_CLI_Error_NOT_FOUND     = 7,
-    CO_SDO_CLI_Error_NO_DATA       = 8,
-    CO_SDO_CLI_Error_OUT_OF_MEM    = 9,
-    CO_SDO_CLI_Error_GENERAL       = 10,
-    CO_SDO_CLI_Error_UNKNOWN       = 11
+    CO_SDO_CLI_Error_NONE			= 0,
+    CO_SDO_CLI_Error_IO				= 1,
+    CO_SDO_CLI_Error_TIMEOUT		= 2,
+    CO_SDO_CLI_Error_CANCEL			= 3,
+    CO_SDO_CLI_Error_INVALID_SIZE	= 4,
+    CO_SDO_CLI_Error_INVALID_VALUE	= 5,
+    CO_SDO_CLI_Error_ACCESS			= 6,
+    CO_SDO_CLI_Error_NOT_FOUND		= 7,
+    CO_SDO_CLI_Error_NO_DATA		= 8,
+    CO_SDO_CLI_Error_OUT_OF_MEM		= 9,
+    CO_SDO_CLI_Error_GENERAL		= 10,
+	CO_SDO_CLI_Error_DEV_INCOMPAT	= 11,
+    CO_SDO_CLI_Error_UNKNOWN		= 12
 } CO_SDO_CLI_Error;
 
 typedef struct {

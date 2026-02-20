@@ -209,7 +209,7 @@ CO_SDO_CLI_Error CO_SDO_CLI_sdoCommError(CO_SDO_abortCode_t code) {
 		return CO_SDO_CLI_Error_INVALID_VALUE;
 	case CO_SDO_AB_PRAM_INCOMPAT:
 	case CO_SDO_AB_DEVICE_INCOMPAT:
-		return CO_SDO_CLI_Error_GENERAL;
+		return CO_SDO_CLI_Error_DEV_INCOMPAT;
 	case CO_SDO_AB_HW:
 		return CO_SDO_CLI_Error_IO;
 	case CO_SDO_AB_TYPE_MISMATCH:
@@ -412,9 +412,6 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 				CO_SDO_CLI_setError(head, finish_err);
 				return true;
 			} else {
-				if (sdo_ret == CO_SDO_RT_blockUploadInProgress) {
-					break;
-				}
 #if defined(SDO_COMM_READ_ERROR_ON_SIZE_MISMATCH) && SDO_COMM_READ_ERROR_ON_SIZE_MISMATCH == 1
                 if(size_to_ret > 0){
                     if(size_to_ret != CO_SDO_CLI_transferSize(head)){
@@ -424,9 +421,13 @@ bool CO_SDO_CLI_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
                     }
                 }
 #endif
-				if (size_ret == 0) {
+
+				// Если в данный момент нельзя читать данные из буфера - подождём.
+				if (sdo_ret == CO_SDO_RT_blockUploadInProgress) {
 					break;
 				}
+
+				// Провалимся в чтение данных из буфера.
 			}
 
 			//no break
