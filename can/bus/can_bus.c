@@ -204,8 +204,6 @@ err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask)
 
 	can_master_filter_set_active(can_master, filter_bank);
 
-	printf("CAN filter set: index: %d, ident: %x mask: %x\n", filter, (unsigned int)id, (unsigned int)mask);
-
 	return E_NO_ERROR;
 }
 
@@ -222,8 +220,6 @@ err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count) {
 	}
 
 	can_master_filter_active_mode(can_master);
-
-	printf("CAN filter alocated: %d\n", count);
 
 	return err;
 }

@@ -72,7 +72,6 @@ err_t can_bus_1_rx_callback(void* bus, void* head) {
 
 	//если индекс принадлежит мосту
 	if(can_bus_1_bridge_index == frame->index) {
-		printf("bridge 1:\n");
 		can_bus_write(&can_bus_2, frame->id, frame->dlc, frame->data);
 	} else {
 		if((can1_co == NULL) || (can1_co->CANmodule == NULL) || (can1_co->CANmodule->rxArray) == NULL) return E_NULL_POINTER;
@@ -102,7 +101,6 @@ err_t can_bus_2_rx_callback(void* bus, void* head) {
 
 	//если индекс принадлежит мосту
 	if(can_bus_2_bridge_index == frame->index) {
-		printf("bridge 2:\n");
 		can_bus_write(&can_bus_1, frame->id, frame->dlc, frame->data);
 	} else {
 		if((can2_co == NULL) || (can2_co->CANmodule == NULL) || (can2_co->CANmodule->rxArray) == NULL) return E_NULL_POINTER;
@@ -434,8 +432,6 @@ void can_canopen_init(void) {
 			err_t can1_bridge_err = can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1_bridge_index, can_1_to_2_id, can_1_to_2_mask);
 			if(can1_bridge_err != E_NO_ERROR) {
 				printf("CAN bridge alloc err: %d\n", (int) can1_bridge_err);
-			} else {
-				printf("CAN filter allocated: index %d\n", can_bus_1_bridge_index);
 			}
 #endif
 			//Настройка клиента
@@ -466,8 +462,6 @@ void can_canopen_init(void) {
 			err_t can2_bridge_err = can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2_bridge_index, can_2_to_1_id, can_2_to_1_mask);
 			if(can2_bridge_err != E_NO_ERROR) {
 				printf("CAN bridge alloc err: %d\n", (int) can2_bridge_err);
-			} else {
-				printf("CAN filter allocated: index %d\n", can_bus_2_bridge_index);
 			}
 #endif
 		}
