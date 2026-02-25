@@ -8,6 +8,11 @@
 #include "can_master_filter.h"
 #include "can_reg.h"
 
+bool can_master_filter_is_init(CAN_TypeDef *CAN) {
+	if(CAN->FMR & CAN_FMR_FINIT) return 1;
+	return 0;
+}
+
 void can_master_filter_init_mode(CAN_TypeDef *CAN) {
 	CAN->FMR |= CAN_FMR_FINIT;
 }

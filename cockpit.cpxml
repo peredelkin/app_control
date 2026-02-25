@@ -84,20 +84,6 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>32</indicatorValue>
     </SDOValueIndicator>
-    <SDOValueIndicator row="7" col="1" rowSpan="1" colSpan="1" nodeId="2" index="8464" subIndex="2" type="3">
-        <text>Settings: Status WRITE_DONE</text>
-        <backColor>4293388263</backColor>
-        <shadowColor>4278190080</shadowColor>
-        <indicatorColor>4290574884</indicatorColor>
-        <glareColor>4291282369</glareColor>
-        <textColor>4278190080</textColor>
-        <borderWidth>11</borderWidth>
-        <fontPointSize>10</fontPointSize>
-        <fontCapitalization>0</fontCapitalization>
-        <fontBold>1</fontBold>
-        <indicatorCompare>6</indicatorCompare>
-        <indicatorValue>64</indicatorValue>
-    </SDOValueIndicator>
     <SDOValueButton row="8" col="1" rowSpan="1" colSpan="1" nodeId="2" index="8464" subIndex="1" type="3">
         <text>Settings: Command START_READ</text>
         <buttonColor>4287399291</buttonColor>
@@ -873,5 +859,47 @@
         <fontBold>1</fontBold>
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>128</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="7" col="1" rowSpan="1" colSpan="1" nodeId="2" index="8464" subIndex="2" type="3">
+        <text>Settings: Status WRITE_DONE</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>64</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="10" col="1" rowSpan="1" colSpan="1" nodeId="2" index="8400" subIndex="2" type="3">
+        <text>MSO: Status READY</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>1</indicatorValue>
+    </SDOValueIndicator>
+    <SDOValueIndicator row="11" col="1" rowSpan="1" colSpan="1" nodeId="2" index="8400" subIndex="2" type="3">
+        <text>MSO: Status VALID</text>
+        <backColor>4293388263</backColor>
+        <shadowColor>4278190080</shadowColor>
+        <indicatorColor>4290574884</indicatorColor>
+        <glareColor>4291282369</glareColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>11</borderWidth>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>6</indicatorCompare>
+        <indicatorValue>2</indicatorValue>
     </SDOValueIndicator>
 </cockpit>

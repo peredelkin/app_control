@@ -6,9 +6,11 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 
 #include "can_bus.h"
 #include "can_master_filter.h"
+
 
 //#define CAN_BUS_FILTER_DEBUG
 
@@ -52,6 +54,15 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	can_filter_32b_t next_32b_mask;
 
 	can_filter_16b_t new_16b[2];
+
+	//находятся ли фильтры в режиме инициализации
+	bool init_mode = can_master_filter_is_init(can_master);
+
+	//если фильтры активны
+	if(init_mode == false) {
+		//переведем в режим инициализации
+		can_master_filter_init_mode(can_master);
+	}
 
 	can_master_filter_is_active(can_master, filter_bank, &filter_was_active);
 
@@ -118,6 +129,12 @@ err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint3
 	}
 
 	can_master_filter_set_active(can_master, filter_bank);
+
+	//если фильтры были активны
+	if(init_mode == false) {
+		//вернем в активный режим
+		can_master_filter_active_mode(can_master);
+	}
 
 	/* Last CANopen Index for CAN bridge */
 	bus->last_index = filter;
@@ -187,6 +204,8 @@ err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask)
 
 	can_master_filter_set_active(can_master, filter_bank);
 
+	printf("CAN filter set: index: %d, ident: %x mask: %x\n", filter, (unsigned int)id, (unsigned int)mask);
+
 	return E_NO_ERROR;
 }
 
@@ -203,6 +222,8 @@ err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count) {
 	}
 
 	can_master_filter_active_mode(can_master);
+
+	printf("CAN filter alocated: %d\n", count);
 
 	return err;
 }

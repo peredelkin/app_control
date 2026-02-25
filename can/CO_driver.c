@@ -7,6 +7,8 @@
 
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
+
 #include "301/CO_driver.h"
 #include "can/bus/can_bus.h"
 
@@ -218,6 +220,8 @@ CO_ReturnError_t CO_CANrxBufferInit(CO_CANmodule_t *CANmodule, uint16_t index, u
 	if (CANrx_callback == NULL) return CO_ERROR_ILLEGAL_ARGUMENT;
 
 	err_t err = E_NO_ERROR;
+
+	printf("CAN rx buffer init: index: %u ident: %x mask: %x\n", index, ident, mask);
 
 	/* CAN identifier and CAN mask, bit aligned with CAN module. */
 	uint32_t can_id = CAN_BUS_MAKE_ID(ident); //(uint32_t) (CAN_FIR_STID & (ident << CAN_FIR_STID_SHIFT));

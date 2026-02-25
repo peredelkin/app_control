@@ -72,6 +72,7 @@ err_t can_bus_1_rx_callback(void* bus, void* head) {
 
 	//если индекс принадлежит мосту
 	if(can_bus_1_bridge_index == frame->index) {
+		printf("bridge 1:\n");
 		can_bus_write(&can_bus_2, frame->id, frame->dlc, frame->data);
 	} else {
 		if((can1_co == NULL) || (can1_co->CANmodule == NULL) || (can1_co->CANmodule->rxArray) == NULL) return E_NULL_POINTER;
@@ -101,6 +102,7 @@ err_t can_bus_2_rx_callback(void* bus, void* head) {
 
 	//если индекс принадлежит мосту
 	if(can_bus_2_bridge_index == frame->index) {
+		printf("bridge 2:\n");
 		can_bus_write(&can_bus_1, frame->id, frame->dlc, frame->data);
 	} else {
 		if((can2_co == NULL) || (can2_co->CANmodule == NULL) || (can2_co->CANmodule->rxArray) == NULL) return E_NULL_POINTER;
@@ -427,8 +429,14 @@ void can_canopen_init(void) {
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
 			uint32_t can_1_to_2_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_SERVER_TO_CLIENT); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_1_TO_2 << CAN_FIR_STID_SHIFT));
 			uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
-			can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1.last_index + 1, can_1_to_2_id, can_1_to_2_mask);
-			can_bus_1_bridge_index = can_bus_1.last_index;
+			can_bus_1_bridge_index = can_bus_1.last_index + 1;
+			//выделим и настроим филттр
+			err_t can1_bridge_err = can_bus_filter_16b_bank_set(&can_bus_1, can_bus_1_bridge_index, can_1_to_2_id, can_1_to_2_mask);
+			if(can1_bridge_err != E_NO_ERROR) {
+				printf("CAN bridge alloc err: %d\n", (int) can1_bridge_err);
+			} else {
+				printf("CAN filter allocated: index %d\n", can_bus_1_bridge_index);
+			}
 #endif
 			//Настройка клиента
 			can1_sdo_cli_init();
@@ -453,8 +461,14 @@ void can_canopen_init(void) {
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
 			uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_CLIENT_TO_SERVER); //(uint32_t) (CAN_FIR_STID & (CAN_COB_ID_2_TO_1 << CAN_FIR_STID_SHIFT));
 			uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF); //(uint32_t) (CAN_FIR_STID & (0x7FF << CAN_FIR_STID_SHIFT));
-			can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2.last_index + 1, can_2_to_1_id, can_2_to_1_mask);
-			can_bus_2_bridge_index = can_bus_2.last_index;
+			can_bus_2_bridge_index = can_bus_2.last_index + 1;
+			//выделим и настроим фильтр
+			err_t can2_bridge_err = can_bus_filter_16b_bank_set(&can_bus_2, can_bus_2_bridge_index, can_2_to_1_id, can_2_to_1_mask);
+			if(can2_bridge_err != E_NO_ERROR) {
+				printf("CAN bridge alloc err: %d\n", (int) can2_bridge_err);
+			} else {
+				printf("CAN filter allocated: index %d\n", can_bus_2_bridge_index);
+			}
 #endif
 		}
 	}

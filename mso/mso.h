@@ -8,7 +8,7 @@
 typedef iql_t mso_data_t;
 
 #define MSO_MAX_CHANNEL_COUNT 32
-#define MSO_DATA_BLOCK_COUNT 128
+#define MSO_DATA_BLOCK_COUNT 32
 #define MSO_DATA_COUNT (MSO_MAX_CHANNEL_COUNT * MSO_DATA_BLOCK_COUNT)
 #define MSO_DATA_SIZE (MSO_DATA_COUNT * sizeof(mso_data_t))
 
@@ -16,11 +16,20 @@ typedef iql_t mso_data_t;
 //! Перечисление возможных бит управления.
 enum _E_Mso_Control {
     MSO_CONTROL_NONE = CONTROL_NONE,
+	MSO_CONTROL_RESET = CONTROL_RESET,
+	MSO_CONTROL_ENABLE = CONTROL_ENABLE,
+	MSO_CONTROL_START = CONTROL_START,
+	MSO_CONTROL_STOP = CONTROL_STOP,
 };
 
 //! Перечисление возможных бит статуса.
 enum _E_Mso_Status {
     MSO_STATUS_NONE = STATUS_NONE,
+	MSO_STATUS_READY = STATUS_READY,
+	MSO_STATUS_VALID = STATUS_VALID,
+	MSO_STATUS_RUN = STATUS_RUN,
+	MSO_STATUS_ERROR = STATUS_ERROR,
+	MSO_STATUS_WARNING = STATUS_WARNING,
 };
 
 typedef struct {
