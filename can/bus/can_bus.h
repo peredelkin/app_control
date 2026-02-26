@@ -98,7 +98,9 @@ typedef struct {
 	uint32_t mask;
 } can_filter_t;
 
-typedef struct {
+typedef struct _can_bus_t can_bus_t;
+
+struct _can_bus_t {
 	CAN_TypeDef *can_ptr[CAN_BUS_COUNT];
 	can_n_t can_n;
 	can_rx_queue_t queue_rx;
@@ -109,8 +111,11 @@ typedef struct {
 	uint32_t rx_error_counter;
 	uint32_t last_error_code;
 	int last_index;
-	err_t (*rx_callback)(void* bus, void* head);
-} can_bus_t;
+	can_bus_t* bridge_bus;
+	int bridge_index;
+	void* co;
+	err_t (*rx_callback)(can_bus_t* bus);
+};
 
 typedef union {
 	uint32_t all;
@@ -143,6 +148,8 @@ err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count);
 err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
 
 extern err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate);
+
+extern can_rx_frame_queue_t* can_bus_rx_queue_head(can_bus_t *bus);
 
 extern bool can_bus_rx_process(can_bus_t* bus);
 extern void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size);

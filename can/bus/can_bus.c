@@ -316,15 +316,12 @@ bool can_bus_rx_process(can_bus_t* bus) {
 	//если нечего принимать
 	if (can_bus_rx_queue_empty(bus)) return false;
 
-	can_rx_frame_queue_t* head = NULL;
 	err_t rx_err = E_NO_ERROR;
 
 	do {
-		//Получим указатель
-		head = can_bus_rx_queue_head(bus);
 		//если колбек задан
 		if(bus->rx_callback != NULL) {
-			rx_err = bus->rx_callback(bus, head);
+			rx_err = bus->rx_callback(bus);
 		} else {
 			rx_err = E_NULL_POINTER;
 		}
