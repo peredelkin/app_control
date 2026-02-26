@@ -175,7 +175,7 @@ void can_setup(can_bus_t* bus) {
 
 	can_MCR_TXFP_set(can, true);		//Priority driven by the request order (chronologically)
 	can_MCR_RFLM_set(can, true);		//Receive FIFO locked against overrun.
-	can_MCR_NART_set(can, false);		//The CAN hardware will automatically retransmit the message
+	can_MCR_NART_set(can, true);		//The CAN hardware will automatically retransmit the message
 	can_MCR_AWUM_set(can,false);		//The Sleep mode is left on software request
 	can_MCR_ABOM_set(can, true);		//The Bus-Off state is left automatically by hardware
 	can_MCR_TTCM_set(can,false);		//Time Triggered Communication mode disabled
