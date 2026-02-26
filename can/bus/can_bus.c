@@ -542,35 +542,40 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	CAN_TypeDef *can_ptr = can_bus->can_ptr[can_bus->can_n];
 
+	//получим статус FIFO на входе в прерывание
 	uint32_t RFR = can_RFR_read(can_ptr, fifo);
 
 	uint8_t index = 0;
 
-	//FMPIE0: FIFO message pending interrupt enabled
-	if (can_IER_FMPIE_read(can_ptr, fifo)) {
-		//FIFO 0 message pending
-		if (can_RFR_FMP_read(RFR)) {
-			//Если можно добавить в очередь
-			if(can_bus_rx_queue_can_enqueue(can_bus)) {
-				//Получим указатель на элемент в хвосте очереди и очистим его
-				can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail_reset(can_bus);
-				//заполним поля очереди
-				if(E_NO_ERROR == can_rx_mailbox_read(can_ptr, fifo,
-						&tail->id,
-						&tail->dlc,
-						&index,
-						tail->data)) {
-					//вычислим реальный индекс и запишем
-					tail->index = can_bus->index_array[fifo][index]; //TODO: перенести вычисление индекса в функцию can_rx_mailbox_read
-					//Если успешно добавили в очередь
-					if(can_bus_rx_queue_enqueue(can_bus)) {
-						//Освободим фифо контроллера
-						can_rx_mailbox_release(can_ptr, fifo);
-					}
+	//если есть сообщения в мейлбоксе
+	while(can_RFR_FMP_read(RFR)) {
+		//Если можно добавить в очередь
+		if(can_bus_rx_queue_can_enqueue(can_bus)) {
+			//Получим указатель на элемент в хвосте очереди и очистим его
+			can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail_reset(can_bus);
+			//заполним поля очереди
+			if(E_NO_ERROR == can_rx_mailbox_read(can_ptr, fifo,
+					&tail->id,
+					&tail->dlc,
+					&index,
+					tail->data)) {
+				//вычислим реальный индекс и запишем
+				tail->index = can_bus->index_array[fifo][index]; //TODO: перенести вычисление индекса в функцию can_rx_mailbox_read
+				//Если успешно добавили в очередь
+				if(can_bus_rx_queue_enqueue(can_bus)) {
+					//Освободим фифо контроллера
+					can_rx_mailbox_release(can_ptr, fifo);
 				}
 			}
+		} else {
+			//TODO: если нельзя добавить в очередь
+			break;
 		}
+
+		//обновим статус FIFO
+		RFR = can_RFR_read(can_ptr, fifo);
 	}
+
 
 	//FULL: FIFO full
 	if (can_RFR_FULL_read(RFR)) {
@@ -585,11 +590,6 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 		default:
 			break;
-		}
-
-		//FFIE0: FIFO full interrupt enabled
-		if (can_IER_FFIE_read(can_ptr, fifo)) {
-
 		}
 
 		can_RFR_FULL_clear(can_ptr, fifo);
@@ -608,11 +608,6 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 		default:
 			break;
-		}
-
-		//FOVIE0: FIFO overrun interrupt enabled
-		if (can_IER_FOVIE_read(can_ptr, fifo)) {
-
 		}
 
 		can_RFR_FOVR_clear(can_ptr, fifo);
