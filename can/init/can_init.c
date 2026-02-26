@@ -33,7 +33,7 @@ CO_SDO_CLI_Queue can1_cli_Queue[16];
 
 CO_SDO_CLI_Driver_t can1_cli_driver;
 
-#define CAN_BUS_QUEUE_SIZE 56
+#define CAN_BUS_QUEUE_SIZE 16
 
 can_rx_frame_queue_t can_bus_1_rx_queue[CAN_BUS_QUEUE_SIZE];
 can_tx_frame_queue_t can_bus_1_tx_queue[CAN_BUS_QUEUE_SIZE];
@@ -70,19 +70,19 @@ uint32_t can_1_to_2_mask = CAN_BUS_MAKE_MASK(0x7FF);
 uint32_t can_2_to_1_id = CAN_BUS_MAKE_ID(CAN_BRIDGE_ID_CLIENT_TO_SERVER);
 uint32_t can_2_to_1_mask = CAN_BUS_MAKE_MASK(0x7FF);
 
-err_t can_bus_rx_handler_callback(can_bus_t* bus) {
+err_t can_bus_rx_handler_callback(can_bus_t* bus, can_rx_frame_queue_t* head) {
 	//если шина не задана
 	if(bus == NULL) return E_NULL_POINTER;
 	//если мост не задан
 	if(bus->bridge_bus == NULL) return E_NULL_POINTER;
 	//получим указатель на CANopen
 	CO_t* co = (CO_t*)bus->co;
-	//получим указатель на голову очереди
-	can_rx_frame_queue_t* head = can_bus_rx_queue_head(bus);
 	//если индекс принадлежит мосту
 	if(bus->bridge_index == head->index) {
 		//передадим в мост
-		can_bus_write(bus->bridge_bus, head->id, head->dlc, head->data);
+		if(can_bus_write(bus->bridge_bus, head->id, head->dlc, head->data) == false) {
+			return E_CANCELED;
+		}
 	} else {
 		//иначе передадим в CANopen
 		if((co == NULL) || (co->CANmodule == NULL) || (co->CANmodule->rxArray) == NULL) return E_NULL_POINTER;
@@ -175,7 +175,7 @@ void can_setup(can_bus_t* bus) {
 
 	can_MCR_TXFP_set(can, true);		//Priority driven by the request order (chronologically)
 	can_MCR_RFLM_set(can, true);		//Receive FIFO locked against overrun.
-	can_MCR_NART_set(can,false);		//The CAN hardware will automatically retransmit the message
+	can_MCR_NART_set(can, false);		//The CAN hardware will automatically retransmit the message
 	can_MCR_AWUM_set(can,false);		//The Sleep mode is left on software request
 	can_MCR_ABOM_set(can, true);		//The Bus-Off state is left automatically by hardware
 	can_MCR_TTCM_set(can,false);		//Time Triggered Communication mode disabled
@@ -318,10 +318,6 @@ void can1_sdo_cli_init(void) {
 	can1_cli_driver.queue_size = 16;
 	can1_cli_driver.queue_head = 0;
 	can1_cli_driver.queue_tail = 0;
-}
-
-void can1_sdo_srv_init(void) {
-	if(can1_co == NULL) return;
 }
 
 void can1_init(void) {

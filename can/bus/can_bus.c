@@ -272,19 +272,30 @@ err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate) {
 	return error;
 }
 
-//RX
+//!RX
+void can_bus_rx_queue_reset(can_rx_frame_queue_t* ptr) {
+	ptr->id = 0;
+	ptr->dlc = 0;
+	ptr->index = 0;
+	memset(ptr->data, 0, sizeof(ptr->data));
+}
+
+//очередь пуста, если голова и хвост совпадают
 bool can_bus_rx_queue_empty(can_bus_t *bus) {
 	return (bus->queue_rx.head == bus->queue_rx.tail);
 }
 
+//очередь не пуста, если голова и хвост не совпадают
 bool can_bus_rx_queue_notEmpty(can_bus_t *bus) {
 	return (bus->queue_rx.head != bus->queue_rx.tail);
 }
 
+//получить указатель на элемент в голове очереди
 can_rx_frame_queue_t* can_bus_rx_queue_head(can_bus_t *bus) {
 	return &(bus->queue_rx.queue[bus->queue_rx.head]);
 }
 
+//удалить элемент в голове очереди, если очередь не пуста
 bool can_bus_rx_queue_dequeue(can_bus_t *bus) {
 	if (bus->queue_rx.head == bus->queue_rx.tail) return false; //empty
 	size_t new_head = bus->queue_rx.head + 1;
@@ -293,10 +304,25 @@ bool can_bus_rx_queue_dequeue(can_bus_t *bus) {
 	return true;
 }
 
+//удалить элемент в голове очереди и очистить его, если очередь не пуста
+bool can_bus_rx_queue_reset_dequeue(can_rx_frame_queue_t* head, can_bus_t* bus) {
+	can_bus_rx_queue_reset(head);
+	return can_bus_rx_queue_dequeue(bus);
+}
+
+//получить указатель на элемент в хвосте очереди
 can_rx_frame_queue_t* can_bus_rx_queue_tail(can_bus_t *bus) {
 	return &(bus->queue_rx.queue[bus->queue_rx.tail]);
 }
 
+//получить указатель на элемент в хвосте очереди и очистить его
+can_rx_frame_queue_t* can_bus_rx_queue_tail_reset(can_bus_t *bus) {
+	can_rx_frame_queue_t* tail = can_bus_rx_queue_tail(bus);
+	can_bus_rx_queue_reset(tail);
+	return tail;
+}
+
+//можно ли добавить элемент в очередь, если новый хвост не совпадает с головой
 bool can_bus_rx_queue_can_enqueue(can_bus_t *bus) {
 	size_t new_tail = bus->queue_rx.tail + 1;
 	if (new_tail >= bus->queue_rx.size) new_tail = 0;
@@ -304,36 +330,13 @@ bool can_bus_rx_queue_can_enqueue(can_bus_t *bus) {
 	return true;
 }
 
+//добавить элемент в очередь, если новый хвост не совпадает с головой
 bool can_bus_rx_queue_enqueue(can_bus_t *bus) {
 	size_t new_tail = bus->queue_rx.tail + 1;
 	if (new_tail >= bus->queue_rx.size) new_tail = 0;
 	if (new_tail == bus->queue_rx.head) return false; //ovf
 	bus->queue_rx.tail = new_tail;
 	return true;
-}
-
-bool can_bus_rx_process(can_bus_t* bus) {
-	//если нечего принимать
-	if (can_bus_rx_queue_empty(bus)) return false;
-
-	err_t rx_err = E_NO_ERROR;
-
-	do {
-		//если колбек задан
-		if(bus->rx_callback != NULL) {
-			rx_err = bus->rx_callback(bus);
-		} else {
-			rx_err = E_NULL_POINTER;
-		}
-
-		if(rx_err == E_NO_ERROR) {
-			can_bus_rx_queue_dequeue(bus);
-		}
-	} while ((rx_err == E_NO_ERROR) && can_bus_rx_queue_notEmpty(bus));
-
-	if((rx_err == E_NO_ERROR) || (rx_err == E_BUSY)) return true;
-
-	return false;
 }
 
 void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size) {
@@ -343,19 +346,29 @@ void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t q
 	bus->queue_rx.tail = 0;
 }
 
-//TX
+//!TX
+void can_bus_tx_queue_reset(can_tx_frame_queue_t* ptr) {
+	ptr->id = 0;
+	ptr->dlc = 0;
+	memset(ptr->data, 0, sizeof(ptr->data));
+}
+
+//очередь пуста, если голова и хвост совпадают
 bool can_bus_tx_queue_empty(can_bus_t *bus) {
 	return (bus->queue_tx.head == bus->queue_tx.tail);
 }
 
+//очередь не пуста, если голова и хвост не совпадают
 bool can_bus_tx_queue_notEmpty(can_bus_t *bus) {
 	return (bus->queue_tx.head != bus->queue_tx.tail);
 }
 
+//получить указатель на элемент в голове очереди
 can_tx_frame_queue_t* can_bus_tx_queue_head(can_bus_t *bus) {
 	return &(bus->queue_tx.queue[bus->queue_tx.head]);
 }
 
+//удалить элемент в голове очереди, если очередь не пуста
 bool can_bus_tx_queue_dequeue(can_bus_t *bus) {
 	if (bus->queue_tx.head == bus->queue_tx.tail) return false; //empty
 	size_t new_head = bus->queue_tx.head + 1;
@@ -364,10 +377,25 @@ bool can_bus_tx_queue_dequeue(can_bus_t *bus) {
 	return true;
 }
 
+//удалить элемент в голове очереди и очистить его, если очередь не пуста
+bool can_bus_tx_queue_reset_dequeue(can_tx_frame_queue_t* head, can_bus_t *bus) {
+	can_bus_tx_queue_reset(head);
+	return can_bus_tx_queue_dequeue(bus);
+}
+
+//получить указатель на элемент в хвосте очереди
 can_tx_frame_queue_t* can_bus_tx_queue_tail(can_bus_t *bus) {
 	return &(bus->queue_tx.queue[bus->queue_tx.tail]);
 }
 
+//получить указатель на элемент в хвосте очереди и очистить его
+can_tx_frame_queue_t* can_bus_tx_queue_tail_reset(can_bus_t *bus) {
+	can_tx_frame_queue_t* tail = can_bus_tx_queue_tail(bus);
+	can_bus_tx_queue_reset(tail);
+	return tail;
+}
+
+//можно ли добавить элемент в очередь, если новый хвост не совпадает с головой
 bool can_bus_tx_queue_can_enqueue(can_bus_t *bus) {
 	size_t new_tail = bus->queue_tx.tail + 1;
 	if (new_tail >= bus->queue_tx.size) new_tail = 0;
@@ -375,36 +403,13 @@ bool can_bus_tx_queue_can_enqueue(can_bus_t *bus) {
 	return true;
 }
 
+//добавить элемент в очередь, если новый хвост не совпадает с головой
 bool can_bus_tx_queue_enqueue(can_bus_t *bus) {
 	size_t new_tail = bus->queue_tx.tail + 1;
 	if (new_tail >= bus->queue_tx.size) new_tail = 0;
 	if (new_tail == bus->queue_tx.head) return false; //ovf
 	bus->queue_tx.tail = new_tail;
 	return true;
-}
-
-bool can_bus_tx_process(can_bus_t* bus) {
-	//если нечего передавать
-	if (can_bus_tx_queue_empty(bus)) return false;
-
-	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
-
-	can_tx_frame_queue_t* head = NULL;
-	err_t tx_err = E_NO_ERROR;
-
-	do {
-		//Получим указатель
-		head = can_bus_tx_queue_head(bus);
-		//заполним регистры
-		tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
-		if(tx_err == E_NO_ERROR) {
-			can_bus_tx_queue_dequeue(bus);
-		}
-	} while ((tx_err == E_NO_ERROR) && can_bus_tx_queue_notEmpty(bus));
-
-	if((tx_err == E_NO_ERROR) || (tx_err == E_BUSY)) return true;
-
-	return false;
 }
 
 void can_bus_tx_queue_init(can_bus_t *bus, can_tx_frame_queue_t* queue, size_t queue_size) {
@@ -414,18 +419,80 @@ void can_bus_tx_queue_init(can_bus_t *bus, can_tx_frame_queue_t* queue, size_t q
 	bus->queue_tx.tail = 0;
 }
 
+bool can_bus_rx_process(can_bus_t* bus) {
+	//если нечего принимать
+	if (can_bus_rx_queue_empty(bus)) return false;
+
+	err_t rx_err = E_NO_ERROR;
+
+	can_rx_frame_queue_t* head = NULL;
+
+	do {
+		//получим указатель на голову очереди
+		head = can_bus_rx_queue_head(bus);
+		//если колбек задан
+		if(bus->rx_callback != NULL) {
+			rx_err = bus->rx_callback(bus, head);
+		} else {
+			rx_err = E_NULL_POINTER;
+		}
+
+		if(rx_err == E_NO_ERROR) {
+			//очистим данные в очереди и удалим элемент
+			can_bus_rx_queue_reset_dequeue(head, bus);
+		}
+	} while ((rx_err == E_NO_ERROR) && can_bus_rx_queue_notEmpty(bus));
+
+	if((rx_err == E_NO_ERROR) || (rx_err == E_BUSY)) return true;
+
+	return false;
+}
+
+bool can_bus_tx_process(can_bus_t* bus) {
+	//если нечего передавать
+	if (can_bus_tx_queue_empty(bus)) return false;
+
+	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
+
+	err_t tx_err = E_NO_ERROR;
+
+	can_tx_frame_queue_t* head = NULL;
+
+	do {
+		//Получим указатель
+		head = can_bus_tx_queue_head(bus);
+		//заполним регистры
+		tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
+
+		if(tx_err == E_NO_ERROR) {
+			//очистим данные в очереди и удалим элемент
+			can_bus_tx_queue_reset_dequeue(head, bus);
+		}
+	} while ((tx_err == E_NO_ERROR) && can_bus_tx_queue_notEmpty(bus));
+
+	if((tx_err == E_NO_ERROR) || (tx_err == E_BUSY)) return true;
+
+	return false;
+}
+
+/*
+ * can_bus_write - добавить фрейм в очередь на передачу
+ * @bus: указатель на структуру шины
+ * @id: идентификатор фрейма
+ * @dlc: длина данных (0-8)
+ * @data: указатель на данные
+ *
+ * Возвращает true, если фрейм успешно добавлен в очередь, иначе false (очередь полна).
+ */
 bool can_bus_write(can_bus_t* bus, uint32_t id, uint8_t dlc, uint8_t* data) {
 	//можно ли добавить в очередь
 	if (can_bus_tx_queue_can_enqueue(bus) == false) return false;
-
-	//получим указатель
-	can_tx_frame_queue_t* tail = can_bus_tx_queue_tail(bus);
-
+	//получим указатель на элемент в хвосте очереди и очистим его
+	can_tx_frame_queue_t* tail = can_bus_tx_queue_tail_reset(bus);
 	//заполним данные
 	tail->id = id;
 	tail->dlc = dlc;
 	memcpy(tail->data, data, dlc); //copy DATA
-
 	//добавим в очередь
 	can_bus_tx_queue_enqueue(bus);
 
@@ -437,7 +504,6 @@ void CAN_TSR_RQCP_Handler(can_bus_t *can_bus, uint32_t TSR) {
 
 	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
 
-	can_tx_frame_queue_t *head = NULL;
 	err_t tx_err = E_NO_ERROR;
 
 	//проверим все 3 мейлбокса
@@ -449,11 +515,12 @@ void CAN_TSR_RQCP_Handler(can_bus_t *can_bus, uint32_t TSR) {
 			//если есть что передать
 			if (can_bus_tx_queue_notEmpty(can_bus)) {
 				//Получим указатель
-				head = can_bus_tx_queue_head(can_bus);
+				can_tx_frame_queue_t *head = can_bus_tx_queue_head(can_bus);
 				//заполним регистры
 				tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
 				if (tx_err == E_NO_ERROR) {
-					can_bus_tx_queue_dequeue(can_bus);
+					//очистим данные в очереди и удалим элемент
+					can_bus_tx_queue_reset_dequeue(head, can_bus);
 				}
 			}
 		}
@@ -477,7 +544,7 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	uint32_t RFR = can_RFR_read(can_ptr, fifo);
 
-	uint8_t index;
+	uint8_t index = 0;
 
 	//FMPIE0: FIFO message pending interrupt enabled
 	if (can_IER_FMPIE_read(can_ptr, fifo)) {
@@ -485,8 +552,8 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 		if (can_RFR_FMP_read(RFR)) {
 			//Если можно добавить в очередь
 			if(can_bus_rx_queue_can_enqueue(can_bus)) {
-				//Получим указатель
-				can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail(can_bus);
+				//Получим указатель на элемент в хвосте очереди и очистим его
+				can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail_reset(can_bus);
 				//заполним поля очереди
 				if(E_NO_ERROR == can_rx_mailbox_read(can_ptr, fifo,
 						&tail->id,

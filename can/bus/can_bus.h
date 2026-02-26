@@ -114,7 +114,7 @@ struct _can_bus_t {
 	can_bus_t* bridge_bus;
 	int bridge_index;
 	void* co;
-	err_t (*rx_callback)(can_bus_t* bus);
+	err_t (*rx_callback)(can_bus_t* bus, can_rx_frame_queue_t* head);
 };
 
 typedef union {
