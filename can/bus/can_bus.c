@@ -538,6 +538,36 @@ void CAN_TX_IRQHandler(can_bus_t *can_bus) {
 	}
 }
 
+void CAN_RX_FIFO_Full_Error_Set(can_bus_t *can_bus, int fifo) {
+	switch (fifo) {
+	case CAN_RX_MAILBOX_0:
+		can_bus->error |= CAN_ERROR_RX0_FULL;
+		break;
+
+	case CAN_RX_MAILBOX_1:
+		can_bus->error |= CAN_ERROR_RX1_FULL;
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CAN_RX_FIFO_Overrun_Error_Set(can_bus_t *can_bus, int fifo) {
+	switch (fifo) {
+	case CAN_RX_MAILBOX_0:
+		can_bus->error |= CAN_ERROR_RX0_OVERRUN;
+		break;
+
+	case CAN_RX_MAILBOX_1:
+		can_bus->error |= CAN_ERROR_RX1_OVERRUN;
+		break;
+
+	default:
+		break;
+	}
+}
+
 void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	CAN_TypeDef *can_ptr = can_bus->can_ptr[can_bus->can_n];
@@ -548,7 +578,7 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 	uint8_t index = 0;
 
 	//если есть сообщения в мейлбоксе
-	while(can_RFR_FMP_read(RFR) || can_RFR_FULL_read(RFR) || can_RFR_FOVR_read(RFR)) {
+	while(can_RFR_FMP_read(RFR)) {
 		//Если можно добавить в очередь
 		if(can_bus_rx_queue_can_enqueue(can_bus)) {
 			//Получим указатель на элемент в хвосте очереди и очистим его
@@ -588,18 +618,8 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	//FULL: FIFO full
 	if (can_RFR_FULL_read(RFR)) {
-		switch (fifo) {
-		case CAN_RX_MAILBOX_0:
-			can_bus->error |= CAN_ERROR_RX0_FULL;
-			break;
-
-		case CAN_RX_MAILBOX_1:
-			can_bus->error |= CAN_ERROR_RX1_FULL;
-			break;
-
-		default:
-			break;
-		}
+		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
+		CAN_RX_FIFO_Full_Error_Set(can_bus, fifo);
 
 		if(can_RFR_FMP_read(RFR)) {
 			//Освободим фифо контроллера
@@ -611,18 +631,8 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	//FOVR: FIFO overrun
 	if (can_RFR_FOVR_read(RFR)) {
-		switch (fifo) {
-		case CAN_RX_MAILBOX_0:
-			can_bus->error |= CAN_ERROR_RX0_OVERRUN;
-			break;
-
-		case CAN_RX_MAILBOX_1:
-			can_bus->error |= CAN_ERROR_RX1_OVERRUN;
-			break;
-
-		default:
-			break;
-		}
+		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
+		CAN_RX_FIFO_Overrun_Error_Set(can_bus, fifo);
 
 		while(can_RFR_FMP_read(RFR)) {
 			//Освободим фифо контроллера
