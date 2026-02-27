@@ -548,7 +548,7 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 	uint8_t index = 0;
 
 	//если есть сообщения в мейлбоксе
-	while(can_RFR_FMP_read(RFR)) {
+	while(can_RFR_FMP_read(RFR) || can_RFR_FULL_read(RFR) || can_RFR_FOVR_read(RFR)) {
 		//Если можно добавить в очередь
 		if(can_bus_rx_queue_can_enqueue(can_bus)) {
 			//Получим указатель на элемент в хвосте очереди и очистим его
@@ -560,15 +560,24 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 					&index,
 					tail->data)) {
 				//вычислим реальный индекс и запишем
-				tail->index = can_bus->index_array[fifo][index]; //TODO: перенести вычисление индекса в функцию can_rx_mailbox_read
+				tail->index = can_bus->index_array[fifo][index];
 				//Если успешно добавили в очередь
 				if(can_bus_rx_queue_enqueue(can_bus)) {
 					//Освободим фифо контроллера
 					can_rx_mailbox_release(can_ptr, fifo);
+					//Если FIFO полон, то очистим статус, так как мы освободили место в FIFO
+					if(can_RFR_FULL_read(RFR)) {
+						//Очистим статус FIFO полон
+						can_RFR_FULL_clear(can_ptr, fifo);
+					}
+					//Если FIFO переполнен, то очистим статус, так как мы освободили место в FIFO
+					if(can_RFR_FOVR_read(RFR)) {
+						//Очистим статус FIFO переполнение
+						can_RFR_FOVR_clear(can_ptr, fifo);
+					}
 				}
 			}
 		} else {
-			//TODO: если нельзя добавить в очередь
 			break;
 		}
 
@@ -592,6 +601,11 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 			break;
 		}
 
+		if(can_RFR_FMP_read(RFR)) {
+			//Освободим фифо контроллера
+			can_rx_mailbox_release(can_ptr, fifo);
+		}
+
 		can_RFR_FULL_clear(can_ptr, fifo);
 	}
 
@@ -608,6 +622,13 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 		default:
 			break;
+		}
+
+		while(can_RFR_FMP_read(RFR)) {
+			//Освободим фифо контроллера
+			can_rx_mailbox_release(can_ptr, fifo);
+			//обновим статус FIFO
+			RFR = can_RFR_read(can_ptr, fifo);
 		}
 
 		can_RFR_FOVR_clear(can_ptr, fifo);
