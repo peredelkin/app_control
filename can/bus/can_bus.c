@@ -631,14 +631,14 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 						can_RFR_FOVR_clear(can_ptr, fifo);
 					} else {
 						//Сбросим ошибку переполнения FIFO драйвера
-						CAN_RX_FIFO_Overrun_Error_Clear(can_ptr, fifo);
+						CAN_RX_FIFO_Overrun_Error_Clear(can_bus, fifo);
 						//Если был установлен флаг FIFO полон, то очистим, так как мы освободили место в FIFO
 						if(can_RFR_FULL_read(RFR)) {
 							//Очистим статус периферии FIFO полон
 							can_RFR_FULL_clear(can_ptr, fifo);
 						} else {
 							//Сбросим ошибку драйвера FIFO полон
-							CAN_RX_FIFO_Full_Error_Clear(can_ptr, fifo);
+							CAN_RX_FIFO_Full_Error_Clear(can_bus, fifo);
 						}
 					}
 				}
