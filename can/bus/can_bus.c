@@ -568,6 +568,36 @@ void CAN_RX_FIFO_Overrun_Error_Set(can_bus_t *can_bus, int fifo) {
 	}
 }
 
+void CAN_RX_FIFO_Full_Error_Clear(can_bus_t *can_bus, int fifo) {
+	switch (fifo) {
+	case CAN_RX_MAILBOX_0:
+		can_bus->error &= ~CAN_ERROR_RX0_FULL;
+		break;
+
+	case CAN_RX_MAILBOX_1:
+		can_bus->error &= ~CAN_ERROR_RX1_FULL;
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CAN_RX_FIFO_Overrun_Error_Clear(can_bus_t *can_bus, int fifo) {
+	switch (fifo) {
+	case CAN_RX_MAILBOX_0:
+		can_bus->error &= ~CAN_ERROR_RX0_OVERRUN;
+		break;
+
+	case CAN_RX_MAILBOX_1:
+		can_bus->error &= ~CAN_ERROR_RX1_OVERRUN;
+		break;
+
+	default:
+		break;
+	}
+}
+
 void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	CAN_TypeDef *can_ptr = can_bus->can_ptr[can_bus->can_n];
@@ -593,17 +623,23 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 				tail->index = can_bus->index_array[fifo][index];
 				//Если успешно добавили в очередь
 				if(can_bus_rx_queue_enqueue(can_bus)) {
-					//Освободим фифо контроллера
+					//Освободим FIFO периферии
 					can_rx_mailbox_release(can_ptr, fifo);
-					//Если FIFO полон, то очистим статус, так как мы освободили место в FIFO
-					if(can_RFR_FULL_read(RFR)) {
-						//Очистим статус FIFO полон
-						can_RFR_FULL_clear(can_ptr, fifo);
-					}
-					//Если FIFO переполнен, то очистим статус, так как мы освободили место в FIFO
+					//Если был установлен флаг FIFO переполнен, то очистим, так как мы освободили место в FIFO
 					if(can_RFR_FOVR_read(RFR)) {
-						//Очистим статус FIFO переполнение
+						//Очистим статус переполнения FIFO периферии
 						can_RFR_FOVR_clear(can_ptr, fifo);
+					} else {
+						//Сбросим ошибку переполнения FIFO драйвера
+						CAN_RX_FIFO_Overrun_Error_Clear(can_ptr, fifo);
+						//Если был установлен флаг FIFO полон, то очистим, так как мы освободили место в FIFO
+						if(can_RFR_FULL_read(RFR)) {
+							//Очистим статус периферии FIFO полон
+							can_RFR_FULL_clear(can_ptr, fifo);
+						} else {
+							//Сбросим ошибку драйвера FIFO полон
+							CAN_RX_FIFO_Full_Error_Clear(can_ptr, fifo);
+						}
 					}
 				}
 			}
@@ -624,6 +660,8 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 		if(can_RFR_FMP_read(RFR)) {
 			//Освободим фифо контроллера
 			can_rx_mailbox_release(can_ptr, fifo);
+			//обновим статус FIFO
+			RFR = can_RFR_read(can_ptr, fifo);
 		}
 
 		can_RFR_FULL_clear(can_ptr, fifo);

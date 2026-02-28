@@ -362,37 +362,37 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
 	if (bus_error & CAN_ERROR_RX_WARNING) {
 		status |= CO_CAN_ERRRX_WARNING;
 	} else {
-		//status &= ~CO_CAN_ERRRX_WARNING;
+		status &= ~CO_CAN_ERRRX_WARNING;
 	}
 
 	if (bus_error & CAN_ERROR_TX_WARNING) {
 		status |= CO_CAN_ERRTX_WARNING;
 	} else {
-		//status &= ~ CO_CAN_ERRTX_WARNING;
+		status &= ~ CO_CAN_ERRTX_WARNING;
 	}
 
 	if (bus_error & CAN_ERROR_RX_PASSIVE) {
 		status |= CO_CAN_ERRRX_PASSIVE;
 	} else {
-		//status &= ~ CO_CAN_ERRRX_PASSIVE;
+		status &= ~ CO_CAN_ERRRX_PASSIVE;
 	}
 
 	if (bus_error & CAN_ERROR_TX_PASSIVE) {
 		status |= CO_CAN_ERRTX_PASSIVE;
 	} else {
-		//status &= ~ CO_CAN_ERRTX_PASSIVE;
+		status &= ~ CO_CAN_ERRTX_PASSIVE;
 	}
 
 	if (bus_error & CAN_ERROR_TX_BUSSOFF) {
 		status |= CO_CAN_ERRTX_BUS_OFF;
 	} else {
-		//status &= ~ CO_CAN_ERRTX_BUS_OFF;
+		status &= ~ CO_CAN_ERRTX_BUS_OFF;
 	}
 
 	if (bus_error & (CAN_ERROR_RX0_OVERRUN | CAN_ERROR_RX1_OVERRUN)) {
 		status |= CO_CAN_ERRRX_OVERFLOW;
 	} else {
-		//status &= ~CO_CAN_ERRRX_OVERFLOW;
+		status &= ~CO_CAN_ERRRX_OVERFLOW;
 	}
 
 	if (bus_error & (CAN_ERROR_RX0_FULL | CAN_ERROR_RX1_FULL)) {
