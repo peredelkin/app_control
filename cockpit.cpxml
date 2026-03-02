@@ -902,4 +902,21 @@
         <indicatorCompare>6</indicatorCompare>
         <indicatorValue>2</indicatorValue>
     </SDOValueIndicator>
+    <SDOValueButton row="12" col="1" rowSpan="1" colSpan="1" nodeId="2" index="8400" subIndex="1" type="3">
+        <text>MSO: Control Start</text>
+        <buttonColor>4287399291</buttonColor>
+        <borderColor>4278190080</borderColor>
+        <indicatorColor>4294678898</indicatorColor>
+        <activateColor>4291282369</activateColor>
+        <highlightColor>4291342696</highlightColor>
+        <textColor>4278190080</textColor>
+        <borderWidth>3</borderWidth>
+        <indicatorEnabled>0</indicatorEnabled>
+        <fontPointSize>10</fontPointSize>
+        <fontCapitalization>0</fontCapitalization>
+        <fontBold>1</fontBold>
+        <indicatorCompare>1</indicatorCompare>
+        <indicatorValue>1</indicatorValue>
+        <activateValue>4</activateValue>
+    </SDOValueButton>
 </cockpit>

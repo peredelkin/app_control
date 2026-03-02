@@ -533,9 +533,7 @@ void CAN_TX_IRQHandler(can_bus_t *can_bus) {
 
 	uint32_t TSR = can_TSR_read(can);
 
-	if (can_IER_TMEIE_read(can)) {
-		CAN_TSR_RQCP_Handler(can_bus, TSR);
-	}
+	CAN_TSR_RQCP_Handler(can_bus, TSR);
 }
 
 void CAN_RX_FIFO_Full_Error_Set(can_bus_t *can_bus, int fifo) {
@@ -607,6 +605,18 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	uint8_t index = 0;
 
+	//FULL: FIFO full
+	if (can_RFR_FULL_read(RFR)) {
+		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
+		CAN_RX_FIFO_Full_Error_Set(can_bus, fifo);
+	}
+
+	//FOVR: FIFO overrun
+	if (can_RFR_FOVR_read(RFR)) {
+		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
+		CAN_RX_FIFO_Overrun_Error_Set(can_bus, fifo);
+	}
+
 	//если есть сообщения в мейлбоксе
 	while(can_RFR_FMP_read(RFR)) {
 		//Если можно добавить в очередь
@@ -625,6 +635,14 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 				if(can_bus_rx_queue_enqueue(can_bus)) {
 					//Освободим FIFO периферии
 					can_rx_mailbox_release(can_ptr, fifo);
+					//Если был установлен флаг FIFO полон, то очистим, так как мы освободили место в FIFO
+					if(can_RFR_FULL_read(RFR)) {
+						//Очистим статус периферии FIFO полон
+						can_RFR_FULL_clear(can_ptr, fifo);
+					} else {
+						//Сбросим ошибку драйвера FIFO полон
+						CAN_RX_FIFO_Full_Error_Clear(can_bus, fifo);
+					}
 					//Если был установлен флаг FIFO переполнен, то очистим, так как мы освободили место в FIFO
 					if(can_RFR_FOVR_read(RFR)) {
 						//Очистим статус переполнения FIFO периферии
@@ -632,14 +650,6 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 					} else {
 						//Сбросим ошибку переполнения FIFO драйвера
 						CAN_RX_FIFO_Overrun_Error_Clear(can_bus, fifo);
-						//Если был установлен флаг FIFO полон, то очистим, так как мы освободили место в FIFO
-						if(can_RFR_FULL_read(RFR)) {
-							//Очистим статус периферии FIFO полон
-							can_RFR_FULL_clear(can_ptr, fifo);
-						} else {
-							//Сбросим ошибку драйвера FIFO полон
-							CAN_RX_FIFO_Full_Error_Clear(can_bus, fifo);
-						}
 					}
 				}
 			}
@@ -654,8 +664,6 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	//FULL: FIFO full
 	if (can_RFR_FULL_read(RFR)) {
-		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
-		CAN_RX_FIFO_Full_Error_Set(can_bus, fifo);
 
 		if(can_RFR_FMP_read(RFR)) {
 			//Освободим фифо контроллера
@@ -669,8 +677,6 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	//FOVR: FIFO overrun
 	if (can_RFR_FOVR_read(RFR)) {
-		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
-		CAN_RX_FIFO_Overrun_Error_Set(can_bus, fifo);
 
 		while(can_RFR_FMP_read(RFR)) {
 			//Освободим фифо контроллера

@@ -33,7 +33,7 @@ CO_SDO_CLI_Queue can1_cli_Queue[16];
 
 CO_SDO_CLI_Driver_t can1_cli_driver;
 
-#define CAN_BUS_QUEUE_SIZE 16
+#define CAN_BUS_QUEUE_SIZE 128
 
 can_rx_frame_queue_t can_bus_1_rx_queue[CAN_BUS_QUEUE_SIZE];
 can_tx_frame_queue_t can_bus_1_tx_queue[CAN_BUS_QUEUE_SIZE];
@@ -162,6 +162,7 @@ void can2_rcc_init(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_CAN2EN;
 }
 
+//! Настройки не менять!
 void can_setup(can_bus_t* bus) {
 	while(bus == NULL);
 
@@ -173,13 +174,56 @@ void can_setup(can_bus_t* bus) {
 
 	can_bus_initialization_request(can);
 
-	can_MCR_TXFP_set(can, true);		//Priority driven by the request order (chronologically)
-	can_MCR_RFLM_set(can, true);		//Receive FIFO locked against overrun.
-	can_MCR_NART_set(can, true);		//The CAN hardware will automatically retransmit the message
-	can_MCR_AWUM_set(can,false);		//The Sleep mode is left on software request
-	can_MCR_ABOM_set(can, true);		//The Bus-Off state is left automatically by hardware
-	can_MCR_TTCM_set(can,false);		//Time Triggered Communication mode disabled
-	can_MCR_DBF_set(can, true);			//CAN reception/transmission frozen during debug
+	/*
+	 * 0: Priority driven by the identifier of the message
+	 * 1: Priority driven by the request order (chronologically)
+	 */
+	can_MCR_TXFP_set(can,	0); //Должно быть 0
+
+	/*
+	 * 0: Receive FIFO not locked on overrun. Once a receive FIFO is full the next incoming
+	 * message will overwrite the previous one.
+	 * 1: Receive FIFO locked against overrun. Once a receive FIFO is full the next incoming
+	 * message will be discarded.
+	 */
+	can_MCR_RFLM_set(can,	1); //Должно быть 1 - мы должны забрать то, что получили
+
+	/*
+	 * 0: The CAN hardware will automatically retransmit the message until it has been
+	 * successfully transmitted according to the CAN standard.
+	 * 1: A message will be transmitted only once, independently of the transmission result
+	 * (successful, error or arbitration lost).
+	 */
+	can_MCR_NART_set(can,	0); //Должно быть 0 - обработка ошибок драйвером отсуствует
+
+	/*
+	 * 0: The Sleep mode is left on software request by clearing the SLEEP bit of the CAN_MCR
+	 * register.
+	 * 1: The Sleep mode is left automatically by hardware on CAN message detection.
+	 */
+	can_MCR_AWUM_set(can,	1);
+
+	/*
+	 * 0: The Bus-Off state is left on software request, once 128 occurrences of 11 recessive bits
+	 * have been monitored and the software has first set and cleared the INRQ bit of the
+	 * CAN_MCR register.
+	 * 1: The Bus-Off state is left automatically by hardware once 128 occurrences of 11 recessive
+	 * bits have been monitored.
+	 */
+	can_MCR_ABOM_set(can,	1); //Должно быть 1 - выход из Bus-Off драйвером отсутствует
+
+	/*
+	 * 0: Time Triggered Communication mode disabled.
+	 * 1: Time Triggered Communication mode enabled
+	 */
+	can_MCR_TTCM_set(can,	0); //Должно быть 0 - всё равно не работает
+
+	/*
+	 * 0: CAN working during debug
+	 * 1: CAN reception/transmission frozen during debug. Reception FIFOs can still be
+	 * accessed/controlled normally.
+	 */
+	can_MCR_DBF_set(can,	1);	 //Должно быть 1
 }
 
 void can_filter_setup(int CAN2SB) {
@@ -290,6 +334,12 @@ void can_CO_sdo_cli_process(CO_SDO_CLI_Driver_t *drv, uint32_t dt) {
 	CO_SDO_CLI_process(drv, dt);
 }
 
+uint32_t can_bus_1_current_error;
+uint32_t can_bus_2_current_error;
+
+uint32_t can_bus_1_last_error;
+uint32_t can_bus_2_last_error;
+
 void can_process_callback(void* arg) {
 	//CAN1 CAN2 RX
 	can_bus_rx_process(&can_bus_1);
@@ -305,6 +355,81 @@ void can_process_callback(void* arg) {
 	//CAN1 CAN2 TX
 	can_bus_tx_process(&can_bus_1);
 	can_bus_tx_process(&can_bus_2);
+
+	can_bus_1_current_error = can_bus_1.error;
+	can_bus_2_current_error = can_bus_2.error;
+
+	//CAN1
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_RX0_FULL) {
+		printf("CAN1 RX0 FULL\n");
+	}
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_RX1_FULL) {
+		printf("CAN1 RX1 FULL\n");
+	}
+
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_RX0_OVERRUN) {
+		printf("CAN1 RX0 OVERRUN\n");
+	}
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_RX1_OVERRUN) {
+		printf("CAN1 RX1 OVERRUN\n");
+	}
+
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_TX_BUSSOFF) {
+		printf("CAN1 TX BUSSOFF\n");
+	}
+
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_TX_PASSIVE) {
+		printf("CAN1 TX PASSIVE\n");
+	}
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_RX_PASSIVE) {
+		printf("CAN1 RX PASSIVE\n");
+	}
+
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_TX_WARNING) {
+		printf("CAN1 TX WARNING\n");
+	}
+	if ((can_bus_1_current_error & ~can_bus_1_last_error) & CAN_ERROR_RX_WARNING) {
+		printf("CAN1 RX WARNING\n");
+	}
+
+	//Замаскируем текущие ошибки
+	can_bus_1_last_error = can_bus_1_current_error;
+
+	//CAN2
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_RX0_FULL) {
+		printf("CAN2 RX0 FULL\n");
+	}
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_RX1_FULL) {
+		printf("CAN2 RX1 FULL\n");
+	}
+
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_RX0_OVERRUN) {
+		printf("CAN2 RX0 OVERRUN\n");
+	}
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_RX1_OVERRUN) {
+		printf("CAN2 RX1 OVERRUN\n");
+	}
+
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_TX_BUSSOFF) {
+		printf("CAN2 TX BUSSOFF\n");
+	}
+
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_TX_PASSIVE) {
+		printf("CAN2 TX PASSIVE\n");
+	}
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_RX_PASSIVE) {
+		printf("CAN2 RX PASSIVE\n");
+	}
+
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_TX_WARNING) {
+		printf("CAN2 TX WARNING\n");
+	}
+	if ((can_bus_2_current_error & ~can_bus_2_last_error) & CAN_ERROR_RX_WARNING) {
+		printf("CAN2 RX WARNING\n");
+	}
+
+	//Замаскируем текущие ошибки
+	can_bus_2_last_error = can_bus_2_current_error;
 }
 
 void can1_sdo_cli_init(void) {

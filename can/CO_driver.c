@@ -18,13 +18,13 @@
 
 //FIFO 0 INTERRUPT
 #define CAN_FMPIE0_CONF		true
-#define CAN_FFIE0_CONF		true
-#define CAN_FOVIE0_CONF		true
+#define CAN_FFIE0_CONF		false
+#define CAN_FOVIE0_CONF		false
 
 //FIFO 1 INTERRUPT
 #define CAN_FMPIE1_CONF		true
-#define CAN_FFIE1_CONF		true
-#define CAN_FOVIE1_CONF		true
+#define CAN_FFIE1_CONF		false
+#define CAN_FOVIE1_CONF		false
 
 //STATUS CHANGE ERROR INTERRUPT
 #define CAN_ERRIE_CONF		true
