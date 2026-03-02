@@ -486,7 +486,12 @@ bool can_bus_tx_process(can_bus_t* bus) {
  */
 bool can_bus_write(can_bus_t* bus, uint32_t id, uint8_t dlc, uint8_t* data) {
 	//можно ли добавить в очередь
-	if (can_bus_tx_queue_can_enqueue(bus) == false) return false;
+	if (can_bus_tx_queue_can_enqueue(bus) == false) {
+		bus->error |= CAN_ERROR_TX_QUEUE_FULL;
+		return false;
+	} else {
+		bus->error &= ~CAN_ERROR_TX_QUEUE_FULL;
+	}
 	//получим указатель на элемент в хвосте очереди и очистим его
 	can_tx_frame_queue_t* tail = can_bus_tx_queue_tail_reset(bus);
 	//заполним данные
@@ -596,6 +601,21 @@ void CAN_RX_FIFO_Overrun_Error_Clear(can_bus_t *can_bus, int fifo) {
 	}
 }
 
+void CAN_RX_FIFO_FMP_Interrupt_Disabled(can_bus_t *can_bus, int fifo) {
+	switch (fifo) {
+	case CAN_RX_MAILBOX_0:
+		can_bus->error |= CAN_ERROR_RX0_FMP_DIS;
+		break;
+
+	case CAN_RX_MAILBOX_1:
+		can_bus->error |= CAN_ERROR_RX1_FMP_DIS;
+		break;
+
+	default:
+		break;
+	}
+}
+
 void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 
 	CAN_TypeDef *can_ptr = can_bus->can_ptr[can_bus->can_n];
@@ -654,6 +674,9 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 				}
 			}
 		} else {
+			//TODO: разобраться с тем, что делать, если пихать больше некуда
+			CAN_RX_FIFO_FMP_Interrupt_Disabled(can_bus, fifo);
+			can_IER_FMPIE_set(can_ptr, fifo, 0);
 			break;
 		}
 

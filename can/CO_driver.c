@@ -117,12 +117,12 @@ void CO_CANsetNormalMode(CO_CANmodule_t *CANmodule) {
 	//проверка указателя CAN
 	if (can == NULL) return;
 
+	can_interrupts_enable(can);
+
 	can_bus_initialization_exit(can);
 	can_bus_sleep_exit(can);
 
 	CANmodule->CANnormal = true;
-
-	can_interrupts_enable(can);
 }
 
 CO_ReturnError_t CO_CANbitRate_set(void *CANptr, uint16_t CANbitRate) {

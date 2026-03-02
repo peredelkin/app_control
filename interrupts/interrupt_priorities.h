@@ -26,9 +26,8 @@
 
 #define TIM4_IRQ_PRIO 11	//MS_TIM
 
-#define TIM5_IRQ_PRIO 13	//CAN1 CO_process
+#define TIM3_IRQ_PRIO 13	//SYS_TIM
 
-#define TIM3_IRQ_PRIO 15	//SYS_TIM
-
+#define TIM5_IRQ_PRIO 15	//CAN1 CO_process
 
 #endif /* INTERRUPTS_INTERRUPT_PRIORITIES_H_ */

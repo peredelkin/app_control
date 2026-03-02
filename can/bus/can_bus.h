@@ -40,6 +40,12 @@
 #define CAN_ERROR_RX1_OVERRUN	((uint32_t)BIT(7))
 #define CAN_ERROR_RX1_FULL		((uint32_t)BIT(8))
 
+#define CAN_ERROR_RX0_FMP_DIS	((uint32_t)BIT(9))
+#define CAN_ERROR_RX1_FMP_DIS	((uint32_t)BIT(10))
+
+#define CAN_ERROR_RX_QUEUE_FULL	((uint32_t)BIT(30))
+#define CAN_ERROR_TX_QUEUE_FULL	((uint32_t)BIT(31))
+
 #define CAN_BUS_MAKE_ID(ID) ((uint32_t) (CAN_FIR_STID & (ID << CAN_FIR_STID_SHIFT)))
 #define CAN_BUS_MAKE_MASK(MASK) ((uint32_t) (CAN_FIR_STID & (MASK << CAN_FIR_STID_SHIFT)))
 
