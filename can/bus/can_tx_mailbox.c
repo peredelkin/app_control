@@ -17,7 +17,7 @@ enum {
 	CAN_TX_MAILBOX_2
 };
 
-void can_tx_request(CAN_TypeDef* CAN, int mailbox) {
+void can_tx_mailbox_request(CAN_TypeDef* CAN, int mailbox) {
 	switch(mailbox) {
 	case CAN_TX_MAILBOX_0:
 		CAN->sTxMailBox[CAN_TX_MAILBOX_0].TIR |= CAN_TIR_TXRQ;
@@ -118,7 +118,7 @@ void can_raw_tx_mailbox_write_and_request(CAN_TypeDef* CAN, int mailbox, uint32_
 	can_TDLR_write(CAN, mailbox, TDLR);	//CAN mailbox data low
 	can_TDHR_write(CAN, mailbox, TDHR);	//CAN mailbox data high
 
-	can_tx_request(CAN, mailbox);	//Transmit mailbox request
+	can_tx_mailbox_request(CAN, mailbox);	//Transmit mailbox request
 }
 
 err_t can_tx_mailbox_write_and_request(CAN_TypeDef* CAN, uint32_t id, uint8_t dlc, uint8_t* data) {

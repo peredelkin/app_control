@@ -9,6 +9,32 @@
 #include "can_reg.h"
 #include "can_bus.h"
 
+typedef union {
+	uint32_t all;
+	struct {
+		unsigned res_0		:1;
+		unsigned rtr		:1;
+		unsigned ide		:1;
+		unsigned exid_0_14	:15;
+		unsigned exid_15_17	:3;
+		unsigned stid_0_10	:11;
+	} bit;
+} can_filter_32b_t;
+
+typedef union {
+	uint32_t all;
+	struct {
+		unsigned id_exid_15_17	:3;
+		unsigned id_ide			:1;
+		unsigned id_rtr			:1;
+		unsigned id_stid_0_10	:11;
+		unsigned mask_exid_15_17:3;
+		unsigned mask_ide		:1;
+		unsigned mask_rtr		:1;
+		unsigned mask_stid_0_10	:11;
+	} bit;
+} can_filter_16b_t;
+
 bool can_master_filter_is_init(CAN_TypeDef *CAN) {
 	if(CAN->FMR & CAN_FMR_FINIT) return 1;
 	return 0;

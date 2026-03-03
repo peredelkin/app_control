@@ -94,11 +94,6 @@ typedef struct {
 	size_t tail;
 } can_tx_queue_t;
 
-typedef struct {
-	uint32_t id;
-	uint32_t mask;
-} can_filter_t;
-
 typedef struct _can_bus_t can_bus_t;
 
 struct _can_bus_t {
@@ -121,35 +116,7 @@ struct _can_bus_t {
 	uint32_t primask_tx;
 };
 
-typedef union {
-	uint32_t all;
-	struct {
-		unsigned res_0		:1;
-		unsigned rtr		:1;
-		unsigned ide		:1;
-		unsigned exid_0_14	:15;
-		unsigned exid_15_17	:3;
-		unsigned stid_0_10	:11;
-	} bit;
-} can_filter_32b_t;
-
-typedef union {
-	uint32_t all;
-	struct {
-		unsigned id_exid_15_17	:3;
-		unsigned id_ide			:1;
-		unsigned id_rtr			:1;
-		unsigned id_stid_0_10	:11;
-		unsigned mask_exid_15_17:3;
-		unsigned mask_ide		:1;
-		unsigned mask_rtr		:1;
-		unsigned mask_stid_0_10	:11;
-	} bit;
-} can_filter_16b_t;
-
 extern err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate);
-
-extern can_rx_frame_queue_t* can_bus_rx_queue_head(can_bus_t *bus);
 
 extern err_t can_bus_rx_process(can_bus_t* bus);
 extern void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size);
