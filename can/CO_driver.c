@@ -168,11 +168,6 @@ CO_ReturnError_t CO_CANmodule_init(CO_CANmodule_t *CANmodule, void *CANptr, CO_C
 	CANmodule->txSize = txSize;
 	CANmodule->CANerrorStatus = 0;
 	CANmodule->CANnormal = false;
-	CANmodule->useCANrxFilters = true; /* Use HW filters */
-	CANmodule->bufferInhibitFlag = false;
-	CANmodule->firstCANtxMessage = true;
-	CANmodule->CANtxCount = 0U;
-	CANmodule->errOld = 0U;
 
 	/* Reset all variables */
 	for (uint16_t i = 0U; i < rxSize; i++) {
@@ -289,26 +284,16 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
 
 	CO_ReturnError_t co_err = CO_ERROR_NO;
 
-	/* Verify overflow */
-	if (buffer->bufferFull) {
-		if (!CANmodule->firstCANtxMessage) {
-			/* don't set error, if bootup message is still on buffers */
-			CANmodule->CANerrorStatus |= CO_CAN_ERRTX_OVERFLOW;
-		}
-		co_err = CO_ERROR_TX_OVERFLOW;
-	}
-
 	CO_LOCK_CAN_SEND(CANmodule);
-	/* if CAN TX buffer is free, copy message to it */
 	if(can_bus_write(can_bus, buffer->ident, buffer->DLC, buffer->data)) {
-		if (CANmodule->CANtxCount == 0) {
-			CANmodule->bufferInhibitFlag = buffer->syncFlag;
-		}
+		buffer->bufferFull = false;
 	} else {
+		if (buffer->bufferFull) {
+			CANmodule->CANerrorStatus |= CO_CAN_ERRTX_OVERFLOW;
+			co_err = CO_ERROR_TX_OVERFLOW;
+		}
 		buffer->bufferFull = true;
-		CANmodule->CANtxCount++;
 	}
-
 	CO_UNLOCK_CAN_SEND(CANmodule);
 
 	return co_err;
@@ -316,37 +301,37 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
 
 //TODO: сделать отмену TXREQ для SyncPDOs в драйвере, не забыв определить, в каком мейлбоксе находится SyncPDO
 void CO_CANclearPendingSyncPDOs(CO_CANmodule_t *CANmodule) {
-
-	uint32_t tpdoDeleted = 0U;
-
-	CO_LOCK_CAN_SEND(CANmodule);
-	/* Abort message from CAN module, if there is synchronous TPDO.
-	 * Take special care with this functionality. */
-	if (/* messageIsOnCanBuffer && */CANmodule->bufferInhibitFlag) {
-		/* clear TXREQ */
-		CANmodule->bufferInhibitFlag = false;
-		tpdoDeleted = 1U;
-	}
-	/* delete also pending synchronous TPDOs in TX buffers */
-	if (CANmodule->CANtxCount != 0U) {
-		uint16_t i;
-		CO_CANtx_t *buffer = &CANmodule->txArray[0];
-		for (i = CANmodule->txSize; i > 0U; i--) {
-			if (buffer->bufferFull) {
-				if (buffer->syncFlag) {
-					buffer->bufferFull = false;
-					CANmodule->CANtxCount--;
-					tpdoDeleted = 2U;
-				}
-			}
-			buffer++;
-		}
-	}
-	CO_UNLOCK_CAN_SEND(CANmodule);
-
-	if (tpdoDeleted != 0U) {
-		CANmodule->CANerrorStatus |= CO_CAN_ERRTX_PDO_LATE;
-	}
+//
+//	uint32_t tpdoDeleted = 0U;
+//
+//	CO_LOCK_CAN_SEND(CANmodule);
+//	/* Abort message from CAN module, if there is synchronous TPDO.
+//	 * Take special care with this functionality. */
+//	if (/* messageIsOnCanBuffer && */CANmodule->bufferInhibitFlag) {
+//		/* clear TXREQ */
+//		CANmodule->bufferInhibitFlag = false;
+//		tpdoDeleted = 1U;
+//	}
+//	/* delete also pending synchronous TPDOs in TX buffers */
+//	if (CANmodule->CANtxCount != 0U) {
+//		uint16_t i;
+//		CO_CANtx_t *buffer = &CANmodule->txArray[0];
+//		for (i = CANmodule->txSize; i > 0U; i--) {
+//			if (buffer->bufferFull) {
+//				if (buffer->syncFlag) {
+//					buffer->bufferFull = false;
+//					CANmodule->CANtxCount--;
+//					tpdoDeleted = 2U;
+//				}
+//			}
+//			buffer++;
+//		}
+//	}
+//	CO_UNLOCK_CAN_SEND(CANmodule);
+//
+//	if (tpdoDeleted != 0U) {
+//		CANmodule->CANerrorStatus |= CO_CAN_ERRTX_PDO_LATE;
+//	}
 
 }
 
@@ -390,15 +375,13 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
 	}
 
 	if (bus_error & (CAN_ERROR_RX0_OVERRUN | CAN_ERROR_RX1_OVERRUN)) {
-
+		status |= CO_CAN_ERRRX_OVERFLOW;
 	} else {
-
-	}
-
-	if (bus_error & (CAN_ERROR_RX0_FULL | CAN_ERROR_RX1_FULL)) {
-
-	} else {
-
+		if (bus_error & (CAN_ERROR_RX0_FULL | CAN_ERROR_RX1_FULL)) {
+			status |= CO_CAN_ERRRX_OVERFLOW;
+		} else {
+			status &= ~CO_CAN_ERRRX_OVERFLOW;
+		}
 	}
 
 	CANmodule->CANerrorStatus = status;

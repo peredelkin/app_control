@@ -186,15 +186,6 @@ typedef struct {
     uint16_t txSize;                 /**< From CO_CANmodule_init() */
     uint16_t CANerrorStatus;         /**< CAN error status bitfield, see @ref CO_CAN_ERR_status_t */
     volatile bool_t CANnormal;       /**< CAN module is in normal mode */
-    volatile bool_t useCANrxFilters; /**< Value different than zero indicates, that CAN module hardware filters are used
-                                        for CAN reception. If there is not enough hardware filters, they won't be used.
-                                        In this case will be *all* received CAN messages processed by software. */
-    volatile bool_t bufferInhibitFlag; /**< If flag is true, then message in transmit buffer is synchronous PDO message,
-                                          which will be aborted, if CO_clearPendingSyncPDOs() function will be called by
-                                          application. This may be necessary if Synchronous window time was expired. */
-    volatile bool_t firstCANtxMessage; /**< Equal to 1, when the first transmitted message (bootup message) is in CAN TX buffers */
-    volatile uint16_t CANtxCount;  /**< Number of messages in transmit buffer, which are waiting to be copied to the CAN module */
-    uint32_t errOld; /**< Previous state of CAN errors */
 
     /* STM32 specific features */
     uint32_t primask_send; /* Primask register for interrupts for send operation */

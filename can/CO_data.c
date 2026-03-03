@@ -147,7 +147,7 @@ struct _S_CO_data CO_data = {
     .COB_IDUsedByTPDO = 0x40000180 /*  */,
     .transmissionType = 254 /*  */,
     .inhibitTime = 0 /*  */,
-    .eventTimer = 20 /*  */,
+    .eventTimer = 10 /*  */,
     .SYNCStartValue = 0 /*  */
 },
 .TPDOCommunicationParameter_1801 = {
