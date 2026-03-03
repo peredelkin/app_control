@@ -390,15 +390,15 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
 	}
 
 	if (bus_error & (CAN_ERROR_RX0_OVERRUN | CAN_ERROR_RX1_OVERRUN)) {
-		status |= CO_CAN_ERRRX_OVERFLOW;
+
 	} else {
-		status &= ~CO_CAN_ERRRX_OVERFLOW;
+
 	}
 
 	if (bus_error & (CAN_ERROR_RX0_FULL | CAN_ERROR_RX1_FULL)) {
-		status |= CO_CAN_ERRRX_OVERFLOW;
+
 	} else {
-		status &= ~CO_CAN_ERRRX_OVERFLOW;
+
 	}
 
 	CANmodule->CANerrorStatus = status;

@@ -11,219 +11,6 @@
 #include "can_bus.h"
 #include "can_master_filter.h"
 
-
-//#define CAN_BUS_FILTER_DEBUG
-
-#ifdef CAN_BUS_FILTER_DEBUG
-#include <stdio.h>
-#include "sys/counter/sys_counter.h"
-#endif
-
-err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
-	if (filter < 0) return E_INVALID_VALUE;
-	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
-
-#ifdef CAN_BUS_FILTER_DEBUG
-	printf("ALLOC CAN%d FILTER:%d ID:%#08x MASK:%#08x\n", bus->can_n, filter, (unsigned int)id, (unsigned int)mask);
-	sys_counter_delay(0, 10000); //10ms
-#endif
-
-	CAN_TypeDef* can_master = bus->can_ptr[0];
-
-	int filter_bank = (filter >> 1);
-
-	if(bus->can_n == CAN_BUS_SLAVE) {
-		filter_bank += can_master_can2_filter_start_bank_get(can_master);
-	}
-
-	if (filter_bank > 27) return E_OUT_OF_RANGE;
-
-	int filter_bank_index = (filter >> 1);
-	int filter_bank_subindex = (filter & 0b1);
-
-	int fifo_n = (filter_bank_index & 0x1);
-	int fifo_index = (filter_bank_index + filter_bank_subindex - fifo_n);
-
-	bool filter_was_active = false;
-	bool filter_was_single = false;
-
-	can_filter_32b_t prev_32b_id;
-	can_filter_32b_t prev_32b_mask;
-
-	can_filter_32b_t next_32b_id;
-	can_filter_32b_t next_32b_mask;
-
-	can_filter_16b_t new_16b[2];
-
-	//находятся ли фильтры в режиме инициализации
-	bool init_mode = can_master_filter_is_init(can_master);
-
-	//если фильтры активны
-	if(init_mode == false) {
-		//переведем в режим инициализации
-		can_master_filter_init_mode(can_master);
-	}
-
-	can_master_filter_is_active(can_master, filter_bank, &filter_was_active);
-
-	can_master_filter_is_single_scale(can_master, filter_bank, &filter_was_single);
-
-	can_master_filter_set_inactive(can_master, filter_bank);
-
-	can_master_filter_set_mask_mode(can_master, filter_bank);
-
-	switch (fifo_n) {
-	case CAN_RX_MAILBOX_0:
-		can_master_filter_assigned_to_fifo_0(can_master, filter_bank);
-		break;
-	case CAN_RX_MAILBOX_1:
-		can_master_filter_assigned_to_fifo_1(can_master, filter_bank);
-		break;
-	default:
-		return E_INVALID_VALUE;
-	}
-
-	bus->index_array[fifo_n][fifo_index] = filter;
-
-	if (filter_bank_subindex) {
-		//фильтры должны быть настроены последовательно!
-		if(filter_was_active == false || filter_was_single == false) return E_INVALID_OPERATION;
-
-		prev_32b_id.all = can_master->sFilterRegister[filter_bank].FR1;
-		prev_32b_mask.all = can_master->sFilterRegister[filter_bank].FR2;
-
-		next_32b_id.all = id;
-		next_32b_mask.all = mask;
-
-		//id 0
-		new_16b[0].bit.id_exid_15_17 = prev_32b_id.bit.exid_15_17;
-		new_16b[0].bit.id_ide = prev_32b_id.bit.ide;
-		new_16b[0].bit.id_rtr = prev_32b_id.bit.rtr;
-		new_16b[0].bit.id_stid_0_10 = prev_32b_id.bit.stid_0_10;
-		//mask 0
-		new_16b[0].bit.mask_exid_15_17 = prev_32b_mask.bit.exid_15_17;
-		new_16b[0].bit.mask_ide = prev_32b_mask.bit.ide;
-		new_16b[0].bit.mask_rtr = prev_32b_mask.bit.rtr;
-		new_16b[0].bit.mask_stid_0_10 = prev_32b_mask.bit.stid_0_10;
-
-		//id 1
-		new_16b[1].bit.id_exid_15_17 = next_32b_id.bit.exid_15_17;
-		new_16b[1].bit.id_ide = next_32b_id.bit.ide;
-		new_16b[1].bit.id_rtr = next_32b_id.bit.rtr;
-		new_16b[1].bit.id_stid_0_10 = next_32b_id.bit.stid_0_10;
-		//mask 1
-		new_16b[1].bit.mask_exid_15_17 = next_32b_mask.bit.exid_15_17;
-		new_16b[1].bit.mask_ide = next_32b_mask.bit.ide;
-		new_16b[1].bit.mask_rtr = next_32b_mask.bit.rtr;
-		new_16b[1].bit.mask_stid_0_10 = next_32b_mask.bit.stid_0_10;
-
-		can_master_filter_set_dual_scale(can_master, filter_bank);
-
-		can_master->sFilterRegister[filter_bank].FR1 = new_16b[0].all;
-		can_master->sFilterRegister[filter_bank].FR2 = new_16b[1].all;
-	} else {
-		can_master_filter_set_single_scale(can_master, filter_bank);
-
-		can_master->sFilterRegister[filter_bank].FR1 = id;
-		can_master->sFilterRegister[filter_bank].FR2 = mask;
-	}
-
-	can_master_filter_set_active(can_master, filter_bank);
-
-	//если фильтры были активны
-	if(init_mode == false) {
-		//вернем в активный режим
-		can_master_filter_active_mode(can_master);
-	}
-
-	/* Last CANopen Index for CAN bridge */
-	bus->last_index = filter;
-
-	return E_NO_ERROR;
-}
-
-err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask) {
-	if (filter < 0) return E_INVALID_VALUE;
-	if (filter > (CAN_FILTER_MAX_COUNT - 1)) return E_OUT_OF_RANGE;
-
-#ifdef CAN_BUS_FILTER_DEBUG
-	printf("SET CAN%d FILTER:%d ID:%#08x MASK:%#08x\n", bus->can_n, filter, (unsigned int)id, (unsigned int)mask);
-	sys_counter_delay(0, 10000); //10ms
-#endif
-
-	CAN_TypeDef* can_master = bus->can_ptr[0];
-
-	int filter_bank = (filter >> 1);
-
-	if(bus->can_n == CAN_BUS_SLAVE) {
-		filter_bank += can_master_can2_filter_start_bank_get(can_master);
-	}
-
-	if (filter_bank > 27) return E_OUT_OF_RANGE;
-
-	int filter_bank_subindex = (filter & 0b1);
-
-	bool filter_was_active = false;
-
-	can_master_filter_is_active(can_master, filter_bank, &filter_was_active);
-
-	if(filter_was_active == false) return E_INVALID_OPERATION;
-
-	can_master_filter_set_inactive(can_master, filter_bank);
-
-	bool filter_was_single = false;
-
-	can_master_filter_is_single_scale(can_master, filter_bank, &filter_was_single);
-
-	if(filter_was_single) {
-		can_master->sFilterRegister[filter_bank].FR1 = id;
-		can_master->sFilterRegister[filter_bank].FR2 = mask;
-	} else {
-		can_filter_32b_t new_32b_id = {id};
-		can_filter_32b_t new_32b_mask = {mask};
-
-		can_filter_16b_t new_16b;
-
-		//id
-		new_16b.bit.id_exid_15_17 = new_32b_id.bit.exid_15_17;
-		new_16b.bit.id_ide = new_32b_id.bit.ide;
-		new_16b.bit.id_rtr = new_32b_id.bit.rtr;
-		new_16b.bit.id_stid_0_10 = new_32b_id.bit.stid_0_10;
-		//mask
-		new_16b.bit.mask_exid_15_17 = new_32b_mask.bit.exid_15_17;
-		new_16b.bit.mask_ide = new_32b_mask.bit.ide;
-		new_16b.bit.mask_rtr = new_32b_mask.bit.rtr;
-		new_16b.bit.mask_stid_0_10 = new_32b_mask.bit.stid_0_10;
-
-		if (filter_bank_subindex) {
-			can_master->sFilterRegister[filter_bank].FR2 = new_16b.all;
-		} else {
-			can_master->sFilterRegister[filter_bank].FR1 = new_16b.all;
-		}
-	}
-
-	can_master_filter_set_active(can_master, filter_bank);
-
-	return E_NO_ERROR;
-}
-
-err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count) {
-	err_t err = E_NO_ERROR;
-
-	CAN_TypeDef* can_master = bus->can_ptr[0];
-
-	can_master_filter_init_mode(can_master);
-
-	for(int index = 0; index < count; index++) {
-		err = can_bus_filter_16b_bank_set(bus, index, 0, 0);
-		if(err != E_NO_ERROR) break;
-	}
-
-	can_master_filter_active_mode(can_master);
-
-	return err;
-}
-
 //Bitrate
 err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate) {
 	//проверка указателя CANptr
@@ -272,11 +59,18 @@ err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate) {
 	return error;
 }
 
-//!RX
+//Очередь RX и TX
+
+//сброс сброс данных в очереди по указателю
 void can_bus_rx_queue_reset(can_rx_frame_queue_t* ptr) {
 	ptr->id = 0;
 	ptr->dlc = 0;
 	ptr->index = 0;
+	memset(ptr->data, 0, sizeof(ptr->data));
+}
+void can_bus_tx_queue_reset(can_tx_frame_queue_t* ptr) {
+	ptr->id = 0;
+	ptr->dlc = 0;
 	memset(ptr->data, 0, sizeof(ptr->data));
 }
 
@@ -284,23 +78,39 @@ void can_bus_rx_queue_reset(can_rx_frame_queue_t* ptr) {
 bool can_bus_rx_queue_empty(can_bus_t *bus) {
 	return (bus->queue_rx.head == bus->queue_rx.tail);
 }
+bool can_bus_tx_queue_empty(can_bus_t *bus) {
+	return (bus->queue_tx.head == bus->queue_tx.tail);
+}
 
 //очередь не пуста, если голова и хвост не совпадают
-bool can_bus_rx_queue_notEmpty(can_bus_t *bus) {
+bool can_bus_rx_queue_not_empty(can_bus_t *bus) {
 	return (bus->queue_rx.head != bus->queue_rx.tail);
+}
+bool can_bus_tx_queue_not_empty(can_bus_t *bus) {
+	return (bus->queue_tx.head != bus->queue_tx.tail);
 }
 
 //получить указатель на элемент в голове очереди
 can_rx_frame_queue_t* can_bus_rx_queue_head(can_bus_t *bus) {
 	return &(bus->queue_rx.queue[bus->queue_rx.head]);
 }
+can_tx_frame_queue_t* can_bus_tx_queue_head(can_bus_t *bus) {
+	return &(bus->queue_tx.queue[bus->queue_tx.head]);
+}
 
 //удалить элемент в голове очереди, если очередь не пуста
 bool can_bus_rx_queue_dequeue(can_bus_t *bus) {
-	if (bus->queue_rx.head == bus->queue_rx.tail) return false; //empty
+	if (can_bus_rx_queue_empty(bus)) return false;
 	size_t new_head = bus->queue_rx.head + 1;
 	if (new_head >= bus->queue_rx.size) new_head = 0;
 	bus->queue_rx.head = new_head;
+	return true;
+}
+bool can_bus_tx_queue_dequeue(can_bus_t *bus) {
+	if (can_bus_tx_queue_empty(bus)) return false;
+	size_t new_head = bus->queue_tx.head + 1;
+	if (new_head >= bus->queue_tx.size) new_head = 0;
+	bus->queue_tx.head = new_head;
 	return true;
 }
 
@@ -309,10 +119,17 @@ bool can_bus_rx_queue_reset_dequeue(can_rx_frame_queue_t* head, can_bus_t* bus) 
 	can_bus_rx_queue_reset(head);
 	return can_bus_rx_queue_dequeue(bus);
 }
+bool can_bus_tx_queue_reset_dequeue(can_tx_frame_queue_t* head, can_bus_t *bus) {
+	can_bus_tx_queue_reset(head);
+	return can_bus_tx_queue_dequeue(bus);
+}
 
 //получить указатель на элемент в хвосте очереди
 can_rx_frame_queue_t* can_bus_rx_queue_tail(can_bus_t *bus) {
 	return &(bus->queue_rx.queue[bus->queue_rx.tail]);
+}
+can_tx_frame_queue_t* can_bus_tx_queue_tail(can_bus_t *bus) {
+	return &(bus->queue_tx.queue[bus->queue_tx.tail]);
 }
 
 //получить указатель на элемент в хвосте очереди и очистить его
@@ -321,12 +138,23 @@ can_rx_frame_queue_t* can_bus_rx_queue_tail_reset(can_bus_t *bus) {
 	can_bus_rx_queue_reset(tail);
 	return tail;
 }
+can_tx_frame_queue_t* can_bus_tx_queue_tail_reset(can_bus_t *bus) {
+	can_tx_frame_queue_t* tail = can_bus_tx_queue_tail(bus);
+	can_bus_tx_queue_reset(tail);
+	return tail;
+}
 
 //можно ли добавить элемент в очередь, если новый хвост не совпадает с головой
 bool can_bus_rx_queue_can_enqueue(can_bus_t *bus) {
 	size_t new_tail = bus->queue_rx.tail + 1;
 	if (new_tail >= bus->queue_rx.size) new_tail = 0;
 	if (new_tail == bus->queue_rx.head) return false; //ovf
+	return true;
+}
+bool can_bus_tx_queue_can_enqueue(can_bus_t *bus) {
+	size_t new_tail = bus->queue_tx.tail + 1;
+	if (new_tail >= bus->queue_tx.size) new_tail = 0;
+	if (new_tail == bus->queue_tx.head) return false; //ovf
 	return true;
 }
 
@@ -338,72 +166,6 @@ bool can_bus_rx_queue_enqueue(can_bus_t *bus) {
 	bus->queue_rx.tail = new_tail;
 	return true;
 }
-
-void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size) {
-	bus->queue_rx.queue = queue;
-	bus->queue_rx.size = queue_size;
-	bus->queue_rx.head = 0;
-	bus->queue_rx.tail = 0;
-}
-
-//!TX
-void can_bus_tx_queue_reset(can_tx_frame_queue_t* ptr) {
-	ptr->id = 0;
-	ptr->dlc = 0;
-	memset(ptr->data, 0, sizeof(ptr->data));
-}
-
-//очередь пуста, если голова и хвост совпадают
-bool can_bus_tx_queue_empty(can_bus_t *bus) {
-	return (bus->queue_tx.head == bus->queue_tx.tail);
-}
-
-//очередь не пуста, если голова и хвост не совпадают
-bool can_bus_tx_queue_notEmpty(can_bus_t *bus) {
-	return (bus->queue_tx.head != bus->queue_tx.tail);
-}
-
-//получить указатель на элемент в голове очереди
-can_tx_frame_queue_t* can_bus_tx_queue_head(can_bus_t *bus) {
-	return &(bus->queue_tx.queue[bus->queue_tx.head]);
-}
-
-//удалить элемент в голове очереди, если очередь не пуста
-bool can_bus_tx_queue_dequeue(can_bus_t *bus) {
-	if (bus->queue_tx.head == bus->queue_tx.tail) return false; //empty
-	size_t new_head = bus->queue_tx.head + 1;
-	if (new_head >= bus->queue_tx.size) new_head = 0;
-	bus->queue_tx.head = new_head;
-	return true;
-}
-
-//удалить элемент в голове очереди и очистить его, если очередь не пуста
-bool can_bus_tx_queue_reset_dequeue(can_tx_frame_queue_t* head, can_bus_t *bus) {
-	can_bus_tx_queue_reset(head);
-	return can_bus_tx_queue_dequeue(bus);
-}
-
-//получить указатель на элемент в хвосте очереди
-can_tx_frame_queue_t* can_bus_tx_queue_tail(can_bus_t *bus) {
-	return &(bus->queue_tx.queue[bus->queue_tx.tail]);
-}
-
-//получить указатель на элемент в хвосте очереди и очистить его
-can_tx_frame_queue_t* can_bus_tx_queue_tail_reset(can_bus_t *bus) {
-	can_tx_frame_queue_t* tail = can_bus_tx_queue_tail(bus);
-	can_bus_tx_queue_reset(tail);
-	return tail;
-}
-
-//можно ли добавить элемент в очередь, если новый хвост не совпадает с головой
-bool can_bus_tx_queue_can_enqueue(can_bus_t *bus) {
-	size_t new_tail = bus->queue_tx.tail + 1;
-	if (new_tail >= bus->queue_tx.size) new_tail = 0;
-	if (new_tail == bus->queue_tx.head) return false; //ovf
-	return true;
-}
-
-//добавить элемент в очередь, если новый хвост не совпадает с головой
 bool can_bus_tx_queue_enqueue(can_bus_t *bus) {
 	size_t new_tail = bus->queue_tx.tail + 1;
 	if (new_tail >= bus->queue_tx.size) new_tail = 0;
@@ -412,67 +174,18 @@ bool can_bus_tx_queue_enqueue(can_bus_t *bus) {
 	return true;
 }
 
+//инициализирует очередь
+void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size) {
+	bus->queue_rx.queue = queue;
+	bus->queue_rx.size = queue_size;
+	bus->queue_rx.head = 0;
+	bus->queue_rx.tail = 0;
+}
 void can_bus_tx_queue_init(can_bus_t *bus, can_tx_frame_queue_t* queue, size_t queue_size) {
 	bus->queue_tx.queue = queue;
 	bus->queue_tx.size = queue_size;
 	bus->queue_tx.head = 0;
 	bus->queue_tx.tail = 0;
-}
-
-bool can_bus_rx_process(can_bus_t* bus) {
-	//если нечего принимать
-	if (can_bus_rx_queue_empty(bus)) return false;
-
-	err_t rx_err = E_NO_ERROR;
-
-	can_rx_frame_queue_t* head = NULL;
-
-	do {
-		//получим указатель на голову очереди
-		head = can_bus_rx_queue_head(bus);
-		//если колбек задан
-		if(bus->rx_callback != NULL) {
-			rx_err = bus->rx_callback(bus, head);
-		} else {
-			rx_err = E_NULL_POINTER;
-		}
-
-		if(rx_err == E_NO_ERROR) {
-			//очистим данные в очереди и удалим элемент
-			can_bus_rx_queue_reset_dequeue(head, bus);
-		}
-	} while ((rx_err == E_NO_ERROR) && can_bus_rx_queue_notEmpty(bus));
-
-	if((rx_err == E_NO_ERROR) || (rx_err == E_BUSY)) return true;
-
-	return false;
-}
-
-bool can_bus_tx_process(can_bus_t* bus) {
-	//если нечего передавать
-	if (can_bus_tx_queue_empty(bus)) return false;
-
-	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
-
-	err_t tx_err = E_NO_ERROR;
-
-	can_tx_frame_queue_t* head = NULL;
-
-	do {
-		//Получим указатель
-		head = can_bus_tx_queue_head(bus);
-		//заполним регистры
-		tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
-
-		if(tx_err == E_NO_ERROR) {
-			//очистим данные в очереди и удалим элемент
-			can_bus_tx_queue_reset_dequeue(head, bus);
-		}
-	} while ((tx_err == E_NO_ERROR) && can_bus_tx_queue_notEmpty(bus));
-
-	if((tx_err == E_NO_ERROR) || (tx_err == E_BUSY)) return true;
-
-	return false;
 }
 
 /*
@@ -504,10 +217,71 @@ bool can_bus_write(can_bus_t* bus, uint32_t id, uint8_t dlc, uint8_t* data) {
 	return true;
 }
 
-//IRQ Handlers
-void CAN_TSR_RQCP_Handler(can_bus_t *can_bus, uint32_t TSR) {
+//вызывается в цикле или по таймеру для получения сообщений из очереди
+err_t can_bus_rx_process(can_bus_t* bus) {
 
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+	err_t rx_err = E_NO_ERROR;
+
+	//если нечего принимать
+	if (can_bus_rx_queue_empty(bus)) return rx_err;
+
+	can_rx_frame_queue_t* head = NULL;
+
+	do {
+		//получим указатель на голову очереди
+		head = can_bus_rx_queue_head(bus);
+		//если колбек задан
+		if(bus->rx_callback != NULL) {
+			rx_err = bus->rx_callback(bus, head);
+		} else {
+			return E_NULL_POINTER;
+		}
+
+		if(rx_err == E_NO_ERROR) {
+			//очистим данные в очереди и удалим элемент
+			can_bus_rx_queue_reset_dequeue(head, bus);
+		}
+	} while ((rx_err == E_NO_ERROR) && can_bus_rx_queue_not_empty(bus));
+
+	return rx_err;
+}
+
+//вызывается в цикле или по таймеру для передачи сообщений из очереди
+err_t can_bus_tx_process(can_bus_t* bus) {
+
+	err_t tx_err = E_NO_ERROR;
+
+	//если нечего передавать
+	if (can_bus_tx_queue_empty(bus)) return tx_err;
+
+	//получим указатель на устройство
+	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
+
+	can_tx_frame_queue_t* head = NULL;
+
+	//запрертим прерывание
+	CAN_BUS_LOCK_TX(bus);
+	do {
+		//Получим указатель на голову очереди
+		head = can_bus_tx_queue_head(bus);
+		//Запросим передачу
+		tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
+
+		if(tx_err == E_NO_ERROR) {
+			//очистим данные в очереди и удалим элемент
+			can_bus_tx_queue_reset_dequeue(head, bus);
+		}
+	} while ((tx_err == E_NO_ERROR) && can_bus_tx_queue_not_empty(bus));
+	//разрешим прерывание
+	CAN_BUS_UNLOCK_TX(bus);
+
+	return tx_err;
+}
+
+//IRQ Handlers
+void CAN_TSR_RQCP_Handler(can_bus_t *bus, uint32_t TSR) {
+
+	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
 
 	err_t tx_err = E_NO_ERROR;
 
@@ -517,38 +291,42 @@ void CAN_TSR_RQCP_Handler(can_bus_t *can_bus, uint32_t TSR) {
 		if (can_TSR_RQCP_get(TSR, mailbox)) {
 			//очистим запрос
 			can_TSR_RQCP_clear(can, mailbox);
+			//запретим прерывание
+			CAN_BUS_LOCK_TX(bus);
 			//если есть что передать
-			if (can_bus_tx_queue_notEmpty(can_bus)) {
+			if (can_bus_tx_queue_not_empty(bus)) {
 				//Получим указатель
-				can_tx_frame_queue_t *head = can_bus_tx_queue_head(can_bus);
+				can_tx_frame_queue_t *head = can_bus_tx_queue_head(bus);
 				//заполним регистры
 				tx_err = can_tx_mailbox_write_and_request(can, head->id, head->dlc, head->data);
 				if (tx_err == E_NO_ERROR) {
 					//очистим данные в очереди и удалим элемент
-					can_bus_tx_queue_reset_dequeue(head, can_bus);
+					can_bus_tx_queue_reset_dequeue(head, bus);
 				}
 			}
+			//разрешим прерывание
+			CAN_BUS_UNLOCK_TX(bus);
 		}
 	}
 }
 
-void CAN_TX_IRQHandler(can_bus_t *can_bus) {
+void CAN_TX_IRQHandler(can_bus_t *bus) {
 
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
 
 	uint32_t TSR = can_TSR_read(can);
 
-	CAN_TSR_RQCP_Handler(can_bus, TSR);
+	CAN_TSR_RQCP_Handler(bus, TSR);
 }
 
-void CAN_RX_FIFO_Full_Error_Set(can_bus_t *can_bus, int fifo) {
+void CAN_RX_FIFO_Full_Error_Set(can_bus_t *bus, int fifo) {
 	switch (fifo) {
 	case CAN_RX_MAILBOX_0:
-		can_bus->error |= CAN_ERROR_RX0_FULL;
+		bus->error |= CAN_ERROR_RX0_FULL;
 		break;
 
 	case CAN_RX_MAILBOX_1:
-		can_bus->error |= CAN_ERROR_RX1_FULL;
+		bus->error |= CAN_ERROR_RX1_FULL;
 		break;
 
 	default:
@@ -556,14 +334,14 @@ void CAN_RX_FIFO_Full_Error_Set(can_bus_t *can_bus, int fifo) {
 	}
 }
 
-void CAN_RX_FIFO_Overrun_Error_Set(can_bus_t *can_bus, int fifo) {
+void CAN_RX_FIFO_Overrun_Error_Set(can_bus_t *bus, int fifo) {
 	switch (fifo) {
 	case CAN_RX_MAILBOX_0:
-		can_bus->error |= CAN_ERROR_RX0_OVERRUN;
+		bus->error |= CAN_ERROR_RX0_OVERRUN;
 		break;
 
 	case CAN_RX_MAILBOX_1:
-		can_bus->error |= CAN_ERROR_RX1_OVERRUN;
+		bus->error |= CAN_ERROR_RX1_OVERRUN;
 		break;
 
 	default:
@@ -571,14 +349,14 @@ void CAN_RX_FIFO_Overrun_Error_Set(can_bus_t *can_bus, int fifo) {
 	}
 }
 
-void CAN_RX_FIFO_Full_Error_Clear(can_bus_t *can_bus, int fifo) {
+void CAN_RX_FIFO_Full_Error_Clear(can_bus_t *bus, int fifo) {
 	switch (fifo) {
 	case CAN_RX_MAILBOX_0:
-		can_bus->error &= ~CAN_ERROR_RX0_FULL;
+		bus->error &= ~CAN_ERROR_RX0_FULL;
 		break;
 
 	case CAN_RX_MAILBOX_1:
-		can_bus->error &= ~CAN_ERROR_RX1_FULL;
+		bus->error &= ~CAN_ERROR_RX1_FULL;
 		break;
 
 	default:
@@ -586,14 +364,14 @@ void CAN_RX_FIFO_Full_Error_Clear(can_bus_t *can_bus, int fifo) {
 	}
 }
 
-void CAN_RX_FIFO_Overrun_Error_Clear(can_bus_t *can_bus, int fifo) {
+void CAN_RX_FIFO_Overrun_Error_Clear(can_bus_t *bus, int fifo) {
 	switch (fifo) {
 	case CAN_RX_MAILBOX_0:
-		can_bus->error &= ~CAN_ERROR_RX0_OVERRUN;
+		bus->error &= ~CAN_ERROR_RX0_OVERRUN;
 		break;
 
 	case CAN_RX_MAILBOX_1:
-		can_bus->error &= ~CAN_ERROR_RX1_OVERRUN;
+		bus->error &= ~CAN_ERROR_RX1_OVERRUN;
 		break;
 
 	default:
@@ -601,24 +379,23 @@ void CAN_RX_FIFO_Overrun_Error_Clear(can_bus_t *can_bus, int fifo) {
 	}
 }
 
-void CAN_RX_FIFO_FMP_Interrupt_Disabled(can_bus_t *can_bus, int fifo) {
-	switch (fifo) {
-	case CAN_RX_MAILBOX_0:
-		can_bus->error |= CAN_ERROR_RX0_FMP_DIS;
-		break;
-
-	case CAN_RX_MAILBOX_1:
-		can_bus->error |= CAN_ERROR_RX1_FMP_DIS;
-		break;
-
-	default:
-		break;
-	}
+void CAN_RX_Queue_Full_Error_Set(can_bus_t *bus) {
+	bus->error |= CAN_ERROR_RX_QUEUE_FULL;
 }
 
-void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
+void CAN_RX_Queue_Full_Error_Clear(can_bus_t *bus) {
+	bus->error &= ~CAN_ERROR_RX_QUEUE_FULL;
+}
 
-	CAN_TypeDef *can_ptr = can_bus->can_ptr[can_bus->can_n];
+/*
+ * TODO: разобраться с тем, что делать, если пихать больше некуда
+ * CAN_IER_FMPIE_Disabled_Error_Set(bus, fifo);
+ * can_IER_FMPIE_set(can_ptr, fifo, 0);
+ */
+
+void CAN_RX_IRQHandler(can_bus_t *bus, int fifo) {
+
+	CAN_TypeDef *can_ptr = bus->can_ptr[bus->can_n];
 
 	//получим статус FIFO на входе в прерывание
 	uint32_t RFR = can_RFR_read(can_ptr, fifo);
@@ -628,21 +405,21 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 	//FULL: FIFO full
 	if (can_RFR_FULL_read(RFR)) {
 		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
-		CAN_RX_FIFO_Full_Error_Set(can_bus, fifo);
+		CAN_RX_FIFO_Full_Error_Set(bus, fifo);
 	}
 
 	//FOVR: FIFO overrun
 	if (can_RFR_FOVR_read(RFR)) {
 		//Установим флаг ошибки, так как мы не смогли принять сообщение из-за переполнения очереди
-		CAN_RX_FIFO_Overrun_Error_Set(can_bus, fifo);
+		CAN_RX_FIFO_Overrun_Error_Set(bus, fifo);
 	}
 
 	//если есть сообщения в мейлбоксе
 	while(can_RFR_FMP_read(RFR)) {
 		//Если можно добавить в очередь
-		if(can_bus_rx_queue_can_enqueue(can_bus)) {
+		if(can_bus_rx_queue_can_enqueue(bus)) {
 			//Получим указатель на элемент в хвосте очереди и очистим его
-			can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail_reset(can_bus);
+			can_rx_frame_queue_t*  tail = can_bus_rx_queue_tail_reset(bus);
 			//заполним поля очереди
 			if(E_NO_ERROR == can_rx_mailbox_read(can_ptr, fifo,
 					&tail->id,
@@ -650,33 +427,34 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 					&index,
 					tail->data)) {
 				//вычислим реальный индекс и запишем
-				tail->index = can_bus->index_array[fifo][index];
+				tail->index = bus->index_array[fifo][index];
 				//Если успешно добавили в очередь
-				if(can_bus_rx_queue_enqueue(can_bus)) {
+				if(can_bus_rx_queue_enqueue(bus)) {
 					//Освободим FIFO периферии
 					can_rx_mailbox_release(can_ptr, fifo);
-					//Если был установлен флаг FIFO полон, то очистим, так как мы освободили место в FIFO
-					if(can_RFR_FULL_read(RFR)) {
-						//Очистим статус периферии FIFO полон
-						can_RFR_FULL_clear(can_ptr, fifo);
-					} else {
-						//Сбросим ошибку драйвера FIFO полон
-						CAN_RX_FIFO_Full_Error_Clear(can_bus, fifo);
-					}
 					//Если был установлен флаг FIFO переполнен, то очистим, так как мы освободили место в FIFO
 					if(can_RFR_FOVR_read(RFR)) {
 						//Очистим статус переполнения FIFO периферии
 						can_RFR_FOVR_clear(can_ptr, fifo);
 					} else {
 						//Сбросим ошибку переполнения FIFO драйвера
-						CAN_RX_FIFO_Overrun_Error_Clear(can_bus, fifo);
+						CAN_RX_FIFO_Overrun_Error_Clear(bus, fifo);
+						//Если был установлен флаг FIFO полон, то очистим, так как мы освободили место в FIFO
+						if(can_RFR_FULL_read(RFR)) {
+							//Очистим статус периферии FIFO полон
+							can_RFR_FULL_clear(can_ptr, fifo);
+						} else {
+							//Сбросим ошибку драйвера FIFO полон
+							CAN_RX_FIFO_Full_Error_Clear(bus, fifo);
+						}
 					}
+					//сбросим ошибку очередь полная
+					CAN_RX_Queue_Full_Error_Clear(bus);
 				}
 			}
 		} else {
-			//TODO: разобраться с тем, что делать, если пихать больше некуда
-			CAN_RX_FIFO_FMP_Interrupt_Disabled(can_bus, fifo);
-			can_IER_FMPIE_set(can_ptr, fifo, 0);
+			//установим ошибку очередь полная
+			CAN_RX_Queue_Full_Error_Set(bus);
 			break;
 		}
 
@@ -688,7 +466,7 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 	//FULL: FIFO full
 	if (can_RFR_FULL_read(RFR)) {
 
-		if(can_RFR_FMP_read(RFR)) {
+		while(can_RFR_FMP_read(RFR)) {
 			//Освободим фифо контроллера
 			can_rx_mailbox_release(can_ptr, fifo);
 			//обновим статус FIFO
@@ -713,62 +491,63 @@ void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo) {
 }
 
 
-void CAN_SCE_IRQHandler(can_bus_t *can_bus) {
+//TODO: пересмотреть обработчик ошибок
+void CAN_SCE_IRQHandler(can_bus_t *bus) {
 
-	CAN_TypeDef *can = can_bus->can_ptr[can_bus->can_n];
+	CAN_TypeDef *can = bus->can_ptr[bus->can_n];
 
 	uint32_t MSR = can_MSR_read(can);
 
 	uint32_t ESR = can_ESR_read(can);
 
-	can_bus->rx_error_counter = can_ESR_REC_read(ESR);
+	bus->rx_error_counter = can_ESR_REC_read(ESR);
 
-	can_bus->tx_error_counter = can_ESR_TEC_read(ESR);
+	bus->tx_error_counter = can_ESR_TEC_read(ESR);
 
-	if (can_IER_ERRIE_read(can)) {
-		if (can_MSR_ERRI_read(MSR)) {
+	if (can_MSR_ERRI_read(MSR)) {
+		if (can_IER_ERRIE_read(can)) {
 			if (can_IER_EWGIE_read(can)) {
 				if (can_ESR_EWGF_read(ESR)) {
-					if (can_bus->rx_error_counter >= 96) {
-						can_bus->error |= CAN_ERROR_RX_WARNING;
+					if (bus->rx_error_counter >= 96) {
+						bus->error |= CAN_ERROR_RX_WARNING;
 					}
 
-					if (can_bus->tx_error_counter >= 96) {
-						can_bus->error |= CAN_ERROR_TX_WARNING;
+					if (bus->tx_error_counter >= 96) {
+						bus->error |= CAN_ERROR_TX_WARNING;
 					}
 				} else {
-					can_bus->error &= ~(CAN_ERROR_TX_WARNING | CAN_ERROR_RX_WARNING);
+					bus->error &= ~(CAN_ERROR_TX_WARNING | CAN_ERROR_RX_WARNING);
 				}
 			}
 
 			if (can_IER_EPVIE_read(can)) {
 				if (can_ESR_EPVF_read(ESR)) {
-					if (can_bus->rx_error_counter > 127) {
-						can_bus->error |= CAN_ERROR_RX_PASSIVE;
+					if (bus->rx_error_counter > 127) {
+						bus->error |= CAN_ERROR_RX_PASSIVE;
 					}
 
-					if (can_bus->tx_error_counter > 127) {
-						can_bus->error |= CAN_ERROR_TX_PASSIVE;
+					if (bus->tx_error_counter > 127) {
+						bus->error |= CAN_ERROR_TX_PASSIVE;
 					}
 				} else {
-					can_bus->error &= ~(CAN_ERROR_TX_PASSIVE | CAN_ERROR_RX_PASSIVE);
+					bus->error &= ~(CAN_ERROR_TX_PASSIVE | CAN_ERROR_RX_PASSIVE);
 				}
 			}
 
 			if (can_IER_BOFIE_read(can)) {
 				if (can_ESR_BOFF_read(ESR)) {
-					can_bus->error |= CAN_ERROR_TX_BUSSOFF;
+					bus->error |= CAN_ERROR_TX_BUSSOFF;
 				} else {
-					can_bus->error &= ~CAN_ERROR_TX_BUSSOFF;
+					bus->error &= ~CAN_ERROR_TX_BUSSOFF;
 				}
 			}
 
 			if (can_IER_LECIE_read(can)) {
-				can_bus->last_error_code = can_ESR_LEC_read(ESR);
+				//TODO: добавить возможность вести лог ошибок
+				bus->last_error_code = can_ESR_LEC_read(ESR);
 			}
-
-			can_MSR_ERRI_clear(can);
 		}
+		can_MSR_ERRI_clear(can);
 	}
 
 	if (can_MSR_WKUI_read(MSR)) {
@@ -777,11 +556,11 @@ void CAN_SCE_IRQHandler(can_bus_t *can_bus) {
 		can_MSR_WKUI_clear(can);
 	}
 
-	if (can_IER_SLKIE_read(can)) {
-		if (can_MSR_SLAKI_read(MSR)) {
+	if (can_MSR_SLAKI_read(MSR)) {
+		if (can_IER_SLKIE_read(can)) {
 
-			can_MSR_SLAKI_clear(can);
 		}
+		can_MSR_SLAKI_clear(can);
 	}
 }
 

@@ -199,7 +199,7 @@ typedef struct {
     /* STM32 specific features */
     uint32_t primask_send; /* Primask register for interrupts for send operation */
     uint32_t primask_emcy; /* Primask register for interrupts for emergency operation */
-    uint32_t primask_od;   /* Primask register for interrupts for send operation */
+    uint32_t primask_od;   /* Primask register for interrupts for od operation */
 } CO_CANmodule_t;
 
 

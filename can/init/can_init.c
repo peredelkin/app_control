@@ -186,7 +186,7 @@ void can_setup(can_bus_t* bus) {
 	 * 1: Receive FIFO locked against overrun. Once a receive FIFO is full the next incoming
 	 * message will be discarded.
 	 */
-	can_MCR_RFLM_set(can,	1); //Должно быть 1 - мы должны забрать то, что получили
+	can_MCR_RFLM_set(can,	0); //Должно быть 1 - мы должны забрать то, что получили
 
 	/*
 	 * 0: The CAN hardware will automatically retransmit the message until it has been
@@ -373,13 +373,6 @@ void can_process_callback(void* arg) {
 		printf("CAN1 TX QUEUE FULL\n");
 	}
 
-	if (can_bus_1_masked_error & CAN_ERROR_RX0_FMP_DIS) {
-		printf("CAN1 RX0 FMP DIS\n");
-	}
-	if (can_bus_1_masked_error & CAN_ERROR_RX1_FMP_DIS) {
-		printf("CAN1 RX1 FMP DIS\n");
-	}
-
 	if (can_bus_1_masked_error & CAN_ERROR_RX0_FULL) {
 		printf("CAN1 RX0 FULL\n");
 	}
@@ -417,14 +410,6 @@ void can_process_callback(void* arg) {
 	if (can_bus_2_masked_error & CAN_ERROR_TX_QUEUE_FULL) {
 		printf("CAN2 TX QUEUE FULL\n");
 	}
-
-	if (can_bus_2_masked_error & CAN_ERROR_RX0_FMP_DIS) {
-		printf("CAN2 RX0 FMP DIS\n");
-	}
-	if (can_bus_2_masked_error & CAN_ERROR_RX1_FMP_DIS) {
-		printf("CAN2 RX1 FMP DIS\n");
-	}
-
 
 	if (can_bus_2_masked_error & CAN_ERROR_RX0_FULL) {
 		printf("CAN2 RX0 FULL\n");

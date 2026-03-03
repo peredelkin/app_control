@@ -24,8 +24,6 @@
 
 #include "can_reg.h"
 
-#define CAN_FILTER_MAX_COUNT	56	//16b mask + 16b id
-
 #define CAN_ERROR_RX_WARNING	((uint32_t)BIT(0))
 #define CAN_ERROR_TX_WARNING	((uint32_t)BIT(1))
 
@@ -39,9 +37,6 @@
 
 #define CAN_ERROR_RX1_OVERRUN	((uint32_t)BIT(7))
 #define CAN_ERROR_RX1_FULL		((uint32_t)BIT(8))
-
-#define CAN_ERROR_RX0_FMP_DIS	((uint32_t)BIT(9))
-#define CAN_ERROR_RX1_FMP_DIS	((uint32_t)BIT(10))
 
 #define CAN_ERROR_RX_QUEUE_FULL	((uint32_t)BIT(30))
 #define CAN_ERROR_TX_QUEUE_FULL	((uint32_t)BIT(31))
@@ -121,6 +116,9 @@ struct _can_bus_t {
 	int bridge_index;
 	void* co;
 	err_t (*rx_callback)(can_bus_t* bus, can_rx_frame_queue_t* head);
+
+	/* STM32 specific features */
+	uint32_t primask_tx;
 };
 
 typedef union {
@@ -149,23 +147,30 @@ typedef union {
 	} bit;
 } can_filter_16b_t;
 
-extern err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
-err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count);
-err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
-
 extern err_t can_bus_bitrate_set(can_bus_t* can_bus, uint16_t bitrate);
 
 extern can_rx_frame_queue_t* can_bus_rx_queue_head(can_bus_t *bus);
 
-extern bool can_bus_rx_process(can_bus_t* bus);
+extern err_t can_bus_rx_process(can_bus_t* bus);
 extern void can_bus_rx_queue_init(can_bus_t *bus, can_rx_frame_queue_t* queue, size_t queue_size);
 
-extern bool can_bus_tx_process(can_bus_t* bus);
+extern err_t can_bus_tx_process(can_bus_t* bus);
 extern void can_bus_tx_queue_init(can_bus_t *bus, can_tx_frame_queue_t* queue, size_t queue_size);
 extern bool can_bus_write(can_bus_t* bus, uint32_t id, uint8_t dlc, uint8_t* data);
 
 extern void CAN_TX_IRQHandler(can_bus_t *can_bus);
 extern void CAN_RX_IRQHandler(can_bus_t *can_bus, int fifo);
 extern void CAN_SCE_IRQHandler(can_bus_t *can_bus);
+
+extern err_t can_bus_filter_16b_bank_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
+err_t can_bus_filter_16b_bank_alloc(can_bus_t* bus, int count);
+err_t can_bus_filter_set(can_bus_t* bus, int filter, uint32_t id, uint32_t mask);
+
+#define CAN_BUS_LOCK_TX(CAN_BUS)                                                                                   \
+    do {                                                                                                               \
+        (CAN_BUS)->primask_tx = __get_PRIMASK();                                                                  \
+        __disable_irq();                                                                                               \
+    } while (0)
+#define CAN_BUS_UNLOCK_TX(CAN_BUS) __set_PRIMASK((CAN_BUS)->primask_tx)
 
 #endif /* CAN_BUS_CAN_BUS_H_ */
