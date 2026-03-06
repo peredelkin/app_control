@@ -2,12 +2,20 @@
 #include "digital_input.h"
 #include "modules/modules.h"
 
+static status_t settings_status_mask;
+static status_t settings_status_masked;
+
 METHOD_INIT_IMPL(M_digital_input, input)
 {
+	input->status = DIGITAL_INPUT_STATUS_NONE;
+	input->control = DIGITAL_INPUT_CONTROL_NONE;
+
 	INIT(msdi);
 
 	gpio_em_stop_cfg_setup(); //EmStop_App
 	gpio_ac_dc_lost_cfg_setup(); //AC DC Lost
+
+	input->status |= DIGITAL_INPUT_STATUS_READY;
 }
 
 METHOD_DEINIT_IMPL(M_digital_input, input)
@@ -35,15 +43,21 @@ METHOD_CALC_IMPL(M_digital_input, input)
 
 	//Проверим валидность данных от MSDI
 	if(msdi.status & MSDI_STATUS_VALID) {
+		//сбросим счетчик
 		input->m_cnt_msdi_invalid = input->p_t_msdi_invalid;
 		//заполним данные от MSDI
 		input->m_in_data.bit.msdi = msdi.out_digital;
+		//данные входов валидны
+		input->status |= DIGITAL_INPUT_STATUS_VALID;
 	} else {
 		if(input->m_cnt_msdi_invalid) {
+			//начнем отсчет
 			input->m_cnt_msdi_invalid--;
 		} else {
 			//очистим данные от MSDI
-			input->m_in_data.bit.msdi = 0; //TODO: установить нужное значение вместо нуля, если данные MSDI не валидны.
+			input->m_in_data.bit.msdi = 0;
+			//данные входов не валидны
+			input->status &= ~DIGITAL_INPUT_STATUS_VALID;
 		}
 	}
 
@@ -55,12 +69,12 @@ METHOD_CALC_IMPL(M_digital_input, input)
 
 	input->m_in_data.bit.panel = gpio_input_bit_read(&gpio_rs485_panel_detect);
 
-	uint32_t raw_mask;
+	uint32_t in_mask;
 	uint32_t out_mask;
 	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
-		raw_mask = (1 << input->p_select[i]);
+		in_mask = (1 << input->p_select[i]);
 		out_mask = (1 << i);
-		if(input->m_in_data.all & raw_mask) {
+		if(input->m_in_data.all & in_mask) {
 			//сбросим счетчик сброса О_о
 			input->m_cnt_reset[i] = input->p_t_reset[i];
 			//проверим счетчик установки
@@ -68,9 +82,9 @@ METHOD_CALC_IMPL(M_digital_input, input)
 				input->m_cnt_set[i]--;
 			} else {
 				if (input->p_invert[i] == 0x1) {
-					input->out_data &= ~out_mask;
+					input->m_out_data &= ~out_mask;
 				} else {
-					input->out_data |= out_mask;
+					input->m_out_data |= out_mask;
 				}
 			}
 		} else {
@@ -81,11 +95,35 @@ METHOD_CALC_IMPL(M_digital_input, input)
 				input->m_cnt_reset[i]--;
 			} else {
 				if(input->p_invert[i] == 0x1) {
-					input->out_data |= out_mask;
+					input->m_out_data |= out_mask;
 				} else {
-					input->out_data &= ~out_mask;
+					input->m_out_data &= ~out_mask;
 				}
 			}
 		}
+	}
+
+	settings_status_masked = settings.status & ~settings_status_mask;
+
+	//настройки прочитаны
+	if(settings_status_masked & SETTINGS_STATUS_READ_DONE) {
+		if(settings_status_masked & SETTINGS_STATUS_VALID) {
+			settings_status_mask |= SETTINGS_STATUS_VALID;
+			settings_status_mask &= ~SETTINGS_STATUS_ERROR;
+			input->status |= DIGITAL_INPUT_STATUS_RUN;
+		}
+
+		if(settings_status_masked & SETTINGS_STATUS_ERROR) {
+			settings_status_mask |= SETTINGS_STATUS_ERROR;
+			settings_status_mask &= ~SETTINGS_STATUS_VALID;
+			input->status &= ~DIGITAL_INPUT_STATUS_RUN;
+		}
+	}
+
+	if((input->status & (DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN | DIGITAL_INPUT_STATUS_VALID)) ==
+			(DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN | DIGITAL_INPUT_STATUS_VALID)) {
+		input->out_data = input->m_out_data;
+	} else {
+		input->out_data = 0;
 	}
 }

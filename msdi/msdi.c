@@ -120,7 +120,7 @@ METHOD_INIT_IMPL(M_msdi, msdi)
 	//Инит SPI
 	spi_bus_open(msdi->m_tic12400.spi_bus, msdi->m_tic12400.spi_cfg);
 	//модуль не готов
-	msdi->status &= ~STATUS_READY;
+	msdi->status &= ~MSDI_STATUS_READY;
 	//предварительная инициализация
 	if (tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0,
 	TIC12400_SETTINGS_COUNT, NULL, NULL) == false) {
@@ -132,7 +132,7 @@ METHOD_INIT_IMPL(M_msdi, msdi)
 	//если нет ошибок
 	if (!(msdi->status & MSDI_STATUS_ERROR)) {
 		//модуль готов
-		msdi->status |= STATUS_READY;
+		msdi->status |= MSDI_STATUS_READY;
 	}
 	//Деинициализация SPI
 	spi_bus_close(msdi->m_tic12400.spi_bus);
@@ -193,7 +193,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	 */
 	if (msdi->m_int_stat.bit.por || msdi->m_int_stat.bit.chk_fail) {
 		//модуль не готов
-		msdi->status &= ~STATUS_READY;
+		msdi->status &= ~MSDI_STATUS_READY;
 		//повторная инициализация
 		if (tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0,
 				TIC12400_SETTINGS_COUNT, NULL, NULL) == false) {
@@ -211,7 +211,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		msdi->m_int_stat.bit.por = 0;
 		msdi->m_int_stat.bit.chk_fail = 0;
 		//модуль готов
-		msdi->status |= STATUS_READY;
+		msdi->status |= MSDI_STATUS_READY;
 	}
 
 	//Temperature Shutdown
@@ -246,7 +246,7 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		msdi->status &= ~MSDI_STATUS_UV;
 	}
 
-	if (msdi->status & STATUS_READY) {
+	if (msdi->status & MSDI_STATUS_READY) {
 		//чтение входов
 		if (tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 1, 6, NULL, NULL) == false) {
 			//проверим статус RX фрейма

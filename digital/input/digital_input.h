@@ -63,6 +63,7 @@ struct _S_Digital_Input {
 	// Коллбэки.
 	// Внутренние данные.
 	_digital_input_in_reg_t m_in_data;
+	reg_u32_t m_out_data;
 	reg_u8_t m_cnt_set[DIGITAL_INPUT_COUNT];
 	reg_u8_t m_cnt_reset[DIGITAL_INPUT_COUNT];
 	reg_u8_t m_cnt_msdi_invalid;
@@ -93,6 +94,7 @@ EXTERN METHOD_CALC_PROTO(M_digital_input);
         /* Коллбэки */\
         /* Внутренние данные */\
 		{0},\
+		0,\
 		{0},\
 		{0},\
 		0,\
