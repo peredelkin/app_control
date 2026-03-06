@@ -11,7 +11,7 @@
 
 /* SPI2 BEGIN */
 //dac7562
-
+//ads8685
 SPI_BUS_TypeDef SPI2_Bus;
 
 void SPI2_IRQHandler() {
