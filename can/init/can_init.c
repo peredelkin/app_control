@@ -489,7 +489,7 @@ void can_bridge_init(can_bus_t* bus, uint32_t id, uint32_t mask) {
 	if(can1_bridge_err != E_NO_ERROR) {
 		printf("CAN bridge filter allocation error: %d\n", (int) can1_bridge_err);
 	} else {
-		printf("CAN bridge filter allocated at index: %d\n", bus->bridge_index);
+		printf("CAN%d bridge allocated\n", (bus->can_n + 1));
 	}
 }
 
@@ -531,6 +531,7 @@ void can_canopen_init(void) {
 			printf("Error init CO (%d)\n", (int) co1_err);
 		} else {
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
+			sys_counter_tv_print();
 			//Настройка моста
 			can_bridge_init(&can_bus_1, can_1_to_2_id, can_1_to_2_mask);
 #endif
@@ -554,6 +555,7 @@ void can_canopen_init(void) {
 			printf("Error init CO (%d)\n", (int) co2_err);
 		} else {
 #if defined(CAN1_CO_ENABLE) && defined(CAN2_CO_ENABLE)
+			sys_counter_tv_print();
 			//Настройка моста
 			can_bridge_init(&can_bus_2, can_2_to_1_id, can_2_to_1_mask);
 #endif

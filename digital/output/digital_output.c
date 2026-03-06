@@ -2,11 +2,20 @@
 #include "digital_output.h"
 #include "modules/modules.h"
 
+static status_t settings_status_mask;
+static status_t settings_status_masked;
 
 METHOD_INIT_IMPL(M_digital_output, output)
 {
+	output->status = DIGITAL_OUTPUT_STATUS_NONE;
+	output->control = DIGITAL_OUTPUT_CONTROL_NONE;
+
     INIT(do_ncv7608);
     INIT(do_relay);
+
+    output->status |= DIGITAL_OUTPUT_STATUS_READY;
+    //TODO: нужно будет проверять в обработчике статус MC. до тех пор STATUS_VALID
+    output->status |= DIGITAL_OUTPUT_STATUS_VALID;
 }
 
 METHOD_DEINIT_IMPL(M_digital_output, output)
@@ -35,12 +44,12 @@ METHOD_DEINIT_IMPL(M_digital_output, output)
  */
 METHOD_CALC_IMPL(M_digital_output, output)
 {
-	uint32_t raw_mask;
 	uint32_t in_mask;
+	uint32_t out_mask;
 	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
-		raw_mask = (1 << output->p_select[i]);
-		in_mask = (1 << i);
-		if(output->in_data & raw_mask) {
+		in_mask = (1 << output->p_select[i]);
+		out_mask = (1 << i);
+		if(output->in_data & in_mask) {
 			//сбросим счетчик сброса О_о
 			output->m_cnt_reset[i] = output->p_t_reset[i];
 			//проверим счетчик установки
@@ -48,9 +57,9 @@ METHOD_CALC_IMPL(M_digital_output, output)
 				output->m_cnt_set[i]--;
 			} else {
 				if(output->p_invert[i] == 0x1) {
-					output->m_out_data.all &= ~in_mask;
+					output->m_out_data.all &= ~out_mask;
 				} else {
-					output->m_out_data.all |= in_mask;
+					output->m_out_data.all |= out_mask;
 				}
 			}
 		} else {
@@ -61,17 +70,39 @@ METHOD_CALC_IMPL(M_digital_output, output)
 				output->m_cnt_reset[i]--;
 			} else {
 				if(output->p_invert[i] == 0x1) {
-					output->m_out_data.all |= in_mask;
+					output->m_out_data.all |= out_mask;
 				} else {
-					output->m_out_data.all &= ~in_mask;
+					output->m_out_data.all &= ~out_mask;
 				}
 			}
 		}
 	}
 
-	do_ncv7608.in_data = output->m_out_data.bit.ncv;
+	settings_status_masked = settings.status & ~settings_status_mask;
 
-	do_relay.in_data = output->m_out_data.bit.relay;
+	//настройки прочитаны
+	if(settings_status_masked & SETTINGS_STATUS_READ_DONE) {
+		if(settings_status_masked & SETTINGS_STATUS_VALID) {
+			settings_status_mask |= SETTINGS_STATUS_VALID;
+			settings_status_mask &= ~SETTINGS_STATUS_ERROR;
+			output->status |= DIGITAL_OUTPUT_STATUS_RUN;
+		}
+
+		if(settings_status_masked & SETTINGS_STATUS_ERROR) {
+			settings_status_mask |= SETTINGS_STATUS_ERROR;
+			settings_status_mask &= ~SETTINGS_STATUS_VALID;
+			output->status &= ~DIGITAL_OUTPUT_STATUS_RUN;
+		}
+	}
+
+	if((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID)) ==
+			(DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID)) {
+		do_ncv7608.in_data = output->m_out_data.bit.ncv;
+		do_relay.in_data = output->m_out_data.bit.relay;
+	} else {
+		do_ncv7608.in_data = 0;
+		do_relay.in_data = 0;
+	}
 
 	CALC(do_ncv7608);
 	CALC(do_relay);
