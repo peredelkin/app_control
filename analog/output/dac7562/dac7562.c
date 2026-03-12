@@ -135,7 +135,7 @@ void dac7562_internal_ref_enable_gain_2(uint8_t* frame) {
 SPI_BUS_FRAME_TypeDef dac7562_ab_spi_control[2];
 SPI_BUS_FRAME_TypeDef dac7562_ctrl_spi_control;
 
-uint8_t dac7562_rx_stub[3];
+uint8_t dac7562_rx_stub[3]; //TODO: убрать и проверить - в spi уже есть заглушка на случай NULL в указателе
 
 METHOD_INIT_IMPL(M_dac7562, dac7562)
 {

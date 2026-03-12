@@ -8197,4 +8197,81 @@
             </RegVar>
         </RegVars>
     </RegEntry>
+    <RegEntry index="8496">
+        <name>ai_ads8665</name>
+        <type>2</type>
+        <description></description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>4</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ai_ads8665.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ai_ads8665.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>out_ch_a</name>
+                <type>4</type>
+                <count>1</count>
+                <memory>ai_ads8665.out_ch_a</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="4">
+                <name>out_ch_b</name>
+                <type>4</type>
+                <count>1</count>
+                <memory>ai_ads8665.out_ch_b</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
 </RegEntries>

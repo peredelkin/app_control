@@ -271,5 +271,8 @@ struct _S_CO_data CO_data = {
 },
 .temp_comp = {
     .count = 33 /* Number of sub entries count */
+},
+.ai_ads8665 = {
+    .count = 4 /* Number of sub entries count */
 }
 };

@@ -596,6 +596,11 @@ REG(REG_ID_TEMP_COMP_INVERT2, &temp_comp.p_invert[2], REG_TYPE_U8, REG_FLAG_CONF
 REG(REG_ID_TEMP_COMP_INVERT3, &temp_comp.p_invert[3], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
 REG(REG_ID_TEMP_COMP_INVERT4, &temp_comp.p_invert[4], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
 REG(REG_ID_TEMP_COMP_INVERT5, &temp_comp.p_invert[5], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр инверсии бита выхода */
+REG(REG_ID_AI_ADS8665_COUNT, &CO_data.ai_ads8665.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
+REG(REG_ID_AI_ADS8665_CONTROL, &ai_ads8665.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
+REG(REG_ID_AI_ADS8665_STATUS, &ai_ads8665.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
+REG(REG_ID_AI_ADS8665_OUT_CH_A, &ai_ads8665.out_ch_a, REG_TYPE_U16, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_AI_ADS8665_OUT_CH_B, &ai_ads8665.out_ch_b, REG_TYPE_U16, REG_FLAG_NONE, 0x000000) /*  */
 
 REGS_END()
 

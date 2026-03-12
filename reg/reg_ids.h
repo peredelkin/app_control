@@ -592,5 +592,10 @@
 #define REG_ID_TEMP_COMP_INVERT3 0x21201f /* Параметр инверсии бита выхода */
 #define REG_ID_TEMP_COMP_INVERT4 0x212020 /* Параметр инверсии бита выхода */
 #define REG_ID_TEMP_COMP_INVERT5 0x212021 /* Параметр инверсии бита выхода */
+#define REG_ID_AI_ADS8665_COUNT 0x213000 /* Number of sub entries count */
+#define REG_ID_AI_ADS8665_CONTROL 0x213001 /* Слово управления. */
+#define REG_ID_AI_ADS8665_STATUS 0x213002 /* Слово состояния. */
+#define REG_ID_AI_ADS8665_OUT_CH_A 0x213003 /*  */
+#define REG_ID_AI_ADS8665_OUT_CH_B 0x213004 /*  */
 
 #endif /* REG_IDS_H */

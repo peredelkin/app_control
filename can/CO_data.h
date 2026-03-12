@@ -327,6 +327,10 @@ struct _S_temp_comp {
     uint8_t count; /* Number of sub entries count */
 } temp_comp;
 
+struct _S_ai_ads8665 {
+    uint8_t count; /* Number of sub entries count */
+} ai_ads8665;
+
 };
 extern struct _S_CO_data CO_data;
 

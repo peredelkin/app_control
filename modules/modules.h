@@ -22,6 +22,7 @@
 #include "modbus_to_can/modbus_to_can.h"
 #include "settings/settings.h"
 #include "temp/comp/temp_wind_comp.h"
+#include "analog/input/ads8665/ads8685.h"
 
 extern M_conf conf;
 extern M_sys_main sys;
@@ -43,5 +44,6 @@ extern M_panel_led panel_led;
 extern M_modbus_to_can modbus_to_can_panel;
 extern M_settings settings;
 extern M_temp_wind_comp temp_comp;
+extern M_ads8685 ai_ads8665;
 
 #endif /* MODULES_H */

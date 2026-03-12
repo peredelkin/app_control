@@ -45,6 +45,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(temp_comp);
     INIT(digital_in);
     INIT(digital_out);
+    INIT(ai_ads8665);
     INIT(ao_dac7562);
     INIT(mso);
     INIT(rgb_led);
@@ -114,6 +115,7 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(temp_comp);
     DEINIT(digital_in);
     DEINIT(digital_out);
+    DEINIT(ai_ads8665);
     DEINIT(ao_dac7562);
     DEINIT(rgb_led);
     DEINIT(panel_led);
@@ -198,6 +200,7 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     CALC(digital_in);
     CALC(ntc_temp);
     CALC(temp_comp);
+    CALC(ai_ads8665);
     CALC(ao_dac7562);
     CALC(digital_out);
     CALC(rgb_led);

@@ -91,6 +91,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2100 &OD->list[48]
 #define OD_ENTRY_H2110 &OD->list[49]
 #define OD_ENTRY_H2120 &OD->list[50]
+#define OD_ENTRY_H2130 &OD->list[51]
 
 
 // Object dictionary entries - shortcuts with names
@@ -145,6 +146,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2100_modbus_to_can_panel &OD->list[48]
 #define OD_ENTRY_H2110_settings &OD->list[49]
 #define OD_ENTRY_H2120_temp_comp &OD->list[50]
+#define OD_ENTRY_H2130_ai_ads8665 &OD->list[51]
 
 
 // OD config structure

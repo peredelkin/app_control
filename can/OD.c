@@ -66,6 +66,7 @@ typedef struct {
     OD_obj_record_t o_2100_modbus_to_can_panel[3];
     OD_obj_record_t o_2110_settings[3];
     OD_obj_record_t o_2120_temp_comp[34];
+    OD_obj_record_t o_2130_ai_ads8665[5];
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -3440,6 +3441,38 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .attribute = ODA_SDO_RW,
     .dataLength = 1
     }
+},
+.o_2130_ai_ads8665 = {
+    {
+    .dataOrig = (void*)&CO_data.ai_ads8665.count,
+    .subIndex = 0,
+    .attribute = ODA_SDO_R,
+    .dataLength = 1
+    },
+    {
+    .dataOrig = (void*)&ai_ads8665.control,
+    .subIndex = 1,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = (void*)&ai_ads8665.status,
+    .subIndex = 2,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 4
+    },
+    {
+    .dataOrig = (void*)&ai_ads8665.out_ch_a,
+    .subIndex = 3,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    },
+    {
+    .dataOrig = (void*)&ai_ads8665.out_ch_b,
+    .subIndex = 4,
+    .attribute = ODA_SDO_RW | ODA_MB,
+    .dataLength = 2
+    }
 }
 };
 // Object dictionary
@@ -3495,6 +3528,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x2100, 0x03, ODT_REC, &ODObjs.o_2100_modbus_to_can_panel, NULL},
     {0x2110, 0x03, ODT_REC, &ODObjs.o_2110_settings, NULL},
     {0x2120, 0x22, ODT_REC, &ODObjs.o_2120_temp_comp, NULL},
+    {0x2130, 0x05, ODT_REC, &ODObjs.o_2130_ai_ads8665, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 
