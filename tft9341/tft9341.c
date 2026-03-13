@@ -372,6 +372,8 @@ static err_t tft9341_transfer(tft9341_t* tft, bool is_data, size_t messages_coun
     
     err_t err = E_NO_ERROR;  spi_bus_transfer(tft->spi, tft->messages, messages_count, NULL, NULL);
     
+    spi_bus_wait(tft->spi); //TODO: ждать?
+
     if(err != E_NO_ERROR){
         tft9341_end(tft, err);
         return err;

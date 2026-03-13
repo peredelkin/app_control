@@ -118,6 +118,7 @@ void tic12400_write(tic12400_t *tic, spi_bus_callback_t callback, void *callback
 	tic124_tx_frame_fill(tic, 1, tic->sequential.addr[tic->sequential.index],
 			tic->sequential.data[tic->sequential.index]);
 	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1, callback, callback_argument);
+	spi_bus_wait(tic->spi_bus);
 }
 
 /*
@@ -130,6 +131,7 @@ void tic12400_write(tic12400_t *tic, spi_bus_callback_t callback, void *callback
 void tic12400_read(tic12400_t *tic, spi_bus_callback_t callback, void *callback_argument) {
 	tic124_tx_frame_fill(tic, 0, tic->sequential.addr[tic->sequential.index], 0);
 	spi_bus_transfer(tic->spi_bus, &tic->spi_control, 1, callback, callback_argument);
+	spi_bus_wait(tic->spi_bus);
 	tic->sequential.data[tic->sequential.index] = tic->frame_rx.bit.data;
 }
 

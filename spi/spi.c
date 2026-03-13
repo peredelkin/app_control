@@ -279,7 +279,7 @@ void spi_bus_transfer(SPI_BUS_TypeDef *bus, SPI_BUS_FRAME_TypeDef *frame_control
 	spi_bus_nss_off(bus);
 	spi_bus_write(bus);
 	spi_bus_interrupt_enable(bus);
-	spi_bus_wait(bus); //TODO: убрать отсюда spi_bus_wait() и переписать использующие библиотеки
+	//spi_bus_wait(bus);
 }
 
 void spi_bus_frame_done_handler(SPI_BUS_TypeDef *bus) {

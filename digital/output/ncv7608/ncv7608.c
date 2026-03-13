@@ -50,6 +50,7 @@ METHOD_CALC_IMPL(M_ncv7608, ncv7608)
 
 	//занимает шину и начинает прием/передачу
 	spi_bus_transfer(&SPI4_Bus, &ncv7608_spi_control, 1, NULL, NULL);
+	spi_bus_wait(&SPI4_Bus);
 
 	//Деинициализация SPI
 	spi_bus_close(&SPI4_Bus);
