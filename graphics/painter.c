@@ -261,7 +261,7 @@ void painter_fill_back_put_pixel(painter_t* painter, graphics_pos_t x_first, gra
             painter_put_pixel(painter, x, y, painter->brush_color);
             break;
         case PAINTER_BRUSH_DOT:
-            if(!(dx & 0x1 || dy & 0x1)) painter_put_pixel(painter, x, y, painter->brush_color);
+            if(!(dx & 0x1) || (dy & 0x1)) painter_put_pixel(painter, x, y, painter->brush_color);
             break;
         case PAINTER_BRUSH_DOT2:
             if(!((dx & 0x3) || (dy & 0x3))) painter_put_pixel(painter, x, y, painter->brush_color);
@@ -290,7 +290,7 @@ void painter_fill_back_put_pixel(painter_t* painter, graphics_pos_t x_first, gra
             if((dy & 0x3) == 0) painter_put_pixel(painter, x, y, painter->brush_color);
             break;
         case PAINTER_BRUSH_DASH_CROSS:
-            if((dx & 0x1 || dy & 0x1)) painter_put_pixel(painter, x, y, painter->brush_color);
+            if((dx & 0x1) || (dy & 0x1)) painter_put_pixel(painter, x, y, painter->brush_color);
             break;
         case PAINTER_BRUSH_DASH2_CROSS:
             if((dx & 0x3) == 0 || (dy & 0x3) == 0) painter_put_pixel(painter, x, y, painter->brush_color);

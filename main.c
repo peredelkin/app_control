@@ -10,6 +10,7 @@
 
 #include "gpio/init/gpio_init.h"
 #include "spi/init/spi_init.h"
+#include "spi/settings/spi_settings.h"
 #include "uart/init/uart_init.h"
 #include "modbus/init/modbus_init.h"
 #include "eth/init/eth_init.h"
@@ -22,7 +23,12 @@
 #include "fmc/yaffs2/yaffs_trace.h"
 #include "interrupts/interrupt_priorities.h"
 #include "tft9341/tft9341.h"
-#include "spi/settings/spi_settings.h"
+#include "tft9341/tft9341_cache.h"
+#include "tft9341/tft9341_cache_vbuf.h"
+#include "graphics/graphics.h"
+#include "graphics/painter.h"
+#include "graphics/font_5x8_utf8.h"
+#include "graphics/font_10x16_utf8.h"
 
 #define USE_SDCARD_FATFS_DISKIO
 #include "sdcard/sdcard.h"
@@ -229,8 +235,44 @@ void sdcard_ls_dir(const char* dirname)
 	f_closedir(&dp);
 }
 
+/* TFT BEGIN */
 tft9341_t tft;
-uint16_t pixel = 0xFFFF;
+#define TFT_PIXEL_SIZE 2
+#define TFT_WIDTH 240
+#define TFT_HEIGHT 320
+
+#define TFT_CACHE_BUFS_COUNT 2
+#define TFT_CACHE_BUF_PIXELS 320
+#define TFT_CACHE_BUF_SIZE (TFT_CACHE_BUF_PIXELS * TFT_PIXEL_SIZE)
+
+static uint8_t tft_cache_buf_data0[TFT_CACHE_BUF_SIZE];
+static uint8_t tft_cache_buf_data1[TFT_CACHE_BUF_SIZE];
+
+static tft9341_cache_buffer_t tft_cache_bufs[TFT_CACHE_BUFS_COUNT] = {
+    make_tft9341_cache_buffer(tft_cache_buf_data0, TFT_CACHE_BUF_SIZE),
+    make_tft9341_cache_buffer(tft_cache_buf_data1, TFT_CACHE_BUF_SIZE)
+};
+static tft9341_cache_t tft_cache = make_tft9341_cache(&tft, TFT_PIXEL_SIZE, tft_cache_bufs, TFT_CACHE_BUFS_COUNT, TFT9341_ROW_COL_NORMAL_MODE);
+
+//static bool tft_vbuf_set_pixel(graphics_t* graphics, graphics_pos_t x, graphics_pos_t y, graphics_color_t color);
+
+static graphics_vbuf_t graph_vbuf = make_tft9341_cache_vbuf();//make_graphics_vbuf(NULL, tft_vbuf_set_pixel, NULL, NULL, NULL, NULL, NULL)));
+static graphics_t graphics = make_graphics_virtual(&tft_cache, TFT_WIDTH, TFT_HEIGHT, GRAPHICS_FORMAT_RGB_565, &graph_vbuf);
+static painter_t painter = make_painter(&graphics);
+static const font_bitmap_t font_5x8_utf8_bitmaps[] = {
+    make_font_bitmap(32, 127, font_5x8_utf8_part0_data, FONT_5X8_UTF8_PART0_WIDTH, FONT_5X8_UTF8_PART0_HEIGHT, GRAPHICS_FORMAT_BW_1_V),
+    make_font_bitmap(0xb0, 0xb0, font_5x8_utf8_part1_data, FONT_5X8_UTF8_PART1_WIDTH, FONT_5X8_UTF8_PART1_HEIGHT, GRAPHICS_FORMAT_BW_1_V),
+    make_font_bitmap(0x400, 0x451, font_5x8_utf8_part2_data, FONT_5X8_UTF8_PART2_WIDTH, FONT_5X8_UTF8_PART2_HEIGHT, GRAPHICS_FORMAT_BW_1_V)
+};
+static font_t font5x8 = make_font(font_5x8_utf8_bitmaps, 3, 5, 8, 1, 0);
+
+const font_bitmap_t font_10x16_utf8_bitmaps[] = {
+    make_font_bitmap(32, 127, font_10x16_utf8_part0_data, FONT_10X16_UTF8_PART0_WIDTH, FONT_10X16_UTF8_PART0_HEIGHT, GRAPHICS_FORMAT_BW_1_V),
+    make_font_bitmap(0xb0, 0xb0, font_10x16_utf8_part1_data, FONT_10X16_UTF8_PART1_WIDTH, FONT_10X16_UTF8_PART1_HEIGHT, GRAPHICS_FORMAT_BW_1_V),
+    make_font_bitmap(0x400, 0x451, font_10x16_utf8_part2_data, FONT_10X16_UTF8_PART2_WIDTH, FONT_10X16_UTF8_PART2_HEIGHT, GRAPHICS_FORMAT_BW_1_V)
+};
+static font_t font10x16 = make_font(font_10x16_utf8_bitmaps, 3, 10, 16, 1, 0);
+/* TFT END */
 
 void init_tft(void) {
 	gpio_ili9341_cfg_setup();
@@ -248,11 +290,11 @@ void init_tft(void) {
 
 	tft9341_madctl_t madctl;
 	madctl.row_address_order = TFT9341_ROW_TOP_TO_BOTTOM;
-	madctl.col_address_order = TFT9341_COL_LEFT_TO_RIGHT;
-	madctl.row_col_exchange = TFT9341_ROW_COL_REVERSE_MODE;
+	madctl.col_address_order = TFT9341_COL_RIGHT_TO_LEFT;
+	madctl.row_col_exchange = TFT9341_ROW_COL_NORMAL_MODE;
 	madctl.vertical_refresh = TFT9341_REFRESH_TOP_TO_BOTTOM;
-	madctl.color_order = TFT9341_COLOR_ORDER_BGR;
 	madctl.horizontal_refresh = TFT9341_REFRESH_LEFT_TO_RIGHT;
+	madctl.color_order = TFT9341_COLOR_ORDER_BGR;
 
 	spi_bus_open(tft.spi, &spi_ili9341_cfg);
 
@@ -261,7 +303,15 @@ void init_tft(void) {
 	tft9341_sleep_out(&tft);
 	tft9341_display_on(&tft);
 
-	tft9341_set_pixel(&tft, 100, 100, &pixel, sizeof(pixel));
+	painter_set_brush(&painter, PAINTER_BRUSH_SOLID);
+	painter_set_brush_color(&painter, TFT9341_MAKE_RGB565(255, 0, 255));
+	painter_set_pen_color(&painter, TFT9341_MAKE_RGB565(0, 255, 0));
+	painter_draw_fillrect(&painter, 0, 0, 239, 319);
+	painter_draw_circle(&painter, 150, 150, 50);
+	painter_set_font(&painter, &font5x8);
+	painter_set_source_image_mode(&painter, PAINTER_SOURCE_IMAGE_MODE_BITMAP);
+	painter_draw_string(&painter, 50, 50, "Bla bla bla!");
+	painter_flush(&painter);
 
 	spi_bus_close(tft.spi);
 }
