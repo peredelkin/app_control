@@ -6,9 +6,10 @@
  */
 
 #include "spi_settings.h"
+#include "tft9341/tft9341.h"
 
 const CFG_REG_SPI_TypeDef spi_ili9341_cfg = SPI_CFG(
-		SPI_CPHA_SECOND,
+		SPI_CPHA_FIRST,
 		SPI_CPOL_IDLE_LOW,
 		SPI_MSTR_MASTER,
 		ILI9341_SPI_BR_FPCLK,
@@ -26,7 +27,7 @@ const CFG_REG_SPI_TypeDef spi_ili9341_cfg = SPI_CFG(
 		SPI_FRF_MOTOROLA,
 		SPI_ERRIE_DIS,
 		GPO_CS_SPI5_App,
-		1,
-		1,
-		3,
-		93410);
+		10,
+		10,
+		30,
+		TFT9341_DEFAULT_TRANSFER_ID);

@@ -21,6 +21,8 @@
 #include "fmc/yaffs2/yaffsfs.h"
 #include "fmc/yaffs2/yaffs_trace.h"
 #include "interrupts/interrupt_priorities.h"
+#include "tft9341/tft9341.h"
+#include "spi/settings/spi_settings.h"
 
 #define USE_SDCARD_FATFS_DISKIO
 #include "sdcard/sdcard.h"
@@ -227,6 +229,43 @@ void sdcard_ls_dir(const char* dirname)
 	f_closedir(&dp);
 }
 
+tft9341_t tft;
+uint16_t pixel = 0xFFFF;
+
+void init_tft(void) {
+	gpio_ili9341_cfg_setup();
+
+	tft9341_init_t is;
+
+	is.spi = &SPI5_Bus;
+	is.transfer_id = TFT9341_DEFAULT_TRANSFER_ID;
+	is.dc_pin = &GPO_Board_Out3_App;
+	is.reset_pin = &GPO_Board_Out4_App;
+
+	tft9341_init(&tft, &is);
+
+	tft9341_reset(&tft);
+
+	tft9341_madctl_t madctl;
+	madctl.row_address_order = TFT9341_ROW_TOP_TO_BOTTOM;
+	madctl.col_address_order = TFT9341_COL_LEFT_TO_RIGHT;
+	madctl.row_col_exchange = TFT9341_ROW_COL_REVERSE_MODE;
+	madctl.vertical_refresh = TFT9341_REFRESH_TOP_TO_BOTTOM;
+	madctl.color_order = TFT9341_COLOR_ORDER_BGR;
+	madctl.horizontal_refresh = TFT9341_REFRESH_LEFT_TO_RIGHT;
+
+	spi_bus_open(tft.spi, &spi_ili9341_cfg);
+
+	tft9341_set_madctl(&tft, &madctl);
+	tft9341_set_pixel_format(&tft, TFT9341_PIXEL_16BIT, TFT9341_PIXEL_16BIT);
+	tft9341_sleep_out(&tft);
+	tft9341_display_on(&tft);
+
+	tft9341_set_pixel(&tft, 100, 100, &pixel, sizeof(pixel));
+
+	spi_bus_close(tft.spi);
+}
+
 int main(void)
 {
 
@@ -305,6 +344,10 @@ int main(void)
 	can_canopen_init();
 	sys_counter_tv_print();
 	printf("CAN 1/2\n");
+
+	init_tft();
+	sys_counter_tv_print();
+	printf("TFT\n");
 
 	//eth_init(); //отпаяно
 

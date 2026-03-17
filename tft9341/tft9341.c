@@ -1,7 +1,9 @@
 #include "tft9341.h"
+#include "gpio/gpio.h"
 #include "utils/utils.h"
-#include "sys/counter/sys_counter.h"
+#include "sys/counter/sys_counter.h" //вместо delay
 #include "bits/bits.h"
+#include "defs/defs.h"
 #include <string.h>
 //#include <stdio.h>
 
@@ -10,7 +12,7 @@
 
 //! Продолжительность ресета.
 #define TFT9341_RESET_TIME_US  15
-#define TFT9341_RESET_WAIT_TIME_US  150000
+#define TFT9341_RESET_WAIT_TIME_MS  150
 //#define TFT9341_SLEEP_OUT_WAIT_TIME_MS  10
 
 
@@ -258,6 +260,39 @@
 #define TFT9341_CMD_READ_ID3                    0xdc
 #define TFT9341_RD_ID3_DATA_SIZE                2
 
+
+/**
+ * Интерфейс к легаси функциям, дабы сей комбайн работал
+ */
+static void delay_us(uint32_t us) {
+	sys_counter_delay(0, us);
+}
+
+static void delay_ms(uint32_t ms) {
+	sys_counter_delay(0, (ms * 1000));
+}
+
+static err_t spi_message_init(SPI_BUS_FRAME_TypeDef *frame, const void *tx_data, void *rx_data, size_t count) {
+	return spi_frame_setup(frame, tx_data, rx_data, count, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+}
+
+static void spi_message_setup(SPI_BUS_FRAME_TypeDef *frame, const void *tx_data, void *rx_data, size_t count) {
+	spi_frame_setup(frame, tx_data, rx_data, count, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+}
+
+static void spi_message_set_callback(SPI_BUS_FRAME_TypeDef *frame, void *callback) {
+	frame->callback = callback;
+}
+
+static void spi_message_set_sender_data(SPI_BUS_FRAME_TypeDef *frame, void *callback_argument) {
+	frame->callback_argument = callback_argument;
+}
+
+static void spi_callback_end(void* tft) {
+	tft9341_spi_callback((tft9341_t*)tft);
+}
+
+
 /**
  * Выставляет значения управляющих пинов для начала обмена данными с TFT.
  * @param tft TFT.
@@ -270,7 +305,6 @@ ALWAYS_INLINE static void tft9341_pins_begin(tft9341_t* tft, bool is_data)
     }else{
         gpio_reset(tft->dc_pin);
     }
-    gpio_reset(tft->ce_pin);
 }
 
 /**
@@ -279,7 +313,6 @@ ALWAYS_INLINE static void tft9341_pins_begin(tft9341_t* tft, bool is_data)
  */
 ALWAYS_INLINE static void tft9341_pins_end(tft9341_t* tft)
 {
-    gpio_set(tft->ce_pin);
     gpio_set(tft->dc_pin);
 }
 
@@ -329,10 +362,10 @@ static void tft9341_end(tft9341_t* tft, err_t err)
  * Устанавливает пин D/C на команду.
  * @param message Сообщение SPI.
  */
-static void tft9341_cmd_message_start(void* argument)
+static void tft9341_cmd_message_start(void* arg)
 {
     //printf("tft9341_cmd_message_start\r\n");
-    tft9341_t* tft = (tft9341_t*)argument;
+    tft9341_t* tft = (tft9341_t*)arg;
     if(tft != NULL){
         //gpio_set(tft->ce_gpio, tft->ce_pin);
         gpio_reset(tft->dc_pin);
@@ -345,10 +378,10 @@ static void tft9341_cmd_message_start(void* argument)
  * Устанавливает пин D/C на данные.
  * @param message Сообщение SPI.
  */
-static void tft9341_cmd_message_end(void* argument)
+static void tft9341_cmd_message_end(void* arg)
 {
     //printf("tft9341_cmd_message_end\r\n");
-    tft9341_t* tft = (tft9341_t*)argument;
+    tft9341_t* tft = (tft9341_t*)arg;
     if(tft != NULL){
         //gpio_set(tft->ce_gpio, tft->ce_pin);
         gpio_set(tft->dc_pin);
@@ -366,18 +399,11 @@ static void tft9341_cmd_message_end(void* argument)
  */
 static err_t tft9341_transfer(tft9341_t* tft, bool is_data, size_t messages_count)
 {
-    //if(!spi_bus_set_transfer_id(tft->spi, tft->transfer_id)) return E_BUSY;
+	if(spi_bus_transfer_id(tft->spi) != tft->transfer_id) return E_BUSY;
     
     tft9341_begin(tft, is_data);
     
-    err_t err = E_NO_ERROR;  spi_bus_transfer(tft->spi, tft->messages, messages_count, NULL, NULL);
-    
-    spi_bus_wait(tft->spi); //TODO: ждать?
-
-    if(err != E_NO_ERROR){
-        tft9341_end(tft, err);
-        return err;
-    }
+    spi_bus_transfer(tft->spi, tft->messages, messages_count, spi_callback_end, tft);
     
     return E_NO_ERROR;
 }
@@ -386,7 +412,7 @@ bool tft9341_spi_callback(tft9341_t* tft)
 {
     if(spi_bus_transfer_id(tft->spi) != tft->transfer_id) return false;
     
-    tft9341_end(tft, /*spi_bus_status(tft->spi) != SPI_STATUS_TRANSFERED ? E_IO_ERROR :*/ E_NO_ERROR);
+    tft9341_end(tft, E_NO_ERROR);
     
     return true;
 }
@@ -398,9 +424,6 @@ err_t tft9341_init(tft9341_t* tft, tft9341_init_t* tft_init)
     
     // SPI.
     tft->spi = tft_init->spi;
-    
-    // CE.
-    tft->ce_pin = tft_init->ce_pin;
     
     // D/C.
     tft->dc_pin = tft_init->dc_pin;
@@ -446,9 +469,10 @@ void tft9341_reset(tft9341_t* tft)
     future_wait(&tft->future);
     
     gpio_reset(tft->rst_pin);
-    sys_counter_delay(0, TFT9341_RESET_TIME_US);
+    delay_us(TFT9341_RESET_TIME_US);
     gpio_set(tft->rst_pin);
-    sys_counter_delay(0, TFT9341_RESET_WAIT_TIME_US);
+    
+    delay_ms(TFT9341_RESET_WAIT_TIME_MS);
 }
 
 /**
@@ -518,7 +542,7 @@ err_t tft9341_nop(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_NOP;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -550,7 +574,7 @@ err_t tft9341_soft_reset(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_SOFT_RESET;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -614,10 +638,12 @@ err_t tft9341_read_id(tft9341_t* tft, tft9341_id_t* id)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_ID;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_ID_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_ID_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -665,10 +691,12 @@ err_t tft9341_read_status(tft9341_t* tft, tft9341_status_t* status)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_DISPLAY_STATUS;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_DS_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_DS_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -731,10 +759,12 @@ err_t tft9341_read_power_mode(tft9341_t* tft, tft9341_power_mode_t* mode)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_POWER_MODE;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_PM_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_PM_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -787,10 +817,12 @@ err_t tft9341_read_madctl(tft9341_t* tft, tft9341_madctl_t* madctl)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_MADCTL;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
-
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_MC_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
+    
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_MC_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -843,10 +875,12 @@ err_t tft9341_read_pixel_format(tft9341_t* tft, tft9341_display_pixel_format_t* 
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_DISPLAY_PIXEL_FORMAT;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_PF_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_PF_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -896,10 +930,12 @@ err_t tft9341_read_image_format(tft9341_t* tft, tft9341_gamma_curve_t* format)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_DISPLAY_IMAGE_FORMAT;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_IF_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_IF_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -935,7 +971,7 @@ err_t tft9341_sleep_in(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_SLEEP_IN;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -967,7 +1003,7 @@ err_t tft9341_sleep_out(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_SLEEP_OUT;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1001,7 +1037,7 @@ err_t tft9341_partial_mode(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_PARTIAL_MODE_ON;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1033,7 +1069,7 @@ err_t tft9341_normal_mode(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_NORMAL_MODE_ON;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1065,7 +1101,7 @@ err_t tft9341_inversion_off(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_INVERSION_OFF;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1097,7 +1133,7 @@ err_t tft9341_inversion_on(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_INVERSION_ON;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1143,10 +1179,12 @@ err_t tft9341_set_gamma(tft9341_t* tft, tft9341_gamma_curve_t gamma)
     *cmd_buf = TFT9341_CMD_WRITE_DISPLAY_GAMMA;
     *data_buf = gamma;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_DG_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_DG_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1178,7 +1216,7 @@ err_t tft9341_display_off(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_DISPLAY_OFF;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1210,7 +1248,7 @@ err_t tft9341_display_on(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_DISPLAY_ON;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1255,10 +1293,12 @@ err_t tft9341_set_column_address(tft9341_t* tft, uint16_t start, uint16_t end)
     data_buf[0] = __REV16(start);
     data_buf[1] = __REV16(end);
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_CA_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_CA_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1303,10 +1343,12 @@ err_t tft9341_set_page_address(tft9341_t* tft, uint16_t start, uint16_t end)
     data_buf[0] = __REV16(start);
     data_buf[1] = __REV16(end);
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_PGA_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_PGA_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1346,9 +1388,11 @@ err_t tft9341_write(tft9341_t* tft, const void* data, size_t size)
     
     *cmd_buf = TFT9341_CMD_WRITE_MEMORY;
     
-    spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_msg, data, NULL, size, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(data_msg, data, NULL, size);
 
     return tft9341_transfer(tft, false, 2);
 }
@@ -1374,7 +1418,7 @@ err_t tft9341_begin_write(tft9341_t* tft)
     
     *cmd_buf = TFT9341_CMD_WRITE_MEMORY;
     
-    spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
 
     return tft9341_transfer(tft, false, 1);
 }
@@ -1416,11 +1460,13 @@ err_t tft9341_read(tft9341_t* tft, void* data, size_t size)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_MEMORY;
-    spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(trash_msg, NULL, trash_buf, TFT9341_TRASH_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(trash_msg, NULL, trash_buf, TFT9341_TRASH_SIZE);
     
-    spi_frame_setup(data_msg, NULL, data, size, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(data_msg, NULL, data, size);
 
     return tft9341_transfer(tft, false, 3);
 }
@@ -1458,10 +1504,12 @@ err_t tft9341_set_partial_area(tft9341_t* tft, uint16_t start, uint16_t end)
     data_buf[0] = __REV16(start);
     data_buf[1] = __REV16(end);
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_PLA_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_PLA_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1519,10 +1567,12 @@ err_t tft9341_set_madctl(tft9341_t* tft, const tft9341_madctl_t* madctl)
     
     *data_buf = data;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_MC_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_MC_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1554,7 +1604,7 @@ err_t tft9341_idle_off(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_IDLE_OFF;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1586,7 +1636,7 @@ err_t tft9341_idle_on(tft9341_t* tft)
 #endif
     
     *cmd_buf = TFT9341_CMD_IDLE_ON;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 1);
@@ -1636,10 +1686,12 @@ err_t tft9341_set_pixel_format(tft9341_t* tft, tft9341_pixel_format_t rgb_iface_
     
     *data_buf = data;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_PF_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_PF_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1679,9 +1731,11 @@ err_t tft9341_write_continue(tft9341_t* tft, const void* data, size_t size)
     
     *cmd_buf = TFT9341_CMD_WRITE_MEMORY_CONTINUE;
     
-    spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_msg, data, NULL, size, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(data_msg, data, NULL, size);
     
     return tft9341_transfer(tft, false, 2);
 }
@@ -1707,7 +1761,7 @@ err_t tft9341_begin_write_continue(tft9341_t* tft)
     
     *cmd_buf = TFT9341_CMD_WRITE_MEMORY_CONTINUE;
     
-    spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
 
     return tft9341_transfer(tft, false, 1);
 }
@@ -1749,11 +1803,13 @@ err_t tft9341_read_continue(tft9341_t* tft, void* data, size_t size)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_MEMORY_CONTINUE;
-    spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(trash_msg, NULL, trash_buf, TFT9341_TRASH_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(trash_msg, NULL, trash_buf, TFT9341_TRASH_SIZE);
     
-    spi_frame_setup(data_msg, NULL, data, size, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(data_msg, NULL, data, size);
 
     return tft9341_transfer(tft, false, 3);
 }
@@ -1790,10 +1846,12 @@ err_t tft9341_set_brightness(tft9341_t* tft, uint8_t brightness)
     *cmd_buf = TFT9341_CMD_WRITE_BRIGHTNESS;
     *data_buf = brightness;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_BN_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_BN_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1838,10 +1896,12 @@ err_t tft9341_read_brightness(tft9341_t* tft, uint8_t* brightness)
     
     *cmd_buf = TFT9341_CMD_READ_BRIGHTNESS;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_BN_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_BN_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1898,10 +1958,12 @@ err_t tft9341_set_display_control(tft9341_t* tft, const tft9341_display_control_
     
     *data_buf = data;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_DC_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_DC_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1945,10 +2007,12 @@ err_t tft9341_read_display_control(tft9341_t* tft, tft9341_display_control_t* co
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_DISPLAY_CONTROL;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_DC_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_DC_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -1998,10 +2062,12 @@ err_t tft9341_set_cabc(tft9341_t* tft, tft9341_cabc_t cabc)
     *cmd_buf = TFT9341_CMD_WRITE_CABC;
     *data_buf = cabc;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_CABC_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_CABC_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -2045,10 +2111,12 @@ err_t tft9341_read_cabc(tft9341_t* tft, tft9341_cabc_t* cabc)
 #endif
     
     *cmd_buf = TFT9341_CMD_READ_CABC;
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_CABC_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_CABC_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -2096,10 +2164,12 @@ err_t tft9341_set_cabc_min(tft9341_t* tft, uint8_t cabc_min)
     *cmd_buf = TFT9341_CMD_WRITE_CABC_MIN;
     *data_buf = cabc_min;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, data_buf, NULL, TFT9341_WR_CMB_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, data_buf, NULL, TFT9341_WR_CMB_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -2144,10 +2214,12 @@ err_t tft9341_read_cabc_min(tft9341_t* tft, uint8_t* cabc_min)
     
     *cmd_buf = TFT9341_CMD_READ_CABC_MIN;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_CMB_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_CMB_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -2194,10 +2266,12 @@ err_t tft9341_read_id1(tft9341_t* tft, uint8_t* id)
     
     *cmd_buf = TFT9341_CMD_READ_ID1;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_ID1_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_ID1_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -2244,10 +2318,12 @@ err_t tft9341_read_id2(tft9341_t* tft, uint8_t* id)
     
     *cmd_buf = TFT9341_CMD_READ_ID2;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_ID2_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_ID2_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -2294,10 +2370,12 @@ err_t tft9341_read_id3(tft9341_t* tft, uint8_t* id)
     
     *cmd_buf = TFT9341_CMD_READ_ID3;
     
-    err = spi_frame_setup(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    err = spi_message_init(cmd_msg, cmd_buf, NULL, TFT9341_CMD_SIZE);
     if(err != E_NO_ERROR) return err;
+    spi_message_set_sender_data(cmd_msg, tft);
+    spi_message_set_callback(cmd_msg, tft9341_cmd_message_end);
     
-    err = spi_frame_setup(data_msg, NULL, data_buf, TFT9341_RD_ID3_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    err = spi_message_init(data_msg, NULL, data_buf, TFT9341_RD_ID3_DATA_SIZE);
     if(err != E_NO_ERROR) return err;
     
     err = tft9341_transfer(tft, false, 2);
@@ -2326,7 +2404,7 @@ err_t tft9341_data(tft9341_t* tft, const void* data, size_t size)
     if(cmd_msg == NULL) return E_OUT_OF_MEMORY;
 #endif
     
-    spi_frame_setup(data_msg, data, NULL, size, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(data_msg, data, NULL, size);
     
     return tft9341_transfer(tft, true, 1);
 }
@@ -2427,17 +2505,27 @@ err_t tft9341_set_pixel(tft9341_t* tft, uint16_t x, uint16_t y, const void* pixe
         data_pixel_buf[2] = ((uint8_t*)pixel)[2];
     }
     
-    spi_frame_setup(cmd_col_msg, cmd_col_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_col_msg, cmd_col_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_col_msg, tft);
+    spi_message_set_callback(cmd_col_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_col_msg, data_col_buf, NULL, TFT9341_WR_CA_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_start, tft);
+    spi_message_setup(data_col_msg, data_col_buf, NULL, TFT9341_WR_CA_DATA_SIZE);
+    spi_message_set_sender_data(data_col_msg, tft);
+    spi_message_set_callback(data_col_msg, tft9341_cmd_message_start);
     
-    spi_frame_setup(cmd_page_msg, cmd_page_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_page_msg, cmd_page_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_page_msg, tft);
+    spi_message_set_callback(cmd_page_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_page_msg, data_page_buf, NULL, TFT9341_WR_PGA_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_start, tft);
+    spi_message_setup(data_page_msg, data_page_buf, NULL, TFT9341_WR_PGA_DATA_SIZE);
+    spi_message_set_sender_data(data_page_msg, tft);
+    spi_message_set_callback(data_page_msg, tft9341_cmd_message_start);
     
-    spi_frame_setup(cmd_pixel_msg, cmd_pixel_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_pixel_msg, cmd_pixel_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_pixel_msg, tft);
+    spi_message_set_callback(cmd_pixel_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_pixel_msg, data_pixel_buf, NULL, size, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(data_pixel_msg, data_pixel_buf, NULL, size);
     
     return tft9341_transfer(tft, false, 6);
 }
@@ -2528,17 +2616,27 @@ err_t tft9341_write_region(tft9341_t* tft, uint16_t x0, uint16_t y0, uint16_t x1
     
     *cmd_pixel_buf = TFT9341_CMD_WRITE_MEMORY;
     
-    spi_frame_setup(cmd_col_msg, cmd_col_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_col_msg, cmd_col_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_col_msg, tft);
+    spi_message_set_callback(cmd_col_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_col_msg, data_col_buf, NULL, TFT9341_WR_CA_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_start, tft);
+    spi_message_setup(data_col_msg, data_col_buf, NULL, TFT9341_WR_CA_DATA_SIZE);
+    spi_message_set_sender_data(data_col_msg, tft);
+    spi_message_set_callback(data_col_msg, tft9341_cmd_message_start);
     
-    spi_frame_setup(cmd_page_msg, cmd_page_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_page_msg, cmd_page_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_page_msg, tft);
+    spi_message_set_callback(cmd_page_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_page_msg, data_page_buf, NULL, TFT9341_WR_PGA_DATA_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_start, tft);
+    spi_message_setup(data_page_msg, data_page_buf, NULL, TFT9341_WR_PGA_DATA_SIZE);
+    spi_message_set_sender_data(data_page_msg, tft);
+    spi_message_set_callback(data_page_msg, tft9341_cmd_message_start);
     
-    spi_frame_setup(cmd_pixel_msg, cmd_pixel_buf, NULL, TFT9341_CMD_SIZE, SPI_BYTE_ORDER_NORMAL, tft9341_cmd_message_end, tft);
+    spi_message_setup(cmd_pixel_msg, cmd_pixel_buf, NULL, TFT9341_CMD_SIZE);
+    spi_message_set_sender_data(cmd_pixel_msg, tft);
+    spi_message_set_callback(cmd_pixel_msg, tft9341_cmd_message_end);
     
-    spi_frame_setup(data_pixel_msg, data, NULL, size, SPI_BYTE_ORDER_NORMAL, NULL, NULL);
+    spi_message_setup(data_pixel_msg, data, NULL, size);
     
     return tft9341_transfer(tft, false, 6);
 }

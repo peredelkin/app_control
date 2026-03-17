@@ -9,7 +9,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "gpio/gpio.h"
 #include "spi/spi.h"
 #include "errors/errors.h"
 #include "future/future.h"
@@ -33,12 +32,10 @@ typedef struct _Tft9341 {
 	SPI_BUS_TypeDef* spi;
     //! Идентификатор передачи.
     spi_transfer_id_t transfer_id;
-    //! Пин выбора ведомого.
-    gpio_pin_t *ce_pin;
     //! Пин выбора данных/команды.
-    gpio_pin_t *dc_pin;
+    const gpio_pin_t* dc_pin;
     //! Пин сброса.
-    gpio_pin_t *rst_pin;
+    const gpio_pin_t* rst_pin;
     //! Будущее.
     future_t future;
     //! Буфер.
@@ -51,15 +48,14 @@ typedef struct _Tft9341 {
  * Тип структуры инициализации дисплея.
  */
 typedef struct _Tft9341_init {
-	SPI_BUS_TypeDef*          spi; //!< Шина SPI.
-    spi_transfer_id_t   transfer_id; //!< Идентификатор передачи.
-    gpio_pin_t*            ce_pin; //!< Пин выбора ведомого.
-    gpio_pin_t*            dc_pin; //!< Пин выбора данных/команды.
-    gpio_pin_t*            reset_pin; //!< Пин сброса.
+	SPI_BUS_TypeDef*	spi; //!< Шина SPI.
+    spi_transfer_id_t	transfer_id; //!< Идентификатор передачи.
+    const gpio_pin_t*			dc_pin; //!< Пин выбора данных/команды.
+    const gpio_pin_t*			reset_pin; //!< Пин сброса.
 } tft9341_init_t;
 
 //! Идентификатор передачи по-умолчанию.
-#define TFT9341_DEFAULT_TRANSFER_ID 93
+#define TFT9341_DEFAULT_TRANSFER_ID 9341
 
 
 //! Размер пиксела.
