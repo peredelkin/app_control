@@ -395,11 +395,9 @@ int main(void)
 	sys_counter_tv_print();
 	printf("CAN 1/2\n");
 
-	init_tft();
-	sys_counter_tv_print();
-	printf("TFT\n");
-
-	//eth_init(); //отпаяно
+	//init_tft();
+	//sys_counter_tv_print();
+	//printf("TFT\n");
 
 	//loadsettings();
 
