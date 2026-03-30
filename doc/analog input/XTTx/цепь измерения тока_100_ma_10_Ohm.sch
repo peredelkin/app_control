@@ -2,10 +2,10 @@
 <Properties>
   <View=316,-226,1540,905,0.762255,0,0>
   <Grid=10,10,1>
-  <DataSet=цепь измерения тока.dat>
-  <DataDisplay=цепь измерения тока.dpl>
+  <DataSet=цепь измерения тока_100_ma_10_Ohm.dat>
+  <DataDisplay=цепь измерения тока_100_ma_10_Ohm.dpl>
   <OpenDisplay=0>
-  <Script=цепь измерения тока.m>
+  <Script=цепь измерения тока_100_ma_10_Ohm.m>
   <RunScript=0>
   <showFrame=0>
   <FrameText0=Название>
