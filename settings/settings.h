@@ -61,7 +61,7 @@ struct _S_Settings {
     // Методы.
     METHOD_INIT(M_settings);
     METHOD_DEINIT(M_settings);
-    METHOD_CALC(M_settings);
+    METHOD_IDLE(M_settings);
     // Коллбэки.
     // Внутренние данные.
     reg_t* m_reg_current;
@@ -72,7 +72,7 @@ struct _S_Settings {
 
 EXTERN METHOD_INIT_PROTO(M_settings);
 EXTERN METHOD_DEINIT_PROTO(M_settings);
-EXTERN METHOD_CALC_PROTO(M_settings);
+EXTERN METHOD_IDLE_PROTO(M_settings);
 
 #define SETTINGS_DEFAULTS {\
         /* Базовые поля */\
@@ -85,7 +85,7 @@ EXTERN METHOD_CALC_PROTO(M_settings);
         /* Методы */\
         METHOD_INIT_PTR(M_settings),\
         METHOD_DEINIT_PTR(M_settings),\
-        METHOD_CALC_PTR(M_settings),\
+        METHOD_IDLE_PTR(M_settings),\
         /* Коллбэки */\
         /* Внутренние данные */\
 		0,/*m_reg_current*/\

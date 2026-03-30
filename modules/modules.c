@@ -22,3 +22,5 @@ M_modbus_to_can modbus_to_can_panel = MODBUS_TO_CAN_DEFAULTS;
 M_settings settings = SETTINGS_DEFAULTS;
 M_temp_wind_comp temp_comp = TEMP_WIND_COMP_DEFAULTS;
 M_ads8685 ai_ads8665 = ADS8685_DEFAULTS;
+M_analog_input analog_in = ANALOG_INPUT_DEFAULTS;
+M_analog_output analog_out = ANALOG_OUTPUT_DEFAULTS;

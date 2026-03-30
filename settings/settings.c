@@ -389,7 +389,7 @@ METHOD_DEINIT_IMPL(M_settings, settings)
 
 }
 
-METHOD_CALC_IMPL(M_settings, settings)
+METHOD_IDLE_IMPL(M_settings, settings)
 {
 	if (settings->control & SETTINGS_CONTROL_RESET) {
 		settings_reset(settings);

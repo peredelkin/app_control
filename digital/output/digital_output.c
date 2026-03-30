@@ -10,6 +10,7 @@ METHOD_INIT_IMPL(M_digital_output, output)
 	output->status = DIGITAL_OUTPUT_STATUS_NONE;
 	output->control = DIGITAL_OUTPUT_CONTROL_NONE;
 
+	INIT(panel_led);
     INIT(do_ncv7608);
     INIT(do_relay);
 
@@ -20,6 +21,7 @@ METHOD_INIT_IMPL(M_digital_output, output)
 
 METHOD_DEINIT_IMPL(M_digital_output, output)
 {
+	DEINIT(panel_led);
     DEINIT(do_ncv7608);
     DEINIT(do_relay);
 }
@@ -104,6 +106,7 @@ METHOD_CALC_IMPL(M_digital_output, output)
 		do_relay.in_data = 0;
 	}
 
+	CALC(panel_led);
 	CALC(do_ncv7608);
 	CALC(do_relay);
 }

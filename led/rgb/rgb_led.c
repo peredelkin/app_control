@@ -7,18 +7,6 @@ void rgb_led_set(bool R, bool G, bool B) {
 	gpio_output_bit_setup(&GPO_RGB_LED_App[2], !R);
 }
 
-//! Перечисление цветов
-enum _Rgb_Led_Color {
-	RGB_LED_COLOR_BLACK,
-	RGB_LED_COLOR_VIOLET,
-	RGB_LED_COLOR_BLUE_DARK,
-	RGB_LED_COLOR_BLUE,
-	RGB_LED_COLOR_GREEN,
-	RGB_LED_COLOR_YELLOW,
-	RGB_LED_COLOR_RED,
-	RGB_LED_COLOR_WHITE
-};
-
 METHOD_INIT_IMPL(M_rgb_led, rgb_led)
 {
 	gpio_rgb_led_cfg_setup(); //RGB Led

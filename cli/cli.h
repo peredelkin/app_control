@@ -45,7 +45,7 @@ struct _S_Cli {
     // Методы.
     METHOD_INIT(M_cli);
     METHOD_DEINIT(M_cli);
-    METHOD_CALC(M_cli);
+    METHOD_IDLE(M_cli);
     // Коллбэки.
     // Внутренние данные.
     int m_read_point;
@@ -56,7 +56,7 @@ struct _S_Cli {
 
 EXTERN METHOD_INIT_PROTO(M_cli);
 EXTERN METHOD_DEINIT_PROTO(M_cli);
-EXTERN METHOD_CALC_PROTO(M_cli);
+EXTERN METHOD_IDLE_PROTO(M_cli);
 
 #define CLI_DEFAULTS {\
         /* Базовые поля */\
@@ -69,7 +69,7 @@ EXTERN METHOD_CALC_PROTO(M_cli);
         /* Методы */\
         METHOD_INIT_PTR(M_cli),\
         METHOD_DEINIT_PTR(M_cli),\
-        METHOD_CALC_PTR(M_cli),\
+        METHOD_IDLE_PTR(M_cli),\
         /* Коллбэки */\
         /* Внутренние данные */\
 		0,/* read_point */\

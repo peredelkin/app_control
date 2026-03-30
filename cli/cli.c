@@ -158,7 +158,7 @@ void cli_read_point_count(M_cli* cli) {
 
 extern int cli_line_parse(M_cli* args);
 
-METHOD_CALC_IMPL(M_cli, cli)
+METHOD_IDLE_IMPL(M_cli, cli)
 {
 	size_t res = 0;
 	int cmd_res = 0;

@@ -1,71 +1,56 @@
-#ifndef RGB_LED_H
-#define RGB_LED_H
+#ifndef ANALOG_INPUT_H
+#define ANALOG_INPUT_H
 
 #include "module/base.h"
-#include "gpio/gpio.h"
-
-//! Перечисление цветов
-enum _Rgb_Led_Color {
-	RGB_LED_COLOR_BLACK,
-	RGB_LED_COLOR_VIOLET,
-	RGB_LED_COLOR_BLUE_DARK,
-	RGB_LED_COLOR_BLUE,
-	RGB_LED_COLOR_GREEN,
-	RGB_LED_COLOR_YELLOW,
-	RGB_LED_COLOR_RED,
-	RGB_LED_COLOR_WHITE
-};
 
 //! Перечисление возможных бит управления.
-enum _E_Rgb_Led_Control {
-    RGB_LED_CONTROL_NONE = CONTROL_NONE,
+enum _E_Analog_Input_Control {
+    ANALOG_INPUT_CONTROL_NONE = CONTROL_NONE,
 };
 
 //! Перечисление возможных бит статуса.
-enum _E_Rgb_Led_Status {
-    RGB_LED_STATUS_NONE = STATUS_NONE,
+enum _E_Analog_Input_Status {
+    ANALOG_INPUT_STATUS_NONE = STATUS_NONE,
 };
 
 //! Предварительная декларация типа модуля.
-typedef struct _S_Rgb_Led M_rgb_led;
+typedef struct _S_Analog_Input M_analog_input;
 
 //! Структура модуля.
-struct _S_Rgb_Led {
+struct _S_Analog_Input {
     // Базовые поля.
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u16_t in_data;
     // Выходные данные.
     // Параметры.
     // Регистры.
     // Методы.
-    METHOD_INIT(M_rgb_led);
-    METHOD_DEINIT(M_rgb_led);
-    METHOD_CALC(M_rgb_led);
+    METHOD_INIT(M_analog_input);
+    METHOD_DEINIT(M_analog_input);
+    METHOD_CALC(M_analog_input);
     // Коллбэки.
     // Внутренние данные.
 };
 
-EXTERN METHOD_INIT_PROTO(M_rgb_led);
-EXTERN METHOD_DEINIT_PROTO(M_rgb_led);
-EXTERN METHOD_CALC_PROTO(M_rgb_led);
+EXTERN METHOD_INIT_PROTO(M_analog_input);
+EXTERN METHOD_DEINIT_PROTO(M_analog_input);
+EXTERN METHOD_CALC_PROTO(M_analog_input);
 
-#define RGB_LED_DEFAULTS {\
+#define ANALOG_INPUT_DEFAULTS {\
         /* Базовые поля */\
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
-		0,\
         /* Выходные данные */\
         /* Параметры */\
         /* Регистры */\
         /* Методы */\
-        METHOD_INIT_PTR(M_rgb_led),\
-        METHOD_DEINIT_PTR(M_rgb_led),\
-        METHOD_CALC_PTR(M_rgb_led),\
+        METHOD_INIT_PTR(M_analog_input),\
+        METHOD_DEINIT_PTR(M_analog_input),\
+        METHOD_CALC_PTR(M_analog_input),\
         /* Коллбэки */\
         /* Внутренние данные */\
     }
 
-#endif /* RGB_LED_H */
+#endif /* ANALOG_INPUT_H */

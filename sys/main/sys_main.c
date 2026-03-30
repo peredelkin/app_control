@@ -22,6 +22,8 @@ static void ms_tim_handler(void* arg)
     assert(sys != NULL);
 }
 
+void sys_main_idle_init();
+
 METHOD_INIT_IMPL(M_sys_main, sys)
 {
     // Инициализация внутренних переменных.
@@ -33,25 +35,21 @@ METHOD_INIT_IMPL(M_sys_main, sys)
 
 
     // Инициализация модулей.
-
     status_t init_status = STATUS_NONE;
 
-    // Базовый конфиг.
-    INIT(conf);
+    //Индикатор состояния.
+    INIT(rgb_led);
 
     // Вычислительные модули.
-    INIT(cli);
-    INIT(ntc_temp);
-    INIT(temp_comp);
     INIT(digital_in);
+    INIT(analog_in);
+    INIT(analog_out);
     INIT(digital_out);
-    INIT(ai_ads8665);
-    INIT(ao_dac7562);
-    INIT(mso);
-    INIT(rgb_led);
-    INIT(panel_led);
     INIT(modbus_to_can_panel);
-    INIT(settings);
+    INIT(mso);
+
+    //Модули, выполняемые в IDLE
+    sys_main_idle_init();
 
     // Таймеры.
     // Системный таймер.
@@ -102,27 +100,28 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     }
 }
 
+void sys_main_idle_deinit();
+
 METHOD_DEINIT_IMPL(M_sys_main, sys)
 {
     // Деинициализация модулей.
     DEINIT(sys_tim);
     DEINIT(ms_tim);
-    DEINIT(conf);
 
-    DEINIT(mso);
-    DEINIT(cli);
     DEINIT(ntc_temp);
     DEINIT(temp_comp);
     DEINIT(digital_in);
+    DEINIT(analog_in);
+    DEINIT(analog_out);
     DEINIT(digital_out);
-    DEINIT(ai_ads8665);
-    DEINIT(ao_dac7562);
-    DEINIT(rgb_led);
-    DEINIT(panel_led);
     DEINIT(modbus_to_can_panel);
-    DEINIT(settings);
+    DEINIT(mso);
 
-    // Вычислительные модули.
+    //Индикатор состояния
+    DEINIT(rgb_led);
+
+    //Модули выполняемые в IDLE
+    sys_main_idle_deinit();
 
 
     // Сброс внутренних переменных.
@@ -136,26 +135,32 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
 
 static void FSM_state_none(M_sys_main* sys)
 {
+	rgb_led.in_data = RGB_LED_COLOR_BLACK;
 }
 
 static void FSM_state_init(M_sys_main* sys)
 {
+	rgb_led.in_data = RGB_LED_COLOR_VIOLET;
 }
 
 static void FSM_state_idle(M_sys_main* sys)
 {
+	rgb_led.in_data = RGB_LED_COLOR_BLUE_DARK;
 }
 
 static void FSM_state_ready(M_sys_main* sys)
 {
+	rgb_led.in_data = RGB_LED_COLOR_BLUE;
 }
 
 static void FSM_state_run(M_sys_main* sys)
 {
+	rgb_led.in_data = RGB_LED_COLOR_GREEN;
 }
 
 static void FSM_state_error(M_sys_main* sys)
 {
+	rgb_led.in_data = RGB_LED_COLOR_RED;
 }
 
 static void FSM_state(M_sys_main* sys)
@@ -195,16 +200,14 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 	sys_counter_value(&tv_start);
 
     FSM_state(sys);
+    //Индикатор состояния
+    CALC(rgb_led);
 
     // Вычислительные модули.
     CALC(digital_in);
-    CALC(ntc_temp);
-    CALC(temp_comp);
-    CALC(ai_ads8665);
-    CALC(ao_dac7562);
+    CALC(analog_in);
+    CALC(analog_out);
     CALC(digital_out);
-    CALC(rgb_led);
-    CALC(panel_led);
     CALC(modbus_to_can_panel);
     CALC(mso);
 
@@ -214,10 +217,22 @@ METHOD_CALC_IMPL(M_sys_main, sys)
     timersub(&tv_stop, &tv_start, &sys_main_execution_time); //дельта времени
 }
 
+void sys_main_idle_init() {
+	INIT(cli);
+	INIT(settings);
+    INIT(conf);
+}
+
+void sys_main_idle_deinit() {
+	DEINIT(cli);
+	DEINIT(settings);
+    DEINIT(conf);
+}
+
 METHOD_IDLE_IMPL(M_sys_main, sys)
 {
-	CALC(cli);
-	CALC(settings);
+	IDLE(cli);
+	IDLE(settings);
     IDLE(conf);
     IDLE(mso);
 }
