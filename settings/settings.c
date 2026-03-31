@@ -380,8 +380,6 @@ METHOD_INIT_IMPL(M_settings, settings)
 	init.on_error = NULL;
 
 	ini_init(&settings->m_ini, &init);
-
-	settings_cmd_read(settings); //предварительная загрузка настроек
 }
 
 METHOD_DEINIT_IMPL(M_settings, settings)

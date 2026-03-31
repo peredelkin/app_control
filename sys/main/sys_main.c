@@ -92,6 +92,8 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     // Проверка ошибок инициализации.
     // Если нет ошибок - продолжим инициализацию.
     if(!(init_status & STATUS_ERROR)){
+    	//команда чтения настроек
+    	settings_cmd_read(&settings);
         sys->state = SYS_MAIN_STATE_INIT;
     }else{ // Иначе установим статус ошибки.
         // TODO: reaction on init error.
@@ -132,6 +134,27 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     sys->state = SYS_MAIN_STATE_NONE;
 }
 
+static status_t settings_status_mask;
+static status_t settings_status_masked;
+
+static void settings_status_handler(M_sys_main* sys, state_t ok, state_t not_ok) {
+	settings_status_masked = settings.status & ~settings_status_mask;
+
+	//настройки прочитаны
+	if(settings_status_masked & SETTINGS_STATUS_READ_DONE) {
+		if(settings_status_masked & SETTINGS_STATUS_VALID) {
+			settings_status_mask |= SETTINGS_STATUS_VALID;
+			settings_status_mask &= ~SETTINGS_STATUS_ERROR;
+			sys->state = ok;
+		}
+
+		if(settings_status_masked & SETTINGS_STATUS_ERROR) {
+			settings_status_mask |= SETTINGS_STATUS_ERROR;
+			settings_status_mask &= ~SETTINGS_STATUS_VALID;
+			sys->state = not_ok;
+		}
+	}
+}
 
 static void FSM_state_none(M_sys_main* sys)
 {
@@ -141,16 +164,49 @@ static void FSM_state_none(M_sys_main* sys)
 static void FSM_state_init(M_sys_main* sys)
 {
 	rgb_led.in_data = RGB_LED_COLOR_VIOLET;
+	settings_status_handler(sys, STATE_IDLE, STATE_ERROR);
 }
 
 static void FSM_state_idle(M_sys_main* sys)
 {
 	rgb_led.in_data = RGB_LED_COLOR_BLUE_DARK;
+	digital_in.control |= DIGITAL_INPUT_CONTROL_START;
+	sys->state = STATE_READY;
+}
+
+//флаги готовности модулей
+bool digital_in_ready_run = false;
+bool analog_in_ready_run = true;
+bool analog_out_ready_run = true;
+bool digital_out_ready_run = true;
+
+//функции обработки статусов модулей
+static void digital_in_dependencies_check() {
+	if(digital_in_ready_run == false) {
+		if((digital_in.status & (DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) ==
+				(DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) {
+			digital_in_ready_run = true;
+		}
+	}
+}
+
+static bool modules_dependencies_check() {
+	return (digital_in_ready_run &&
+			analog_in_ready_run &&
+			analog_out_ready_run &&
+			digital_out_ready_run);
 }
 
 static void FSM_state_ready(M_sys_main* sys)
 {
 	rgb_led.in_data = RGB_LED_COLOR_BLUE;
+
+	//проверим зависимости модулей
+	digital_in_dependencies_check();
+
+	if(modules_dependencies_check()) {
+		sys->state = STATE_RUN;
+	}
 }
 
 static void FSM_state_run(M_sys_main* sys)
@@ -165,6 +221,7 @@ static void FSM_state_error(M_sys_main* sys)
 
 static void FSM_state(M_sys_main* sys)
 {
+
     switch(sys->state){
     case STATE_NONE:
         FSM_state_none(sys);

@@ -24,18 +24,30 @@ int bsearch_ohm_comparator(const void* ptr1, const void* ptr2) {
 }
 
 void ntc_Ohm_calc(M_ntc_temp* ntc_temp) {
-	for(int i = 0; i < NTC_TEMP_COUNT; i++) {
-		iq15_t vref = (iq15_t)(msdi.out_analog[6] * IQN_BASE(4, int32_t));
+	iq15_t vref = 1; //напряжение питания датчиков
+
+	if(msdi.status & MSDI_STATUS_VALID) {
+		vref = (iq15_t)(msdi.out_analog[6] * IQN_BASE(4, int32_t));
 		if(vref <= 0) vref = 1;
+	}
 
-		iq15_t vin = (iq15_t)(msdi.out_analog[i] * IQN_BASE(4, int32_t));
-		if(vin <= 0) vin = 1;
+	iq15_t vin = 1; //напряжение на делителе
 
-		iq15_t R_ref_voltage = vref - vin;
-		if(R_ref_voltage <= 0) R_ref_voltage = 1;
+	iq15_t R_ref_voltage = 1; //напряжение на подтягивающем резисторе
 
-		ntc_temp->out_ohm[i] = (ntc_temp->m_R_ref * vin)/R_ref_voltage;
-		if(ntc_temp->out_ohm[i] <= 0) ntc_temp->out_ohm[i] = 1;
+	for(int i = 0; i < NTC_TEMP_COUNT; i++) {
+		if(msdi.status & MSDI_STATUS_VALID) {
+			vin = (iq15_t)(msdi.out_analog[i] * IQN_BASE(4, int32_t));
+			if(vin <= 0) vin = 1;
+
+			R_ref_voltage = vref - vin;
+			if(R_ref_voltage <= 0) R_ref_voltage = 1;
+
+			ntc_temp->out_ohm[i] = (ntc_temp->m_R_ref * vin)/R_ref_voltage;
+			if(ntc_temp->out_ohm[i] <= 0) ntc_temp->out_ohm[i] = 1;
+		} else {
+			ntc_temp->out_ohm[i] = 1;
+		}
 	}
 }
 

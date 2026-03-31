@@ -70,6 +70,9 @@ struct _S_Settings {
     settings_buf_t m_buf;
 };
 
+extern void settings_cmd_read(M_settings* settings);
+extern void settings_cmd_write(M_settings* settings);
+
 EXTERN METHOD_INIT_PROTO(M_settings);
 EXTERN METHOD_DEINIT_PROTO(M_settings);
 EXTERN METHOD_IDLE_PROTO(M_settings);
