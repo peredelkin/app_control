@@ -23,17 +23,25 @@ int bsearch_ohm_comparator(const void* ptr1, const void* ptr2) {
 	return 0;
 }
 
+void ntc_Ohm_calc(M_ntc_temp* ntc_temp) {
+	for(int i = 0; i < NTC_TEMP_COUNT; i++) {
+		iq15_t vref = (iq15_t)(msdi.out_analog[6] * IQN_BASE(4, int32_t));
+		if(vref <= 0) vref = 1;
+
+		iq15_t vin = (iq15_t)(msdi.out_analog[i] * IQN_BASE(4, int32_t));
+		if(vin <= 0) vin = 1;
+
+		iq15_t R_ref_voltage = vref - vin;
+		if(R_ref_voltage <= 0) R_ref_voltage = 1;
+
+		ntc_temp->out_ohm[i] = (ntc_temp->m_R_ref * vin)/R_ref_voltage;
+		if(ntc_temp->out_ohm[i] <= 0) ntc_temp->out_ohm[i] = 1;
+	}
+}
+
 static uint32_t ntc_counter;
 
-METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
-	iq15_t vref = (iq15_t)(msdi.out_analog[6] * IQN_BASE(4, int32_t));
-	iq15_t vin = (iq15_t)(msdi.out_analog[ntc_counter] * IQN_BASE(4, int32_t));
-	iq15_t R_ref_voltage = vref - vin;
-
-	if(R_ref_voltage == 0) R_ref_voltage = 1;
-
-	ntc_temp->out_ohm[ntc_counter] = (ntc_temp->m_R_ref * vin)/R_ref_voltage;
-
+void ntc_temp_calc(M_ntc_temp* ntc_temp) {
 	iq15_t R_in = ntc_temp->out_ohm[ntc_counter];
 
 	if(R_in > ntc_temp->m_R_in_max) {
@@ -65,4 +73,9 @@ METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
 	} else {
 		ntc_counter++;
 	}
+}
+
+METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
+	ntc_Ohm_calc(ntc_temp);
+	ntc_temp_calc(ntc_temp);
 }

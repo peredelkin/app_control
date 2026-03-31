@@ -12,7 +12,7 @@ METHOD_DEINIT_IMPL(M_temp_wind_comp, wind_comp)
 METHOD_CALC_IMPL(M_temp_wind_comp, wind_comp)
 {
 	uint32_t out_mask;
-	for(int i = 0; i < (NTC_TEMP_COUNT - 1); i++) {
+	for(int i = 0; i < NTC_TEMP_COUNT; i++) {
 		out_mask = (1 << i);
 		if(ntc_temp.out_ohm[i] < wind_comp->p_low_resist[i]) {
 			if(wind_comp->m_low_cnt[i]) {
