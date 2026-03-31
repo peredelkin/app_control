@@ -20,7 +20,11 @@ typedef union _digital_output_reg {
 
 //! Перечисление возможных бит управления.
 enum _E_Digital_Output_Control {
-    DIGITAL_OUTPUT_CONTROL_NONE = CONTROL_NONE,
+	DIGITAL_OUTPUT_CONTROL_NONE = CONTROL_NONE,
+	DIGITAL_OUTPUT_CONTROL_RESET = CONTROL_RESET,
+	DIGITAL_OUTPUT_CONTROL_ENABLE = CONTROL_ENABLE,
+	DIGITAL_OUTPUT_CONTROL_START = CONTROL_START,
+	DIGITAL_OUTPUT_CONTROL_STOP = CONTROL_STOP
 };
 
 //! Перечисление возможных бит статуса.

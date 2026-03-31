@@ -6,6 +6,10 @@
 //! Перечисление возможных бит управления.
 enum _E_Analog_Output_Control {
     ANALOG_OUTPUT_CONTROL_NONE = CONTROL_NONE,
+	ANALOG_OUTPUT_CONTROL_RESET = CONTROL_RESET,
+	ANALOG_OUTPUT_CONTROL_ENABLE = CONTROL_ENABLE,
+	ANALOG_OUTPUT_CONTROL_START = CONTROL_START,
+	ANALOG_OUTPUT_CONTROL_STOP = CONTROL_STOP
 };
 
 //! Перечисление возможных бит статуса.

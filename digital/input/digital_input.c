@@ -24,13 +24,13 @@ METHOD_DEINIT_IMPL(M_digital_input, input)
 }
 
 static void digital_input_control_handler(M_digital_input* input) {
-	if(digital_in.control & DIGITAL_INPUT_CONTROL_START) {
-		digital_in.control &= ~DIGITAL_INPUT_CONTROL_START;
+	if(input->control & DIGITAL_INPUT_CONTROL_START) {
+		input->control &= ~DIGITAL_INPUT_CONTROL_START;
 		input->status |= DIGITAL_INPUT_STATUS_RUN;
 	}
 
-	if(digital_in.control & DIGITAL_INPUT_CONTROL_STOP) {
-		digital_in.control &= ~DIGITAL_INPUT_CONTROL_STOP;
+	if(input->control & DIGITAL_INPUT_CONTROL_STOP) {
+		input->control &= ~DIGITAL_INPUT_CONTROL_STOP;
 		input->status &= ~DIGITAL_INPUT_STATUS_RUN;
 	}
 }
