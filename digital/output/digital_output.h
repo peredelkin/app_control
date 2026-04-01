@@ -11,12 +11,38 @@ typedef struct _digital_output_bit {
 	unsigned relay :4;
 	unsigned reserved :20;
 } _digital_output_bit_t;
-static_assert(sizeof(_digital_output_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
+static_assert(sizeof(_digital_output_bit_t) == 4, "Invalid size of _digital_output_bit_t!");
 
 typedef union _digital_output_reg {
 	uint32_t all;
 	struct _digital_output_bit bit;
 } _digital_output_reg_t;
+
+typedef struct _digital_input_bit {
+	unsigned ready :1;
+	unsigned run :1;
+	unsigned err :1;
+	unsigned warn :1;
+	unsigned limit :1;
+	unsigned sw_on :1;
+	unsigned man_auto :1;
+	unsigned loc_rem :1;
+	unsigned fwd_bwd :1;
+	unsigned fan :1;
+	unsigned contactor :1;
+	unsigned trip :1;
+	unsigned ext_brake :1;
+	unsigned inv_exciter :1;
+	unsigned ext_exciter :1;
+	unsigned start_r :1;
+	unsigned res_16_31 :16;
+} _digital_input_bit_t;
+static_assert(sizeof(_digital_input_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
+
+typedef union _digital_input_reg {
+	uint32_t all;
+	struct _digital_input_bit bit;
+} _digital_input_reg_t;
 
 //! Перечисление возможных бит управления.
 enum _E_Digital_Output_Control {
@@ -48,7 +74,7 @@ struct _S_Digital_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u32_t in_data; //!< Вход дискретных выходов @{"id": 3, "rpdo": true}
+    _digital_input_reg_t in_data; //!< Вход дискретных выходов @{"id": 3, "rpdo": true}
     // Выходные данные.
     // Параметры.
     reg_u8_t p_invert[DIGITAL_OUTPUT_COUNT]; //!< Параметр инверсии дискретного выхода
@@ -76,7 +102,7 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
-		0,\
+		{0},\
         /* Выходные данные */\
         /* Параметры */\
 		{0},\

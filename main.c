@@ -316,6 +316,12 @@ void init_tft(void) {
 	spi_bus_close(tft.spi);
 }
 
+static void rgb_set_color(reg_u16_t color) {
+    rgb_led.in_data = color;
+    //обновим индикатор
+    CALC(rgb_led);
+}
+
 int main(void)
 {
 
@@ -328,6 +334,11 @@ int main(void)
 	NVIC_SetPriorityGrouping(0b000);
 
 	gpio_rcc_init(); //RCC of all GPIO
+
+    //Индикатор состояния.
+    INIT(rgb_led);
+
+    rgb_set_color(RGB_LED_COLOR_YELLOW);
 
 	dma_controller_init(); //DMA1 and DMA2 struct init
 
@@ -399,13 +410,7 @@ int main(void)
 	//sys_counter_tv_print();
 	//printf("TFT\n");
 
-	//loadsettings();
-
-    // Blink.
-	//dlog.p_ch[31].reg_id = REG_ID_BLINK_Q;
-	//dlog.p_ch[31].enabled = 1;
-
-	//dlog.control = CONTROL_ENABLE;
+	rgb_set_color(RGB_LED_COLOR_BLACK);
 
     INIT(sys);
 

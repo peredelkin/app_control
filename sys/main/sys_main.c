@@ -38,7 +38,7 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     status_t init_status = STATUS_NONE;
 
     //Индикатор состояния.
-    INIT(rgb_led);
+    //INIT(rgb_led); инициализируется в main.c
 
     // Вычислительные модули.
     INIT(digital_in);

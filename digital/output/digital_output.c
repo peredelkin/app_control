@@ -41,7 +41,7 @@ static void digital_output_calc(M_digital_output* output) {
 	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
 		in_mask = (1 << output->p_select[i]);
 		out_mask = (1 << i);
-		if(output->in_data & in_mask) {
+		if(output->in_data.all & in_mask) {
 			//сбросим счетчик сброса О_о
 			output->m_cnt_reset[i] = output->p_t_reset[i];
 			//проверим счетчик установки
