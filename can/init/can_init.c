@@ -341,7 +341,25 @@ uint32_t can_bus_1_last_error;
 uint32_t can_bus_2_last_error;
 
 uint32_t can_bus_1_masked_error;
+uint32_t can_bus_1_masked_error_n;
 uint32_t can_bus_2_masked_error;
+uint32_t can_bus_2_masked_error_n;
+
+void CO_CANmodule_check_buffer_full(CO_t* co) {
+	if(co == NULL) return;
+	if(co->CANmodule == NULL) return;
+	if(co->CANmodule->txArray == NULL) return;
+	if(co->CANmodule->txSize == 0) return;
+
+	CO_CANmodule_t* CANmodule = co->CANmodule;
+
+	for (uint16_t i = 0U; i < CANmodule->txSize; i++) {
+		if(CANmodule->txArray[i].bufferFull) {
+			CO_ReturnError_t co_err = CO_CANsend(CANmodule, &(CANmodule->txArray[i]));
+			if (co_err != CO_ERROR_NO) return;
+		}
+	}
+}
 
 void can_process_callback(void* arg) {
 	//CAN1 CAN2 RX
@@ -359,18 +377,27 @@ void can_process_callback(void* arg) {
 	can_bus_tx_process(&can_bus_1);
 	can_bus_tx_process(&can_bus_2);
 
+	//CANopen bufferFUll check
+	CO_CANmodule_check_buffer_full(can1_co);
+	CO_CANmodule_check_buffer_full(can2_co);
+
 	can_bus_1_current_error = can_bus_1.error;
 	can_bus_2_current_error = can_bus_2.error;
 
 	can_bus_1_masked_error = can_bus_1_current_error & ~can_bus_1_last_error;
+	can_bus_1_masked_error_n = ~can_bus_1_current_error & can_bus_1_last_error;
 	can_bus_1_last_error = can_bus_1_current_error;
 
 	can_bus_2_masked_error = can_bus_2_current_error & ~can_bus_2_last_error;
+	can_bus_2_masked_error_n = ~can_bus_2_current_error & can_bus_2_last_error;
 	can_bus_2_last_error = can_bus_2_current_error;
 
 	//CAN1
 	if (can_bus_1_masked_error & CAN_ERROR_TX_QUEUE_FULL) {
 		printf("CAN1 TX QUEUE FULL\n");
+	}
+	if (can_bus_1_masked_error_n & CAN_ERROR_TX_QUEUE_FULL) {
+		printf("CAN1 TX QUEUE NOT FULL\n");
 	}
 
 	if (can_bus_1_masked_error & CAN_ERROR_RX0_FULL) {
@@ -409,6 +436,9 @@ void can_process_callback(void* arg) {
 	//CAN2
 	if (can_bus_2_masked_error & CAN_ERROR_TX_QUEUE_FULL) {
 		printf("CAN2 TX QUEUE FULL\n");
+	}
+	if(can_bus_2_masked_error_n & CAN_ERROR_TX_QUEUE_FULL) {
+		printf("CAN2 TX QUEUE NOT FULL\n");
 	}
 
 	if (can_bus_2_masked_error & CAN_ERROR_RX0_FULL) {

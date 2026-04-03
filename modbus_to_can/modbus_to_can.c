@@ -75,16 +75,8 @@ static void modbus_to_can_read(M_modbus_to_can* modbus_to_can) {
 			if(modbus_to_can->m_timeout_cnt) {
 				modbus_to_can->m_timeout_cnt--;
 			} else {
-				//отменим?
+				//принудительно завершим
 				modbus_to_can_read_queue->m_state = CO_SDO_CLI_State_DONE;
-				//сбросим управляющие биты
-				modbus_to_can->control &= ~(MODBUS_TO_CAN_CONTROL_START | MODBUS_TO_CAN_CONTROL_READ);
-				//установим статусы ERROR, WRITE_DONE
-				modbus_to_can->status |= (MODBUS_TO_CAN_STATUS_ERROR | MODBUS_TO_CAN_STATUS_READ_DONE);
-				//сбросим статус RUN
-				modbus_to_can->status &= ~MODBUS_TO_CAN_STATUS_RUN;
-				//сбросим указатель на очередь
-				modbus_to_can_read_queue = NULL;
 			}
 		}
     }
@@ -140,15 +132,8 @@ static void modbus_to_can_write(M_modbus_to_can* modbus_to_can) {
 			if(modbus_to_can->m_timeout_cnt) {
 				modbus_to_can->m_timeout_cnt--;
 			} else {
+				//принудительно завершим
 				modbus_to_can_write_queue->m_state = CO_SDO_CLI_State_DONE;
-				//сбросим управляющие биты
-				modbus_to_can->control &= ~(MODBUS_TO_CAN_CONTROL_START | MODBUS_TO_CAN_CONTROL_WRITE);
-				//установим статусы ERROR, WRITE_DONE
-				modbus_to_can->status |= (MODBUS_TO_CAN_STATUS_ERROR | MODBUS_TO_CAN_STATUS_WRITE_DONE);
-				//сбросим статус RUN
-				modbus_to_can->status &= ~MODBUS_TO_CAN_STATUS_RUN;
-				//сбросим указатель на очередь
-				modbus_to_can_write_queue = NULL;
 			}
 		}
     }
