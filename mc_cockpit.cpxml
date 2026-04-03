@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cockpit>
+    <SDOValueDial row="1" col="6" rowSpan="1" colSpan="1" nodeId="1" index="9024" subIndex="4" type="6">
+        <name>Ротор I</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>-2</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="1" col="5" rowSpan="1" colSpan="1" nodeId="1" index="9040" subIndex="4" type="6">
+        <name>Ротор U</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>-2</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="1" col="7" rowSpan="1" colSpan="1" nodeId="1" index="9872" subIndex="8" type="6">
+        <name>MotPot Test</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>3.5</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>1</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="2" col="5" rowSpan="1" colSpan="1" nodeId="1" index="8784" subIndex="4" type="6">
+        <name>Привод U RMS A</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="2" col="6" rowSpan="1" colSpan="1" nodeId="1" index="8832" subIndex="4" type="6">
+        <name>Привод I RMS A</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="3" col="5" rowSpan="1" colSpan="1" nodeId="1" index="8800" subIndex="4" type="6">
+        <name>Привод U RMS B</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="3" col="6" rowSpan="1" colSpan="1" nodeId="1" index="8848" subIndex="4" type="6">
+        <name>Привод I RMS B</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="4" col="5" rowSpan="1" colSpan="1" nodeId="1" index="8816" subIndex="4" type="6">
+        <name>Привод U RMS C</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="4" col="6" rowSpan="1" colSpan="1" nodeId="1" index="8864" subIndex="4" type="6">
+        <name>Привод I RMS C</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="1" col="4" rowSpan="1" colSpan="1" nodeId="1" index="9056" subIndex="4" type="6">
+        <name>Резистор I</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>-2</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="1" col="3" rowSpan="1" colSpan="1" nodeId="1" index="9184" subIndex="6" type="6">
+        <name>COS(phi)</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>1</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="2" col="3" rowSpan="1" colSpan="1" nodeId="1" index="9184" subIndex="3" type="6">
+        <name>Полная</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>-2</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="3" col="3" rowSpan="1" colSpan="1" nodeId="1" index="9184" subIndex="4" type="6">
+        <name>Активная</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>-2</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="4" col="3" rowSpan="1" colSpan="1" nodeId="1" index="9184" subIndex="5" type="6">
+        <name>Реактивная</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>-2</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="1" col="2" rowSpan="1" colSpan="1" nodeId="1" index="9072" subIndex="6" type="6">
+        <name>Статор I RMS</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="2" col="2" rowSpan="1" colSpan="1" nodeId="1" index="8976" subIndex="4" type="6">
+        <name>Статор I RMS A</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="3" col="2" rowSpan="1" colSpan="1" nodeId="1" index="8992" subIndex="4" type="6">
+        <name>Статор I RMS B</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="4" col="2" rowSpan="1" colSpan="1" nodeId="1" index="9008" subIndex="4" type="6">
+        <name>Статор I RMS C</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="2" col="1" rowSpan="1" colSpan="1" nodeId="1" index="8880" subIndex="4" type="6">
+        <name>Статор U RMS A</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="3" col="1" rowSpan="1" colSpan="1" nodeId="1" index="8896" subIndex="4" type="6">
+        <name>Статор U RMS B</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+    <SDOValueDial row="4" col="1" rowSpan="1" colSpan="1" nodeId="1" index="8912" subIndex="4" type="6">
+        <name>Статор U RMS C</name>
+        <outsideBackColor>4278190080</outsideBackColor>
+        <insideBackColor>4278190080</insideBackColor>
+        <insideScaleBackColor>4278190080</insideScaleBackColor>
+        <textScaleColor>4278255360</textScaleColor>
+        <needleColor>4294967295</needleColor>
+        <penWidth>4</penWidth>
+        <precision>3</precision>
+        <rangeMin>0</rangeMin>
+        <rangeMax>2</rangeMax>
+    </SDOValueDial>
+</cockpit>
