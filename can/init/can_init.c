@@ -340,10 +340,10 @@ uint32_t can_bus_2_current_error;
 uint32_t can_bus_1_last_error;
 uint32_t can_bus_2_last_error;
 
-uint32_t can_bus_1_masked_error;
-uint32_t can_bus_1_masked_error_n;
-uint32_t can_bus_2_masked_error;
-uint32_t can_bus_2_masked_error_n;
+uint32_t can_bus_1_error_rise;
+uint32_t can_bus_1_error_fall;
+uint32_t can_bus_2_error_rise;
+uint32_t can_bus_2_error_fall;
 
 void CO_CANmodule_check_buffer_full(CO_t* co) {
 	if(co == NULL) return;
@@ -384,92 +384,92 @@ void can_process_callback(void* arg) {
 	can_bus_1_current_error = can_bus_1.error;
 	can_bus_2_current_error = can_bus_2.error;
 
-	can_bus_1_masked_error = can_bus_1_current_error & ~can_bus_1_last_error;
-	can_bus_1_masked_error_n = ~can_bus_1_current_error & can_bus_1_last_error;
+	can_bus_1_error_rise = can_bus_1_current_error & ~can_bus_1_last_error;
+	can_bus_1_error_fall = ~can_bus_1_current_error & can_bus_1_last_error;
 	can_bus_1_last_error = can_bus_1_current_error;
 
-	can_bus_2_masked_error = can_bus_2_current_error & ~can_bus_2_last_error;
-	can_bus_2_masked_error_n = ~can_bus_2_current_error & can_bus_2_last_error;
+	can_bus_2_error_rise = can_bus_2_current_error & ~can_bus_2_last_error;
+	can_bus_2_error_fall = ~can_bus_2_current_error & can_bus_2_last_error;
 	can_bus_2_last_error = can_bus_2_current_error;
 
 	//CAN1
-	if (can_bus_1_masked_error & CAN_ERROR_TX_QUEUE_FULL) {
+	if (can_bus_1_error_rise & CAN_ERROR_TX_QUEUE_FULL) {
 		printf("CAN1 TX QUEUE FULL\n");
 	}
-	if (can_bus_1_masked_error_n & CAN_ERROR_TX_QUEUE_FULL) {
+	if (can_bus_1_error_fall & CAN_ERROR_TX_QUEUE_FULL) {
 		printf("CAN1 TX QUEUE NOT FULL\n");
 	}
 
-	if (can_bus_1_masked_error & CAN_ERROR_RX0_FULL) {
+	if (can_bus_1_error_rise & CAN_ERROR_RX0_FULL) {
 		printf("CAN1 RX0 FULL\n");
 	}
-	if (can_bus_1_masked_error & CAN_ERROR_RX1_FULL) {
+	if (can_bus_1_error_rise & CAN_ERROR_RX1_FULL) {
 		printf("CAN1 RX1 FULL\n");
 	}
 
-	if (can_bus_1_masked_error & CAN_ERROR_RX0_OVERRUN) {
+	if (can_bus_1_error_rise & CAN_ERROR_RX0_OVERRUN) {
 		printf("CAN1 RX0 OVERRUN\n");
 	}
-	if (can_bus_1_masked_error & CAN_ERROR_RX1_OVERRUN) {
+	if (can_bus_1_error_rise & CAN_ERROR_RX1_OVERRUN) {
 		printf("CAN1 RX1 OVERRUN\n");
 	}
 
-	if (can_bus_1_masked_error & CAN_ERROR_TX_BUSSOFF) {
+	if (can_bus_1_error_rise & CAN_ERROR_TX_BUSSOFF) {
 		printf("CAN1 TX BUSSOFF\n");
 	}
 
-	if (can_bus_1_masked_error & CAN_ERROR_TX_PASSIVE) {
-		printf("CAN1 TX PASSIVE\n");
-	}
-	if (can_bus_1_masked_error & CAN_ERROR_RX_PASSIVE) {
+//	if (can_bus_1_error_rise & CAN_ERROR_TX_PASSIVE) {
+//		printf("CAN1 TX PASSIVE\n");
+//	}
+	if (can_bus_1_error_rise & CAN_ERROR_RX_PASSIVE) {
 		printf("CAN1 RX PASSIVE\n");
 	}
 
-	if (can_bus_1_masked_error & CAN_ERROR_TX_WARNING) {
-		printf("CAN1 TX WARNING\n");
-	}
-	if (can_bus_1_masked_error & CAN_ERROR_RX_WARNING) {
+//	if (can_bus_1_error_rise & CAN_ERROR_TX_WARNING) {
+//		printf("CAN1 TX WARNING\n");
+//	}
+	if (can_bus_1_error_rise & CAN_ERROR_RX_WARNING) {
 		printf("CAN1 RX WARNING\n");
 	}
 
 
 	//CAN2
-	if (can_bus_2_masked_error & CAN_ERROR_TX_QUEUE_FULL) {
+	if (can_bus_2_error_rise & CAN_ERROR_TX_QUEUE_FULL) {
 		printf("CAN2 TX QUEUE FULL\n");
 	}
-	if(can_bus_2_masked_error_n & CAN_ERROR_TX_QUEUE_FULL) {
+	if(can_bus_2_error_fall & CAN_ERROR_TX_QUEUE_FULL) {
 		printf("CAN2 TX QUEUE NOT FULL\n");
 	}
 
-	if (can_bus_2_masked_error & CAN_ERROR_RX0_FULL) {
+	if (can_bus_2_error_rise & CAN_ERROR_RX0_FULL) {
 		printf("CAN2 RX0 FULL\n");
 	}
-	if (can_bus_2_masked_error & CAN_ERROR_RX1_FULL) {
+	if (can_bus_2_error_rise & CAN_ERROR_RX1_FULL) {
 		printf("CAN2 RX1 FULL\n");
 	}
 
-	if (can_bus_2_masked_error & CAN_ERROR_RX0_OVERRUN) {
+	if (can_bus_2_error_rise & CAN_ERROR_RX0_OVERRUN) {
 		printf("CAN2 RX0 OVERRUN\n");
 	}
-	if (can_bus_2_masked_error & CAN_ERROR_RX1_OVERRUN) {
+	if (can_bus_2_error_rise & CAN_ERROR_RX1_OVERRUN) {
 		printf("CAN2 RX1 OVERRUN\n");
 	}
 
-	if (can_bus_2_masked_error & CAN_ERROR_TX_BUSSOFF) {
+	if (can_bus_2_error_rise & CAN_ERROR_TX_BUSSOFF) {
 		printf("CAN2 TX BUSSOFF\n");
 	}
 
-	if (can_bus_2_masked_error & CAN_ERROR_TX_PASSIVE) {
-		printf("CAN2 TX PASSIVE\n");
-	}
-	if (can_bus_2_masked_error & CAN_ERROR_RX_PASSIVE) {
+//	if (can_bus_2_error_rise & CAN_ERROR_TX_PASSIVE) {
+//		printf("CAN2 TX PASSIVE\n");
+//	}
+	if (can_bus_2_error_rise & CAN_ERROR_RX_PASSIVE) {
 		printf("CAN2 RX PASSIVE\n");
 	}
 
-	if (can_bus_2_masked_error & CAN_ERROR_TX_WARNING) {
-		printf("CAN2 TX WARNING\n");
-	}
-	if (can_bus_2_masked_error & CAN_ERROR_RX_WARNING) {
+//	if (can_bus_2_error_rise & CAN_ERROR_TX_WARNING) {
+//		printf("CAN2 TX WARNING\n");
+//	}
+	if (can_bus_2_error_rise & CAN_ERROR_RX_WARNING) {
 		printf("CAN2 RX WARNING\n");
 	}
 }
