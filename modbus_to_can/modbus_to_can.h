@@ -49,6 +49,7 @@ struct _S_Modbus_To_Can {
     uint8_t m_subindex;
     size_t m_size;
     iql_t m_data;
+    uint8_t m_timeout_cnt;
 };
 
 EXTERN METHOD_INIT_PROTO(M_modbus_to_can);
@@ -74,6 +75,7 @@ EXTERN METHOD_CALC_PROTO(M_modbus_to_can);
 	    0, /*m_subindex*/\
 	    0, /*m_size*/\
 	    0, /*m_data*/\
+		0, /*m_timeout_cnt*/\
     }
 
 #endif /* MODBUS_TO_CAN_H */
