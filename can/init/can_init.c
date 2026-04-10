@@ -33,7 +33,7 @@ CO_SDO_CLI_Queue can1_cli_Queue[16];
 
 CO_SDO_CLI_Driver_t can1_cli_driver;
 
-#define CAN_BUS_QUEUE_SIZE 128
+#define CAN_BUS_QUEUE_SIZE 32
 
 can_rx_frame_queue_t can_bus_1_rx_queue[CAN_BUS_QUEUE_SIZE];
 can_tx_frame_queue_t can_bus_1_tx_queue[CAN_BUS_QUEUE_SIZE];
@@ -186,7 +186,7 @@ void can_setup(can_bus_t* bus) {
 	 * 1: Receive FIFO locked against overrun. Once a receive FIFO is full the next incoming
 	 * message will be discarded.
 	 */
-	can_MCR_RFLM_set(can,	0); //Должно быть 1 - мы должны забрать то, что получили
+	can_MCR_RFLM_set(can,	1); //Должно быть 1 - мы должны забрать то, что получили
 
 	/*
 	 * 0: The CAN hardware will automatically retransmit the message until it has been
@@ -362,6 +362,10 @@ void CO_CANmodule_check_buffer_full(CO_t* co) {
 }
 
 void can_process_callback(void* arg) {
+	//CANopen bufferFUll check
+	CO_CANmodule_check_buffer_full(can1_co);
+	CO_CANmodule_check_buffer_full(can2_co);
+	
 	//CAN1 CAN2 RX
 	can_bus_rx_process(&can_bus_1);
 	can_bus_rx_process(&can_bus_2);
@@ -376,10 +380,6 @@ void can_process_callback(void* arg) {
 	//CAN1 CAN2 TX
 	can_bus_tx_process(&can_bus_1);
 	can_bus_tx_process(&can_bus_2);
-
-	//CANopen bufferFUll check
-	CO_CANmodule_check_buffer_full(can1_co);
-	CO_CANmodule_check_buffer_full(can2_co);
 
 	can_bus_1_current_error = can_bus_1.error;
 	can_bus_2_current_error = can_bus_2.error;
