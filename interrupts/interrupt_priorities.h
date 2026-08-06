@@ -10,12 +10,14 @@
 
 #define TIM2_IRQ_PRIO 1		//SYS_CNT
 
-#define CAN1_IRQ_PRIO 2	//CAN1 Socket 3
-#define CAN2_IRQ_PRIO 2	//CAN2 RJ-45
+#define EXTI15_10_IRQ_PRIO 2 //SPI1_CS (spi -> dma -> resampler -> ext RAM), AC_LOST
 
-#define SPI2_IRQ_PRIO 3		//SPI2
-#define SPI4_IRQ_PRIO 3		//SPI4
-#define SPI5_IRQ_PRIO 3		//SPI5
+#define CAN1_IRQ_PRIO 3	//CAN1 Socket 3
+#define CAN2_IRQ_PRIO 3	//CAN2 RJ-45
+
+#define SPI2_IRQ_PRIO 4		//SPI2
+#define SPI4_IRQ_PRIO 4		//SPI4
+#define SPI5_IRQ_PRIO 4		//SPI5
 
 #define UART6_IRQ_PRIO 5	//UART6 Socket 3
 #define UART7_IRQ_PRIO 5	//UART7 RS485_Panel

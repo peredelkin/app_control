@@ -14,6 +14,10 @@ extern SPI_BUS_TypeDef SPI2_Bus;
 extern SPI_BUS_TypeDef SPI4_Bus;
 extern SPI_BUS_TypeDef SPI5_Bus;
 
+//SPI1
+extern void spi1_bus_init(void);
+extern void spi1_nss_handler(void);
+
 //SPI2
 extern void spi2_nvic_init(uint32_t priority);
 extern void spi2_bus_init(void);

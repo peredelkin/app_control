@@ -207,3 +207,10 @@ int WEAK _write(int file, char *ptr, int len)
     }
     return len;
 }
+
+/*
+ *_gettimeofday
+ */
+int WEAK _gettimeofday(struct timeval *tv, void *tzvp) {
+	return -1;
+}

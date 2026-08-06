@@ -29,6 +29,7 @@
 #include "graphics/painter.h"
 #include "graphics/font_5x8_utf8.h"
 #include "graphics/font_10x16_utf8.h"
+#include "exti/exti.h"
 
 #define USE_SDCARD_FATFS_DISKIO
 #include "sdcard/sdcard.h"
@@ -335,6 +336,8 @@ int main(void)
 
 	gpio_rcc_init(); //RCC of all GPIO
 
+	exti15_10_init(EXTI15_10_IRQ_PRIO); //SPI1_CS, AC_LOST
+
     //Индикатор состояния.
     INIT(rgb_led);
 
@@ -365,6 +368,11 @@ int main(void)
 			printf("[ERROR]\n");
 		}
 	}
+
+	spi1_bus_init(); //MC to App
+	exti_callback[15] = spi1_nss_handler;
+	sys_counter_tv_print();
+	printf("SPI2\n");
 
 	spi2_nvic_init(SPI2_IRQ_PRIO);
 	spi2_bus_init(); //dac7562

@@ -103,4 +103,7 @@ extern const gpio_pin_t GPO_Board_Out3_App;
 extern const gpio_pin_t GPO_Board_Out4_App;
 extern void gpio_ili9341_cfg_setup();
 
+extern const gpio_pin_t GPI_CS_App_MC;
+extern void gpio_spi1_cfg_setup();
+
 #endif /* INC_GPIO_INIT_H_ */

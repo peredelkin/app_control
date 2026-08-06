@@ -488,6 +488,7 @@ bool dma_stream_disable(dma_t* dma) {
 	return true;
 }
 
+//TODO: вынести настройку в константу вместо кучи аргументов функции
 void dma_stream_init(
 		dma_t* dma,
 		dma_scr_dbm_t dbm,
