@@ -8,6 +8,52 @@
 #include "lib/stm32f4xx/stm32f4xx.h"
 #include "lib/errors/errors.h"
 
+#define DMA_STREAM_MAKE_CFG(dbm,\
+							ct,\
+							chsel,\
+							dmdis,\
+							fth,\
+							msize,\
+							mburst,\
+							minc,\
+							psize,\
+							pburst,\
+							pinc,\
+							pincos,\
+							dir,\
+							pfctrl,\
+							circ,\
+							tcie,\
+							htie,\
+							teie,\
+							dmeie,\
+							feie,\
+							pl,\
+							en)\
+{\
+.scr.bit.EN = en,\
+.scr.bit.DMEIE = dmeie,\
+.scr.bit.TEIE = teie,\
+.scr.bit.HTIE = htie,\
+.scr.bit.TCIE = tcie,\
+.scr.bit.PFCTRL = pfctrl,\
+.scr.bit.DIR = dir,\
+.scr.bit.CIRC = circ,\
+.scr.bit.PINC = pinc,\
+.scr.bit.MINC = minc,\
+.scr.bit.PSIZE = psize,\
+.scr.bit.MSIZE = msize,\
+.scr.bit.PINCOS = pincos,\
+.scr.bit.PL = pl,\
+.scr.bit.DBM = dbm,\
+.scr.bit.CT = ct,\
+.scr.bit.PBURST = pburst,\
+.scr.bit.MBURST = mburst,\
+.scr.bit.CHSEL = chsel,\
+.fscr.bit.FTH = fth,\
+.fscr.bit.DMDIS = dmdis,\
+.fscr.bit.FEIE = feie\
+}
 
 #define DMA_DATA_COUNT_MAX 65535
 
@@ -274,6 +320,11 @@ typedef union {
 static_assert(sizeof(dma_sfcr_t) == DMA_SFCR_WIDTH, "Invalid size of dma_sfcr_t!");
 
 typedef struct {
+	dma_scr_t scr;
+	dma_sfcr_t fscr;
+} dma_stream_settings_t;
+
+typedef struct {
 	dma_controller_n_t controller;
 	dma_stream_n_t stream;
 	dma_isr_ifcr_n_t status;
@@ -318,12 +369,7 @@ extern bool dma_stream_enable(dma_t* dma);
 
 extern bool dma_stream_disable(dma_t* dma);
 
-extern void dma_stream_init(dma_t *dma, dma_scr_dbm_t dbm, dma_scr_ct_t ct, dma_scr_chsel_t chsel,
-		dma_fcr_dmdis_t dmdis, dma_fcr_fth_t fth, dma_scr_msize_t msize, dma_scr_mburst_t mburst,
-		dma_scr_minc_t minc, dma_scr_psize_t psize, dma_scr_pburst_t pburst, dma_scr_pinc_t pinc,
-		dma_scr_pincos_t pincos, dma_scr_dir_t dir, dma_scr_pfctrl_t pfctrl, dma_scr_circ_t circ,
-		dma_scr_tcie_t tcie, dma_scr_htie_t htie, dma_scr_teie_t teie, dma_scr_dmeie_t dmeie,
-		dma_fcr_feie_t feie, dma_scr_pl_t pl, dma_scr_en_t en);
+extern void dma_stream_setup(dma_t *dma, dma_stream_settings_t* settings);
 
 extern uint32_t dma_stream_number_of_data_register_read(dma_t* dma);
 

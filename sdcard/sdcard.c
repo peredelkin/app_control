@@ -577,6 +577,54 @@ err_t sdcard_sync_state(sdcard_t* sdcard, uint32_t timeout, uint32_t sec, uint32
 	return E_NO_ERROR;
 }
 
+static dma_stream_settings_t dma_rx_settings = DMA_STREAM_MAKE_CFG(
+		DMA_SCR_DBM_DIS,
+		DMA_SCR_CT_MEM0,
+		DMA_SCR_CHSEL_4,
+		DMA_FCR_DMDIS_ENA,
+		DMA_FCR_FTH_FULL,
+		DMA_SCR_MSIZE_32,
+		DMA_SCR_MBURST_4,
+		DMA_SCR_MINC_ENA,
+		DMA_SCR_PSIZE_32,
+		DMA_SCR_PBURST_4,
+		DMA_SCR_PINC_DIS,
+		DMA_SCR_PINCOS_PSIZE,
+		DMA_SCR_DIR_PERI_TO_MEM,
+		DMA_SCR_PFCTRL_ENA,
+		DMA_SCR_CIRC_DIS,
+		DMA_SCR_TCIE_DIS,
+		DMA_SCR_HTIE_DIS,
+		DMA_SCR_TEIE_DIS,
+		DMA_SCR_DMEIE_DIS,
+		DMA_FCR_FEIE_DIS,
+		DMA_SCR_PL_LOW,
+		DMA_SCR_EN_ENA);
+
+static dma_stream_settings_t dma_tx_settings = DMA_STREAM_MAKE_CFG(
+		DMA_SCR_DBM_DIS,
+		DMA_SCR_CT_MEM0,
+		DMA_SCR_CHSEL_4,
+		DMA_FCR_DMDIS_ENA,
+		DMA_FCR_FTH_FULL,
+		DMA_SCR_MSIZE_32,
+		DMA_SCR_MBURST_4,
+		DMA_SCR_MINC_ENA,
+		DMA_SCR_PSIZE_32,
+		DMA_SCR_PBURST_4,
+		DMA_SCR_PINC_DIS,
+		DMA_SCR_PINCOS_PSIZE,
+		DMA_SCR_DIR_MEM_TO_PERI,
+		DMA_SCR_PFCTRL_ENA,
+		DMA_SCR_CIRC_DIS,
+		DMA_SCR_TCIE_DIS,
+		DMA_SCR_HTIE_DIS,
+		DMA_SCR_TEIE_DIS,
+		DMA_SCR_DMEIE_DIS,
+		DMA_FCR_FEIE_DIS,
+		DMA_SCR_PL_LOW,
+		DMA_SCR_EN_ENA);
+
 //dma
 err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, dma_scr_dir_t dir) {
 	if(sdcard == NULL) return E_NULL_POINTER;
@@ -587,30 +635,11 @@ err_t sdcard_dma_common_setup(sdcard_t* sdcard, uint32_t* memory_addr, dma_scr_d
 	dma_stream_peripheral_address_register_write(&(sdcard->dma), (uint32_t)&(SDIO->FIFO));	//Source/Destination
 	dma_stream_memory_0_address_register_write(&(sdcard->dma), (uint32_t)memory_addr);		//Destination/Source
 
-    dma_stream_init(
-    		&sdcard->dma,
-    		DMA_SCR_DBM_DIS,
-			DMA_SCR_CT_MEM0,
-			DMA_SCR_CHSEL_4,
-			DMA_FCR_DMDIS_ENA,
-			DMA_FCR_FTH_FULL,
-			DMA_SCR_MSIZE_32,
-			DMA_SCR_MBURST_4,
-			DMA_SCR_MINC_ENA,
-			DMA_SCR_PSIZE_32,
-			DMA_SCR_PBURST_4,
-			DMA_SCR_PINC_DIS,
-			DMA_SCR_PINCOS_PSIZE,
-			dir,
-			DMA_SCR_PFCTRL_ENA,
-			DMA_SCR_CIRC_DIS,
-			DMA_SCR_TCIE_DIS,
-			DMA_SCR_HTIE_DIS,
-			DMA_SCR_TEIE_DIS,
-			DMA_SCR_DMEIE_DIS,
-			DMA_FCR_FEIE_DIS,
-			DMA_SCR_PL_LOW,
-			DMA_SCR_EN_ENA);
+	switch(dir) {
+	case DMA_SCR_DIR_PERI_TO_MEM: dma_stream_setup(&sdcard->dma, &dma_rx_settings); break;
+	case DMA_SCR_DIR_MEM_TO_PERI: dma_stream_setup(&sdcard->dma, &dma_tx_settings); break;
+	default: return E_INVALID_VALUE;
+	}
 
 	return E_NO_ERROR;
 }

@@ -37,6 +37,30 @@ resampler_t spi1_resampler;
 #include "dma/dma.h"
 dma_t spi1_rx_dma;
 
+static dma_stream_settings_t dma_rx_settings = DMA_STREAM_MAKE_CFG(
+		DMA_SCR_DBM_DIS,			/*Double buffer mode*/
+		DMA_SCR_CT_MEM0,			/*Current target*/
+		DMA_SCR_CHSEL_3,			/*Channel selection*/
+		DMA_FCR_DMDIS_ENA,			/*Direct mode disable*/
+		DMA_FCR_FTH_ONE_FOURTH,		/*FIFO threshold selection*/
+		DMA_SCR_MSIZE_32,			/*Memory data size*/
+		DMA_SCR_MBURST_DIS,			/*Memory burst transfer configuration*/
+		DMA_SCR_MINC_ENA,			/*Memory increment mode*/
+		DMA_SCR_PSIZE_8,			/*Peripheral data size*/
+		DMA_SCR_PBURST_DIS,			/*Peripheral burst transfer configuration*/
+		DMA_SCR_PINC_DIS,			/*Peripheral increment mode*/
+		DMA_SCR_PINCOS_PSIZE,		/*Peripheral increment offset size*/
+		DMA_SCR_DIR_PERI_TO_MEM,	/*Data transfer direction*/
+		DMA_SCR_PFCTRL_DIS,			/*Peripheral flow controller*/
+		DMA_SCR_CIRC_DIS,			/*Circular mode*/
+		DMA_SCR_TCIE_DIS,			/*Transfer complete interrupt enable*/
+		DMA_SCR_HTIE_DIS,			/*Half transfer interrupt enable*/
+		DMA_SCR_TEIE_DIS,			/*Transfer error interrupt enable*/
+		DMA_SCR_DMEIE_DIS,			/*Direct mode error interrupt enable*/
+		DMA_FCR_FEIE_DIS,			/*FIFO error interrupt enable*/
+		DMA_SCR_PL_MEDIUM,			/*Priority level: Medium*/
+		DMA_SCR_EN_DIS);
+
 err_t spi1_rx_dma_init(dma_t* dma) {
 	return dma_struct_init(dma, DMA2_Stream_0);
 }
@@ -52,30 +76,7 @@ err_t spi1_rx_dma_start(dma_t* dma) {
 	dma_stream_peripheral_address_register_write(dma, (uint32_t) SPI1_DATA_SECTION);				//DR
 	dma_stream_memory_0_address_register_write(dma, (uint32_t) spi1_resampler.in);					//array
 
-	dma_stream_init(
-			dma,
-			DMA_SCR_DBM_DIS,			/*Double buffer mode*/
-			DMA_SCR_CT_MEM0,			/*Current target*/
-			DMA_SCR_CHSEL_3,			/*Channel selection*/
-			DMA_FCR_DMDIS_ENA,			/*Direct mode disable*/
-			DMA_FCR_FTH_ONE_FOURTH,		/*FIFO threshold selection*/
-			DMA_SCR_MSIZE_32,			/*Memory data size*/
-			DMA_SCR_MBURST_DIS,			/*Memory burst transfer configuration*/
-			DMA_SCR_MINC_ENA,			/*Memory increment mode*/
-			DMA_SCR_PSIZE_8,			/*Peripheral data size*/
-			DMA_SCR_PBURST_DIS,			/*Peripheral burst transfer configuration*/
-			DMA_SCR_PINC_DIS,			/*Peripheral increment mode*/
-			DMA_SCR_PINCOS_PSIZE,		/*Peripheral increment offset size*/
-			DMA_SCR_DIR_PERI_TO_MEM,	/*Data transfer direction*/
-			DMA_SCR_PFCTRL_DIS,			/*Peripheral flow controller*/
-			DMA_SCR_CIRC_DIS,			/*Circular mode*/
-			DMA_SCR_TCIE_DIS,			/*Transfer complete interrupt enable*/
-			DMA_SCR_HTIE_DIS,			/*Half transfer interrupt enable*/
-			DMA_SCR_TEIE_DIS,			/*Transfer error interrupt enable*/
-			DMA_SCR_DMEIE_DIS,			/*Direct mode error interrupt enable*/
-			DMA_FCR_FEIE_DIS,			/*FIFO error interrupt enable*/
-			DMA_SCR_PL_MEDIUM,			/*Priority level: Medium*/
-			DMA_SCR_EN_DIS);
+	dma_stream_setup(dma, &dma_rx_settings);
 
 	dma_stream_enable(dma);
 

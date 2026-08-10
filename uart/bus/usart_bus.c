@@ -61,30 +61,31 @@ static void usart_bus_dma_tx_config(usart_bus_t* usart, void* address, size_t si
 
     dma_stream_callback_set(&usart->dma_tx_stream, usart->dma_tx_stream_callback);
 
-    dma_stream_init(
-    		&usart->dma_tx_stream,
+    dma_stream_settings_t dma_tx_stream_settings = DMA_STREAM_MAKE_CFG(
     		DMA_SCR_DBM_DIS,
 			DMA_SCR_CT_MEM0,
-			usart->dma_tx_stream_channel,
-			DMA_FCR_DMDIS_DIS,
-			DMA_FCR_FTH_ONE_SECOND,
-			DMA_SCR_MSIZE_8,
-			DMA_SCR_MBURST_DIS,
-			DMA_SCR_MINC_ENA,
-			DMA_SCR_PSIZE_8,
-			DMA_SCR_PBURST_DIS,
-			DMA_SCR_PINC_DIS,
-			DMA_SCR_PINCOS_PSIZE,
-			DMA_SCR_DIR_MEM_TO_PERI,
-			DMA_SCR_PFCTRL_DIS,
-			DMA_SCR_CIRC_DIS,
-			DMA_SCR_TCIE_ENA,
-			DMA_SCR_HTIE_DIS,
-			DMA_SCR_TEIE_ENA,
-			DMA_SCR_DMEIE_DIS,
-			DMA_FCR_FEIE_DIS,
-			DMA_SCR_PL_LOW,
-			DMA_SCR_EN_DIS);
+    		usart->dma_tx_stream_channel,
+    		DMA_FCR_DMDIS_DIS,
+    		DMA_FCR_FTH_ONE_SECOND,
+    		DMA_SCR_MSIZE_8,
+    		DMA_SCR_MBURST_DIS,
+    		DMA_SCR_MINC_ENA,
+    		DMA_SCR_PSIZE_8,
+    		DMA_SCR_PBURST_DIS,
+    		DMA_SCR_PINC_DIS,
+    		DMA_SCR_PINCOS_PSIZE,
+    		DMA_SCR_DIR_MEM_TO_PERI,
+    		DMA_SCR_PFCTRL_DIS,
+    		DMA_SCR_CIRC_DIS,
+    		DMA_SCR_TCIE_ENA,
+    		DMA_SCR_HTIE_DIS,
+    		DMA_SCR_TEIE_ENA,
+    		DMA_SCR_DMEIE_DIS,
+    		DMA_FCR_FEIE_DIS,
+    		DMA_SCR_PL_LOW,
+    		DMA_SCR_EN_DIS);
+
+    dma_stream_setup(&usart->dma_tx_stream, &dma_tx_stream_settings);
 }
 
 static void usart_bus_dma_rx_config(usart_bus_t* usart, void* address, size_t size) {
@@ -96,8 +97,7 @@ static void usart_bus_dma_rx_config(usart_bus_t* usart, void* address, size_t si
 
     dma_stream_callback_set(&usart->dma_tx_stream, usart->dma_rx_stream_callback);
 
-    dma_stream_init(
-    		&usart->dma_rx_stream,
+    dma_stream_settings_t dma_rx_stream_settings = DMA_STREAM_MAKE_CFG(
     		DMA_SCR_DBM_DIS,
 			DMA_SCR_CT_MEM0,
 			usart->dma_rx_stream_channel,
@@ -120,6 +120,8 @@ static void usart_bus_dma_rx_config(usart_bus_t* usart, void* address, size_t si
 			DMA_FCR_FEIE_DIS,
 			DMA_SCR_PL_LOW,
 			DMA_SCR_EN_DIS);
+
+    dma_stream_setup(&usart->dma_rx_stream, &dma_rx_stream_settings);
 }
 
 static void usart_bus_dma_start_tx(usart_bus_t* usart) {

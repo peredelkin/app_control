@@ -147,6 +147,54 @@ uint8_t nand_K9F1G08U0E_status_read_cmd(void) {
 /*command function sets end*/
 
 /*dma function sets start*/
+static dma_stream_settings_t dma_rx_settings = DMA_STREAM_MAKE_CFG(
+		DMA_SCR_DBM_DIS,
+		DMA_SCR_CT_MEM0,
+		DMA_SCR_CHSEL_0,
+		DMA_FCR_DMDIS_DIS,
+		DMA_FCR_FTH_ONE_FOURTH,
+		DMA_SCR_MSIZE_8,
+		DMA_SCR_MBURST_DIS,
+		DMA_SCR_MINC_ENA,
+		DMA_SCR_PSIZE_8,
+		DMA_SCR_PBURST_DIS,
+		DMA_SCR_PINC_DIS,
+		DMA_SCR_PINCOS_PSIZE,
+		DMA_SCR_DIR_MEM_TO_MEM,
+		DMA_SCR_PFCTRL_DIS,
+		DMA_SCR_CIRC_DIS,
+		DMA_SCR_TCIE_DIS,
+		DMA_SCR_HTIE_DIS,
+		DMA_SCR_TEIE_DIS,
+		DMA_SCR_DMEIE_DIS,
+		DMA_FCR_FEIE_DIS,
+		DMA_SCR_PL_LOW,
+		DMA_SCR_EN_DIS);
+
+static dma_stream_settings_t dma_tx_settings = DMA_STREAM_MAKE_CFG(
+		DMA_SCR_DBM_DIS,
+		DMA_SCR_CT_MEM0,
+		DMA_SCR_CHSEL_0,
+		DMA_FCR_DMDIS_DIS,
+		DMA_FCR_FTH_ONE_FOURTH,
+		DMA_SCR_MSIZE_8,
+		DMA_SCR_MBURST_DIS,
+		DMA_SCR_MINC_DIS,
+		DMA_SCR_PSIZE_8,
+		DMA_SCR_PBURST_DIS,
+		DMA_SCR_PINC_ENA,
+		DMA_SCR_PINCOS_PSIZE,
+		DMA_SCR_DIR_MEM_TO_MEM,
+		DMA_SCR_PFCTRL_DIS,
+		DMA_SCR_CIRC_DIS,
+		DMA_SCR_TCIE_DIS,
+		DMA_SCR_HTIE_DIS,
+		DMA_SCR_TEIE_DIS,
+		DMA_SCR_DMEIE_DIS,
+		DMA_FCR_FEIE_DIS,
+		DMA_SCR_PL_LOW,
+		DMA_SCR_EN_DIS);
+
 err_t nand_K9F1G08U0E_conf_dma_to_read(nand_flash_driver_t *drv) {
 	//stream open
 	err_t err = dma_stream_open(&(drv->dma));
@@ -158,30 +206,7 @@ err_t nand_K9F1G08U0E_conf_dma_to_read(nand_flash_driver_t *drv) {
 	dma_stream_peripheral_address_register_write(&(drv->dma), (uint32_t) K9F1G08U0E_DATA32_SECTION);//Source
 	dma_stream_memory_0_address_register_write(&(drv->dma), (uint32_t) (drv->data));				//Destination
 
-    dma_stream_init(
-    		&(drv->dma),
-    		DMA_SCR_DBM_DIS,
-			DMA_SCR_CT_MEM0,
-			DMA_SCR_CHSEL_0,
-			DMA_FCR_DMDIS_DIS,
-			DMA_FCR_FTH_ONE_FOURTH,
-			DMA_SCR_MSIZE_8,
-			DMA_SCR_MBURST_DIS,
-			DMA_SCR_MINC_ENA,
-			DMA_SCR_PSIZE_8,
-			DMA_SCR_PBURST_DIS,
-			DMA_SCR_PINC_DIS,
-			DMA_SCR_PINCOS_PSIZE,
-			DMA_SCR_DIR_MEM_TO_MEM,
-			DMA_SCR_PFCTRL_DIS,
-			DMA_SCR_CIRC_DIS,
-			DMA_SCR_TCIE_DIS,
-			DMA_SCR_HTIE_DIS,
-			DMA_SCR_TEIE_DIS,
-			DMA_SCR_DMEIE_DIS,
-			DMA_FCR_FEIE_DIS,
-			DMA_SCR_PL_LOW,
-			DMA_SCR_EN_DIS);
+    dma_stream_setup(&(drv->dma), &dma_rx_settings);
 
 	return E_NO_ERROR;
 }
@@ -197,30 +222,7 @@ err_t nand_K9F1G08U0E_conf_dma_to_write(nand_flash_driver_t *drv) {
 	dma_stream_peripheral_address_register_write(&(drv->dma), (uint32_t) (drv->data));				//Source
 	dma_stream_memory_0_address_register_write(&(drv->dma), (uint32_t) K9F1G08U0E_DATA32_SECTION);	//Destination
 
-    dma_stream_init(
-    		&(drv->dma),
-    		DMA_SCR_DBM_DIS,
-			DMA_SCR_CT_MEM0,
-			DMA_SCR_CHSEL_0,
-			DMA_FCR_DMDIS_DIS,
-			DMA_FCR_FTH_ONE_FOURTH,
-			DMA_SCR_MSIZE_8,
-			DMA_SCR_MBURST_DIS,
-			DMA_SCR_MINC_DIS,
-			DMA_SCR_PSIZE_8,
-			DMA_SCR_PBURST_DIS,
-			DMA_SCR_PINC_ENA,
-			DMA_SCR_PINCOS_PSIZE,
-			DMA_SCR_DIR_MEM_TO_MEM,
-			DMA_SCR_PFCTRL_DIS,
-			DMA_SCR_CIRC_DIS,
-			DMA_SCR_TCIE_DIS,
-			DMA_SCR_HTIE_DIS,
-			DMA_SCR_TEIE_DIS,
-			DMA_SCR_DMEIE_DIS,
-			DMA_FCR_FEIE_DIS,
-			DMA_SCR_PL_LOW,
-			DMA_SCR_EN_DIS);
+    dma_stream_setup(&(drv->dma), &dma_tx_settings);
 
 	return E_NO_ERROR;
 }
