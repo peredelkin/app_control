@@ -1,7 +1,3 @@
-/**
- * @file sdcard_reply.h Декларация ответов SD-карты.
- */
-
 #ifndef SDCARD_REPLY_H_
 #define SDCARD_REPLY_H_
 

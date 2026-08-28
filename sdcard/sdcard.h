@@ -16,7 +16,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include "sdcard_response.h"
-#include "sdcard_token.h"
 #include "sdcard_reg.h"
 #include "sdcard_cmd.h"
 #include "dma/dma.h"
