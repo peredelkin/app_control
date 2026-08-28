@@ -107,36 +107,16 @@ err_t sram_8_test() {
 	return E_NO_ERROR;
 }
 
-typedef struct {
-	err_t test16;
-	err_t test32;
-	err_t test8;
-} fmc_sram_test_t;
-
-typedef struct {
-	err_t id;
-	err_t bad;
-} fmc_nand_test_t;
-
 fmc_sram_test_t fmc_sram_err;
 fmc_nand_test_t fmc_nand_err;
-
-
 
 err_t fmc_sram_test() {
 #ifdef FMC_SRAM_TEST
 	fmc_sram_err.test16 = sram_16_test();
-	sys_counter_tv_print();
-	printf("SRAM Test 16 %s\n", (fmc_sram_err.test16 == 0) ? "success" : "fail");
 
 	fmc_sram_err.test32 = sram_32_test();
-	sys_counter_tv_print();
-	printf("SRAM Test 32 %s\n", (fmc_sram_err.test32 == 0) ? "success" : "fail");
 
 	fmc_sram_err.test8 = sram_8_test();
-	sys_counter_tv_print();
-	printf("SRAM Test 8 %s\n", (fmc_sram_err.test8 == 0) ? "success" : "fail");
-
 
 	if(fmc_sram_err.test16 || fmc_sram_err.test32 || fmc_sram_err.test8) {
 		return E_IO_ERROR;

@@ -290,10 +290,10 @@ void init_tft(void) {
 	tft9341_reset(&tft);
 
 	tft9341_madctl_t madctl;
-	madctl.row_address_order = TFT9341_ROW_TOP_TO_BOTTOM;
-	madctl.col_address_order = TFT9341_COL_RIGHT_TO_LEFT;
 	madctl.row_col_exchange = TFT9341_ROW_COL_NORMAL_MODE;
-	madctl.vertical_refresh = TFT9341_REFRESH_TOP_TO_BOTTOM;
+	madctl.row_address_order = TFT9341_ROW_BOTTOM_TO_TOP;
+	madctl.vertical_refresh = TFT9341_REFRESH_BOTTOM_TO_TOP;
+	madctl.col_address_order = TFT9341_COL_LEFT_TO_RIGHT;
 	madctl.horizontal_refresh = TFT9341_REFRESH_LEFT_TO_RIGHT;
 	madctl.color_order = TFT9341_COLOR_ORDER_BGR;
 
@@ -305,8 +305,8 @@ void init_tft(void) {
 	tft9341_display_on(&tft);
 
 	painter_set_brush(&painter, PAINTER_BRUSH_SOLID);
-	painter_set_brush_color(&painter, TFT9341_MAKE_RGB565(255, 0, 255));
-	painter_set_pen_color(&painter, TFT9341_MAKE_RGB565(0, 255, 0));
+	painter_set_brush_color(&painter, TFT9341_MAKE_RGB565(0, 0, 0));
+	painter_set_pen_color(&painter, TFT9341_MAKE_RGB565(255, 255, 255));
 	painter_draw_fillrect(&painter, 0, 0, 239, 319);
 	painter_draw_circle(&painter, 150, 150, 50);
 	painter_set_font(&painter, &font5x8);
@@ -321,6 +321,19 @@ static void rgb_set_color(reg_u16_t color) {
     rgb_led.in_data = color;
     //обновим индикатор
     CALC(rgb_led);
+}
+
+void fatal_error_handler() {
+	//дальнейшая инициализация не возможна
+	printf("\n");
+	sys_counter_tv_print();
+	printf("ERROR!!!\n");
+	while (1) {
+		rgb_set_color(RGB_LED_COLOR_RED);
+		sys_counter_delay(1,0);
+		rgb_set_color(RGB_LED_COLOR_BLACK);
+		sys_counter_delay(1,0);
+	}
 }
 
 int main(void)
@@ -351,83 +364,88 @@ int main(void)
 
 	usart6_nvic_init(UART6_IRQ_PRIO);
 	usart6_init(); //Socket3
-	printf("SysCoreClock: %uMHz\n", (unsigned)(SystemCoreClock/1000000));
+	printf("\nSysCoreClock: %uMHz\n", (unsigned)(SystemCoreClock/1000000));
 	sys_counter_tv_print();
-	printf("UART6\n");
+	printf("UART6 Socket3\n");
 
 	//FMC, SRAM, NAND, YAFFS2
-	int res;
+	int yaffs_res;
 	if(fmc_init() == E_NO_ERROR) {
-		res = yaffs_start_up();
-		sys_counter_tv_print();
-		printf("Mount /nand ");
-		res = yaffs_mount("/nand");
-		if(res == 0) {
-			printf("[OK]\n");
+		yaffs_res = yaffs_start_up();
+		//OK
+		if(yaffs_res == 1) {
+			sys_counter_tv_print();
+			printf("Mount /nand ");
+			yaffs_res = yaffs_mount("/nand");
+			//OK
+			if(yaffs_res == 0) {
+				printf("[OK]\n");
+			} else {
+				fatal_error_handler();
+			}
 		} else {
-			printf("[ERROR]\n");
+			fatal_error_handler();
 		}
+	} else {
+		fatal_error_handler();
 	}
 
 	spi1_bus_init(); //MC to App
 	exti_callback[15] = spi1_nss_handler;
 	sys_counter_tv_print();
-	printf("SPI2\n");
+	printf("SPI1 MC to App\n");
 
 	spi2_nvic_init(SPI2_IRQ_PRIO);
 	spi2_bus_init(); //dac7562
 	sys_counter_tv_print();
-	printf("SPI2\n");
+	printf("SPI2 DAC7562\n");
 
 	spi4_nvic_init(SPI4_IRQ_PRIO);
 	spi4_bus_init(); //tic12400,ncv7608
 	sys_counter_tv_print();
-	printf("SPI4\n");
+	printf("SPI4 TIC12400, NCV7608\n");
 
 	spi5_nvic_init(SPI5_IRQ_PRIO);
 	spi5_bus_init(); //Socket3
 	sys_counter_tv_print();
-	printf("SPI5\n");
+	printf("SPI5 Socket3\n");
 
 	usart3_dma_nvic_init(UART3_DMA_Stream_IRQ_PRIO);
 	usart3_nvic_init(UART3_IRQ_PRIO);
 	usart3_init(); //RS485_1
 	sys_counter_tv_print();
-	printf("UART3\n");
-
+	printf("UART3 ");
 	modbus1_init(); //RS485_1
-	sys_counter_tv_print();
 	printf("MODBUS 1\n");
 
 	uart7_nvic_init(UART7_IRQ_PRIO);
 	uart7_init(); //RS485_Panel
 	sys_counter_tv_print();
-	printf("UART7\n");
-
+	printf("UART7 ");
 	modbus_panel_init(); //RS485_Panel
-	sys_counter_tv_print();
 	printf("MODBUS Panel\n");
 
+	sys_counter_tv_print();
+	printf("CAN 1/2 Starting...\n");
 	can1_nvic_init(CAN1_IRQ_PRIO);
 	can2_nvic_init(CAN2_IRQ_PRIO);
 	can_canopen_init();
-	sys_counter_tv_print();
-	printf("CAN 1/2\n");
 
-	//init_tft();
-	//sys_counter_tv_print();
-	//printf("TFT\n");
+	init_tft();
+	sys_counter_tv_print();
+	printf("TFT\n");
 
 	rgb_set_color(RGB_LED_COLOR_BLACK);
 
     INIT(sys);
 
-//    if(sys.status & SYS_MAIN_STATUS_ERROR){
-//        //printf("Error init main system!\n");
-//        DEINIT(sys);
-//
-//        return 0;
-//    }
+    if(sys.status & SYS_MAIN_STATUS_ERROR){
+    	sys_counter_tv_print();
+        printf("Error init main system!\n");
+        DEINIT(sys);
+
+        fatal_error_handler();
+    }
 
 	//Init SDIO!
 	gpio_sdio_cfg_setup();

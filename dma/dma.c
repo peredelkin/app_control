@@ -400,6 +400,14 @@ err_t dma_stream_open(dma_t* dma) {
 	return E_NO_ERROR;
 }
 
+err_t dma_stream_is_busy(dma_t* dma) {
+	if(_dma_stream_busy_read(dma->controller, dma->stream) == true) {
+		return E_BUSY;
+	}
+
+	return E_NO_ERROR;
+}
+
 uint32_t dma_stream_status_register_read(dma_t* dma) {
 	if (dma->initialized == false) return 0;
 	return _dma_stream_status_register_read(dma->controller, dma->status);

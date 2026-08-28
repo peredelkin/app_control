@@ -84,24 +84,28 @@ err_t spi1_rx_dma_start(dma_t* dma) {
 }
 
 err_t spi1_rx_dma_stop(dma_t* dma) {
+	err_t err = E_NOT_IMPLEMENTED;
+
+	if(dma_stream_is_busy(dma) == E_NO_ERROR) {
+		return err;
+	}
 
 	uint32_t ISR = dma_stream_status_register_read(dma);
 
-	if (dma_stream_status_TEIF_read(ISR, dma)) { //if TE
-		dma_stream_status_TEIF_clear(dma); //clear TE
-		dma_stream_disable(dma); //disable Stream
-		dma_stream_close(dma); //close Stream
-		return E_STATE;
-	}
+	dma_stream_disable(dma); //disable Stream
 
 	if (dma_stream_status_TCIF_read(ISR, dma)) {
 		dma_stream_status_TCIF_clear(dma); //clear TC
-		dma_stream_disable(dma); //disable Stream
-		dma_stream_close(dma); //close Stream
-		return E_NO_ERROR;
+		err =  E_NO_ERROR;
 	}
 
-	 return E_NOT_IMPLEMENTED;
+	if (dma_stream_status_TEIF_read(ISR, dma)) { //if TE
+		dma_stream_status_TEIF_clear(dma); //clear TE
+		err = E_STATE;
+	}
+
+	dma_stream_close(dma); //close Stream
+	return err;
 }
 
 /* SPI1 BEGIN */

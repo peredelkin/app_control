@@ -341,6 +341,8 @@ extern err_t dma_struct_init(dma_t* dma, dma_n_stream_n_t stream);
 
 extern err_t dma_stream_open(dma_t* dma);
 
+extern err_t dma_stream_is_busy(dma_t* dma);
+
 extern uint32_t dma_stream_status_register_read(dma_t* dma);
 
 extern bool dma_stream_status_FEIF_read(uint32_t ISR, dma_t* dma);

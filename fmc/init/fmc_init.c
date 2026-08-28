@@ -78,42 +78,44 @@ err_t fmc_gpio_init(void) {
 }
 
 err_t fmc_init() {
-	//проверка подтягивающих резисторов и инициализация пинов
-	err_t gpio_init_err = fmc_gpio_init();
-
 	sys_counter_tv_print();
+	printf("External memory pull-up resistors TEST ");
+
+	err_t gpio_init_err = fmc_gpio_init(); //проверка подтягивающих резисторов и инициализация пинов
+
 	if(gpio_init_err) {
-		printf("FMC GPIO [ERROR]\n");
+		printf("[ERROR]\n");
 		return gpio_init_err;
 	} else {
-		printf("FMC GPIO [OK]\n");
+		printf("[OK]\n");
 	}
 
-	//тестирование чтения/записи данными шириной 16,32,8 бит
-#ifdef FMC_SRAM_TEST
-	err_t sram_test_err = fmc_sram_test();
 
+#ifdef FMC_SRAM_TEST
 	sys_counter_tv_print();
+	printf("SRAM 16,32,8 TEST ");
+
+	err_t sram_test_err = fmc_sram_test(); //тестирование чтения/записи данными шириной 16,32,8 бит
+
 	if(sram_test_err) {
-		printf("SRAM [ERROR]\n");
+		printf("[ERROR]\n");
 		return sram_test_err;
 	} else {
-		printf("SRAM [OK]\n");
+		printf("[OK]\n");
 	}
 #endif
+	sys_counter_tv_print();
+	printf("NAND id and badblock TEST ");
 
-	//инициализация DMA
 	nand_K9F1G08U0E_init(&nand_K9F1G08U0E_drv);
 
-	//проверка id и количества бэд блоков
-	err_t nand_test_err = fmc_nand_test();
+	err_t nand_test_err = fmc_nand_test(); //проверка id и количества бэд блоков
 
-	sys_counter_tv_print();
 	if (nand_test_err) {
-		printf("NAND [ERROR]\n");
+		printf("[ERROR]\n");
 		return nand_test_err;
 	} else {
-		printf("NAND [OK]\n");
+		printf("[OK]\n");
 	}
 
 	return E_NO_ERROR;

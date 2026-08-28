@@ -519,7 +519,7 @@ void can_bridge_init(can_bus_t* bus, uint32_t id, uint32_t mask) {
 	if(can1_bridge_err != E_NO_ERROR) {
 		printf("CAN bridge filter allocation error: %d\n", (int) can1_bridge_err);
 	} else {
-		printf("CAN%d bridge allocated\n", (bus->can_n + 1));
+		printf("CAN%d bridge [OK]\n", (bus->can_n + 1));
 	}
 }
 
@@ -554,7 +554,7 @@ void can_canopen_init(void) {
 	if(can1_co_res == -1 || can1_co == NULL) {
 			printf("Error create CO1\n");
 	} else {
-		printf("CO1 created\n");
+		printf("CANopen 1 [OK]\n");
 		co1_err = init_CO(can1_co, &can_bus_1);
 
 		if (co1_err != CO_ERROR_NO) {
@@ -578,7 +578,7 @@ void can_canopen_init(void) {
 	if(can2_co_res == -1 || can2_co == NULL) {
 			printf("Error create CO2\n");
 	} else {
-		printf("CO2 created\n");
+		printf("CANopen 2 [OK]\n");
 		co2_err = init_CO(can2_co, &can_bus_2);
 
 		if (co2_err != CO_ERROR_NO) {
@@ -595,7 +595,7 @@ void can_canopen_init(void) {
 
 #if defined(CAN1_CO_ENABLE) || defined(CAN2_CO_ENABLE)
 	sys_counter_tv_print();
-	printf("CO timer ");
+	printf("CANopen timer ");
 	if(can1_co_res == 0 && can2_co_res == 0 && co1_err == CO_ERROR_NO && co2_err == CO_ERROR_NO) {
 		//Настройка CO_process таймера.
 		INIT(can_tim); //TIM5
@@ -608,7 +608,7 @@ void can_canopen_init(void) {
 			can_tim.control = MS_TIMER_CONTROL_ENABLE;
 			CONTROL(can_tim);
 			if (can_tim.status & MS_TIMER_STATUS_RUN) {
-				printf("started (%u)\n", (unsigned)can_tim.status);
+				printf("[OK]\n");
 			} else {
 				printf("start error (%u)\n", (unsigned)can_tim.status);
 			}
