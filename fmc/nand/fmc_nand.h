@@ -63,7 +63,7 @@
 #define YAFFS_PARAM_SKIP_CHECKPT_RD			1							//Yaffs2 only: Flag to skip reading checkpoint on mount. If set then a re-scan is forced.
 #define YAFFS_PARAM_SKIP_CHECKPT_WR			1							//Yaffs2 only: Flag to skip writing checkpoint on sync or unmount.
 #define YAFFS_PARAM_ENABLE_XATTR			0							//TODO: ?
-#define YAFFS_PARAM_MAX_OBJECTS				0							//No limit
+#define YAFFS_PARAM_MAX_OBJECTS				200							//No limit
 #define YAFFS_PARAM_HIDE_LOST_N_FOUND		1							//Hide the lost-n-found dir
 #define YAFFS_PARAM_STORED_ENDIAN			0							//CPU endian
 

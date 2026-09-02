@@ -431,9 +431,9 @@ int main(void)
 	can2_nvic_init(CAN2_IRQ_PRIO);
 	can_canopen_init();
 
-	init_tft();
-	sys_counter_tv_print();
-	printf("TFT\n");
+//	init_tft();
+//	sys_counter_tv_print();
+//	printf("TFT\n");
 
 	rgb_set_color(RGB_LED_COLOR_BLACK);
 
