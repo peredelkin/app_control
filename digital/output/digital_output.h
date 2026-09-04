@@ -45,8 +45,11 @@ typedef union _digital_output_in_reg {
 } _digital_output_in_reg_t;
 
 typedef struct _digital_output_in_internal_bit {
-	unsigned temp_comp: 6;
-	unsigned res_6_31 :26;
+	unsigned temp_comp: 6; //32,33,34,35,36,37
+	unsigned temp_comp_0_or_1 :1; //38
+	unsigned temp_comp_2_or_3 : 1; //39
+	unsigned temp_comp_4_or_5 : 1; //40
+	unsigned res_7_31 :23;
 } _digital_output_in_internal_bit_t;
 static_assert(sizeof(_digital_output_in_internal_bit_t) == 4, "Invalid size of _digital_output_in_internal_bit_t!");
 

@@ -121,6 +121,9 @@ static void digital_output_calc(M_digital_output* output) {
 METHOD_CALC_IMPL(M_digital_output, output)
 {
 	output->m_in_internal_data.bit.temp_comp = (temp_comp.out_data & 0b111111);
+	output->m_in_internal_data.bit.temp_comp_0_or_1 = (temp_comp.out_data & 0b000011) ?  1 : 0;
+	output->m_in_internal_data.bit.temp_comp_2_or_3 = (temp_comp.out_data & 0b001100) ?  1 : 0;
+	output->m_in_internal_data.bit.temp_comp_4_or_5 = (temp_comp.out_data & 0b110000) ?  1 : 0;
 	digital_output_calc(output);
 	do_ncv7608.in_data = output->m_out_data.bit.ncv;
 	do_relay.in_data = output->m_out_data.bit.relay;
