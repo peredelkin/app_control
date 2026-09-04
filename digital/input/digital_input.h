@@ -25,15 +25,40 @@ enum _E_Digital_Input_Status {
 
 #define DIGITAL_INPUT_COUNT 32
 
+typedef struct _digital_input_out_bit {
+	unsigned sw_no :1;		//0
+	unsigned sw_nc :1;		//1
+	unsigned sw_oc_ol :1;	//2
+	unsigned test :1;		//3
+	unsigned enable_run :1;	//4
+	unsigned increase :1;	//5
+	unsigned decrease :1;	//6
+	unsigned man_auto :1;	//7
+	unsigned loc_rem :1;	//8
+	unsigned fwd_bwd :1;	//9
+	unsigned err_reset :1;	//10
+	unsigned em_off :1;		//11
+	unsigned contactor :1;	//12
+	unsigned release :1;	//13
+	unsigned ext_exciter :1;//14
+	unsigned reserved :17;	//15-31
+} _digital_input_out_bit_t;
+static_assert(sizeof(_digital_input_out_bit_t) == 4, "Invalid size of _digital_input_out_bit_t!");
+
+typedef union _digital_input_out_reg {
+	uint32_t all;
+	struct _digital_input_out_bit bit;
+} _digital_input_out_reg_t;
+
 typedef struct _digital_input_in_bit {
-	unsigned const_0 :1;
-	unsigned const_1 :1;
-	unsigned msdi :10;
-	unsigned em_stop :1;
-	unsigned ac_lost :1;
-	unsigned dc_lost :1;
-	unsigned panel :1;
-	unsigned reserved :16;
+	unsigned const_0 :1;	//0
+	unsigned const_1 :1;	//1
+	unsigned msdi :10;		//2-11
+	unsigned em_stop :1;	//12
+	unsigned ac_lost :1;	//13
+	unsigned dc_lost :1;	//14
+	unsigned panel :1;		//15
+	unsigned reserved :16;	//16-31 free
 } _digital_input_in_bit_t;
 static_assert(sizeof(_digital_input_in_bit_t) == 4, "Invalid size of _digital_input_in_bit_t!");
 
@@ -66,7 +91,7 @@ struct _S_Digital_Input {
 	METHOD_CALC(M_digital_input);
 	// Коллбэки.
 	// Внутренние данные.
-	_digital_input_in_reg_t m_in_data;
+	_digital_input_in_reg_t m_in_data; //TODO: перенести из m в r для отображения сырых значений входов
 	reg_u32_t m_out_data;
 	reg_u8_t m_cnt_set[DIGITAL_INPUT_COUNT];
 	reg_u8_t m_cnt_reset[DIGITAL_INPUT_COUNT];

@@ -2,6 +2,9 @@
 #include "digital_output.h"
 #include "modules/modules.h"
 
+#define P_SELECT_MASK	0b11111
+#define P_SELECT_SHIFT	5
+
 METHOD_INIT_IMPL(M_digital_output, output)
 {
 	output->status = DIGITAL_OUTPUT_STATUS_NONE;
@@ -40,62 +43,55 @@ static bool digital_output_ready_run_valid(M_digital_output* output) {
 			(DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID));
 }
 
+static void digital_output_handler(M_digital_output* output, int i, uint32_t in_data) {
+	uint32_t in_mask = (1 << (output->p_select[i] & P_SELECT_MASK));
+	uint32_t out_mask = (1 << i);
+	if(in_data & in_mask) {
+		//сбросим счетчик сброса О_о
+		output->m_cnt_reset[i] = output->p_t_reset[i];
+		//проверим счетчик установки
+		if (output->m_cnt_set[i]) {
+			output->m_cnt_set[i]--;
+		} else {
+			if(output->p_invert[i] == 0x1) {
+				output->m_out_data.all &= ~out_mask;
+			} else {
+				output->m_out_data.all |= out_mask;
+			}
+		}
+	} else {
+		//сбросим счетчик установки
+		output->m_cnt_set[i] = output->p_t_set[i];
+		//проверим счетчик сброса
+		if(output->m_cnt_reset[i]) {
+			output->m_cnt_reset[i]--;
+		} else {
+			if(output->p_invert[i] == 0x1) {
+				output->m_out_data.all |= out_mask;
+			} else {
+				output->m_out_data.all &= ~out_mask;
+			}
+		}
+	}
+}
+
 static void digital_output_calc(M_digital_output* output) {
-	digital_output_control_handler(output);
-	bool ready_run_valid = digital_output_ready_run_valid(output);
-	uint32_t in_mask;
 	uint32_t in_sel;
-	uint32_t in_data;
-	uint32_t out_mask;
 	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
-		in_mask = (1 << (output->p_select[i] & 0b11111));
-		in_sel = (output->p_select[i] >> 5);
+		in_sel = (output->p_select[i] >> P_SELECT_SHIFT);
 
 		switch(in_sel) {
 		case 0:
-			if(ready_run_valid) {
-				in_data = output->in_data.all;
-			} else {
-				in_data = 0;
-			}
+			digital_output_handler(output, i, output->in_data.all);
 			break;
 
 		case 1:
-			in_data = output->m_in_internal_data.all;
+			digital_output_handler(output, i, output->m_in_internal_data.all);
 			break;
 
 		default:
-			in_data = 0;
+			digital_output_handler(output, i, 0);
 			break;
-		}
-
-		out_mask = (1 << i);
-		if(in_data & in_mask) {
-			//сбросим счетчик сброса О_о
-			output->m_cnt_reset[i] = output->p_t_reset[i];
-			//проверим счетчик установки
-			if (output->m_cnt_set[i]) {
-				output->m_cnt_set[i]--;
-			} else {
-				if(output->p_invert[i] == 0x1) {
-					output->m_out_data.all &= ~out_mask;
-				} else {
-					output->m_out_data.all |= out_mask;
-				}
-			}
-		} else {
-			//сбросим счетчик установки
-			output->m_cnt_set[i] = output->p_t_set[i];
-			//проверим счетчик сброса
-			if(output->m_cnt_reset[i]) {
-				output->m_cnt_reset[i]--;
-			} else {
-				if(output->p_invert[i] == 0x1) {
-					output->m_out_data.all |= out_mask;
-				} else {
-					output->m_out_data.all &= ~out_mask;
-				}
-			}
 		}
 	}
 }
@@ -120,13 +116,20 @@ static void digital_output_calc(M_digital_output* output) {
  */
 METHOD_CALC_IMPL(M_digital_output, output)
 {
-	output->m_in_internal_data.bit.temp_comp = (temp_comp.out_data & 0b111111);
-	output->m_in_internal_data.bit.temp_comp_0_or_1 = (temp_comp.out_data & 0b000011) ?  1 : 0;
-	output->m_in_internal_data.bit.temp_comp_2_or_3 = (temp_comp.out_data & 0b001100) ?  1 : 0;
-	output->m_in_internal_data.bit.temp_comp_4_or_5 = (temp_comp.out_data & 0b110000) ?  1 : 0;
-	digital_output_calc(output);
-	do_ncv7608.in_data = output->m_out_data.bit.ncv;
-	do_relay.in_data = output->m_out_data.bit.relay;
+	digital_output_control_handler(output);
+
+	if (digital_output_ready_run_valid(output)) {
+		output->m_in_internal_data.bit.temp_comp = (temp_comp.out_data & 0b111111);
+		output->m_in_internal_data.bit.temp_comp_0_or_1 = (temp_comp.out_data & 0b000011) ?  1 : 0;
+		output->m_in_internal_data.bit.temp_comp_2_or_3 = (temp_comp.out_data & 0b001100) ?  1 : 0;
+		output->m_in_internal_data.bit.temp_comp_4_or_5 = (temp_comp.out_data & 0b110000) ?  1 : 0;
+		digital_output_calc(output);
+		do_ncv7608.in_data = output->m_out_data.bit.ncv;
+		do_relay.in_data = output->m_out_data.bit.relay;
+	} else {
+		do_ncv7608.in_data = 0;
+		do_relay.in_data = 0;
+	}
 
 	CALC(panel_led);
 	CALC(do_ncv7608);
