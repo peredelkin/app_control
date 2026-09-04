@@ -35,13 +35,42 @@ static void digital_output_control_handler(M_digital_output* output) {
 	}
 }
 
+static bool digital_output_ready_run_valid(M_digital_output* output) {
+	return ((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID)) ==
+			(DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID));
+}
+
 static void digital_output_calc(M_digital_output* output) {
+	digital_output_control_handler(output);
+	bool ready_run_valid = digital_output_ready_run_valid(output);
 	uint32_t in_mask;
+	uint32_t in_sel;
+	uint32_t in_data;
 	uint32_t out_mask;
 	for(int i = 0; i < (DIGITAL_INPUT_COUNT - 1); i++) {
-		in_mask = (1 << output->p_select[i]);
+		in_mask = (1 << (output->p_select[i] & 0b11111));
+		in_sel = (output->p_select[i] >> 5);
+
+		switch(in_sel) {
+		case 0:
+			if(ready_run_valid) {
+				in_data = output->in_data.all;
+			} else {
+				in_data = 0;
+			}
+			break;
+
+		case 1:
+			in_data = output->m_in_internal_data.all;
+			break;
+
+		default:
+			in_data = 0;
+			break;
+		}
+
 		out_mask = (1 << i);
-		if(output->in_data.all & in_mask) {
+		if(in_data & in_mask) {
 			//сбросим счетчик сброса О_о
 			output->m_cnt_reset[i] = output->p_t_reset[i];
 			//проверим счетчик установки
@@ -91,17 +120,10 @@ static void digital_output_calc(M_digital_output* output) {
  */
 METHOD_CALC_IMPL(M_digital_output, output)
 {
-	digital_output_control_handler(output);
-
-	if((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID)) ==
-			(DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID)) {
-		digital_output_calc(output);
-		do_ncv7608.in_data = output->m_out_data.bit.ncv;
-		do_relay.in_data = output->m_out_data.bit.relay;
-	} else {
-		do_ncv7608.in_data = 0;
-		do_relay.in_data = 0;
-	}
+	output->m_in_internal_data.bit.temp_comp = (temp_comp.out_data & 0b111111);
+	digital_output_calc(output);
+	do_ncv7608.in_data = output->m_out_data.bit.ncv;
+	do_relay.in_data = output->m_out_data.bit.relay;
 
 	CALC(panel_led);
 	CALC(do_ncv7608);

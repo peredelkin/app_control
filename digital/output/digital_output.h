@@ -6,19 +6,19 @@
 
 #define DIGITAL_OUTPUT_COUNT 32
 
-typedef struct _digital_output_bit {
+typedef struct _digital_output_out_bit {
 	unsigned ncv :8;
 	unsigned relay :4;
 	unsigned reserved :20;
-} _digital_output_bit_t;
-static_assert(sizeof(_digital_output_bit_t) == 4, "Invalid size of _digital_output_bit_t!");
+} _digital_output_out_bit_t;
+static_assert(sizeof(_digital_output_out_bit_t) == 4, "Invalid size of _digital_output_bit_t!");
 
 typedef union _digital_output_reg {
 	uint32_t all;
-	struct _digital_output_bit bit;
-} _digital_output_reg_t;
+	struct _digital_output_out_bit bit;
+} _digital_output_out_reg_t;
 
-typedef struct _digital_input_bit {
+typedef struct _digital_output_in_bit {
 	unsigned ready :1;
 	unsigned run :1;
 	unsigned err :1;
@@ -36,13 +36,24 @@ typedef struct _digital_input_bit {
 	unsigned ext_exciter :1;
 	unsigned start_r :1;
 	unsigned res_16_31 :16;
-} _digital_input_bit_t;
-static_assert(sizeof(_digital_input_bit_t) == 4, "Invalid size of _digital_input_bit_t!");
+} _digital_output_in_bit_t;
+static_assert(sizeof(_digital_output_in_bit_t) == 4, "Invalid size of _digital_output_in_bit_t!");
 
-typedef union _digital_input_reg {
+typedef union _digital_output_in_reg {
 	uint32_t all;
-	struct _digital_input_bit bit;
-} _digital_input_reg_t;
+	struct _digital_output_in_bit bit;
+} _digital_output_in_reg_t;
+
+typedef struct _digital_output_in_internal_bit {
+	unsigned temp_comp: 6;
+	unsigned res_6_31 :26;
+} _digital_output_in_internal_bit_t;
+static_assert(sizeof(_digital_output_in_internal_bit_t) == 4, "Invalid size of _digital_output_in_internal_bit_t!");
+
+typedef union _digital_output_in_internal_reg {
+	uint32_t all;
+	struct _digital_output_in_internal_bit bit;
+} _digital_output_in_internal_reg_t;
 
 //! Перечисление возможных бит управления.
 enum _E_Digital_Output_Control {
@@ -74,7 +85,7 @@ struct _S_Digital_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    _digital_input_reg_t in_data; //!< Вход дискретных выходов @{"id": 3, "rpdo": true}
+    _digital_output_in_reg_t in_data; //!< Вход дискретных выходов @{"id": 3, "rpdo": true}
     // Выходные данные.
     // Параметры.
     reg_u8_t p_invert[DIGITAL_OUTPUT_COUNT]; //!< Параметр инверсии дискретного выхода
@@ -88,7 +99,8 @@ struct _S_Digital_Output {
     METHOD_CALC(M_digital_output);
     // Коллбэки.
     // Внутренние данные.
-    _digital_output_reg_t m_out_data;
+    _digital_output_in_internal_reg_t m_in_internal_data;
+    _digital_output_out_reg_t m_out_data;
 	reg_u8_t m_cnt_set[DIGITAL_OUTPUT_COUNT];
 	reg_u8_t m_cnt_reset[DIGITAL_OUTPUT_COUNT];
 };
@@ -116,6 +128,7 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
         METHOD_CALC_PTR(M_digital_output),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		{0},\
 		{0},\
 		{0},\
 		{0},\
