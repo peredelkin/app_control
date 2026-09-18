@@ -1,10 +1,3 @@
-/*
- * can_timer.h
- *
- *  Created on: 23 янв. 2025 г.
- *      Author: ruslan
- */
-
 #ifndef CAN_TIMER_CAN_TIMER_H_
 #define CAN_TIMER_CAN_TIMER_H_
 
@@ -32,11 +25,12 @@ enum _E_Can_Timer_Status {
 };
 
 
-#define CAN_TIMER_TICKS_FREQ 1000
 //! Период таймера в тиках.
-#define CAN_TIMER_TICKS_PERIOD_US (1000000 / CAN_TIMER_TICKS_FREQ)
+#define CAN_TIMER_TICKS_PERIOD_US (1000)
 //! Предделитель таймера.
 #define CAN_TIMER_PRESCALER 84 //90
+//! Частота вызова
+#define CAN_TIMER_TICKS_FREQ (1000000 / CAN_TIMER_TICKS_PERIOD_US)
 
 
 typedef struct _S_can_timer M_can_timer;

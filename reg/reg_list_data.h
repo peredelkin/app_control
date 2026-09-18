@@ -185,24 +185,22 @@ REG(REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_6, &CO_data.TPDOMappin
 REG(REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_7, &CO_data.TPDOMappingParameter_1a03.applicationObject7, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_8, &CO_data.TPDOMappingParameter_1a03.applicationObject8, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_CONF_COUNT, &CO_data.conf.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_CONF_CONTROL, &conf.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_CONF_STATUS, &conf.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
 REG(REG_ID_SYS_COUNT, &CO_data.sys.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_SYS_CONTROL, &sys.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_SYS_STATUS, &sys.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_SYS_ERRORS, &sys.errors, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Ошибки. */
-REG(REG_ID_SYS_WARNINGS, &sys.warnings, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Предупреждения. */
-REG(REG_ID_SYS_STATE, &sys.state, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Состояние. */
+REG(REG_ID_SYS_CONTROL, &sys_main.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
+REG(REG_ID_SYS_STATUS, &sys_main.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
+REG(REG_ID_SYS_ERRORS, &sys_main.errors, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Ошибки. */
+REG(REG_ID_SYS_WARNINGS, &sys_main.warnings, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Предупреждения. */
+REG(REG_ID_SYS_STATE, &sys_main.state, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Состояние. */
 REG(REG_ID_SYS_TIM_COUNT, &CO_data.sys_tim.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_SYS_TIM_CONTROL, &sys_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_SYS_TIM_STATUS, &sys_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_SYS_TIM_OUT_COUNTER, &sys_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
-REG(REG_ID_SYS_TIM_ON_TIMEOUT, &sys_tim.on_timeout, REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_SYS_TIM_CONTROL, &sys_main_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
+REG(REG_ID_SYS_TIM_STATUS, &sys_main_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
+REG(REG_ID_SYS_TIM_OUT_COUNTER, &sys_main_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
+REG(REG_ID_SYS_TIM_ON_TIMEOUT, &sys_main_tim.on_timeout, REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_MS_TIM_COUNT, &CO_data.ms_tim.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_MS_TIM_CONTROL, &ms_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_MS_TIM_STATUS, &ms_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_MS_TIM_OUT_COUNTER, &ms_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
-REG(REG_ID_MS_TIM_ON_TIMEOUT, &ms_tim.on_timeout, REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_MS_TIM_CONTROL, &sys_secondary_tim.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
+REG(REG_ID_MS_TIM_STATUS, &sys_secondary_tim.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
+REG(REG_ID_MS_TIM_OUT_COUNTER, &sys_secondary_tim.out_counter, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Счётчик тиков. */
+REG(REG_ID_MS_TIM_ON_TIMEOUT, &sys_secondary_tim.on_timeout, REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_CLI_COUNT, &CO_data.cli.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_CLI_CONTROL, &cli.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_CLI_STATUS, &cli.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
@@ -512,41 +510,6 @@ REG(REG_ID_DIGITAL_OUT_T_RESET28, &digital_out.p_t_reset[28], REG_TYPE_U8, REG_F
 REG(REG_ID_DIGITAL_OUT_T_RESET29, &digital_out.p_t_reset[29], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса дискретного выхода */
 REG(REG_ID_DIGITAL_OUT_T_RESET30, &digital_out.p_t_reset[30], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса дискретного выхода */
 REG(REG_ID_DIGITAL_OUT_T_RESET31, &digital_out.p_t_reset[31], REG_TYPE_U8, REG_FLAG_CONF, 0x000000) /* Параметр задержки сброса дискретного выхода */
-REG(REG_ID_MSO_COUNT, &CO_data.mso.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
-REG(REG_ID_MSO_CONTROL, &mso.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
-REG(REG_ID_MSO_STATUS, &mso.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_MSO_CHANNEL0, &mso.r_channel[0], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL1, &mso.r_channel[1], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL2, &mso.r_channel[2], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL3, &mso.r_channel[3], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL4, &mso.r_channel[4], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL5, &mso.r_channel[5], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL6, &mso.r_channel[6], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL7, &mso.r_channel[7], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL8, &mso.r_channel[8], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL9, &mso.r_channel[9], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL10, &mso.r_channel[10], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL11, &mso.r_channel[11], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL12, &mso.r_channel[12], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL13, &mso.r_channel[13], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL14, &mso.r_channel[14], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL15, &mso.r_channel[15], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL16, &mso.r_channel[16], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL17, &mso.r_channel[17], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL18, &mso.r_channel[18], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL19, &mso.r_channel[19], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL20, &mso.r_channel[20], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL21, &mso.r_channel[21], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL22, &mso.r_channel[22], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL23, &mso.r_channel[23], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL24, &mso.r_channel[24], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL25, &mso.r_channel[25], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL26, &mso.r_channel[26], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL27, &mso.r_channel[27], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL28, &mso.r_channel[28], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL29, &mso.r_channel[29], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL30, &mso.r_channel[30], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
-REG(REG_ID_MSO_CHANNEL31, &mso.r_channel[31], REG_TYPE_I32, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_AO_DAC7562_COUNT, &CO_data.ao_dac7562.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_AO_DAC7562_CONTROL, &ao_dac7562.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_AO_DAC7562_STATUS, &ao_dac7562.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */

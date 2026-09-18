@@ -1,7 +1,7 @@
 #include "tft9341.h"
 #include "gpio/gpio.h"
 #include "utils/utils.h"
-#include "sys/counter/sys_counter.h" //вместо delay
+#include "modules/sys/counter/sys_counter.h" //вместо delay
 #include "bits/bits.h"
 #include "defs/defs.h"
 #include <string.h>

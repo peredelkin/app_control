@@ -9,7 +9,7 @@
 
 #include "can_init.h"
 #include "gpio/init/gpio_init.h"
-#include "sys/counter/sys_counter.h"
+#include "modules/sys/counter/sys_counter.h"
 #include "modules/modules.h"
 
 #include "CO_CLI_driver.h"

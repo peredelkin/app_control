@@ -6,8 +6,6 @@
 #include "modules/modules.h"
 #include "reg/regs.h"
 
-#include "init/init.h"
-
 #include "gpio/init/gpio_init.h"
 #include "spi/init/spi_init.h"
 #include "spi/settings/spi_settings.h"
@@ -60,12 +58,12 @@ void SYS_CNT_IRQHANDLER(void) {
 
 void MS_TIM_IRQHANDLER(void)
 {
-	CALC(ms_tim);
+	CALC(sys_secondary_tim);
 }
 
 void SYS_TIM_IRQHANDLER(void)
 {
-	CALC(sys_tim);
+	CALC(sys_main_tim);
 }
 
 void CAN_TIM_IRQHANDLER(void) {
@@ -437,12 +435,12 @@ int main(void)
 
 	rgb_set_color(RGB_LED_COLOR_BLACK);
 
-    INIT(sys);
+    INIT(sys_main);
 
-    if(sys.status & SYS_MAIN_STATUS_ERROR){
+    if(sys_main.status & SYS_MAIN_STATUS_ERROR){
     	sys_counter_tv_print();
         printf("Error init main system!\n");
-        DEINIT(sys);
+        DEINIT(sys_main);
 
         fatal_error_handler();
     }
@@ -462,7 +460,7 @@ int main(void)
 	FRESULT fatfs_result = FR_OK;
 
 	for (;;) {
-		IDLE(sys);
+		IDLE(sys_main);
 
 		if (sdcard_card_detect(&sdcard)) {
 			if (sdcard.inserted == false) {

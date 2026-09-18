@@ -2,10 +2,9 @@
 #define MODULES_H
 
 
-#include "conf/conf.h"
 #include "sys/main/sys_main.h"
-#include "sys/timer/sys_timer.h"
-#include "timer/ms/ms_timer.h"
+#include "sys/main/sys_main_timer.h"
+#include "sys/secondary/sys_secondary_timer.h"
 #include "mso/mso.h"
 
 #include "cli/cli.h"
@@ -26,10 +25,12 @@
 #include "analog/input/analog_input.h"
 #include "analog/output/analog_output.h"
 
-extern M_conf conf;
-extern M_sys_main sys;
-extern M_sys_timer sys_tim;
-extern M_ms_timer ms_tim;
+//основные модули
+extern M_sys_main sys_main;
+extern M_sys_timer sys_main_tim;
+
+//второстепенные модули
+extern M_ms_timer sys_secondary_tim;
 extern M_can_timer can_tim;
 
 extern M_cli cli;
@@ -40,7 +41,6 @@ extern M_relay_output do_relay;
 extern M_ncv7608 do_ncv7608;
 extern M_digital_input digital_in;				//!< 0x20b0 -> 8368	@{"id": 8368}
 extern M_digital_output digital_out;			//!< 0x20c0 -> 8384	@{"id": 8384}
-extern M_mso mso;
 extern M_dac7562 ao_dac7562;
 extern M_panel_led panel_led;
 extern M_modbus_to_can modbus_to_can_panel;

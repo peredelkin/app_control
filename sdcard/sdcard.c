@@ -2,7 +2,7 @@
 #include "sdcard_cmd.h"
 #include "utils/utils.h"
 #include "crc/crc16_ccitt.h"
-#include "sys/counter/sys_counter.h"
+#include "modules/sys/counter/sys_counter.h"
 #include <string.h>
 
 //! Получение границы блока из адреса.

@@ -934,26 +934,6 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     }
 },
-.o_2000_conf = {
-    {
-    .dataOrig = (void*)&CO_data.conf.count,
-    .subIndex = 0,
-    .attribute = ODA_SDO_R,
-    .dataLength = 1
-    },
-    {
-    .dataOrig = (void*)&conf.control,
-    .subIndex = 1,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&conf.status,
-    .subIndex = 2,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    }
-},
 .o_2010_sys = {
     {
     .dataOrig = (void*)&CO_data.sys.count,
@@ -962,31 +942,31 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 1
     },
     {
-    .dataOrig = (void*)&sys.control,
+    .dataOrig = (void*)&sys_main.control,
     .subIndex = 1,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&sys.status,
+    .dataOrig = (void*)&sys_main.status,
     .subIndex = 2,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&sys.errors,
+    .dataOrig = (void*)&sys_main.errors,
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&sys.warnings,
+    .dataOrig = (void*)&sys_main.warnings,
     .subIndex = 4,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&sys.state,
+    .dataOrig = (void*)&sys_main.state,
     .subIndex = 5,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
@@ -1000,25 +980,25 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 1
     },
     {
-    .dataOrig = (void*)&sys_tim.control,
+    .dataOrig = (void*)&sys_main_tim.control,
     .subIndex = 1,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&sys_tim.status,
+    .dataOrig = (void*)&sys_main_tim.status,
     .subIndex = 2,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&sys_tim.out_counter,
+    .dataOrig = (void*)&sys_main_tim.out_counter,
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&sys_tim.on_timeout,
+    .dataOrig = (void*)&sys_main_tim.on_timeout,
     .subIndex = 4,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
@@ -1032,25 +1012,25 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 1
     },
     {
-    .dataOrig = (void*)&ms_tim.control,
+    .dataOrig = (void*)&sys_secondary_tim.control,
     .subIndex = 1,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&ms_tim.status,
+    .dataOrig = (void*)&sys_secondary_tim.status,
     .subIndex = 2,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&ms_tim.out_counter,
+    .dataOrig = (void*)&sys_secondary_tim.out_counter,
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&ms_tim.on_timeout,
+    .dataOrig = (void*)&sys_secondary_tim.on_timeout,
     .subIndex = 4,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 4
@@ -2924,218 +2904,6 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .subIndex = 131,
     .attribute = ODA_SDO_RW,
     .dataLength = 1
-    }
-},
-.o_20D0_mso = {
-    {
-    .dataOrig = (void*)&CO_data.mso.count,
-    .subIndex = 0,
-    .attribute = ODA_SDO_R,
-    .dataLength = 1
-    },
-    {
-    .dataOrig = (void*)&mso.control,
-    .subIndex = 1,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.status,
-    .subIndex = 2,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[0],
-    .subIndex = 3,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[1],
-    .subIndex = 4,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[2],
-    .subIndex = 5,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[3],
-    .subIndex = 6,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[4],
-    .subIndex = 7,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[5],
-    .subIndex = 8,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[6],
-    .subIndex = 9,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[7],
-    .subIndex = 10,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[8],
-    .subIndex = 11,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[9],
-    .subIndex = 12,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[10],
-    .subIndex = 13,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[11],
-    .subIndex = 14,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[12],
-    .subIndex = 15,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[13],
-    .subIndex = 16,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[14],
-    .subIndex = 17,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[15],
-    .subIndex = 18,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[16],
-    .subIndex = 19,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[17],
-    .subIndex = 20,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[18],
-    .subIndex = 21,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[19],
-    .subIndex = 22,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[20],
-    .subIndex = 23,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[21],
-    .subIndex = 24,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[22],
-    .subIndex = 25,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[23],
-    .subIndex = 26,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[24],
-    .subIndex = 27,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[25],
-    .subIndex = 28,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[26],
-    .subIndex = 29,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[27],
-    .subIndex = 30,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[28],
-    .subIndex = 31,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[29],
-    .subIndex = 32,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[30],
-    .subIndex = 33,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
-    },
-    {
-    .dataOrig = (void*)&mso.r_channel[31],
-    .subIndex = 34,
-    .attribute = ODA_SDO_RW | ODA_MB,
-    .dataLength = 4
     }
 },
 .o_20E0_ao_dac7562 = {

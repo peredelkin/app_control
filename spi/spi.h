@@ -10,7 +10,7 @@
 
 #include <assert.h>
 #include <stdbool.h>
-#include "sys/counter/sys_counter.h"
+#include "modules/sys/counter/sys_counter.h"
 #include "lib/defs/defs.h"
 #include "lib/errors/errors.h"
 #include "lib/stm32f4xx/stm32f4xx.h"

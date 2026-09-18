@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include "sdcard.h"
-#include "sys/counter/sys_counter.h"
+#include "modules/sys/counter/sys_counter.h"
 
 extern err_t sdcard_card_reset(sdcard_t* sdcard);
 extern err_t sdcard_card_set_bl_len(sdcard_t* sdcard);

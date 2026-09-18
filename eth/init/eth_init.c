@@ -6,7 +6,7 @@
  */
 
 #include "eth_init.h"
-#include "sys/counter/sys_counter.h"
+#include "modules/sys/counter/sys_counter.h"
 
 //const gpio_pin_t GPO_ETH_Reset_App = GPIO_PIN(GPIOH, GPIO_PIN_2); /*43, PH2, GPIO_Output, ETH_Reset_App*/
 //
