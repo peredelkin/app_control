@@ -5,25 +5,27 @@ M_sys_main sys_main = SYS_MAIN_DEFAULTS;
 M_sys_timer sys_main_tim = SYS_TIMER_DEFAULTS;
 
 //второстепенные модули
-//M_sys_secondary sys_secondary = SYS_SECONDARY_DEFAULTS;
+M_sys_secondary sys_secondary = SYS_SECONDARY_DEFAULTS;
 M_ms_timer sys_secondary_tim = MS_TIMER_DEFAULTS;
 
+//таймер CANopen
 M_can_timer can_tim = CAN_TIMER_DEFAULTS;
 
-
-M_cli cli = CLI_DEFAULTS;
 M_rgb_led rgb_led = RGB_LED_DEFAULTS;
-M_msdi msdi = MSDI_DEFAULTS;
-M_ntc_temp ntc_temp = NTC_TEMP_DEFAULTS;
-M_relay_output do_relay = RELAY_OUTPUT_DEFAULTS;
-M_ncv7608 do_ncv7608 = NCV7608_DEFAULTS;
-M_digital_input digital_in = DIGITAL_INPUT_DEFAULTS;
-M_digital_output digital_out = DIGITAL_OUTPUT_DEFAULTS;
-M_dac7562 ao_dac7562 = DAC7562_DEFAULTS;
 M_panel_led panel_led = PANEL_LED_DEFAULTS;
 M_modbus_to_can modbus_to_can_panel = MODBUS_TO_CAN_DEFAULTS;
-M_settings settings = SETTINGS_DEFAULTS;
-M_temp_wind_comp temp_comp = TEMP_WIND_COMP_DEFAULTS;
+M_cli cli = CLI_DEFAULTS;
+
+M_msdi msdi = MSDI_DEFAULTS;
+M_ncv7608 do_ncv7608 = NCV7608_DEFAULTS;
+M_relay_output do_relay = RELAY_OUTPUT_DEFAULTS;
 M_ads8685 ai_ads8665 = ADS8685_DEFAULTS;
+M_dac7562 ao_dac7562 = DAC7562_DEFAULTS;
+
+M_digital_input digital_in = DIGITAL_INPUT_DEFAULTS;
+M_digital_output digital_out = DIGITAL_OUTPUT_DEFAULTS;
 M_analog_input analog_in = ANALOG_INPUT_DEFAULTS;
 M_analog_output analog_out = ANALOG_OUTPUT_DEFAULTS;
+M_ntc_temp ntc_temp = NTC_TEMP_DEFAULTS;
+M_temp_wind_comp temp_comp = TEMP_WIND_COMP_DEFAULTS;
+M_settings settings = SETTINGS_DEFAULTS;
