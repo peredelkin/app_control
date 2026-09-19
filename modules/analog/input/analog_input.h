@@ -15,6 +15,11 @@ enum _E_Analog_Input_Control {
 //! Перечисление возможных бит статуса.
 enum _E_Analog_Input_Status {
     ANALOG_INPUT_STATUS_NONE = STATUS_NONE,
+	ANALOG_INPUT_STATUS_READY = STATUS_READY,
+	ANALOG_INPUT_STATUS_VALID = STATUS_VALID,
+	ANALOG_INPUT_STATUS_RUN = STATUS_RUN,
+	ANALOG_INPUT_STATUS_ERROR = STATUS_ERROR,
+	ANALOG_INPUT_STATUS_WARNING = STATUS_WARNING
 };
 
 //! Предварительная декларация типа модуля.

@@ -1076,7 +1076,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .dataLength = 4
     },
     {
-    .dataOrig = (void*)&rgb_led.in_data,
+    .dataOrig = (void*)&rgb_led.in_data_1,
     .subIndex = 3,
     .attribute = ODA_SDO_RW | ODA_MB,
     .dataLength = 2

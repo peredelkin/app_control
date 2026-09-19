@@ -207,7 +207,7 @@ REG(REG_ID_CLI_STATUS, &cli.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* С
 REG(REG_ID_RGB_LED_COUNT, &CO_data.rgb_led.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_RGB_LED_CONTROL, &rgb_led.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_RGB_LED_STATUS, &rgb_led.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */
-REG(REG_ID_RGB_LED_IN_DATA, &rgb_led.in_data, REG_TYPE_U16, REG_FLAG_NONE, 0x000000) /*  */
+REG(REG_ID_RGB_LED_IN_DATA, &rgb_led.in_data_1, REG_TYPE_U16, REG_FLAG_NONE, 0x000000) /*  */
 REG(REG_ID_MSDI_COUNT, &CO_data.msdi.count, REG_TYPE_U8, REG_FLAG_READONLY, 0x000000) /* Number of sub entries count */
 REG(REG_ID_MSDI_CONTROL, &msdi.control, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово управления. */
 REG(REG_ID_MSDI_STATUS, &msdi.status, REG_TYPE_U32, REG_FLAG_NONE, 0x000000) /* Слово состояния. */

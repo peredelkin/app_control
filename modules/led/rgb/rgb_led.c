@@ -7,18 +7,8 @@ void rgb_led_set(bool R, bool G, bool B) {
 	gpio_output_bit_setup(&GPO_RGB_LED_App[2], !R);
 }
 
-METHOD_INIT_IMPL(M_rgb_led, rgb_led)
-{
-	gpio_rgb_led_cfg_setup(); //RGB Led
-}
-
-METHOD_DEINIT_IMPL(M_rgb_led, rgb_led)
-{
-}
-
-METHOD_CALC_IMPL(M_rgb_led, rgb_led)
-{
-	switch(rgb_led->in_data) {
+void rgb_led_switch_color(uint32_t color) {
+	switch(color) {
 	case RGB_LED_COLOR_BLACK: rgb_led_set(0,0,0); //0R 0G 0B
 		break;
 	case RGB_LED_COLOR_VIOLET: rgb_led_set(1,0,1); //1R 0G 1B
@@ -35,7 +25,85 @@ METHOD_CALC_IMPL(M_rgb_led, rgb_led)
 		break;
 	case RGB_LED_COLOR_WHITE: rgb_led_set(1,1,1); //1R 1G 1B
 		break;
-	default:
+	default: rgb_led_set(0,0,0); //0R 0G 0B
 		break;
 	}
 }
+
+static uint32_t rgb_cycle = 0;
+static uint32_t rgb_input = 0;
+
+void rgb_led_calc(M_rgb_led* rgb_led) {
+	if(rgb_cycle) {
+		rgb_cycle--;
+	} else {
+		rgb_cycle = 10;
+		if(rgb_input) {
+			rgb_input--;
+		} else {
+			rgb_input = 4;
+		}
+		switch(rgb_input) {
+		case 1: rgb_led_switch_color(rgb_led->in_data_4);
+			break;
+
+		case 2: rgb_led_switch_color(rgb_led->in_data_3);
+			break;
+
+		case 3: rgb_led_switch_color(rgb_led->in_data_2);
+			break;
+
+		case 4: rgb_led_switch_color(rgb_led->in_data_1);
+			break;
+
+		default: rgb_led_switch_color(RGB_LED_COLOR_WHITE);
+			break;
+		}
+	}
+}
+
+METHOD_INIT_IMPL(M_rgb_led, rgb_led)
+{
+	rgb_led->status = RGB_LED_STATUS_NONE;
+	rgb_led->control = RGB_LED_CONTROL_NONE;
+
+	gpio_rgb_led_cfg_setup(); //RGB Led
+
+	rgb_led->in_data_1 = RGB_LED_COLOR_BLACK;
+	rgb_led->in_data_2 = RGB_LED_COLOR_BLACK;
+	rgb_led->in_data_3 = RGB_LED_COLOR_BLACK;
+	rgb_led->in_data_4 = RGB_LED_COLOR_BLACK;
+
+	rgb_led->status |= RGB_LED_STATUS_READY;
+}
+
+METHOD_DEINIT_IMPL(M_rgb_led, rgb_led)
+{
+	rgb_led_switch_color(RGB_LED_COLOR_WHITE);
+}
+
+static void rgb_led_control_handler(M_rgb_led* rgb_led) {
+	if(rgb_led->control & RGB_LED_CONTROL_START) {
+		rgb_led->control &= ~RGB_LED_CONTROL_START;
+		rgb_led->status |= RGB_LED_STATUS_RUN;
+	}
+
+	if(rgb_led->control & RGB_LED_CONTROL_STOP) {
+		rgb_led->control &= ~RGB_LED_CONTROL_STOP;
+		rgb_led->status &= ~RGB_LED_STATUS_RUN;
+	}
+}
+
+METHOD_CALC_IMPL(M_rgb_led, rgb_led)
+{
+	rgb_led_control_handler(rgb_led);
+
+	if((rgb_led->status & (RGB_LED_STATUS_READY | RGB_LED_STATUS_RUN)) ==
+			(RGB_LED_STATUS_READY | RGB_LED_STATUS_RUN)) {
+		rgb_led_calc(rgb_led);
+	} else {
+		rgb_led_switch_color(RGB_LED_COLOR_WHITE);
+	}
+}
+
+

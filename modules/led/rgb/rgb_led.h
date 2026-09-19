@@ -19,11 +19,20 @@ enum _Rgb_Led_Color {
 //! Перечисление возможных бит управления.
 enum _E_Rgb_Led_Control {
     RGB_LED_CONTROL_NONE = CONTROL_NONE,
+	RGB_LED_CONTROL_RESET = CONTROL_RESET,
+	RGB_LED_CONTROL_ENABLE = CONTROL_ENABLE,
+	RGB_LED_CONTROL_START = CONTROL_START,
+	RGB_LED_CONTROL_STOP = CONTROL_STOP
 };
 
 //! Перечисление возможных бит статуса.
 enum _E_Rgb_Led_Status {
     RGB_LED_STATUS_NONE = STATUS_NONE,
+	RGB_LED_STATUS_READY = STATUS_READY,
+	RGB_LED_STATUS_VALID = STATUS_VALID,
+	RGB_LED_STATUS_RUN = STATUS_RUN,
+	RGB_LED_STATUS_ERROR = STATUS_ERROR,
+	RGB_LED_STATUS_WARNING = STATUS_WARNING
 };
 
 //! Предварительная декларация типа модуля.
@@ -35,7 +44,10 @@ struct _S_Rgb_Led {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    reg_u16_t in_data;
+    reg_u32_t in_data_1;
+    reg_u32_t in_data_2;
+    reg_u32_t in_data_3;
+    reg_u32_t in_data_4;
     // Выходные данные.
     // Параметры.
     // Регистры.
@@ -56,6 +68,9 @@ EXTERN METHOD_CALC_PROTO(M_rgb_led);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
+		0,\
+		0,\
+		0,\
 		0,\
         /* Выходные данные */\
         /* Параметры */\

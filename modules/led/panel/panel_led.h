@@ -7,11 +7,20 @@
 //! Перечисление возможных бит управления.
 enum _E_Panel_Led_Control {
     PANEL_LED_CONTROL_NONE = CONTROL_NONE,
+	PANEL_LED_CONTROL_RESET = CONTROL_RESET,
+	PANEL_LED_CONTROL_ENABLE = CONTROL_ENABLE,
+	PANEL_LED_CONTROL_START = CONTROL_START,
+	PANEL_LED_CONTROL_STOP = CONTROL_STOP
 };
 
 //! Перечисление возможных бит статуса.
 enum _E_Panel_Led_Status {
     PANEL_LED_STATUS_NONE = STATUS_NONE,
+	PANEL_LED_STATUS_READY = STATUS_READY,
+	PANEL_LED_STATUS_VALID = STATUS_VALID,
+	PANEL_LED_STATUS_RUN = STATUS_RUN,
+	PANEL_LED_STATUS_ERROR = STATUS_ERROR,
+	PANEL_LED_STATUS_WARNING = STATUS_WARNING
 };
 
 typedef struct PACKED _panel_led_bit {
@@ -42,7 +51,7 @@ struct _S_Panel_Led {
     status_t status; //!< Слово состояния.
     // Входные данные.
     // Выходные данные.
-    reg_u16_t out_data;
+    reg_u32_t out_data;
     // Параметры.
     // Регистры.
     // Методы.

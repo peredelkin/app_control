@@ -19,7 +19,7 @@ void modbus_to_can_reset(M_modbus_to_can* modbus_to_can) {
 	modbus_to_can->m_data = 0;
 	modbus_to_can->m_timeout_cnt = 0;
 
-	modbus_to_can->status = MODBUS_TO_CAN_STATUS_READY; //Set Ready Status
+	modbus_to_can->status |= MODBUS_TO_CAN_STATUS_READY; //Set Ready Status
 }
 
 
@@ -147,25 +147,43 @@ METHOD_INIT_IMPL(M_modbus_to_can, modbus_to_can)
 
 METHOD_DEINIT_IMPL(M_modbus_to_can, modbus_to_can)
 {
+	if(modbus_to_can_read_queue != NULL) {
+		modbus_to_can_read_queue->m_state = CO_SDO_CLI_State_DONE;
+		modbus_to_can_read_queue = NULL;
+	}
 
+	if(modbus_to_can_write_queue != NULL) {
+		modbus_to_can_write_queue->m_state = CO_SDO_CLI_State_DONE;
+		modbus_to_can_write_queue = NULL;
+	}
+
+	modbus_to_can->status = MODBUS_TO_CAN_STATUS_NONE; //Reset All Status
+	modbus_to_can->control = MODBUS_TO_CAN_CONTROL_NONE; //Reset All Control
+}
+
+static void modbus_to_can_control_handler(M_modbus_to_can* modbus_to_can) {
+	if ((modbus_to_can->control & (MODBUS_TO_CAN_CONTROL_ENABLE | MODBUS_TO_CAN_CONTROL_START))
+			== (MODBUS_TO_CAN_CONTROL_ENABLE | MODBUS_TO_CAN_CONTROL_START)) {
+
+		if ((modbus_to_can->control & MODBUS_TO_CAN_CONTROL_READ)
+				&& !(modbus_to_can->control & MODBUS_TO_CAN_CONTROL_WRITE)) {
+			modbus_to_can_read(modbus_to_can);
+		}
+
+		if ((modbus_to_can->control & MODBUS_TO_CAN_CONTROL_WRITE)
+				&& !(modbus_to_can->control & MODBUS_TO_CAN_CONTROL_READ)) {
+			modbus_to_can_write(modbus_to_can);
+		}
+	}
 }
 
 METHOD_CALC_IMPL(M_modbus_to_can, modbus_to_can)
 {
 	if (modbus_to_can->control & MODBUS_TO_CAN_CONTROL_RESET) {
 		modbus_to_can_reset(modbus_to_can);
-	} else if ((modbus_to_can->control
-			& (MODBUS_TO_CAN_CONTROL_ENABLE | MODBUS_TO_CAN_CONTROL_START))
-			== (MODBUS_TO_CAN_CONTROL_ENABLE | MODBUS_TO_CAN_CONTROL_START)) {
-
-		if((modbus_to_can->control & MODBUS_TO_CAN_CONTROL_READ) &&
-				!(modbus_to_can->control & MODBUS_TO_CAN_CONTROL_WRITE)) {
-			modbus_to_can_read(modbus_to_can);
-		}
-
-		if ((modbus_to_can->control & MODBUS_TO_CAN_CONTROL_WRITE) &&
-				!(modbus_to_can->control & MODBUS_TO_CAN_CONTROL_READ)) {
-			modbus_to_can_write(modbus_to_can);
+	} else {
+		if(modbus_to_can->status & MODBUS_TO_CAN_STATUS_READY) {
+			modbus_to_can_control_handler(modbus_to_can);
 		}
 	}
 }

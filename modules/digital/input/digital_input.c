@@ -89,18 +89,12 @@ static void digital_input_calc(M_digital_input* input) {
  * проверим его состояние и установим или сбросим соответствующий бит выхода,
  * учитывая задержки установки и сброса бита выхода.
  */
-METHOD_CALC_IMPL(M_digital_input, input)
-{
-	digital_input_control_handler(input);
 
-	CALC(msdi);
-
+void digital_inpuit_msdi_status_check(M_digital_input* input) {
 	//Проверим валидность данных от MSDI
 	if(msdi.status & MSDI_STATUS_VALID) {
 		//сбросим счетчик
 		input->m_cnt_msdi_invalid = input->p_t_msdi_invalid;
-		//заполним данные от MSDI
-		input->m_in_data.bit.msdi = msdi.out_digital;
 		//данные входов валидны
 		input->status |= DIGITAL_INPUT_STATUS_VALID;
 	} else {
@@ -108,17 +102,43 @@ METHOD_CALC_IMPL(M_digital_input, input)
 			//начнем отсчет
 			input->m_cnt_msdi_invalid--;
 		} else {
-			//очистим данные от MSDI
-			input->m_in_data.bit.msdi = 0;
 			//данные входов не валидны
 			input->status &= ~DIGITAL_INPUT_STATUS_VALID;
 		}
 	}
+}
+
+METHOD_CALC_IMPL(M_digital_input, input)
+{
+	digital_input_control_handler(input);
+
+	if((input->status & (DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) ==
+			(DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) {
+		//данные от msdi
+		CALC(msdi);
+		//статус msdi
+		digital_inpuit_msdi_status_check(input);
+		//если данные от msdi валидны
+		if(input->status & DIGITAL_INPUT_STATUS_VALID) {
+			//заполним данные от MSDI
+			input->m_in_data.bit.msdi = msdi.out_digital;
+		} else {
+			//очистим данные от MSDI
+			input->m_in_data.bit.msdi = 0;
+		}
+		//обработаем входные данные
+		digital_input_calc(input);
+		//отправим на выход
+		input->out_data = input->m_out_data;
+	} else {
+		input->out_data = 0;
+	}
+
 
 	if((input->status & (DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN | DIGITAL_INPUT_STATUS_VALID)) ==
 			(DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN | DIGITAL_INPUT_STATUS_VALID)) {
-		digital_input_calc(input);
-		input->out_data = input->m_out_data;
+
+
 	} else {
 		input->out_data = 0;
 	}

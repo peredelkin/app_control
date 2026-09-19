@@ -15,6 +15,11 @@ enum _E_Analog_Output_Control {
 //! Перечисление возможных бит статуса.
 enum _E_Analog_Output_Status {
     ANALOG_OUTPUT_STATUS_NONE = STATUS_NONE,
+	ANALOG_OUTPUT_STATUS_READY = STATUS_READY,
+	ANALOG_OUTPUT_STATUS_VALID = STATUS_VALID,
+	ANALOG_OUTPUT_STATUS_RUN = STATUS_RUN,
+	ANALOG_OUTPUT_STATUS_ERROR = STATUS_ERROR,
+	ANALOG_OUTPUT_STATUS_WARNING = STATUS_WARNING
 };
 
 //! Предварительная декларация типа модуля.

@@ -20,21 +20,6 @@ METHOD_DEINIT_IMPL(M_cli, cli)
 {
 }
 
-/* тестовые функции */
-static int cli_rgb_set(int argc, char* argv[])
-{
-	if(argc != 2) return -1;
-
-	int color = (int)strtol(argv[1], NULL, 10);
-
-	if(color > 7) return -1;
-
-	rgb_led.in_data = (uint16_t)color;
-
-	return 0;
-}
-/* конец тестовые функций */
-
 extern int cli_print_cat(int argc, char* argv[]);
 
 extern int cli_yaffs_freespace(int argc, char* argv[]);
@@ -107,10 +92,9 @@ int cli_top_sys(int argc, char* argv[]) {
 //	return 0;
 //}
 
-#define CLI_COMMANDS_COUNT 10
+#define CLI_COMMANDS_COUNT 9
 const cli_command_t cli_cmds[CLI_COMMANDS_COUNT] = {
 	{"df", cli_yaffs_freespace},
-	{"rgb_set", cli_rgb_set},
 	{"kitty", cli_print_cat},
 	{"touch", cli_touch_nand_file},
 	{"ls", cli_ls_nand},

@@ -315,11 +315,82 @@ void init_tft(void) {
 	spi_bus_close(tft.spi);
 }
 
-static void rgb_set_color(reg_u16_t color) {
-    rgb_led.in_data = color;
-    //обновим индикатор
-    CALC(rgb_led);
-}
+//void cdcard_process(void) {
+////	Init SDIO!
+////	gpio_sdio_cfg_setup();
+////	sdcard.dma_stream = DMA2_Stream_6;
+////
+////	sdcard.gpio.dat0 = &SDIO_DAT0_App;
+////	sdcard.gpio.pwr = &GPO_SDIO_PWR_App;
+////	sdcard.gpio.cd = &GPI_SDIO_CD_App;
+////
+////	sdcard.inserted = false;
+////
+////	err_t sdcard_init_err = E_NO_ERROR;
+////	FRESULT fatfs_result = FR_OK;
+//
+//	if (sdcard_card_detect(&sdcard)) {
+//		if (sdcard.inserted == false) {
+//			sdcard.inserted = true;
+//
+//			sdcard_setup_diskio(&sdcard, 1);
+//
+//			sys_counter_tv_print();
+//			printf("SD Card Inserted\n");
+//
+//			sdio_enable();
+//
+//			sdcard_card_pwr_on(&sdcard);
+//
+//			sdcard_init_err = sdcard_card_init(&sdcard);
+//
+//			if (sdcard_init_err == E_NO_ERROR) {
+//
+//				printf("CARD TYPE: ");
+//				switch(sdcard.type) {
+//				case SDCARD_TYPE_UNKNOWN:
+//					printf("UNKNOWN\n");
+//					break;
+//				case SDCARD_TYPE_SC:
+//					printf("SDSC\n");
+//					break;
+//				case SDCARD_TYPE_HC_XC:
+//					printf("SDHC or SDXC\n");
+//					break;
+//				case SDCARD_TYPE_UC:
+//					printf("SDUC\n");
+//					break;
+//				}
+//
+//				printf("CAPACITY: %llu MB\n", (sdcard.CSD.capacity/(1024*1024)));
+//
+//				fatfs_result = f_mount(&sdcard_fatfs, disk_path, 0);
+//				printf("FATFS Mout Result: %d\n", fatfs_result);
+//
+//				if(fatfs_result == FR_OK) {
+//					sdcard_ls_dir(disk_path);
+//				}else{
+//					f_unmount(disk_path);
+//				}
+//
+//			} else {
+//				printf("SD Card Init Error: %u\n", (unsigned)sdcard_init_err);
+//			}
+//		}
+//	} else {
+//		if (sdcard.inserted == true) {
+//			sdcard.inserted = false;
+//			sdcard_sdio_power_off();
+//
+//			sdcard_card_pwr_off(&sdcard);
+//
+//			sdio_disable();
+//
+//			sys_counter_tv_print();
+//			printf("SD Card removed\n");
+//		}
+//	}
+//}
 
 void fatal_error_handler() {
 	//дальнейшая инициализация не возможна
@@ -327,10 +398,7 @@ void fatal_error_handler() {
 	sys_counter_tv_print();
 	printf("ERROR!!!\n");
 	while (1) {
-		rgb_set_color(RGB_LED_COLOR_RED);
-		sys_counter_delay(1,0);
-		rgb_set_color(RGB_LED_COLOR_BLACK);
-		sys_counter_delay(1,0);
+
 	}
 }
 
@@ -348,11 +416,6 @@ int main(void)
 	gpio_rcc_init(); //RCC of all GPIO
 
 	exti15_10_init(EXTI15_10_IRQ_PRIO); //SPI1_CS, AC_LOST
-
-    //Индикатор состояния.
-    INIT(rgb_led);
-
-    rgb_set_color(RGB_LED_COLOR_YELLOW);
 
 	dma_controller_init(); //DMA1 and DMA2 struct init
 
@@ -396,7 +459,7 @@ int main(void)
 	spi2_nvic_init(SPI2_IRQ_PRIO);
 	spi2_bus_init(); //dac7562
 	sys_counter_tv_print();
-	printf("SPI2 DAC7562\n");
+	printf("SPI2 DAC7562, ADS8685\n");
 
 	spi4_nvic_init(SPI4_IRQ_PRIO);
 	spi4_bus_init(); //tic12400,ncv7608
@@ -433,97 +496,27 @@ int main(void)
 //	sys_counter_tv_print();
 //	printf("TFT\n");
 
-	rgb_set_color(RGB_LED_COLOR_BLACK);
-
     INIT(sys_main);
+    INIT(sys_secondary);
 
-    if(sys_main.status & SYS_MAIN_STATUS_ERROR){
+    if((sys_main.status & SYS_MAIN_STATUS_ERROR) || (sys_secondary.status & SYS_SECONDARY_STATUS_ERROR)){
     	sys_counter_tv_print();
-        printf("Error init main system!\n");
+        printf("Error init system!\n");
         DEINIT(sys_main);
+        DEINIT(sys_secondary);
 
         fatal_error_handler();
     }
 
-	//Init SDIO!
-	gpio_sdio_cfg_setup();
-
-	sdcard.dma_stream = DMA2_Stream_6;
-
-	sdcard.gpio.dat0 = &SDIO_DAT0_App;
-	sdcard.gpio.pwr = &GPO_SDIO_PWR_App;
-	sdcard.gpio.cd = &GPI_SDIO_CD_App;
-
-	sdcard.inserted = false;
-
-	err_t sdcard_init_err = E_NO_ERROR;
-	FRESULT fatfs_result = FR_OK;
+    //TODO: !по готовности всех модулей, которые содержат настройки
+	settings_cmd_read(&settings);
 
 	for (;;) {
 		IDLE(sys_main);
-
-		if (sdcard_card_detect(&sdcard)) {
-			if (sdcard.inserted == false) {
-				sdcard.inserted = true;
-
-				sdcard_setup_diskio(&sdcard, 1);
-
-				sys_counter_tv_print();
-				printf("SD Card Inserted\n");
-
-				sdio_enable();
-
-				sdcard_card_pwr_on(&sdcard);
-
-				sdcard_init_err = sdcard_card_init(&sdcard);
-
-				if (sdcard_init_err == E_NO_ERROR) {
-
-					printf("CARD TYPE: ");
-					switch(sdcard.type) {
-					case SDCARD_TYPE_UNKNOWN:
-						printf("UNKNOWN\n");
-						break;
-					case SDCARD_TYPE_SC:
-						printf("SDSC\n");
-						break;
-					case SDCARD_TYPE_HC_XC:
-						printf("SDHC or SDXC\n");
-						break;
-					case SDCARD_TYPE_UC:
-						printf("SDUC\n");
-						break;
-					}
-
-					printf("CAPACITY: %llu MB\n", (sdcard.CSD.capacity/(1024*1024)));
-
-					fatfs_result = f_mount(&sdcard_fatfs, disk_path, 0);
-					printf("FATFS Mout Result: %d\n", fatfs_result);
-
-					if(fatfs_result == FR_OK) {
-						sdcard_ls_dir(disk_path);
-					}else{
-						f_unmount(disk_path);
-					}
-
-				} else {
-					printf("SD Card Init Error: %u\n", (unsigned)sdcard_init_err);
-				}
-			}
-		} else {
-			if (sdcard.inserted == true) {
-				sdcard.inserted = false;
-				sdcard_sdio_power_off();
-
-				sdcard_card_pwr_off(&sdcard);
-
-				sdio_disable();
-
-				sys_counter_tv_print();
-				printf("SD Card removed\n");
-			}
-		}
+		IDLE(sys_secondary);
 	}
+
+
 
     //dlog.control = CONTROL_NONE;
 
