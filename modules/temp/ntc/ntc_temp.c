@@ -7,14 +7,31 @@
 
 METHOD_INIT_IMPL(M_ntc_temp, ntc_temp)
 {
+	ntc_temp->status = NTC_TEMP_STATUS_NONE;
+	ntc_temp->control = NTC_TEMP_CONTROL_NONE;
+
 	ntc_temp->m_R_in_max = (iq15_t)(ntc_4901_table[0].kohm * IQ15_BASE);
 	ntc_temp->m_R_in_min = (iq15_t)(ntc_4901_table[NTC_4901_TABLE_SIZE - 2].kohm * IQ15_BASE);
 	ntc_temp->m_R_ref = (iq15_t)(3.3f * IQ15_BASE);
+
+	ntc_temp->status |= NTC_TEMP_STATUS_READY;
 }
 
 METHOD_DEINIT_IMPL(M_ntc_temp, ntc_temp)
 {
 
+}
+
+static void ntc_temp_control_handler(M_ntc_temp* ntc_temp) {
+	if(ntc_temp->control & NTC_TEMP_CONTROL_START) {
+		ntc_temp->control &= ~NTC_TEMP_CONTROL_START;
+		ntc_temp->status |= NTC_TEMP_STATUS_RUN;
+	}
+
+	if(ntc_temp->control & NTC_TEMP_CONTROL_STOP) {
+		ntc_temp->control &= ~NTC_TEMP_CONTROL_STOP;
+		ntc_temp->status &= ~NTC_TEMP_STATUS_RUN;
+	}
 }
 
 int bsearch_ohm_comparator(const void* ptr1, const void* ptr2) {
@@ -51,43 +68,45 @@ void ntc_Ohm_calc(M_ntc_temp* ntc_temp) {
 	}
 }
 
-static uint32_t ntc_counter;
-
 void ntc_temp_calc(M_ntc_temp* ntc_temp) {
-	iq15_t R_in = ntc_temp->out_ohm[ntc_counter];
+	for(int i = 0; i < NTC_TEMP_COUNT; i++) {
+		iq15_t R_in = ntc_temp->out_ohm[i];
 
-	if(R_in > ntc_temp->m_R_in_max) {
-		R_in = ntc_temp->m_R_in_max;
-	}
+		if(R_in > ntc_temp->m_R_in_max) {
+			R_in = ntc_temp->m_R_in_max;
+		}
 
-	if(R_in < ntc_temp->m_R_in_min) {
-		R_in = ntc_temp->m_R_in_min;
-	}
+		if(R_in < ntc_temp->m_R_in_min) {
+			R_in = ntc_temp->m_R_in_min;
+		}
 
-	float float_R_in = (float)(R_in)/(float)(IQ15_BASE);
+		float float_R_in = (float)(R_in)/(float)(IQ15_BASE);
 
-	ntc_point_t* ntc_ptr = bsearch(
-			&float_R_in,
-			ntc_4901_table,
-			NTC_4901_TABLE_SIZE,
-			sizeof(ntc_point_t),
-			&bsearch_ohm_comparator);
+		ntc_point_t* ntc_ptr = bsearch(
+				&float_R_in,
+				ntc_4901_table,
+				NTC_4901_TABLE_SIZE,
+				sizeof(ntc_point_t),
+				&bsearch_ohm_comparator);
 
-	if (ntc_ptr != NULL) {
-		float Temp = ntc_ptr[0].temp + ((ntc_ptr[1].temp - ntc_ptr[0].temp) * (ntc_ptr[0].kohm - float_R_in)) / (ntc_ptr[0].kohm - ntc_ptr[1].kohm);
-		ntc_temp->out_temp[ntc_counter] += (((iq15_t)(Temp * IQ15_BASE)) - ntc_temp->out_temp[ntc_counter])/8;
-	} else {
-		ntc_temp->out_temp[ntc_counter] = IQ15_MAX;
-	}
-
-	if (ntc_counter >= (NTC_TEMP_COUNT - 1)) {
-		ntc_counter = 0;
-	} else {
-		ntc_counter++;
+		if (ntc_ptr != NULL) {
+			float Temp = ntc_ptr[0].temp + ((ntc_ptr[1].temp - ntc_ptr[0].temp) * (ntc_ptr[0].kohm - float_R_in)) / (ntc_ptr[0].kohm - ntc_ptr[1].kohm);
+			ntc_temp->out_temp[i] = (iq15_t)(Temp * IQ15_BASE);
+		} else {
+			ntc_temp->out_temp[i] = IQ15_MAX;
+		}
 	}
 }
 
-METHOD_CALC_IMPL(M_ntc_temp, ntc_temp) {
-	ntc_Ohm_calc(ntc_temp);
-	ntc_temp_calc(ntc_temp);
+METHOD_CALC_IMPL(M_ntc_temp, ntc_temp)
+{
+	ntc_temp_control_handler(ntc_temp);
+
+	if((ntc_temp->status & (NTC_TEMP_STATUS_READY | NTC_TEMP_STATUS_RUN)) ==
+			(NTC_TEMP_STATUS_READY | NTC_TEMP_STATUS_RUN)) {
+		//вычислим сопротивление
+		ntc_Ohm_calc(ntc_temp);
+		//вычислим температуру по сопротивлению
+		ntc_temp_calc(ntc_temp);
+	}
 }

@@ -133,13 +133,4 @@ METHOD_CALC_IMPL(M_digital_input, input)
 	} else {
 		input->out_data = 0;
 	}
-
-
-	if((input->status & (DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN | DIGITAL_INPUT_STATUS_VALID)) ==
-			(DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN | DIGITAL_INPUT_STATUS_VALID)) {
-
-
-	} else {
-		input->out_data = 0;
-	}
 }

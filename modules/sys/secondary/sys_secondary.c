@@ -140,7 +140,10 @@ static void modbus_to_can_panel_dependencies_check() {
 
 static void ntc_temp_dependencies_check() {
 	if(ntc_temp_ready_run == false) {
-		ntc_temp_ready_run = true;
+		if((ntc_temp.status & (NTC_TEMP_STATUS_READY | NTC_TEMP_STATUS_RUN)) ==
+				(NTC_TEMP_STATUS_READY | NTC_TEMP_STATUS_RUN)) {
+			ntc_temp_ready_run = true;
+		}
 	}
 }
 
@@ -169,7 +172,7 @@ static void modules_dependencies_start() {
 	rgb_led.control |= RGB_LED_CONTROL_START;
 	panel_led.control |= PANEL_LED_CONTROL_START;
 	//modbus_to_can_panel |= MODBUS_TO_CAN_CONTROL_START; Не нуждается в запуске
-	//ntc_temp.control |= NTC_TEMP_CONTROL_NONE;
+	ntc_temp.control |= NTC_TEMP_CONTROL_START;
 	//temp_comp.control |= TEMP_WIND_COMP_CONTROL_NONE;
 }
 
