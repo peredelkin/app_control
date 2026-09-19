@@ -149,7 +149,10 @@ static void ntc_temp_dependencies_check() {
 
 static void temp_comp_dependencies_check() {
 	if(temp_comp_ready_run == false) {
-		temp_comp_ready_run = true;
+		if((temp_comp.status & (TEMP_WIND_COMP_STATUS_READY | TEMP_WIND_COMP_STATUS_RUN)) ==
+					(TEMP_WIND_COMP_STATUS_READY | TEMP_WIND_COMP_STATUS_RUN)) {
+			temp_comp_ready_run = true;
+		}
 	}
 }
 
@@ -173,7 +176,7 @@ static void modules_dependencies_start() {
 	panel_led.control |= PANEL_LED_CONTROL_START;
 	//modbus_to_can_panel |= MODBUS_TO_CAN_CONTROL_START; Не нуждается в запуске
 	ntc_temp.control |= NTC_TEMP_CONTROL_START;
-	//temp_comp.control |= TEMP_WIND_COMP_CONTROL_NONE;
+	temp_comp.control |= TEMP_WIND_COMP_CONTROL_START;
 }
 
 static void FSM_state_none(M_sys_secondary* sys_secondary)
