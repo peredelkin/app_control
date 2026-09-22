@@ -176,21 +176,25 @@ static void modules_dependencies_start() {
 
 static void FSM_state_none(M_sys_main* sys)
 {
+	rgb_led.in_data_1 = RGB_LED_COLOR_BLACK;
 }
 
 static void FSM_state_init(M_sys_main* sys)
 {
+	rgb_led.in_data_1 = RGB_LED_COLOR_VIOLET;
 	settings_status_handler(sys, STATE_IDLE, STATE_ERROR);
 }
 
 static void FSM_state_idle(M_sys_main* sys)
 {
+	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE_DARK;
 	modules_dependencies_start();
 	sys->state = STATE_READY;
 }
 
 static void FSM_state_ready(M_sys_main* sys)
 {
+	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE;
 	if(modules_dependencies_check()) {
 		sys->state = STATE_RUN;
 	}
@@ -198,10 +202,12 @@ static void FSM_state_ready(M_sys_main* sys)
 
 static void FSM_state_run(M_sys_main* sys)
 {
+	rgb_led.in_data_1 = RGB_LED_COLOR_GREEN;
 }
 
 static void FSM_state_error(M_sys_main* sys)
 {
+	rgb_led.in_data_1 = RGB_LED_COLOR_RED;
 }
 
 static void FSM_state(M_sys_main* sys)
