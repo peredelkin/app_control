@@ -6,11 +6,20 @@
 //! Перечисление возможных бит управления.
 enum _E_Dac7562_Control {
     DAC7562_CONTROL_NONE = CONTROL_NONE,
+	DAC7562_CONTROL_RESET = CONTROL_RESET,
+	DAC7562_CONTROL_ENABLE = CONTROL_ENABLE,
+	DAC7562_CONTROL_START = CONTROL_START,
+	DAC7562_CONTROL_STOP = CONTROL_STOP
 };
 
 //! Перечисление возможных бит статуса.
 enum _E_Dac7562_Status {
     DAC7562_STATUS_NONE = STATUS_NONE,
+	DAC7562_STATUS_READY = STATUS_READY,
+	DAC7562_STATUS_VALID = STATUS_VALID,
+	DAC7562_STATUS_RUN = STATUS_RUN,
+	DAC7562_STATUS_ERROR = STATUS_ERROR,
+	DAC7562_STATUS_WARNING = STATUS_WARNING
 };
 
 //! Предварительная декларация типа модуля.
@@ -34,6 +43,7 @@ struct _S_Dac7562 {
     // Коллбэки.
     // Внутренние данные.
     SPI_BUS_TypeDef *m_spi_bus;
+    SPI_BUS_FRAME_TypeDef spi_control[3];
     reg_u8_t m_frame_ch_a[3];
     reg_u8_t m_frame_ch_b[3];
     reg_u8_t m_frame_ctrl[3];
