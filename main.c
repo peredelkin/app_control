@@ -419,7 +419,7 @@ int main(void)
 
 	dma_controller_init(); //DMA1 and DMA2 struct init
 
-	system_counter_init(); //TIM2
+	system_counter_init(); //TIM2 + RGB_LED
 
 	gpio_socket3_cfg_setup(); //OE_App
 
@@ -519,10 +519,5 @@ int main(void)
 		IDLE(sys_secondary);
 	}
 
-
-
-    //dlog.control = CONTROL_NONE;
-
-    //DEINIT(sys);
     return 0;
 }

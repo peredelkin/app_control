@@ -29,7 +29,6 @@ METHOD_INIT_IMPL(M_sys_secondary, sys_secondary)
 	status_t init_status = STATUS_NONE;
 
 	// Модули в CALC
-	INIT(rgb_led);
 	INIT(panel_led);
 	INIT(modbus_to_can_panel);
 	INIT(ntc_temp);
@@ -73,7 +72,6 @@ METHOD_DEINIT_IMPL(M_sys_secondary, sys_secondary)
 	DEINIT(sys_secondary_tim);
 
 	//Модули в CALC
-    DEINIT(rgb_led);
     DEINIT(panel_led);
 	DEINIT(modbus_to_can_panel);
     DEINIT(ntc_temp);
@@ -106,20 +104,11 @@ static void settings_status_handler(M_sys_secondary* sys_secondary, state_t ok, 
 }
 
 //флаги готовности модулей
-bool rgb_led_ready_run = false;
 bool panel_led_ready_run = false;
 bool modbus_to_can_panel_ready_run = false;
 bool ntc_temp_ready_run = false;
 bool temp_comp_ready_run = false;
 
-static void rgb_led_dependencies_check() {
-	if(rgb_led_ready_run == false) {
-		if((rgb_led.status & (RGB_LED_STATUS_READY | RGB_LED_STATUS_RUN)) ==
-				(RGB_LED_STATUS_READY | RGB_LED_STATUS_RUN)) {
-			rgb_led_ready_run = true;
-		}
-	}
-}
 
 static void panel_led_dependencies_check() {
 	if(panel_led_ready_run == false) {
@@ -158,21 +147,18 @@ static void temp_comp_dependencies_check() {
 
 static bool modules_dependencies_check() {
 	//проверим зависимости модулей
-	rgb_led_dependencies_check();
 	panel_led_dependencies_check();
 	modbus_to_can_panel_dependencies_check();
 	ntc_temp_dependencies_check();
 	temp_comp_dependencies_check();
 
-	return (rgb_led_ready_run &&
-			panel_led_ready_run &&
+	return (panel_led_ready_run &&
 			modbus_to_can_panel_ready_run &&
 			ntc_temp_ready_run &&
 			temp_comp_ready_run);
 }
 
 static void modules_dependencies_start() {
-	rgb_led.control |= RGB_LED_CONTROL_START;
 	panel_led.control |= PANEL_LED_CONTROL_START;
 	//modbus_to_can_panel |= MODBUS_TO_CAN_CONTROL_START; Не нуждается в запуске
 	ntc_temp.control |= NTC_TEMP_CONTROL_START;
@@ -255,7 +241,6 @@ METHOD_CALC_IMPL(M_sys_secondary, sys_secondary)
 	FSM_state(sys_secondary);
 
 	//Модули
-	CALC(rgb_led);
 	CALC(panel_led);
 	CALC(modbus_to_can_panel);
     CALC(ntc_temp);

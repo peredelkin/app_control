@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include "sys_counter.h"
+#include "modules/modules.h"
 
 
 //! Тип структуры высокоточного таймера.
@@ -42,6 +43,8 @@ void sys_counter_irq_handler(void)
         system_counter.timer->SR = ~TIM_SR_UIF;
         
         system_counter.counter ++;
+
+    	CALC(rgb_led);
     }
 }
 
@@ -158,10 +161,12 @@ void sys_counter_tv_print() {
 }
 
 void system_counter_init(void) {
+	INIT(rgb_led);
 	sys_counter_init(SYS_CNT_TIM);
 	sys_counter_irq_enable();
 	NVIC_SetPriority(SYS_CNT_IRQN, SYS_CNT_IRQ_PRIO);
 	NVIC_EnableIRQ(SYS_CNT_IRQN);
 	sys_counter_start();
+	rgb_led.control |= RGB_LED_CONTROL_START;
 }
 

@@ -30,35 +30,30 @@ void rgb_led_switch_color(uint32_t color) {
 	}
 }
 
-static uint32_t rgb_cycle = 0;
 static uint32_t rgb_input = 0;
 
 void rgb_led_calc(M_rgb_led* rgb_led) {
-	if(rgb_cycle) {
-		rgb_cycle--;
+	if (rgb_input) {
+		rgb_input--;
 	} else {
-		rgb_cycle = 10;
-		if(rgb_input) {
-			rgb_input--;
-		} else {
-			rgb_input = 4;
-		}
-		switch(rgb_input) {
-		case 1: rgb_led_switch_color(rgb_led->in_data_4);
-			break;
-
-		case 2: rgb_led_switch_color(rgb_led->in_data_3);
-			break;
-
-		case 3: rgb_led_switch_color(rgb_led->in_data_2);
-			break;
-
-		case 4: rgb_led_switch_color(rgb_led->in_data_1);
-			break;
-
-		default: rgb_led_switch_color(RGB_LED_COLOR_WHITE);
-			break;
-		}
+		rgb_input = 4;
+	}
+	switch (rgb_input) {
+	case 1:
+		rgb_led_switch_color(rgb_led->in_data_4);
+		break;
+	case 2:
+		rgb_led_switch_color(rgb_led->in_data_3);
+		break;
+	case 3:
+		rgb_led_switch_color(rgb_led->in_data_2);
+		break;
+	case 4:
+		rgb_led_switch_color(rgb_led->in_data_1);
+		break;
+	default:
+		rgb_led_switch_color(RGB_LED_COLOR_WHITE);
+		break;
 	}
 }
 
@@ -79,7 +74,7 @@ METHOD_INIT_IMPL(M_rgb_led, rgb_led)
 
 METHOD_DEINIT_IMPL(M_rgb_led, rgb_led)
 {
-	rgb_led_switch_color(RGB_LED_COLOR_WHITE);
+	rgb_led->control |= RGB_LED_CONTROL_STOP;
 }
 
 static void rgb_led_control_handler(M_rgb_led* rgb_led) {
