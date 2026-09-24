@@ -222,6 +222,12 @@ void settings_reset(M_settings *settings) {
 	settings->status &= ~SETTINGS_STATUS_READY;
 	//сбросим control
 	settings->control = SETTINGS_CONTROL_NONE;
+	//Если файл не был закрыт, закроем его
+	if(!(settings_fd < 0)) {
+		yaffs_close(settings_fd);
+		//сбросим fd
+		settings_fd = -1;
+	}
 	//установим статус READY
 	settings->status |= SETTINGS_STATUS_READY;
 }
@@ -237,6 +243,8 @@ void settings_read(M_settings *settings) {
 			settings->m_reg_current = NULL;
 			//закроем файл
 			yaffs_close(settings_fd);
+			//сбросим fd
+			settings_fd = -1;
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 			//установим статус READY
@@ -301,6 +309,8 @@ void settings_write(M_settings *settings) {
 			settings->m_reg_current = NULL;
 			//закроем файл
 			yaffs_close(settings_fd);
+			//сбросим fd
+			settings_fd = -1;
 			//сбросим статус RUN
 			settings->status &= ~SETTINGS_STATUS_RUN;
 			//установим статус READY
