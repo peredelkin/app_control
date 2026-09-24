@@ -135,7 +135,7 @@ static void settings_status_handler(M_sys_main* sys, state_t ok, state_t not_ok)
 	}
 }
 
-static void mosules_start(M_sys_main* sys, state_t ok) {
+static void modules_start(M_sys_main* sys, state_t ok) {
 	digital_in.control |= DIGITAL_INPUT_CONTROL_START;
 	digital_out.control |= DIGITAL_OUTPUT_CONTROL_START;
 	analog_in.control |= ANALOG_INPUT_CONTROL_START;
@@ -166,13 +166,12 @@ static void FSM_state_ready(M_sys_main* sys)
 static void FSM_state_idle(M_sys_main* sys)
 {
 	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE_DARK;
-	mosules_start(sys, SYS_MAIN_STATE_RUN);
+	modules_start(sys, SYS_MAIN_STATE_RUN);
 }
 
 static void FSM_state_run(M_sys_main* sys)
 {
 	rgb_led.in_data_1 = RGB_LED_COLOR_GREEN;
-
 }
 
 static void FSM_state_error(M_sys_main* sys)
@@ -205,7 +204,7 @@ static void FSM_state(M_sys_main* sys)
     default:
         // TODO: reaction on invalid state error.
         sys->errors |= SYS_MAIN_ERROR_SOFTWARE;
-        sys->state = STATE_ERROR;
+        sys->state = SYS_MAIN_STATE_ERROR;
         break;
     }
 }

@@ -80,6 +80,17 @@ METHOD_DEINIT_IMPL(M_sys_secondary, sys_secondary)
 	//Модули в IDLE
 	DEINIT(cli);
 }
+
+static void modules_is_ready(M_sys_secondary* sys, state_t ok) {
+	if(
+			(panel_led.status & PANEL_LED_STATUS_READY) &&
+			(modbus_to_can_panel.status & MODBUS_TO_CAN_STATUS_READY) &&
+			(ntc_temp.status & NTC_TEMP_STATUS_READY) &&
+			(temp_comp.status & TEMP_WIND_COMP_STATUS_READY)) {
+		sys->state = ok;
+	}
+}
+
 //обработчик статуса чтения настроек
 static status_t settings_status_mask;
 static status_t settings_status_masked;
@@ -103,66 +114,12 @@ static void settings_status_handler(M_sys_secondary* sys_secondary, state_t ok, 
 	}
 }
 
-//флаги готовности модулей
-bool panel_led_ready_run = false;
-bool modbus_to_can_panel_ready_run = false;
-bool ntc_temp_ready_run = false;
-bool temp_comp_ready_run = false;
-
-
-static void panel_led_dependencies_check() {
-	if(panel_led_ready_run == false) {
-		if((panel_led.status & (PANEL_LED_STATUS_READY | PANEL_LED_STATUS_RUN)) ==
-				(PANEL_LED_STATUS_READY | PANEL_LED_STATUS_RUN)) {
-			panel_led_ready_run = true;
-		}
-	}
-}
-
-static void modbus_to_can_panel_dependencies_check() {
-	if(modbus_to_can_panel_ready_run == false) {
-		if(modbus_to_can_panel.status & MODBUS_TO_CAN_STATUS_READY) {
-			modbus_to_can_panel_ready_run = true;
-		}
-	}
-}
-
-static void ntc_temp_dependencies_check() {
-	if(ntc_temp_ready_run == false) {
-		if((ntc_temp.status & (NTC_TEMP_STATUS_READY | NTC_TEMP_STATUS_RUN)) ==
-				(NTC_TEMP_STATUS_READY | NTC_TEMP_STATUS_RUN)) {
-			ntc_temp_ready_run = true;
-		}
-	}
-}
-
-static void temp_comp_dependencies_check() {
-	if(temp_comp_ready_run == false) {
-		if((temp_comp.status & (TEMP_WIND_COMP_STATUS_READY | TEMP_WIND_COMP_STATUS_RUN)) ==
-					(TEMP_WIND_COMP_STATUS_READY | TEMP_WIND_COMP_STATUS_RUN)) {
-			temp_comp_ready_run = true;
-		}
-	}
-}
-
-static bool modules_dependencies_check() {
-	//проверим зависимости модулей
-	panel_led_dependencies_check();
-	modbus_to_can_panel_dependencies_check();
-	ntc_temp_dependencies_check();
-	temp_comp_dependencies_check();
-
-	return (panel_led_ready_run &&
-			modbus_to_can_panel_ready_run &&
-			ntc_temp_ready_run &&
-			temp_comp_ready_run);
-}
-
-static void modules_dependencies_start() {
-	panel_led.control |= PANEL_LED_CONTROL_START;
-	//modbus_to_can_panel |= MODBUS_TO_CAN_CONTROL_START; Не нуждается в запуске
-	ntc_temp.control |= NTC_TEMP_CONTROL_START;
-	temp_comp.control |= TEMP_WIND_COMP_CONTROL_START;
+static void modules_start(M_sys_secondary* sys_secondary, state_t ok) {
+	panel_led.control |= DIGITAL_INPUT_CONTROL_START;
+	//modbus_to_can_panel.control |= DIGITAL_OUTPUT_CONTROL_START;
+	ntc_temp.control |= ANALOG_INPUT_CONTROL_START;
+	temp_comp.control |= ANALOG_OUTPUT_CONTROL_START;
+	sys_secondary->state = ok;
 }
 
 static void FSM_state_none(M_sys_secondary* sys_secondary)
@@ -170,62 +127,62 @@ static void FSM_state_none(M_sys_secondary* sys_secondary)
 	rgb_led.in_data_2 = RGB_LED_COLOR_BLACK;
 }
 
+//INIT->READY
 static void FSM_state_init(M_sys_secondary* sys_secondary)
 {
 	rgb_led.in_data_2 = RGB_LED_COLOR_VIOLET;
-	settings_status_handler(sys_secondary, STATE_IDLE, STATE_ERROR);
+	modules_is_ready(sys_secondary, SYS_SECONDARY_STATE_READY);
 }
 
-static void FSM_state_idle(M_sys_secondary* sys_secondary)
-{
-	rgb_led.in_data_2 = RGB_LED_COLOR_BLUE_DARK;
-	modules_dependencies_start();
-	sys_secondary->state = STATE_READY;
-}
-
+//READY->IDLE
 static void FSM_state_ready(M_sys_secondary* sys_secondary)
 {
+	rgb_led.in_data_2 = RGB_LED_COLOR_BLUE_DARK;
+	settings_status_handler(sys_secondary, SYS_SECONDARY_STATE_IDLE, SYS_SECONDARY_STATE_ERROR);
+}
+
+//IDLE->RUN
+static void FSM_state_idle(M_sys_secondary* sys_secondary)
+{
 	rgb_led.in_data_2 = RGB_LED_COLOR_BLUE;
-	if(modules_dependencies_check()) {
-		sys_secondary->state = STATE_RUN;
-	}
+	modules_start(sys_secondary, SYS_SECONDARY_STATE_RUN);
 }
 
 static void FSM_state_run(M_sys_secondary* sys_secondary)
 {
-	rgb_led.in_data_1 = RGB_LED_COLOR_GREEN;
+	rgb_led.in_data_2 = RGB_LED_COLOR_GREEN;
 }
 
 static void FSM_state_error(M_sys_secondary* sys_secondary)
 {
-	rgb_led.in_data_1 = RGB_LED_COLOR_RED;
+	rgb_led.in_data_2 = RGB_LED_COLOR_RED;
 }
 
 static void FSM_state(M_sys_secondary* sys_secondary) {
 
     switch(sys_secondary->state){
-    case SYS_MAIN_STATE_NONE:
+    case SYS_SECONDARY_STATE_NONE:
         FSM_state_none(sys_secondary);
         break;
-    case SYS_MAIN_STATE_INIT:
+    case SYS_SECONDARY_STATE_INIT:
         FSM_state_init(sys_secondary);
         break;
-    case SYS_MAIN_STATE_IDLE:
-        FSM_state_idle(sys_secondary);
-        break;
-    case SYS_MAIN_STATE_READY:
+    case SYS_SECONDARY_STATE_READY:
         FSM_state_ready(sys_secondary);
         break;
-    case SYS_MAIN_STATE_RUN:
+    case SYS_SECONDARY_STATE_IDLE:
+        FSM_state_idle(sys_secondary);
+        break;
+    case SYS_SECONDARY_STATE_RUN:
         FSM_state_run(sys_secondary);
         break;
-    case SYS_MAIN_STATE_ERROR:
+    case SYS_SECONDARY_STATE_ERROR:
         FSM_state_error(sys_secondary);
         break;
     default:
         // TODO: reaction on invalid state error.
-    	sys_secondary->errors |= SYS_MAIN_ERROR_SOFTWARE;
-    	sys_secondary->state = STATE_ERROR;
+    	sys_secondary->errors |= SYS_SECONDARY_ERROR_SOFTWARE;
+    	sys_secondary->state = SYS_SECONDARY_STATE_ERROR;
         break;
     }
 }
