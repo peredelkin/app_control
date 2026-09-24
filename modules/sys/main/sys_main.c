@@ -88,10 +88,36 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     sys->state = SYS_MAIN_STATE_NONE;
 }
 
+static void modules_is_ready(M_sys_main* sys, state_t ok) {
+	if(
+			(digital_in.status & DIGITAL_INPUT_STATUS_READY) &&
+			(digital_out.status & DIGITAL_OUTPUT_STATUS_READY) &&
+			(analog_in.status & ANALOG_INPUT_STATUS_READY) &&
+			(analog_out.status & ANALOG_OUTPUT_STATUS_READY)) {
+		sys->state = ok;
+	}
+}
+
 //обработчик статуса чтения настроек
 static status_t settings_status_mask;
 static status_t settings_status_masked;
 
+/**
+ * @brief Обработчик изменения статуса настроек.
+ *
+ * Функция отслеживает момент завершения чтения настроек (флаг READ_DONE).
+ * Сам флаг READ_DONE не маскируется, что позволяет функции реагировать на каждое новое чтение.
+ *
+ * Переключение состояния системы (sys->state) происходит однократно только при изменении
+ * результата: флага VALID или ERROR. Так как эти флаги взаимно сбрасывают друг друга
+ * в маске, обработчик автоматически готов зафиксировать смену успешного результата
+ * на ошибку (и наоборот) при последующих вызовах, исключая при этом циклическое
+ * перезаписывание стейта на каждой итерации основного цикла.
+ *
+ * @param sys    Указатель на главный контекст системы для обновления стейта
+ * @param ok     Целевое состояние при валидных настройках
+ * @param not_ok Целевое состояние при ошибке чтения
+ */
 static void settings_status_handler(M_sys_main* sys, state_t ok, state_t not_ok) {
 	settings_status_masked = settings.status & ~settings_status_mask;
 
@@ -111,67 +137,12 @@ static void settings_status_handler(M_sys_main* sys, state_t ok, state_t not_ok)
 	}
 }
 
-//флаги готовности модулей
-bool digital_in_ready_run = false;
-bool digital_out_ready_run = false;
-bool analog_in_ready_run = false;
-bool analog_out_ready_run = false;
-
-//функции обработки статусов модулей
-static void digital_in_dependencies_check() {
-	if(digital_in_ready_run == false) {
-		if((digital_in.status & (DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) ==
-				(DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) {
-			digital_in_ready_run = true;
-		}
-	}
-}
-
-static void digital_out_dependencies_check() {
-	if(digital_out_ready_run == false) {
-		if((digital_out.status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN)) ==
-				(DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN)) {
-			digital_out_ready_run = true;
-		}
-	}
-}
-
-static void analog_in_dependencies_check() {
-	if(analog_in_ready_run == false) {
-		if((analog_in.status & (ANALOG_INPUT_STATUS_READY | ANALOG_INPUT_STATUS_RUN)) ==
-				(ANALOG_INPUT_STATUS_READY | ANALOG_INPUT_STATUS_RUN)) {
-			analog_in_ready_run = true;
-		}
-	}
-}
-
-static void analog_out_dependencies_check() {
-	if(analog_out_ready_run == false) {
-		if((analog_out.status & (ANALOG_OUTPUT_STATUS_READY | ANALOG_OUTPUT_STATUS_RUN)) ==
-				(ANALOG_OUTPUT_STATUS_READY | ANALOG_OUTPUT_STATUS_RUN)) {
-			analog_out_ready_run = true;
-		}
-	}
-}
-
-static bool modules_dependencies_check() {
-	//проверим зависимости модулей
-	digital_in_dependencies_check();
-	digital_out_dependencies_check();
-	analog_in_dependencies_check();
-	analog_out_dependencies_check();
-
-	return (digital_in_ready_run &&
-			digital_out_ready_run &&
-			analog_in_ready_run &&
-			analog_out_ready_run);
-}
-
-static void modules_dependencies_start() {
+static void mosules_start(M_sys_main* sys, state_t ok) {
 	digital_in.control |= DIGITAL_INPUT_CONTROL_START;
 	digital_out.control |= DIGITAL_OUTPUT_CONTROL_START;
 	analog_in.control |= ANALOG_INPUT_CONTROL_START;
 	analog_out.control |= ANALOG_OUTPUT_CONTROL_START;
+	sys->state = ok;
 }
 
 static void FSM_state_none(M_sys_main* sys)
@@ -179,30 +150,31 @@ static void FSM_state_none(M_sys_main* sys)
 	rgb_led.in_data_1 = RGB_LED_COLOR_BLACK;
 }
 
+//INIT->READY
 static void FSM_state_init(M_sys_main* sys)
 {
 	rgb_led.in_data_1 = RGB_LED_COLOR_VIOLET;
-	settings_status_handler(sys, STATE_IDLE, STATE_ERROR);
+	modules_is_ready(sys, SYS_MAIN_STATE_READY);
 }
 
+//IDLE->RUN
 static void FSM_state_idle(M_sys_main* sys)
 {
 	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE_DARK;
-	modules_dependencies_start();
-	sys->state = STATE_READY;
+	mosules_start(sys, SYS_MAIN_STATE_RUN);
 }
 
+//READY->IDLE
 static void FSM_state_ready(M_sys_main* sys)
 {
 	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE;
-	if(modules_dependencies_check()) {
-		sys->state = STATE_RUN;
-	}
+	settings_status_handler(sys, SYS_MAIN_STATE_IDLE, SYS_MAIN_STATE_ERROR);
 }
 
 static void FSM_state_run(M_sys_main* sys)
 {
 	rgb_led.in_data_1 = RGB_LED_COLOR_GREEN;
+
 }
 
 static void FSM_state_error(M_sys_main* sys)
@@ -220,11 +192,11 @@ static void FSM_state(M_sys_main* sys)
     case SYS_MAIN_STATE_INIT:
         FSM_state_init(sys);
         break;
-    case SYS_MAIN_STATE_IDLE:
-        FSM_state_idle(sys);
-        break;
     case SYS_MAIN_STATE_READY:
         FSM_state_ready(sys);
+        break;
+    case SYS_MAIN_STATE_IDLE:
+        FSM_state_idle(sys);
         break;
     case SYS_MAIN_STATE_RUN:
         FSM_state_run(sys);
