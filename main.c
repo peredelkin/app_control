@@ -496,22 +496,25 @@ int main(void)
 //	sys_counter_tv_print();
 //	printf("TFT\n");
 
+	INIT(settings);
     INIT(sys_main);
     INIT(sys_secondary);
 
     if((sys_main.status & SYS_MAIN_STATUS_ERROR) || (sys_secondary.status & SYS_SECONDARY_STATUS_ERROR)){
     	sys_counter_tv_print();
         printf("Error init system!\n");
+        DEINIT(settings);
         DEINIT(sys_main);
         DEINIT(sys_secondary);
 
         fatal_error_handler();
     }
 
-    //TODO: !по готовности всех модулей, которые содержат настройки
+    //Если основная и второстепенная системы запущены, скомандуем прочитать настройки.
 	settings_cmd_read(&settings);
 
 	for (;;) {
+		IDLE(settings);
 		IDLE(sys_main);
 		IDLE(sys_secondary);
 	}

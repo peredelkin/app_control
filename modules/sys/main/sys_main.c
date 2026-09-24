@@ -35,7 +35,6 @@ METHOD_INIT_IMPL(M_sys_main, sys)
     INIT(analog_out);
 
     //Модули в IDLE
-	INIT(settings);
 
     // Таймер основной системыы
     INIT(sys_main_tim); //TIM3
@@ -78,7 +77,6 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
     DEINIT(analog_out);
 
     //Модули в IDLE
-    DEINIT(settings);
 
     // Сброс внутренних переменных.
     sys->control = SYS_MAIN_CONTROL_NONE;
@@ -157,18 +155,18 @@ static void FSM_state_init(M_sys_main* sys)
 	modules_is_ready(sys, SYS_MAIN_STATE_READY);
 }
 
-//IDLE->RUN
-static void FSM_state_idle(M_sys_main* sys)
-{
-	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE_DARK;
-	mosules_start(sys, SYS_MAIN_STATE_RUN);
-}
-
 //READY->IDLE
 static void FSM_state_ready(M_sys_main* sys)
 {
 	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE;
 	settings_status_handler(sys, SYS_MAIN_STATE_IDLE, SYS_MAIN_STATE_ERROR);
+}
+
+//IDLE->RUN
+static void FSM_state_idle(M_sys_main* sys)
+{
+	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE_DARK;
+	mosules_start(sys, SYS_MAIN_STATE_RUN);
 }
 
 static void FSM_state_run(M_sys_main* sys)
@@ -238,6 +236,5 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
 METHOD_IDLE_IMPL(M_sys_main, sys)
 {
-	IDLE(settings);
 }
 
