@@ -124,11 +124,13 @@ METHOD_CALC_IMPL(M_digital_output, output)
 		digital_output_calc(output);
 		do_ncv7608.in_data = output->m_out_data.bit.ncv;
 		do_relay.in_data = output->m_out_data.bit.relay;
+		CALC(do_ncv7608);
+		gpio_output_bit_setup(&GPO_EN_DO_App, GPIO_STATE_ON);
 	} else {
 		do_ncv7608.in_data = 0;
 		do_relay.in_data = 0;
+		gpio_output_bit_setup(&GPO_EN_DO_App, GPIO_STATE_OFF);
 	}
 
-	CALC(do_ncv7608);
 	CALC(do_relay);
 }

@@ -110,12 +110,13 @@ void digital_inpuit_msdi_status_check(M_digital_input* input) {
 
 METHOD_CALC_IMPL(M_digital_input, input)
 {
+	//данные от msdi
+	CALC(msdi);
+	//Обработчик команд пуск/стоп
 	digital_input_control_handler(input);
-
+	//проверка условий готовности и работы
 	if((input->status & (DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) ==
 			(DIGITAL_INPUT_STATUS_READY | DIGITAL_INPUT_STATUS_RUN)) {
-		//данные от msdi
-		CALC(msdi);
 		//статус msdi
 		digital_inpuit_msdi_status_check(input);
 		//если данные от msdi валидны

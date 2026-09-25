@@ -158,14 +158,14 @@ static void FSM_state_init(M_sys_main* sys)
 //READY->IDLE
 static void FSM_state_ready(M_sys_main* sys)
 {
-	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE;
+	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE_DARK;
 	settings_status_handler(sys, SYS_MAIN_STATE_IDLE, SYS_MAIN_STATE_ERROR);
 }
 
 //IDLE->RUN
 static void FSM_state_idle(M_sys_main* sys)
 {
-	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE_DARK;
+	rgb_led.in_data_1 = RGB_LED_COLOR_BLUE;
 	modules_start(sys, SYS_MAIN_STATE_RUN);
 }
 
@@ -221,9 +221,9 @@ METHOD_CALC_IMPL(M_sys_main, sys)
 
     // Вычислительные модули.
     CALC(digital_in);
+    CALC(digital_out);
     CALC(analog_in);
     CALC(analog_out);
-    CALC(digital_out);
 
     //стоп
     struct timeval tv_stop;
