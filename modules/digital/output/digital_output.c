@@ -14,8 +14,6 @@ METHOD_INIT_IMPL(M_digital_output, output)
     INIT(do_relay);
 
     output->status |= DIGITAL_OUTPUT_STATUS_READY;
-    //TODO: нужно будет проверять в обработчике статус MC. до тех пор STATUS_VALID
-    output->status |= DIGITAL_OUTPUT_STATUS_VALID;
 }
 
 METHOD_DEINIT_IMPL(M_digital_output, output)
@@ -34,11 +32,6 @@ static void digital_output_control_handler(M_digital_output* output) {
 		output->control &= ~DIGITAL_OUTPUT_CONTROL_STOP;
 		output->status &= ~DIGITAL_OUTPUT_STATUS_RUN;
 	}
-}
-
-static bool digital_output_ready_run_valid(M_digital_output* output) {
-	return ((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID)) ==
-			(DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN | DIGITAL_OUTPUT_STATUS_VALID));
 }
 
 static void digital_output_handler(M_digital_output* output, int i, uint32_t in_data) {
@@ -116,15 +109,15 @@ METHOD_CALC_IMPL(M_digital_output, output)
 {
 	digital_output_control_handler(output);
 
-	if (digital_output_ready_run_valid(output)) {
+	 if ((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN))
+			 == (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN)) {
 		output->m_in_internal_data.bit.temp_comp = (temp_comp.out_data & 0b111111);
-		output->m_in_internal_data.bit.temp_comp_0_or_1 = (temp_comp.out_data & 0b000011) ?  1 : 0;
-		output->m_in_internal_data.bit.temp_comp_2_or_3 = (temp_comp.out_data & 0b001100) ?  1 : 0;
-		output->m_in_internal_data.bit.temp_comp_4_or_5 = (temp_comp.out_data & 0b110000) ?  1 : 0;
+		output->m_in_internal_data.bit.temp_comp_0_or_1 = (temp_comp.out_data & 0b000011) ? 1 : 0;
+		output->m_in_internal_data.bit.temp_comp_2_or_3 = (temp_comp.out_data & 0b001100) ? 1 : 0;
+		output->m_in_internal_data.bit.temp_comp_4_or_5 = (temp_comp.out_data & 0b110000) ? 1 : 0;
 		digital_output_calc(output);
 		do_ncv7608.in_data = output->m_out_data.bit.ncv;
 		do_relay.in_data = output->m_out_data.bit.relay;
-		CALC(do_ncv7608);
 		gpio_output_bit_setup(&GPO_EN_DO_App, GPIO_STATE_ON);
 	} else {
 		do_ncv7608.in_data = 0;
@@ -132,5 +125,6 @@ METHOD_CALC_IMPL(M_digital_output, output)
 		gpio_output_bit_setup(&GPO_EN_DO_App, GPIO_STATE_OFF);
 	}
 
+	CALC(do_ncv7608);
 	CALC(do_relay);
 }
