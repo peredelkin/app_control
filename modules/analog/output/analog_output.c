@@ -34,6 +34,8 @@ METHOD_CALC_IMPL(M_analog_output, analog_output)
 
 	if((analog_output->status & (ANALOG_OUTPUT_STATUS_READY | ANALOG_OUTPUT_STATUS_RUN)) ==
 			(ANALOG_OUTPUT_STATUS_READY | ANALOG_OUTPUT_STATUS_RUN)) {
-		CALC(ao_dac7562);
+
 	}
+
+	CALC(ao_dac7562);
 }

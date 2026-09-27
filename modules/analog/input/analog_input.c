@@ -30,10 +30,12 @@ static void analog_input_control_handler(M_analog_input* analog_input) {
 
 METHOD_CALC_IMPL(M_analog_input, analog_input)
 {
+	CALC(ai_ads8665);
+
 	analog_input_control_handler(analog_input);
 
 	if((analog_input->status & (ANALOG_INPUT_STATUS_READY | ANALOG_INPUT_STATUS_RUN)) ==
 			(ANALOG_INPUT_STATUS_READY | ANALOG_INPUT_STATUS_RUN)) {
-		CALC(ai_ads8665);
+
 	}
 }
