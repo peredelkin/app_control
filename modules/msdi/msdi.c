@@ -188,10 +188,31 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	}
 
 	/*
-	 * "Power-On-Reset" or/and "An error is detected when loading factory settings
+	 * "An error is detected when loading factory settings
 	 * into the device upon device initialization"
 	 */
-	if (msdi->m_int_stat.bit.por || msdi->m_int_stat.bit.chk_fail) {
+	if (msdi->m_int_stat.bit.chk_fail) {
+		//сброс флага
+		msdi->m_int_stat.bit.chk_fail = 0;
+		//модуль не готов
+		msdi->status &= ~MSDI_STATUS_READY;
+		//Предупреждение
+		msdi->status |= MSDI_STATUS_WARNING;
+		//Аппаратный сброс tic12400
+		gpio_output_bit_setup(&GPO_Reset_DI_App, GPIO_STATE_ON);
+		//Time required to keep the RESET pin high to successfully reset the device: >2us
+		sys_counter_delay(0, 4); //4us
+		//Аппаратный сброс tic12400
+		gpio_output_bit_setup(&GPO_Reset_DI_App, GPIO_STATE_OFF);
+		//Деинициализация SPI и выход
+		spi_bus_close(msdi->m_tic12400.spi_bus);
+		return;
+	}
+
+	/*
+	 * "Power-On-Reset"
+	 */
+	if (msdi->m_int_stat.bit.por) {
 		//модуль не готов
 		msdi->status &= ~MSDI_STATUS_READY;
 		//повторная инициализация
@@ -209,7 +230,6 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 		}
 		//сброс флагов
 		msdi->m_int_stat.bit.por = 0;
-		msdi->m_int_stat.bit.chk_fail = 0;
 		//модуль готов
 		msdi->status |= MSDI_STATUS_READY;
 	}
