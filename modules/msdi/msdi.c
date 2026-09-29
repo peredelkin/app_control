@@ -264,34 +264,24 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	//сброс статуса валидности данных
 	msdi->status &= ~MSDI_STATUS_VALID;
 
-	//Статусы RX фрейма требуется обработать
-	if(msdi->status &
-			(MSDI_STATUS_OI |
-			MSDI_STATUS_TEMP |
-			MSDI_STATUS_VS_TH |
-			MSDI_STATUS_SSC |
-			MSDI_STATUS_PRTY_FAIL |
-			MSDI_STATUS_SPI_FAIL |
-			MSDI_STATUS_POR)) {
-		//чтение "Interrupt Status Register"
-		if (msdi_read_int_stat(msdi)) {
-			//случилась ошибка четности
-			msdi->status |= MSDI_STATUS_ERROR;
-			//освободим SPI и выйдем
-			msdi_spi_bus_close(msdi);
-			return;
-		} else {
-			//обработаем статусы RX фрейма
-			msdi_rx_frame_status_handler(msdi);
-			//обработаем статусы INT_STAT
-			msdi_int_status_handler(msdi);
-		}
-		//если POR все еще не был обработан после программного сброса
-		if (msdi->status & MSDI_STATUS_POR) {
-			//освободим SPI и выйдем
-			msdi_spi_bus_close(msdi);
-			return;
-		}
+	//чтение "Interrupt Status Register"
+	if (msdi_read_int_stat(msdi)) {
+		//случилась ошибка четности
+		msdi->status |= MSDI_STATUS_ERROR;
+		//освободим SPI и выйдем
+		msdi_spi_bus_close(msdi);
+		return;
+	} else {
+		//обработаем статусы RX фрейма
+		msdi_rx_frame_status_handler(msdi);
+		//обработаем статусы INT_STAT
+		msdi_int_status_handler(msdi);
+	}
+	//если POR все еще не был обработан после программного сброса
+	if (msdi->status & MSDI_STATUS_POR) {
+		//освободим SPI и выйдем
+		msdi_spi_bus_close(msdi);
+		return;
 	}
 
 	//Error when Loading factory settings
