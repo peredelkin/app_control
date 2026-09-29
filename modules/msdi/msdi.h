@@ -22,17 +22,33 @@ enum _E_Msdi_Control {
 
 //! Перечисление возможных бит статуса.
 enum _E_Msdi_Status {
-	MSDI_STATUS_NONE = STATUS_NONE,
-	MSDI_STATUS_READY = STATUS_READY,
-	MSDI_STATUS_VALID = STATUS_VALID,
-	MSDI_STATUS_RUN = STATUS_RUN,
-	MSDI_STATUS_ERROR = STATUS_ERROR,
-	MSDI_STATUS_WARNING = STATUS_WARNING,
-	MSDI_STATUS_INT = (STATUS_USER << 0),
-	MSDI_STATUS_TEMP_SHUT = (STATUS_USER << 1),
-	MSDI_STATUS_TEMP_WARN = (STATUS_USER << 2),
-	MSDI_STATUS_OV = (STATUS_USER << 3),
-	MSDI_STATUS_UV = (STATUS_USER << 4)
+	MSDI_STATUS_NONE =			STATUS_NONE,			/*zero*/
+	MSDI_STATUS_READY =			STATUS_READY,			/*0*/
+	MSDI_STATUS_VALID =			STATUS_VALID,			/*1*/
+	MSDI_STATUS_RUN =			STATUS_RUN,				/*2*/
+	MSDI_STATUS_ERROR =			STATUS_ERROR,			/*3*/
+	MSDI_STATUS_WARNING =		STATUS_WARNING,			/*4*/
+	MSDI_STATUS_OI =			(STATUS_USER << 0),		/*5 Other Interrupt*/
+	MSDI_STATUS_TEMP =			(STATUS_USER << 1),		/*6 Temperature Event*/
+	MSDI_STATUS_VS_TH =			(STATUS_USER << 2),		/*7 VS Threshold Crossing*/
+	MSDI_STATUS_SSC =			(STATUS_USER << 3),		/*8 Switch State Change*/
+	MSDI_STATUS_PRTY_FAIL =		(STATUS_USER << 4),		/*9 Parity Fail*/
+	MSDI_STATUS_SPI_FAIL =		(STATUS_USER << 5),		/*10 SPI Error*/
+	MSDI_STATUS_POR =			(STATUS_USER << 6),		/*11 Power-on Reset*/
+	MSDI_STATUS_INT_POR =		(STATUS_USER << 7),		/*11 Power-on Reset*/
+	MSDI_STATUS_INT_SPI_FAIL =	(STATUS_USER << 8),		/*12 SPI error*/
+	MSDI_STATUS_INT_PRTY_FAIL =	(STATUS_USER << 9),		/*13 Parity error*/
+	MSDI_STATUS_INT_SSC =		(STATUS_USER << 10),	/*14 Switch state change*/
+	MSDI_STATUS_INT_TSD =		(STATUS_USER << 11),	/*15 Temperature Shutdown*/
+	MSDI_STATUS_INT_TW =		(STATUS_USER << 12),	/*16 Temperature warning*/
+	MSDI_STATUS_INT_OV =		(STATUS_USER << 13),	/*17 Over-voltage*/
+	MSDI_STATUS_INT_UV =		(STATUS_USER << 14),	/*18 Under-voltage*/
+	MSDI_STATUS_INT_CRC_CALC =	(STATUS_USER << 15),	/*19 CRC calculation is finished*/
+	MSDI_STATUS_INT_VS0 =		(STATUS_USER << 16),	/*20 VS0_THRES2A or VS0_THRES2B*/
+	MSDI_STATUS_INT_VS1 =		(STATUS_USER << 17),	/*21 VS1_THRES2A or VS1_THRES2B*/
+	MSDI_STATUS_INT_WET_DIAG =	(STATUS_USER << 18),	/*22 Wetting current error*/
+	MSDI_STATUS_INT_ADC_DIAG =	(STATUS_USER << 19),	/*23 ADC self-diagnostic error*/
+	MSDI_STATUS_INT_CHK_FAIL =	(STATUS_USER << 20)		/*24 Error is detected when loading factory settings*/
 };
 
 #define MSDI_AI_COUNT 8

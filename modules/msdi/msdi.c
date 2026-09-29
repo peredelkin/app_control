@@ -58,9 +58,9 @@ void msdi_data_fill(M_msdi *msdi) {
 	msdi->out_analog[AI_6_MSDI_INPUT] = msdi->m_data.ANA_STAT9.bit.in0_ana;
 	msdi->out_analog[AI_7_MSDI_INPUT] = msdi->m_data.ANA_STAT12.bit.in0_ana;
 
-	msdi->out_ref = ((IQ15(6) * (msdi->out_analog[6])) >> 10); //full scale 6v
+	msdi->out_ref = ((IQ15(6) * (msdi->out_analog[AI_6_MSDI_INPUT])) >> 10); //full scale 6v
 
-	msdi->out_vcc = ((IQ15(30) * (msdi->out_analog[7])) >> 10); //full scale 30v
+	msdi->out_vcc = ((IQ15(30) * (msdi->out_analog[AI_7_MSDI_INPUT])) >> 10); //full scale 30v
 }
 
 void msdi_data_reset(M_msdi *msdi) {
@@ -80,62 +80,176 @@ const uint8_t tic12400_addr_array[7] = {
 		TIC12400_ANA_STAT12
 };
 
-uint8_t M_msdi_rx_frame_status_handler(M_msdi *msdi) {
-	TIC12400_STATUS status = {
-		.all = msdi->m_tic12400.status.all,
-	};
 
-	//Error RX frame parity
-	if(msdi->m_tic12400.par_fail) {
-		msdi->status |= MSDI_STATUS_ERROR;
-	} else {
-		//"SPI Error" or "Parity Fail"
-		if (status.bit.spi_fail || status.bit.par_fail) {
-			msdi->status |= MSDI_STATUS_ERROR;
-		}
+static void msdi_rx_frame_status_handler(M_msdi *msdi) {
+	//Other Interrupt: OV, UV, CRC_CALC. WET_DIAG, ADC_DIAG, CHK_FAIL.
+	if(msdi->m_tic12400.status.bit.oi) {
+		msdi->status |= MSDI_STATUS_OI;
+	}
+	//Temperature Event: TW, TSD.
+	if(msdi->m_tic12400.status.bit.temp) {
+		msdi->status |= MSDI_STATUS_TEMP;
+	}
+	//VS Threshold Crossing: VS0, VS1.
+	if(msdi->m_tic12400.status.bit.vs_th) {
+		msdi->status |= MSDI_STATUS_VS_TH;
+	}
+	//Switch State Change: SSC
+	if(msdi->m_tic12400.status.bit.ssc) {
+		msdi->status |= MSDI_STATUS_SSC;
+	}
+	//Parity Fail: PRTY_FAIL
+	if(msdi->m_tic12400.status.bit.par_fail) {
+		msdi->status |= MSDI_STATUS_PRTY_FAIL;
+	}
+	//SPI Error: SPI_FAIL
+	if(msdi->m_tic12400.status.bit.spi_fail) {
+		msdi->status |= MSDI_STATUS_SPI_FAIL;
+	}
+	//Power-on Reset: POR
+	if(msdi->m_tic12400.status.bit.por) {
+		msdi->status |= MSDI_STATUS_POR;
+	}
+	//сбросим статусы
+	msdi->m_tic12400.status.all = 0;
+}
 
-		//"Power-on Reset" or "Temperature Event"
-		if(status.bit.por || status.bit.temp) {
-			msdi->status |= MSDI_STATUS_WARNING;
-		}
-
-		//"VS Threshold Crossing" or "Switch State Change" or "Other Interrupt"
-		if(status.bit.vs_th || status.bit.ssc || status.bit.oi) {
-			msdi->status |= MSDI_STATUS_INT;
+static void msdi_int_status_handler(M_msdi *msdi) {
+	//Power-on Reset
+	if(msdi->status & MSDI_STATUS_POR) {
+		if(msdi->m_data.INT_STAT.bit.por) {
+			msdi->status |= MSDI_STATUS_INT_POR;
+			msdi->status &= ~MSDI_STATUS_POR;
+			//msdi->m_data.INT_STAT.bit.por = 0;
 		}
 	}
 
-	//сброс статусов RX фрейма
-	msdi->m_tic12400.status.all = 0;
+	//SPI Error
+	if(msdi->status & MSDI_STATUS_SPI_FAIL) {
+		if(msdi->m_data.INT_STAT.bit.spi_fail) {
+			msdi->status |= MSDI_STATUS_INT_SPI_FAIL;
+			msdi->status &= ~MSDI_STATUS_SPI_FAIL;
+			//msdi->m_data.INT_STAT.bit.spi_fail = 0;
+		}
+	}
 
-	return status.all;
+	//Parity Fail
+	if(msdi->status & MSDI_STATUS_PRTY_FAIL) {
+		if(msdi->m_data.INT_STAT.bit.par_fail) {
+			msdi->status |= MSDI_STATUS_INT_PRTY_FAIL;
+			msdi->status &= ~MSDI_STATUS_PRTY_FAIL;
+			//msdi->m_data.INT_STAT.bit.par_fail = 0;
+		}
+	}
+
+	//Switch state change
+	if(msdi->status & MSDI_STATUS_SSC) {
+		if(msdi->m_data.INT_STAT.bit.ssc) {
+			msdi->status |= MSDI_STATUS_INT_SSC;
+			msdi->status &= ~MSDI_STATUS_SSC;
+			//msdi->m_data.INT_STAT.bit.ssc = 0;
+		}
+	}
+
+	//VS Threshold Crossing
+	if(msdi->status & MSDI_STATUS_VS_TH) {
+		//VS0_THRES2A or VS0_THRES2B
+		if(msdi->m_data.INT_STAT.bit.vs0) {
+			msdi->status |= MSDI_STATUS_INT_VS0;
+			msdi->status &= ~MSDI_STATUS_VS_TH;
+			//msdi->m_data.INT_STAT.bit.vs0 = 0;
+		}
+		//VS1_THRES2A or VS1_THRES2B
+		if(msdi->m_data.INT_STAT.bit.vs1) {
+			msdi->status |= MSDI_STATUS_INT_VS1;
+			msdi->status &= ~MSDI_STATUS_VS_TH;
+			//msdi->m_data.INT_STAT.bit.vs1 = 0;
+		}
+	}
+
+	//Temperature Event
+	if(msdi->status & MSDI_STATUS_TEMP) {
+		//Temperature Shutdown
+		if(msdi->m_data.INT_STAT.bit.tsd) {
+			msdi->status |= MSDI_STATUS_INT_TSD;
+			msdi->status &= ~MSDI_STATUS_TEMP;
+			//msdi->m_data.INT_STAT.bit.tsd = 0;
+		}
+		//Temperature warning
+		if(msdi->m_data.INT_STAT.bit.tw) {
+			msdi->status |= MSDI_STATUS_INT_TW;
+			msdi->status &= ~MSDI_STATUS_TEMP;
+			//msdi->m_data.INT_STAT.bit.tw = 0;
+		}
+	}
+
+	//Other Interrupt: OV, UV, CRC_CALC, WET_DIAG, ADC_DIAG, CHK_FAIL.
+	if(msdi->status & MSDI_STATUS_OI) {
+		//Over-voltage
+		if(msdi->m_data.INT_STAT.bit.ov) {
+			msdi->status |= MSDI_STATUS_INT_OV;
+			msdi->status &= ~MSDI_STATUS_OI;
+		}
+		//Under-voltage
+		if(msdi->m_data.INT_STAT.bit.uv) {
+			msdi->status |= MSDI_STATUS_INT_UV;
+			msdi->status &= ~MSDI_STATUS_OI;
+		}
+		//CRC calculation is finished
+		if(msdi->m_data.INT_STAT.bit.crc_calc) {
+			msdi->status |= MSDI_STATUS_INT_CRC_CALC;
+			msdi->status &= ~MSDI_STATUS_OI;
+		}
+		//Wetting current error
+		if(msdi->m_data.INT_STAT.bit.wet_diag) {
+			msdi->status |= MSDI_STATUS_INT_WET_DIAG;
+			msdi->status &= ~MSDI_STATUS_OI;
+		}
+		//ADC self-diagnostic error
+		if(msdi->m_data.INT_STAT.bit.adc_diag) {
+			msdi->status |= MSDI_STATUS_INT_ADC_DIAG;
+			msdi->status &= ~MSDI_STATUS_OI;
+		}
+		//Error is detected when loading factory settings
+		if(msdi->m_data.INT_STAT.bit.chk_fail) {
+			msdi->status |= MSDI_STATUS_INT_CHK_FAIL;
+			msdi->status &= ~MSDI_STATUS_OI;
+		}
+	}
+}
+
+static void msdi_spi_bus_close(M_msdi* msdi) {
+	spi_bus_close(msdi->m_tic12400.spi_bus);
+}
+
+static bool msdi_software_reset(M_msdi* msdi) {
+	TIC12400_CONFIG_REG CONFIG = {0};
+	uint8_t CONFIG_ADDR = TIC12400_CONFIG;
+	CONFIG.bit.reset = 1;
+	bool prty = tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &CONFIG), &CONFIG_ADDR, 0, 1, NULL, NULL);
+	return prty;
+}
+
+static bool msdi_load_settings(M_msdi* msdi) {
+	return tic12400_reg_write(&(msdi->m_tic12400), ((uint32_t*) &tic124_settings_const), tic124_settings_addr, 0, TIC12400_SETTINGS_COUNT, NULL, NULL);
+}
+
+static bool msdi_read_int_stat(M_msdi* msdi) {
+	return tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 0, 1, NULL, NULL);
+}
+
+static bool msdi_read_inputs(M_msdi* msdi) {
+	return tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 1, 6, NULL, NULL);
 }
 
 METHOD_INIT_IMPL(M_msdi, msdi)
 {
+	msdi->status = MSDI_STATUS_NONE;
+	msdi->control = MSDI_CONTROL_NONE;
 	//настройка пинов
 	gpio_tic12400_cfg_setup();
 	//инициализация структуры tic12400
 	tic12400_init(&(msdi->m_tic12400), &SPI4_Bus, &spi_tic12400_cfg);
-	//Инит SPI
-	spi_bus_open(msdi->m_tic12400.spi_bus, msdi->m_tic12400.spi_cfg);
-	//модуль не готов
-	msdi->status &= ~MSDI_STATUS_READY;
-	//предварительная инициализация
-	if (tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0,
-	TIC12400_SETTINGS_COUNT, NULL, NULL) == false) {
-		//проверим статус RX фрейма
-		M_msdi_rx_frame_status_handler(msdi);
-	} else {
-		msdi->status |= MSDI_STATUS_ERROR;
-	}
-	//если нет ошибок
-	if (!(msdi->status & MSDI_STATUS_ERROR)) {
-		//модуль готов
-		msdi->status |= MSDI_STATUS_READY;
-	}
-	//Деинициализация SPI
-	spi_bus_close(msdi->m_tic12400.spi_bus);
 }
 
 METHOD_DEINIT_IMPL(M_msdi, msdi)
@@ -150,140 +264,116 @@ METHOD_CALC_IMPL(M_msdi, msdi)
 	//сброс статуса валидности данных
 	msdi->status &= ~MSDI_STATUS_VALID;
 
-	/*
-	 * Error:
-	 * 		RX frame parity error
-	 * 		SPI Error
-	 * 		Parity Fail
-	 *
-	 * Warning:
-	 * 		Power-on Reset
-	 * 		Temperature Event
-	 *
-	 * Interrupt:
-	 * 		VS Threshold Crossing
-	 * 		Switch State Change
-	 * 		Other Interrupt
-	 */
-	if(msdi->status & (MSDI_STATUS_ERROR | MSDI_STATUS_WARNING | MSDI_STATUS_INT)) {
-		//очистка флагов
-		msdi->status &= ~(MSDI_STATUS_ERROR | MSDI_STATUS_WARNING | MSDI_STATUS_INT);
+	//Статусы RX фрейма требуется обработать
+	if(msdi->status &
+			(MSDI_STATUS_OI |
+			MSDI_STATUS_TEMP |
+			MSDI_STATUS_VS_TH |
+			MSDI_STATUS_SSC |
+			MSDI_STATUS_PRTY_FAIL |
+			MSDI_STATUS_SPI_FAIL |
+			MSDI_STATUS_POR)) {
 		//чтение "Interrupt Status Register"
-		if (tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 0, 1, NULL, NULL) == false) {
-			//проверим статус RX фрейма
-			M_msdi_rx_frame_status_handler(msdi);
-		} else {
+		if (msdi_read_int_stat(msdi)) {
+			//случилась ошибка четности
 			msdi->status |= MSDI_STATUS_ERROR;
+			//освободим SPI и выйдем
+			msdi_spi_bus_close(msdi);
+			return;
+		} else {
+			//обработаем статусы RX фрейма
+			msdi_rx_frame_status_handler(msdi);
+			//обработаем статусы INT_STAT
+			msdi_int_status_handler(msdi);
 		}
-		//Деинициализация SPI и выход, если есть ошибки
-		if(msdi->status & MSDI_STATUS_ERROR) {
-			msdi->m_int_stat.all = 0;
-			spi_bus_close(msdi->m_tic12400.spi_bus);
+		//если POR все еще не был обработан после программного сброса
+		if (msdi->status & MSDI_STATUS_POR) {
+			//освободим SPI и выйдем
+			msdi_spi_bus_close(msdi);
 			return;
 		}
-		//очистка остальных флагов
-//		msdi->status &= ~(MSDI_STATUS_WARNING | MSDI_STATUS_INT);
-		//Сохраним статусы
-		msdi->m_int_stat.all |= msdi->m_data.INT_STAT.all;
 	}
 
-	/*
-	 * "An error is detected when loading factory settings
-	 * into the device upon device initialization"
-	 */
-	if (msdi->m_int_stat.bit.chk_fail) {
-		//сброс флага
-		msdi->m_int_stat.bit.chk_fail = 0;
+	//Error when Loading factory settings
+	if(msdi->status & MSDI_STATUS_INT_CHK_FAIL) {
 		//модуль не готов
 		msdi->status &= ~MSDI_STATUS_READY;
-		//Предупреждение
-		msdi->status |= MSDI_STATUS_WARNING;
-		//Аппаратный сброс tic12400
-		gpio_output_bit_setup(&GPO_Reset_DI_App, GPIO_STATE_ON);
-		//Time required to keep the RESET pin high to successfully reset the device: >2us
-		sys_counter_delay(0, 4); //4us
-		//Аппаратный сброс tic12400
-		gpio_output_bit_setup(&GPO_Reset_DI_App, GPIO_STATE_OFF);
-		//Деинициализация SPI и выход
-		spi_bus_close(msdi->m_tic12400.spi_bus);
+		//выполним программный сброс
+		if(msdi_software_reset(msdi)) {
+			//случилась ошибка четности
+			msdi->status |= MSDI_STATUS_ERROR;
+		} else {
+			//сбросим флаги INT_POR и INT_CHK_FAIL
+			msdi->status &= ~(MSDI_STATUS_INT_POR | MSDI_STATUS_INT_CHK_FAIL);
+			//вручную установим флаг POR
+			msdi->status |= MSDI_STATUS_POR;
+			//обработаем статусы RX фрейма
+			msdi_rx_frame_status_handler(msdi);
+		}
+		//освободим SPI и выйдем
+		msdi_spi_bus_close(msdi);
 		return;
 	}
 
-	/*
-	 * "Power-On-Reset"
-	 */
-	if (msdi->m_int_stat.bit.por) {
+	//Successful power-on-reset
+	if(msdi->status & MSDI_STATUS_INT_POR) {
 		//модуль не готов
 		msdi->status &= ~MSDI_STATUS_READY;
 		//повторная инициализация
-		if (tic12400_reg_write(&(msdi->m_tic12400), (uint32_t*) &tic124_settings_const, tic124_settings_addr, 0,
-				TIC12400_SETTINGS_COUNT, NULL, NULL) == false) {
-			//проверим статус RX фрейма
-			M_msdi_rx_frame_status_handler(msdi);
-		} else {
+		if (msdi_load_settings(msdi)) {
+			//случилась ошибка четности
 			msdi->status |= MSDI_STATUS_ERROR;
-		}
-		//Деинициализация SPI и выход, если есть ошибки
-		if (msdi->status & (MSDI_STATUS_ERROR)) {
-			spi_bus_close(msdi->m_tic12400.spi_bus);
+			//освободим SPI и выйдем
+			msdi_spi_bus_close(msdi);
 			return;
+		} else {
+			//проверим статус RX фрейма
+			msdi_rx_frame_status_handler(msdi);
+			//Если в процессе записи настроек возникли ошибки или предупреждения
+			if(msdi->status &
+					(MSDI_STATUS_OI |
+					MSDI_STATUS_TEMP |
+					MSDI_STATUS_PRTY_FAIL |
+					MSDI_STATUS_SPI_FAIL |
+					MSDI_STATUS_POR)) {
+				//освободим SPI и выйдем
+				msdi_spi_bus_close(msdi);
+				return;
+			} else {
+				//сбросим флаг INT_POR
+				msdi->status &= ~MSDI_STATUS_INT_POR;
+				//модуль готов
+				msdi->status |= MSDI_STATUS_READY;
+			}
 		}
-		//сброс флагов
-		msdi->m_int_stat.bit.por = 0;
-		//модуль готов
-		msdi->status |= MSDI_STATUS_READY;
-	}
-
-	//Temperature Shutdown
-	if(msdi->m_int_stat.bit.tsd) {
-		msdi->m_int_stat.bit.tsd = 0;
-		msdi->status |= MSDI_STATUS_TEMP_SHUT;
-	} else {
-		msdi->status &= ~MSDI_STATUS_TEMP_SHUT;
-	}
-
-	//Temperature warning
-	if(msdi->m_int_stat.bit.tw) {
-		msdi->m_int_stat.bit.tw = 0;
-		msdi->status |= MSDI_STATUS_TEMP_WARN;
-	} else {
-		msdi->status &= ~MSDI_STATUS_TEMP_WARN;
-	}
-
-	//Over-voltage
-	if(msdi->m_int_stat.bit.ov) {
-		msdi->m_int_stat.bit.ov = 0;
-		msdi->status |= MSDI_STATUS_OV;
-	} else {
-		msdi->status &= ~MSDI_STATUS_OV;
-	}
-
-	//Under-voltage
-	if(msdi->m_int_stat.bit.uv) {
-		msdi->m_int_stat.bit.uv = 0;
-		msdi->status |= MSDI_STATUS_UV;
-	} else {
-		msdi->status &= ~MSDI_STATUS_UV;
 	}
 
 	if (msdi->status & MSDI_STATUS_READY) {
 		//чтение входов
-		if (tic12400_reg_read(&(msdi->m_tic12400), ((uint32_t*) &msdi->m_data), tic12400_addr_array, 1, 6, NULL, NULL) == false) {
-			//проверим статус RX фрейма
-			M_msdi_rx_frame_status_handler(msdi);
-		} else {
+		if (msdi_read_inputs(msdi)) {
+			//случилась ошибка четности
 			msdi->status |= MSDI_STATUS_ERROR;
-		}
-		//если нет ошибок и предупреждений
-		if (!(msdi->status & (MSDI_STATUS_ERROR | MSDI_STATUS_WARNING))) {
-			//заполяем данные, согласно настройкам
-			msdi_data_fill(msdi);
-			//данные валидны
-			msdi->status |= MSDI_STATUS_VALID;
+		} else {
+			//проверим статус RX фрейма
+			msdi_rx_frame_status_handler(msdi);
+			//Если в процессе чтения входов не возникли ошибки или предупреждения
+			if(!(msdi->status &
+					(MSDI_STATUS_OI |
+					MSDI_STATUS_TEMP |
+					MSDI_STATUS_PRTY_FAIL |
+					MSDI_STATUS_SPI_FAIL |
+					MSDI_STATUS_POR))) {
+				//заполяем данные, согласно настройкам
+				msdi_data_fill(msdi);
+				//сбросим статус ошибки
+				msdi->status &= ~MSDI_STATUS_ERROR;
+				//данные валидны
+				msdi->status |= MSDI_STATUS_VALID;
+			}
 		}
 	}
 	//Деинициализация SPI
-	spi_bus_close(msdi->m_tic12400.spi_bus);
+	msdi_spi_bus_close(msdi);
 }
 
 

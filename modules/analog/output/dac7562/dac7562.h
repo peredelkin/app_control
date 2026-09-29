@@ -69,10 +69,11 @@ EXTERN METHOD_CALC_PROTO(M_dac7562);
         METHOD_CALC_PTR(M_dac7562),\
         /* Коллбэки */\
         /* Внутренние данные */\
-		0,\
-		{0},\
-		{0},\
-		{0},\
+		0,	/*m_spi_bus*/\
+		{{0}},/*spi_control*/\
+		{0},/*m_frame_ch_a*/\
+		{0},/*m_frame_ch_b*/\
+		{0}	/*m_frame_ctrl*/\
     }
 
 #endif /* DAC7562_H */
