@@ -153,66 +153,81 @@ static void msdi_int_status_handler(M_msdi *msdi) {
 
 	//VS Threshold Crossing
 	if(msdi->status & MSDI_STATUS_VS_TH) {
+		bool processed = false;
 		//VS0_THRES2A or VS0_THRES2B
 		if(msdi->m_data.INT_STAT.bit.vs0) {
 			msdi->status |= MSDI_STATUS_INT_VS0;
-			msdi->status &= ~MSDI_STATUS_VS_TH;
+			processed = true;
 			//msdi->m_data.INT_STAT.bit.vs0 = 0;
 		}
 		//VS1_THRES2A or VS1_THRES2B
 		if(msdi->m_data.INT_STAT.bit.vs1) {
 			msdi->status |= MSDI_STATUS_INT_VS1;
-			msdi->status &= ~MSDI_STATUS_VS_TH;
+			processed = true;
 			//msdi->m_data.INT_STAT.bit.vs1 = 0;
+		}
+
+		if(processed == true) {
+			msdi->status &= ~MSDI_STATUS_VS_TH;
 		}
 	}
 
 	//Temperature Event
 	if(msdi->status & MSDI_STATUS_TEMP) {
+		bool processed = false;
 		//Temperature Shutdown
 		if(msdi->m_data.INT_STAT.bit.tsd) {
 			msdi->status |= MSDI_STATUS_INT_TSD;
-			msdi->status &= ~MSDI_STATUS_TEMP;
+			processed = true;
 			//msdi->m_data.INT_STAT.bit.tsd = 0;
 		}
 		//Temperature warning
 		if(msdi->m_data.INT_STAT.bit.tw) {
 			msdi->status |= MSDI_STATUS_INT_TW;
-			msdi->status &= ~MSDI_STATUS_TEMP;
+			processed = true;
 			//msdi->m_data.INT_STAT.bit.tw = 0;
+		}
+
+		if(processed == true) {
+			msdi->status &= ~MSDI_STATUS_TEMP;
 		}
 	}
 
 	//Other Interrupt: OV, UV, CRC_CALC, WET_DIAG, ADC_DIAG, CHK_FAIL.
 	if(msdi->status & MSDI_STATUS_OI) {
+		bool processed = false;
 		//Over-voltage
 		if(msdi->m_data.INT_STAT.bit.ov) {
 			msdi->status |= MSDI_STATUS_INT_OV;
-			msdi->status &= ~MSDI_STATUS_OI;
+			processed = true;
 		}
 		//Under-voltage
 		if(msdi->m_data.INT_STAT.bit.uv) {
 			msdi->status |= MSDI_STATUS_INT_UV;
-			msdi->status &= ~MSDI_STATUS_OI;
+			processed = true;
 		}
 		//CRC calculation is finished
 		if(msdi->m_data.INT_STAT.bit.crc_calc) {
 			msdi->status |= MSDI_STATUS_INT_CRC_CALC;
-			msdi->status &= ~MSDI_STATUS_OI;
+			processed = true;
 		}
 		//Wetting current error
 		if(msdi->m_data.INT_STAT.bit.wet_diag) {
 			msdi->status |= MSDI_STATUS_INT_WET_DIAG;
-			msdi->status &= ~MSDI_STATUS_OI;
+			processed = true;
 		}
 		//ADC self-diagnostic error
 		if(msdi->m_data.INT_STAT.bit.adc_diag) {
 			msdi->status |= MSDI_STATUS_INT_ADC_DIAG;
-			msdi->status &= ~MSDI_STATUS_OI;
+			processed = true;
 		}
 		//Error is detected when loading factory settings
 		if(msdi->m_data.INT_STAT.bit.chk_fail) {
 			msdi->status |= MSDI_STATUS_INT_CHK_FAIL;
+			processed = true;
+		}
+
+		if(processed == true) {
 			msdi->status &= ~MSDI_STATUS_OI;
 		}
 	}
