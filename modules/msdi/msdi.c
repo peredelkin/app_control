@@ -261,8 +261,14 @@ METHOD_INIT_IMPL(M_msdi, msdi)
 {
 	msdi->status = MSDI_STATUS_NONE;
 	msdi->control = MSDI_CONTROL_NONE;
-	//настройка пинов
+	//настройка пинов с установкой сброса
 	gpio_tic12400_cfg_setup();
+	 //>2us
+	sys_counter_delay(0, 4);
+	//отпустим сброс
+	gpio_output_bit_setup(&GPO_Reset_DI_App, GPIO_STATE_OFF);
+	//>2us
+	sys_counter_delay(0, 4);
 	//инициализация структуры tic12400
 	tic12400_init(&(msdi->m_tic12400), &SPI4_Bus, &spi_tic12400_cfg);
 }
