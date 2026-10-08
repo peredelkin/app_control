@@ -180,422 +180,402 @@
 #define REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_6 0x1a0306 /*  */
 #define REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_7 0x1a0307 /*  */
 #define REG_ID_TPDO_MAPPING_PARAMETER_1A03_APPLICATION_OBJECT_8 0x1a0308 /*  */
-#define REG_ID_CONF_COUNT 0x200000 /* Number of sub entries count */
-#define REG_ID_CONF_CONTROL 0x200001 /* Слово управления. */
-#define REG_ID_CONF_STATUS 0x200002 /* Слово состояния. */
-#define REG_ID_SYS_COUNT 0x201000 /* Number of sub entries count */
-#define REG_ID_SYS_CONTROL 0x201001 /* Слово управления. */
-#define REG_ID_SYS_STATUS 0x201002 /* Слово состояния. */
-#define REG_ID_SYS_ERRORS 0x201003 /* Ошибки. */
-#define REG_ID_SYS_WARNINGS 0x201004 /* Предупреждения. */
-#define REG_ID_SYS_STATE 0x201005 /* Состояние. */
-#define REG_ID_SYS_TIM_COUNT 0x202000 /* Number of sub entries count */
-#define REG_ID_SYS_TIM_CONTROL 0x202001 /* Слово управления. */
-#define REG_ID_SYS_TIM_STATUS 0x202002 /* Слово состояния. */
-#define REG_ID_SYS_TIM_OUT_COUNTER 0x202003 /* Счётчик тиков. */
-#define REG_ID_SYS_TIM_ON_TIMEOUT 0x202004 /*  */
-#define REG_ID_MS_TIM_COUNT 0x203000 /* Number of sub entries count */
-#define REG_ID_MS_TIM_CONTROL 0x203001 /* Слово управления. */
-#define REG_ID_MS_TIM_STATUS 0x203002 /* Слово состояния. */
-#define REG_ID_MS_TIM_OUT_COUNTER 0x203003 /* Счётчик тиков. */
-#define REG_ID_MS_TIM_ON_TIMEOUT 0x203004 /*  */
-#define REG_ID_CLI_COUNT 0x204000 /* Number of sub entries count */
-#define REG_ID_CLI_CONTROL 0x204001 /* Слово управления. */
-#define REG_ID_CLI_STATUS 0x204002 /* Слово состояния. */
-#define REG_ID_RGB_LED_COUNT 0x205000 /* Number of sub entries count */
-#define REG_ID_RGB_LED_CONTROL 0x205001 /* Слово управления. */
-#define REG_ID_RGB_LED_STATUS 0x205002 /* Слово состояния. */
-#define REG_ID_RGB_LED_IN_DATA 0x205003 /*  */
-#define REG_ID_MSDI_COUNT 0x206000 /* Number of sub entries count */
-#define REG_ID_MSDI_CONTROL 0x206001 /* Слово управления. */
-#define REG_ID_MSDI_STATUS 0x206002 /* Слово состояния. */
-#define REG_ID_MSDI_OUT_DIGITAL 0x206003 /*  */
-#define REG_ID_MSDI_OUT_ANALOG0 0x206004 /*  */
-#define REG_ID_MSDI_OUT_ANALOG1 0x206005 /*  */
-#define REG_ID_MSDI_OUT_ANALOG2 0x206006 /*  */
-#define REG_ID_MSDI_OUT_ANALOG3 0x206007 /*  */
-#define REG_ID_MSDI_OUT_ANALOG4 0x206008 /*  */
-#define REG_ID_MSDI_OUT_ANALOG5 0x206009 /*  */
-#define REG_ID_MSDI_OUT_ANALOG6 0x20600a /*  */
-#define REG_ID_MSDI_OUT_ANALOG7 0x20600b /*  */
-#define REG_ID_MSDI_OUT_REF 0x20600c /*  */
-#define REG_ID_MSDI_OUT_VCC 0x20600d /*  */
-#define REG_ID_NTC_TEMP_COUNT 0x207000 /* Number of sub entries count */
-#define REG_ID_NTC_TEMP_CONTROL 0x207001 /* Слово управления. */
-#define REG_ID_NTC_TEMP_STATUS 0x207002 /* Слово состояния. */
-#define REG_ID_NTC_TEMP_OUT_TEMP0 0x207003 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP1 0x207004 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP2 0x207005 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP3 0x207006 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP4 0x207007 /*  */
-#define REG_ID_NTC_TEMP_OUT_TEMP5 0x207008 /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM0 0x207009 /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM1 0x20700a /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM2 0x20700b /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM3 0x20700c /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM4 0x20700d /*  */
-#define REG_ID_NTC_TEMP_OUT_OHM5 0x20700e /*  */
-#define REG_ID_DO_RELAY_COUNT 0x208000 /* Number of sub entries count */
-#define REG_ID_DO_RELAY_CONTROL 0x208001 /* Слово управления. */
-#define REG_ID_DO_RELAY_STATUS 0x208002 /* Слово состояния. */
-#define REG_ID_DO_RELAY_IN_DATA 0x208003 /*  */
-#define REG_ID_DO_NCV7608_COUNT 0x209000 /* Number of sub entries count */
-#define REG_ID_DO_NCV7608_CONTROL 0x209001 /* Слово управления. */
-#define REG_ID_DO_NCV7608_STATUS 0x209002 /* Слово состояния. */
-#define REG_ID_DO_NCV7608_IN_DATA 0x209003 /*  */
-#define REG_ID_DIGITAL_IN_COUNT 0x20b000 /* Number of sub entries count */
-#define REG_ID_DIGITAL_IN_CONTROL 0x20b001 /* Слово управления. */
-#define REG_ID_DIGITAL_IN_STATUS 0x20b002 /* Слово состояния. */
-#define REG_ID_DIGITAL_IN_OUT_DATA 0x20b003 /* Выход дискретных входов */
-#define REG_ID_DIGITAL_IN_INVERT0 0x20b004 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT1 0x20b005 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT2 0x20b006 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT3 0x20b007 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT4 0x20b008 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT5 0x20b009 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT6 0x20b00a /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT7 0x20b00b /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT8 0x20b00c /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT9 0x20b00d /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT10 0x20b00e /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT11 0x20b00f /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT12 0x20b010 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT13 0x20b011 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT14 0x20b012 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT15 0x20b013 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT16 0x20b014 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT17 0x20b015 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT18 0x20b016 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT19 0x20b017 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT20 0x20b018 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT21 0x20b019 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT22 0x20b01a /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT23 0x20b01b /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT24 0x20b01c /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT25 0x20b01d /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT26 0x20b01e /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT27 0x20b01f /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT28 0x20b020 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT29 0x20b021 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT30 0x20b022 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_INVERT31 0x20b023 /* Параметр инверсии бита выхода */
-#define REG_ID_DIGITAL_IN_SELECT0 0x20b024 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT1 0x20b025 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT2 0x20b026 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT3 0x20b027 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT4 0x20b028 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT5 0x20b029 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT6 0x20b02a /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT7 0x20b02b /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT8 0x20b02c /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT9 0x20b02d /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT10 0x20b02e /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT11 0x20b02f /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT12 0x20b030 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT13 0x20b031 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT14 0x20b032 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT15 0x20b033 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT16 0x20b034 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT17 0x20b035 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT18 0x20b036 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT19 0x20b037 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT20 0x20b038 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT21 0x20b039 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT22 0x20b03a /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT23 0x20b03b /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT24 0x20b03c /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT25 0x20b03d /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT26 0x20b03e /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT27 0x20b03f /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT28 0x20b040 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT29 0x20b041 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT30 0x20b042 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_SELECT31 0x20b043 /* Параметр выбора дискретного входа */
-#define REG_ID_DIGITAL_IN_T_SET0 0x20b044 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET1 0x20b045 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET2 0x20b046 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET3 0x20b047 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET4 0x20b048 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET5 0x20b049 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET6 0x20b04a /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET7 0x20b04b /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET8 0x20b04c /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET9 0x20b04d /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET10 0x20b04e /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET11 0x20b04f /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET12 0x20b050 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET13 0x20b051 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET14 0x20b052 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET15 0x20b053 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET16 0x20b054 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET17 0x20b055 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET18 0x20b056 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET19 0x20b057 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET20 0x20b058 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET21 0x20b059 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET22 0x20b05a /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET23 0x20b05b /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET24 0x20b05c /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET25 0x20b05d /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET26 0x20b05e /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET27 0x20b05f /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET28 0x20b060 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET29 0x20b061 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET30 0x20b062 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_SET31 0x20b063 /* Параметр задержки установки бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET0 0x20b064 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET1 0x20b065 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET2 0x20b066 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET3 0x20b067 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET4 0x20b068 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET5 0x20b069 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET6 0x20b06a /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET7 0x20b06b /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET8 0x20b06c /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET9 0x20b06d /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET10 0x20b06e /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET11 0x20b06f /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET12 0x20b070 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET13 0x20b071 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET14 0x20b072 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET15 0x20b073 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET16 0x20b074 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET17 0x20b075 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET18 0x20b076 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET19 0x20b077 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET20 0x20b078 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET21 0x20b079 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET22 0x20b07a /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET23 0x20b07b /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET24 0x20b07c /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET25 0x20b07d /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET26 0x20b07e /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET27 0x20b07f /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET28 0x20b080 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET29 0x20b081 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET30 0x20b082 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_RESET31 0x20b083 /* Параметр задержки сброса бита выхода */
-#define REG_ID_DIGITAL_IN_T_MSDI_INVALID 0x20b084 /* Параметр задержки установки флага невалидности данных от MSDI */
-#define REG_ID_DIGITAL_OUT_COUNT 0x20c000 /* Number of sub entries count */
-#define REG_ID_DIGITAL_OUT_CONTROL 0x20c001 /* Слово управления. */
-#define REG_ID_DIGITAL_OUT_STATUS 0x20c002 /* Слово состояния. */
-#define REG_ID_DIGITAL_OUT_IN_DATA 0x20c003 /* Вход дискретных выходов */
-#define REG_ID_DIGITAL_OUT_INVERT0 0x20c004 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT1 0x20c005 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT2 0x20c006 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT3 0x20c007 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT4 0x20c008 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT5 0x20c009 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT6 0x20c00a /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT7 0x20c00b /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT8 0x20c00c /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT9 0x20c00d /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT10 0x20c00e /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT11 0x20c00f /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT12 0x20c010 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT13 0x20c011 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT14 0x20c012 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT15 0x20c013 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT16 0x20c014 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT17 0x20c015 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT18 0x20c016 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT19 0x20c017 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT20 0x20c018 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT21 0x20c019 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT22 0x20c01a /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT23 0x20c01b /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT24 0x20c01c /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT25 0x20c01d /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT26 0x20c01e /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT27 0x20c01f /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT28 0x20c020 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT29 0x20c021 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT30 0x20c022 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_INVERT31 0x20c023 /* Параметр инверсии дискретного выхода */
-#define REG_ID_DIGITAL_OUT_SELECT0 0x20c024 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT1 0x20c025 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT2 0x20c026 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT3 0x20c027 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT4 0x20c028 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT5 0x20c029 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT6 0x20c02a /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT7 0x20c02b /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT8 0x20c02c /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT9 0x20c02d /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT10 0x20c02e /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT11 0x20c02f /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT12 0x20c030 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT13 0x20c031 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT14 0x20c032 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT15 0x20c033 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT16 0x20c034 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT17 0x20c035 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT18 0x20c036 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT19 0x20c037 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT20 0x20c038 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT21 0x20c039 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT22 0x20c03a /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT23 0x20c03b /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT24 0x20c03c /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT25 0x20c03d /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT26 0x20c03e /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT27 0x20c03f /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT28 0x20c040 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT29 0x20c041 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT30 0x20c042 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_SELECT31 0x20c043 /* Параметр выбора входного бита */
-#define REG_ID_DIGITAL_OUT_T_SET0 0x20c044 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET1 0x20c045 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET2 0x20c046 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET3 0x20c047 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET4 0x20c048 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET5 0x20c049 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET6 0x20c04a /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET7 0x20c04b /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET8 0x20c04c /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET9 0x20c04d /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET10 0x20c04e /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET11 0x20c04f /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET12 0x20c050 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET13 0x20c051 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET14 0x20c052 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET15 0x20c053 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET16 0x20c054 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET17 0x20c055 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET18 0x20c056 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET19 0x20c057 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET20 0x20c058 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET21 0x20c059 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET22 0x20c05a /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET23 0x20c05b /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET24 0x20c05c /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET25 0x20c05d /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET26 0x20c05e /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET27 0x20c05f /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET28 0x20c060 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET29 0x20c061 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET30 0x20c062 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_SET31 0x20c063 /* Параметр задержки установки дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET0 0x20c064 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET1 0x20c065 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET2 0x20c066 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET3 0x20c067 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET4 0x20c068 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET5 0x20c069 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET6 0x20c06a /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET7 0x20c06b /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET8 0x20c06c /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET9 0x20c06d /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET10 0x20c06e /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET11 0x20c06f /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET12 0x20c070 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET13 0x20c071 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET14 0x20c072 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET15 0x20c073 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET16 0x20c074 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET17 0x20c075 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET18 0x20c076 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET19 0x20c077 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET20 0x20c078 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET21 0x20c079 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET22 0x20c07a /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET23 0x20c07b /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET24 0x20c07c /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET25 0x20c07d /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET26 0x20c07e /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET27 0x20c07f /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET28 0x20c080 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET29 0x20c081 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET30 0x20c082 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_DIGITAL_OUT_T_RESET31 0x20c083 /* Параметр задержки сброса дискретного выхода */
-#define REG_ID_MSO_COUNT 0x20d000 /* Number of sub entries count */
-#define REG_ID_MSO_CONTROL 0x20d001 /* Слово управления. */
-#define REG_ID_MSO_STATUS 0x20d002 /* Слово состояния. */
-#define REG_ID_MSO_CHANNEL0 0x20d003 /*  */
-#define REG_ID_MSO_CHANNEL1 0x20d004 /*  */
-#define REG_ID_MSO_CHANNEL2 0x20d005 /*  */
-#define REG_ID_MSO_CHANNEL3 0x20d006 /*  */
-#define REG_ID_MSO_CHANNEL4 0x20d007 /*  */
-#define REG_ID_MSO_CHANNEL5 0x20d008 /*  */
-#define REG_ID_MSO_CHANNEL6 0x20d009 /*  */
-#define REG_ID_MSO_CHANNEL7 0x20d00a /*  */
-#define REG_ID_MSO_CHANNEL8 0x20d00b /*  */
-#define REG_ID_MSO_CHANNEL9 0x20d00c /*  */
-#define REG_ID_MSO_CHANNEL10 0x20d00d /*  */
-#define REG_ID_MSO_CHANNEL11 0x20d00e /*  */
-#define REG_ID_MSO_CHANNEL12 0x20d00f /*  */
-#define REG_ID_MSO_CHANNEL13 0x20d010 /*  */
-#define REG_ID_MSO_CHANNEL14 0x20d011 /*  */
-#define REG_ID_MSO_CHANNEL15 0x20d012 /*  */
-#define REG_ID_MSO_CHANNEL16 0x20d013 /*  */
-#define REG_ID_MSO_CHANNEL17 0x20d014 /*  */
-#define REG_ID_MSO_CHANNEL18 0x20d015 /*  */
-#define REG_ID_MSO_CHANNEL19 0x20d016 /*  */
-#define REG_ID_MSO_CHANNEL20 0x20d017 /*  */
-#define REG_ID_MSO_CHANNEL21 0x20d018 /*  */
-#define REG_ID_MSO_CHANNEL22 0x20d019 /*  */
-#define REG_ID_MSO_CHANNEL23 0x20d01a /*  */
-#define REG_ID_MSO_CHANNEL24 0x20d01b /*  */
-#define REG_ID_MSO_CHANNEL25 0x20d01c /*  */
-#define REG_ID_MSO_CHANNEL26 0x20d01d /*  */
-#define REG_ID_MSO_CHANNEL27 0x20d01e /*  */
-#define REG_ID_MSO_CHANNEL28 0x20d01f /*  */
-#define REG_ID_MSO_CHANNEL29 0x20d020 /*  */
-#define REG_ID_MSO_CHANNEL30 0x20d021 /*  */
-#define REG_ID_MSO_CHANNEL31 0x20d022 /*  */
-#define REG_ID_AO_DAC7562_COUNT 0x20e000 /* Number of sub entries count */
-#define REG_ID_AO_DAC7562_CONTROL 0x20e001 /* Слово управления. */
-#define REG_ID_AO_DAC7562_STATUS 0x20e002 /* Слово состояния. */
-#define REG_ID_AO_DAC7562_IN_CH_A 0x20e003 /*  */
-#define REG_ID_AO_DAC7562_IN_CH_B 0x20e004 /*  */
-#define REG_ID_PANEL_LED_COUNT 0x20f000 /* Number of sub entries count */
-#define REG_ID_PANEL_LED_CONTROL 0x20f001 /* Слово управления. */
-#define REG_ID_PANEL_LED_STATUS 0x20f002 /* Слово состояния. */
-#define REG_ID_PANEL_LED_OUT_DATA 0x20f003 /*  */
-#define REG_ID_MODBUS_TO_CAN_PANEL_COUNT 0x210000 /* Number of sub entries count */
-#define REG_ID_MODBUS_TO_CAN_PANEL_CONTROL 0x210001 /* Слово управления. */
-#define REG_ID_MODBUS_TO_CAN_PANEL_STATUS 0x210002 /* Слово состояния. */
-#define REG_ID_SETTINGS_COUNT 0x211000 /* Number of sub entries count */
-#define REG_ID_SETTINGS_CONTROL 0x211001 /* Слово управления. */
-#define REG_ID_SETTINGS_STATUS 0x211002 /* Слово состояния. */
-#define REG_ID_TEMP_COMP_COUNT 0x212000 /* Number of sub entries count */
-#define REG_ID_TEMP_COMP_CONTROL 0x212001 /* Слово управления. */
-#define REG_ID_TEMP_COMP_STATUS 0x212002 /* Слово состояния. */
-#define REG_ID_TEMP_COMP_OUT_DATA 0x212003 /* Выход компараторов */
-#define REG_ID_TEMP_COMP_HIGH_RESIST0 0x212004 /* Порог верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_RESIST1 0x212005 /* Порог верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_RESIST2 0x212006 /* Порог верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_RESIST3 0x212007 /* Порог верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_RESIST4 0x212008 /* Порог верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_RESIST5 0x212009 /* Порог верхнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_RESIST0 0x21200a /* Порог нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_RESIST1 0x21200b /* Порог нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_RESIST2 0x21200c /* Порог нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_RESIST3 0x21200d /* Порог нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_RESIST4 0x21200e /* Порог нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_RESIST5 0x21200f /* Порог нижнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_TIME0 0x212010 /* Фильтр верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_TIME1 0x212011 /* Фильтр верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_TIME2 0x212012 /* Фильтр верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_TIME3 0x212013 /* Фильтр верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_TIME4 0x212014 /* Фильтр верхнего компаратора */
-#define REG_ID_TEMP_COMP_HIGH_TIME5 0x212015 /* Фильтр верхнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_TIME0 0x212016 /* Фильтр нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_TIME1 0x212017 /* Фильтр нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_TIME2 0x212018 /* Фильтр нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_TIME3 0x212019 /* Фильтр нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_TIME4 0x21201a /* Фильтр нижнего компаратора */
-#define REG_ID_TEMP_COMP_LOW_TIME5 0x21201b /* Фильтр нижнего компаратора */
-#define REG_ID_TEMP_COMP_INVERT0 0x21201c /* Параметр инверсии бита выхода */
-#define REG_ID_TEMP_COMP_INVERT1 0x21201d /* Параметр инверсии бита выхода */
-#define REG_ID_TEMP_COMP_INVERT2 0x21201e /* Параметр инверсии бита выхода */
-#define REG_ID_TEMP_COMP_INVERT3 0x21201f /* Параметр инверсии бита выхода */
-#define REG_ID_TEMP_COMP_INVERT4 0x212020 /* Параметр инверсии бита выхода */
-#define REG_ID_TEMP_COMP_INVERT5 0x212021 /* Параметр инверсии бита выхода */
-#define REG_ID_AI_ADS8665_COUNT 0x213000 /* Number of sub entries count */
-#define REG_ID_AI_ADS8665_CONTROL 0x213001 /* Слово управления. */
-#define REG_ID_AI_ADS8665_STATUS 0x213002 /* Слово состояния. */
-#define REG_ID_AI_ADS8665_OUT_CH_A 0x213003 /*  */
-#define REG_ID_AI_ADS8665_OUT_CH_B 0x213004 /*  */
+#define REG_ID_SYS_MAIN_COUNT 0x200000 /* Number of sub entries count */
+#define REG_ID_SYS_MAIN_CONTROL 0x200001 /* Слово управления. */
+#define REG_ID_SYS_MAIN_STATUS 0x200002 /* Слово состояния. */
+#define REG_ID_SYS_MAIN_ERRORS 0x200003 /* Ошибки. */
+#define REG_ID_SYS_MAIN_WARNINGS 0x200004 /* Предупреждения. */
+#define REG_ID_SYS_MAIN_STATE 0x200005 /* Состояние. */
+#define REG_ID_SYS_MAIN_TIM_COUNT 0x201000 /* Number of sub entries count */
+#define REG_ID_SYS_MAIN_TIM_CONTROL 0x201001 /* Слово управления. */
+#define REG_ID_SYS_MAIN_TIM_STATUS 0x201002 /* Слово состояния. */
+#define REG_ID_SYS_MAIN_TIM_OUT_COUNTER 0x201003 /* Счётчик тиков. */
+#define REG_ID_SYS_MAIN_TIM_ON_TIMEOUT 0x201004 /*  */
+#define REG_ID_SYS_SECONDARY_COUNT 0x210000 /* Number of sub entries count */
+#define REG_ID_SYS_SECONDARY_CONTROL 0x210001 /* Слово управления. */
+#define REG_ID_SYS_SECONDARY_STATUS 0x210002 /* Слово состояния. */
+#define REG_ID_SYS_SECONDARY_ERRORS 0x210003 /* Ошибки. */
+#define REG_ID_SYS_SECONDARY_WARNINGS 0x210004 /* Предупреждения. */
+#define REG_ID_SYS_SECONDARY_STATE 0x210005 /* Состояние. */
+#define REG_ID_SYS_SECONDARY_TIM_COUNT 0x211000 /* Number of sub entries count */
+#define REG_ID_SYS_SECONDARY_TIM_CONTROL 0x211001 /* Слово управления. */
+#define REG_ID_SYS_SECONDARY_TIM_STATUS 0x211002 /* Слово состояния. */
+#define REG_ID_SYS_SECONDARY_TIM_OUT_COUNTER 0x211003 /* Счётчик тиков. */
+#define REG_ID_SYS_SECONDARY_TIM_ON_TIMEOUT 0x211004 /*  */
+#define REG_ID_RGB_LED_COUNT 0x230000 /* Number of sub entries count */
+#define REG_ID_RGB_LED_CONTROL 0x230001 /* Слово управления. */
+#define REG_ID_RGB_LED_STATUS 0x230002 /* Слово состояния. */
+#define REG_ID_RGB_LED_IN_DATA_1 0x230003 /*  */
+#define REG_ID_RGB_LED_IN_DATA_2 0x230004 /*  */
+#define REG_ID_RGB_LED_IN_DATA_3 0x230005 /*  */
+#define REG_ID_RGB_LED_IN_DATA_4 0x230006 /*  */
+#define REG_ID_PANEL_LED_COUNT 0x231000 /* Number of sub entries count */
+#define REG_ID_PANEL_LED_CONTROL 0x231001 /* Слово управления. */
+#define REG_ID_PANEL_LED_STATUS 0x231002 /* Слово состояния. */
+#define REG_ID_PANEL_LED_OUT_DATA 0x231003 /*  */
+#define REG_ID_MODBUS_TO_CAN_PANEL_COUNT 0x232000 /* Number of sub entries count */
+#define REG_ID_MODBUS_TO_CAN_PANEL_CONTROL 0x232001 /* Слово управления. */
+#define REG_ID_MODBUS_TO_CAN_PANEL_STATUS 0x232002 /* Слово состояния. */
+#define REG_ID_CLI_COUNT 0x233000 /* Number of sub entries count */
+#define REG_ID_CLI_CONTROL 0x233001 /* Слово управления. */
+#define REG_ID_CLI_STATUS 0x233002 /* Слово состояния. */
+#define REG_ID_MSDI_COUNT 0x240000 /* Number of sub entries count */
+#define REG_ID_MSDI_CONTROL 0x240001 /* Слово управления. */
+#define REG_ID_MSDI_STATUS 0x240002 /* Слово состояния. */
+#define REG_ID_MSDI_OUT_DIGITAL 0x240003 /*  */
+#define REG_ID_MSDI_OUT_ANALOG0 0x240004 /*  */
+#define REG_ID_MSDI_OUT_ANALOG1 0x240005 /*  */
+#define REG_ID_MSDI_OUT_ANALOG2 0x240006 /*  */
+#define REG_ID_MSDI_OUT_ANALOG3 0x240007 /*  */
+#define REG_ID_MSDI_OUT_ANALOG4 0x240008 /*  */
+#define REG_ID_MSDI_OUT_ANALOG5 0x240009 /*  */
+#define REG_ID_MSDI_OUT_ANALOG6 0x24000a /*  */
+#define REG_ID_MSDI_OUT_ANALOG7 0x24000b /*  */
+#define REG_ID_MSDI_OUT_REF 0x24000c /*  */
+#define REG_ID_MSDI_OUT_VCC 0x24000d /*  */
+#define REG_ID_DO_NCV7608_COUNT 0x241000 /* Number of sub entries count */
+#define REG_ID_DO_NCV7608_CONTROL 0x241001 /* Слово управления. */
+#define REG_ID_DO_NCV7608_STATUS 0x241002 /* Слово состояния. */
+#define REG_ID_DO_NCV7608_IN_DATA 0x241003 /*  */
+#define REG_ID_DO_RELAY_COUNT 0x242000 /* Number of sub entries count */
+#define REG_ID_DO_RELAY_CONTROL 0x242001 /* Слово управления. */
+#define REG_ID_DO_RELAY_STATUS 0x242002 /* Слово состояния. */
+#define REG_ID_DO_RELAY_IN_DATA 0x242003 /*  */
+#define REG_ID_AI_ADS8665_COUNT 0x243000 /* Number of sub entries count */
+#define REG_ID_AI_ADS8665_CONTROL 0x243001 /* Слово управления. */
+#define REG_ID_AI_ADS8665_STATUS 0x243002 /* Слово состояния. */
+#define REG_ID_AI_ADS8665_OUT_CH_A 0x243003 /*  */
+#define REG_ID_AI_ADS8665_OUT_CH_B 0x243004 /*  */
+#define REG_ID_AO_DAC7562_COUNT 0x244000 /* Number of sub entries count */
+#define REG_ID_AO_DAC7562_CONTROL 0x244001 /* Слово управления. */
+#define REG_ID_AO_DAC7562_STATUS 0x244002 /* Слово состояния. */
+#define REG_ID_AO_DAC7562_IN_CH_A 0x244003 /*  */
+#define REG_ID_AO_DAC7562_IN_CH_B 0x244004 /*  */
+#define REG_ID_AO_DAC7562_SPI_CONTROL0 0x244005 /*  */
+#define REG_ID_AO_DAC7562_SPI_CONTROL1 0x244006 /*  */
+#define REG_ID_AO_DAC7562_SPI_CONTROL2 0x244007 /*  */
+#define REG_ID_DIGITAL_IN_COUNT 0x250000 /* Number of sub entries count */
+#define REG_ID_DIGITAL_IN_CONTROL 0x250001 /* Слово управления. */
+#define REG_ID_DIGITAL_IN_STATUS 0x250002 /* Слово состояния. */
+#define REG_ID_DIGITAL_IN_OUT_DATA 0x250003 /* Выход дискретных входов */
+#define REG_ID_DIGITAL_IN_INVERT0 0x250004 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT1 0x250005 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT2 0x250006 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT3 0x250007 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT4 0x250008 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT5 0x250009 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT6 0x25000a /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT7 0x25000b /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT8 0x25000c /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT9 0x25000d /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT10 0x25000e /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT11 0x25000f /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT12 0x250010 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT13 0x250011 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT14 0x250012 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT15 0x250013 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT16 0x250014 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT17 0x250015 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT18 0x250016 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT19 0x250017 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT20 0x250018 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT21 0x250019 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT22 0x25001a /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT23 0x25001b /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT24 0x25001c /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT25 0x25001d /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT26 0x25001e /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT27 0x25001f /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT28 0x250020 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT29 0x250021 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT30 0x250022 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_INVERT31 0x250023 /* Параметр инверсии бита выхода */
+#define REG_ID_DIGITAL_IN_SELECT0 0x250024 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT1 0x250025 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT2 0x250026 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT3 0x250027 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT4 0x250028 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT5 0x250029 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT6 0x25002a /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT7 0x25002b /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT8 0x25002c /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT9 0x25002d /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT10 0x25002e /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT11 0x25002f /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT12 0x250030 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT13 0x250031 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT14 0x250032 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT15 0x250033 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT16 0x250034 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT17 0x250035 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT18 0x250036 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT19 0x250037 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT20 0x250038 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT21 0x250039 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT22 0x25003a /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT23 0x25003b /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT24 0x25003c /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT25 0x25003d /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT26 0x25003e /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT27 0x25003f /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT28 0x250040 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT29 0x250041 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT30 0x250042 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_SELECT31 0x250043 /* Параметр выбора дискретного входа */
+#define REG_ID_DIGITAL_IN_T_SET0 0x250044 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET1 0x250045 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET2 0x250046 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET3 0x250047 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET4 0x250048 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET5 0x250049 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET6 0x25004a /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET7 0x25004b /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET8 0x25004c /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET9 0x25004d /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET10 0x25004e /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET11 0x25004f /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET12 0x250050 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET13 0x250051 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET14 0x250052 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET15 0x250053 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET16 0x250054 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET17 0x250055 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET18 0x250056 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET19 0x250057 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET20 0x250058 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET21 0x250059 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET22 0x25005a /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET23 0x25005b /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET24 0x25005c /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET25 0x25005d /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET26 0x25005e /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET27 0x25005f /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET28 0x250060 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET29 0x250061 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET30 0x250062 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_SET31 0x250063 /* Параметр задержки установки бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET0 0x250064 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET1 0x250065 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET2 0x250066 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET3 0x250067 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET4 0x250068 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET5 0x250069 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET6 0x25006a /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET7 0x25006b /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET8 0x25006c /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET9 0x25006d /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET10 0x25006e /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET11 0x25006f /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET12 0x250070 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET13 0x250071 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET14 0x250072 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET15 0x250073 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET16 0x250074 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET17 0x250075 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET18 0x250076 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET19 0x250077 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET20 0x250078 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET21 0x250079 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET22 0x25007a /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET23 0x25007b /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET24 0x25007c /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET25 0x25007d /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET26 0x25007e /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET27 0x25007f /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET28 0x250080 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET29 0x250081 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET30 0x250082 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_RESET31 0x250083 /* Параметр задержки сброса бита выхода */
+#define REG_ID_DIGITAL_IN_T_MSDI_INVALID 0x250084 /* Параметр задержки установки флага невалидности данных от MSDI */
+#define REG_ID_DIGITAL_OUT_COUNT 0x251000 /* Number of sub entries count */
+#define REG_ID_DIGITAL_OUT_CONTROL 0x251001 /* Слово управления. */
+#define REG_ID_DIGITAL_OUT_STATUS 0x251002 /* Слово состояния. */
+#define REG_ID_DIGITAL_OUT_IN_DATA 0x251003 /* Вход дискретных выходов */
+#define REG_ID_DIGITAL_OUT_INVERT0 0x251004 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT1 0x251005 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT2 0x251006 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT3 0x251007 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT4 0x251008 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT5 0x251009 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT6 0x25100a /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT7 0x25100b /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT8 0x25100c /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT9 0x25100d /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT10 0x25100e /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT11 0x25100f /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT12 0x251010 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT13 0x251011 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT14 0x251012 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT15 0x251013 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT16 0x251014 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT17 0x251015 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT18 0x251016 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT19 0x251017 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT20 0x251018 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT21 0x251019 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT22 0x25101a /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT23 0x25101b /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT24 0x25101c /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT25 0x25101d /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT26 0x25101e /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT27 0x25101f /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT28 0x251020 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT29 0x251021 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT30 0x251022 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_INVERT31 0x251023 /* Параметр инверсии дискретного выхода */
+#define REG_ID_DIGITAL_OUT_SELECT0 0x251024 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT1 0x251025 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT2 0x251026 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT3 0x251027 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT4 0x251028 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT5 0x251029 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT6 0x25102a /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT7 0x25102b /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT8 0x25102c /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT9 0x25102d /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT10 0x25102e /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT11 0x25102f /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT12 0x251030 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT13 0x251031 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT14 0x251032 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT15 0x251033 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT16 0x251034 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT17 0x251035 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT18 0x251036 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT19 0x251037 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT20 0x251038 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT21 0x251039 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT22 0x25103a /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT23 0x25103b /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT24 0x25103c /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT25 0x25103d /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT26 0x25103e /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT27 0x25103f /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT28 0x251040 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT29 0x251041 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT30 0x251042 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_SELECT31 0x251043 /* Параметр выбора входного бита */
+#define REG_ID_DIGITAL_OUT_T_SET0 0x251044 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET1 0x251045 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET2 0x251046 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET3 0x251047 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET4 0x251048 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET5 0x251049 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET6 0x25104a /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET7 0x25104b /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET8 0x25104c /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET9 0x25104d /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET10 0x25104e /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET11 0x25104f /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET12 0x251050 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET13 0x251051 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET14 0x251052 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET15 0x251053 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET16 0x251054 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET17 0x251055 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET18 0x251056 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET19 0x251057 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET20 0x251058 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET21 0x251059 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET22 0x25105a /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET23 0x25105b /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET24 0x25105c /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET25 0x25105d /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET26 0x25105e /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET27 0x25105f /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET28 0x251060 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET29 0x251061 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET30 0x251062 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_SET31 0x251063 /* Параметр задержки установки дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET0 0x251064 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET1 0x251065 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET2 0x251066 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET3 0x251067 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET4 0x251068 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET5 0x251069 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET6 0x25106a /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET7 0x25106b /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET8 0x25106c /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET9 0x25106d /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET10 0x25106e /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET11 0x25106f /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET12 0x251070 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET13 0x251071 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET14 0x251072 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET15 0x251073 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET16 0x251074 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET17 0x251075 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET18 0x251076 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET19 0x251077 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET20 0x251078 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET21 0x251079 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET22 0x25107a /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET23 0x25107b /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET24 0x25107c /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET25 0x25107d /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET26 0x25107e /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET27 0x25107f /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET28 0x251080 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET29 0x251081 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET30 0x251082 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_DIGITAL_OUT_T_RESET31 0x251083 /* Параметр задержки сброса дискретного выхода */
+#define REG_ID_ANALOG_IN_COUNT 0x252000 /* Number of sub entries count */
+#define REG_ID_ANALOG_IN_CONTROL 0x252001 /* Слово управления. */
+#define REG_ID_ANALOG_IN_STATUS 0x252002 /* Слово состояния. */
+#define REG_ID_ANALOG_OUT_COUNT 0x253000 /* Number of sub entries count */
+#define REG_ID_ANALOG_OUT_CONTROL 0x253001 /* Слово управления. */
+#define REG_ID_ANALOG_OUT_STATUS 0x253002 /* Слово состояния. */
+#define REG_ID_NTC_TEMP_COUNT 0x254000 /* Number of sub entries count */
+#define REG_ID_NTC_TEMP_CONTROL 0x254001 /* Слово управления. */
+#define REG_ID_NTC_TEMP_STATUS 0x254002 /* Слово состояния. */
+#define REG_ID_NTC_TEMP_OUT_TEMP0 0x254003 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP1 0x254004 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP2 0x254005 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP3 0x254006 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP4 0x254007 /*  */
+#define REG_ID_NTC_TEMP_OUT_TEMP5 0x254008 /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM0 0x254009 /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM1 0x25400a /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM2 0x25400b /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM3 0x25400c /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM4 0x25400d /*  */
+#define REG_ID_NTC_TEMP_OUT_OHM5 0x25400e /*  */
+#define REG_ID_TEMP_COMP_COUNT 0x255000 /* Number of sub entries count */
+#define REG_ID_TEMP_COMP_CONTROL 0x255001 /* Слово управления. */
+#define REG_ID_TEMP_COMP_STATUS 0x255002 /* Слово состояния. */
+#define REG_ID_TEMP_COMP_OUT_DATA 0x255003 /* Выход компараторов */
+#define REG_ID_TEMP_COMP_HIGH_RESIST0 0x255004 /* Порог верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_RESIST1 0x255005 /* Порог верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_RESIST2 0x255006 /* Порог верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_RESIST3 0x255007 /* Порог верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_RESIST4 0x255008 /* Порог верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_RESIST5 0x255009 /* Порог верхнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_RESIST0 0x25500a /* Порог нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_RESIST1 0x25500b /* Порог нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_RESIST2 0x25500c /* Порог нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_RESIST3 0x25500d /* Порог нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_RESIST4 0x25500e /* Порог нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_RESIST5 0x25500f /* Порог нижнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_TIME0 0x255010 /* Фильтр верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_TIME1 0x255011 /* Фильтр верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_TIME2 0x255012 /* Фильтр верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_TIME3 0x255013 /* Фильтр верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_TIME4 0x255014 /* Фильтр верхнего компаратора */
+#define REG_ID_TEMP_COMP_HIGH_TIME5 0x255015 /* Фильтр верхнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_TIME0 0x255016 /* Фильтр нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_TIME1 0x255017 /* Фильтр нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_TIME2 0x255018 /* Фильтр нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_TIME3 0x255019 /* Фильтр нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_TIME4 0x25501a /* Фильтр нижнего компаратора */
+#define REG_ID_TEMP_COMP_LOW_TIME5 0x25501b /* Фильтр нижнего компаратора */
+#define REG_ID_TEMP_COMP_INVERT0 0x25501c /* Параметр инверсии бита выхода */
+#define REG_ID_TEMP_COMP_INVERT1 0x25501d /* Параметр инверсии бита выхода */
+#define REG_ID_TEMP_COMP_INVERT2 0x25501e /* Параметр инверсии бита выхода */
+#define REG_ID_TEMP_COMP_INVERT3 0x25501f /* Параметр инверсии бита выхода */
+#define REG_ID_TEMP_COMP_INVERT4 0x255020 /* Параметр инверсии бита выхода */
+#define REG_ID_TEMP_COMP_INVERT5 0x255021 /* Параметр инверсии бита выхода */
+#define REG_ID_SETTINGS_COUNT 0x256000 /* Number of sub entries count */
+#define REG_ID_SETTINGS_CONTROL 0x256001 /* Слово управления. */
+#define REG_ID_SETTINGS_STATUS 0x256002 /* Слово состояния. */
 
 #endif /* REG_IDS_H */

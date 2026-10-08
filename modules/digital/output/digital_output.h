@@ -41,7 +41,7 @@ static_assert(sizeof(_digital_output_in_bit_t) == 4, "Invalid size of _digital_o
 
 typedef union _digital_output_in_reg {
 	uint32_t all;
-	struct _digital_output_in_bit bit;
+	struct _digital_output_in_bit bit; //!< @{"hide": true}
 } _digital_output_in_reg_t;
 
 typedef struct _digital_output_in_internal_bit {
@@ -88,7 +88,7 @@ struct _S_Digital_Output {
     control_t control; //!< Слово управления.
     status_t status; //!< Слово состояния.
     // Входные данные.
-    _digital_output_in_reg_t in_data; //!< Вход дискретных выходов @{"id": 3, "rpdo": true}
+    reg_u32_t in_data; //!< Вход дискретных выходов @{"id": 3, "rpdo": true}
     // Выходные данные.
     // Параметры.
     reg_u8_t p_invert[DIGITAL_OUTPUT_COUNT]; //!< Параметр инверсии дискретного выхода
@@ -102,6 +102,7 @@ struct _S_Digital_Output {
     METHOD_CALC(M_digital_output);
     // Коллбэки.
     // Внутренние данные.
+    _digital_output_in_reg_t m_in_data;
     _digital_output_in_internal_reg_t m_in_internal_data;
     _digital_output_out_reg_t m_out_data;
 	reg_u8_t m_cnt_set[DIGITAL_OUTPUT_COUNT];
@@ -117,7 +118,7 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
         0, /* control */\
         0, /* status */\
         /* Входные данные */\
-		{0},\
+		0,\
         /* Выходные данные */\
         /* Параметры */\
 		{0},\
@@ -131,6 +132,7 @@ EXTERN METHOD_CALC_PROTO(M_digital_output);
         METHOD_CALC_PTR(M_digital_output),\
         /* Коллбэки */\
         /* Внутренние данные */\
+		{0},\
 		{0},\
 		{0},\
 		{0},\

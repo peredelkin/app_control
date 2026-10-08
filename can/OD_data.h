@@ -1,5 +1,5 @@
-#ifndef CO_DATA_H
-#define CO_DATA_H
+#ifndef OD_DATA_H
+#define OD_DATA_H
 
 #include <stdint.h>
 
@@ -12,7 +12,7 @@
 
 // user code end
 
-struct _S_CO_data {
+struct _S_OD_data {
 
 struct _S_deviceType {
     uint32_t value; /*  */
@@ -255,61 +255,25 @@ struct _S_TPDOMappingParameter_1a03 {
     uint32_t applicationObject8; /*  */
 } TPDOMappingParameter_1a03;
 
-struct _S_conf {
+struct _S_sys_main {
     uint8_t count; /* Number of sub entries count */
-} conf;
+} sys_main;
 
-struct _S_sys {
+struct _S_sys_main_tim {
     uint8_t count; /* Number of sub entries count */
-} sys;
+} sys_main_tim;
 
-struct _S_sys_tim {
+struct _S_sys_secondary {
     uint8_t count; /* Number of sub entries count */
-} sys_tim;
+} sys_secondary;
 
-struct _S_ms_tim {
+struct _S_sys_secondary_tim {
     uint8_t count; /* Number of sub entries count */
-} ms_tim;
-
-struct _S_cli {
-    uint8_t count; /* Number of sub entries count */
-} cli;
+} sys_secondary_tim;
 
 struct _S_rgb_led {
     uint8_t count; /* Number of sub entries count */
 } rgb_led;
-
-struct _S_msdi {
-    uint8_t count; /* Number of sub entries count */
-} msdi;
-
-struct _S_ntc_temp {
-    uint8_t count; /* Number of sub entries count */
-} ntc_temp;
-
-struct _S_do_relay {
-    uint8_t count; /* Number of sub entries count */
-} do_relay;
-
-struct _S_do_ncv7608 {
-    uint8_t count; /* Number of sub entries count */
-} do_ncv7608;
-
-struct _S_digital_in {
-    uint8_t count; /* Number of sub entries count */
-} digital_in;
-
-struct _S_digital_out {
-    uint8_t count; /* Number of sub entries count */
-} digital_out;
-
-struct _S_mso {
-    uint8_t count; /* Number of sub entries count */
-} mso;
-
-struct _S_ao_dac7562 {
-    uint8_t count; /* Number of sub entries count */
-} ao_dac7562;
 
 struct _S_panel_led {
     uint8_t count; /* Number of sub entries count */
@@ -319,20 +283,60 @@ struct _S_modbus_to_can_panel {
     uint8_t count; /* Number of sub entries count */
 } modbus_to_can_panel;
 
-struct _S_settings {
+struct _S_cli {
     uint8_t count; /* Number of sub entries count */
-} settings;
+} cli;
 
-struct _S_temp_comp {
+struct _S_msdi {
     uint8_t count; /* Number of sub entries count */
-} temp_comp;
+} msdi;
+
+struct _S_do_ncv7608 {
+    uint8_t count; /* Number of sub entries count */
+} do_ncv7608;
+
+struct _S_do_relay {
+    uint8_t count; /* Number of sub entries count */
+} do_relay;
 
 struct _S_ai_ads8665 {
     uint8_t count; /* Number of sub entries count */
 } ai_ads8665;
 
+struct _S_ao_dac7562 {
+    uint8_t count; /* Number of sub entries count */
+} ao_dac7562;
+
+struct _S_digital_in {
+    uint8_t count; /* Number of sub entries count */
+} digital_in;
+
+struct _S_digital_out {
+    uint8_t count; /* Number of sub entries count */
+} digital_out;
+
+struct _S_analog_in {
+    uint8_t count; /* Number of sub entries count */
+} analog_in;
+
+struct _S_analog_out {
+    uint8_t count; /* Number of sub entries count */
+} analog_out;
+
+struct _S_ntc_temp {
+    uint8_t count; /* Number of sub entries count */
+} ntc_temp;
+
+struct _S_temp_comp {
+    uint8_t count; /* Number of sub entries count */
+} temp_comp;
+
+struct _S_settings {
+    uint8_t count; /* Number of sub entries count */
+} settings;
+
 };
-extern struct _S_CO_data CO_data;
+extern struct _S_OD_data OD_data;
 
 
-#endif /* CO_DATA_H */
+#endif /* OD_DATA_H */

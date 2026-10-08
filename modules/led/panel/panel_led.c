@@ -29,13 +29,13 @@ static void panel_led_control_handler(M_panel_led* panel_led) {
 }
 
 static void panel_led_calc(M_panel_led* panel_led) {
-	panel_led->m_out_data.bit.ZS = digital_out.in_data.bit.ready;
-	panel_led->m_out_data.bit.Alr = digital_out.in_data.bit.err;
-	panel_led->m_out_data.bit.Wrn = digital_out.in_data.bit.warn;
-	panel_led->m_out_data.bit.Lim = digital_out.in_data.bit.limit;
-	panel_led->m_out_data.bit.En = digital_out.in_data.bit.sw_on;
-	panel_led->m_out_data.bit.T_mn = digital_out.in_data.bit.fwd_bwd & digital_out.in_data.bit.run;
-	panel_led->m_out_data.bit.T_pl = ~digital_out.in_data.bit.fwd_bwd & digital_out.in_data.bit.run;
+	panel_led->m_out_data.bit.ZS = digital_out.m_in_data.bit.ready;
+	panel_led->m_out_data.bit.Alr = digital_out.m_in_data.bit.err;
+	panel_led->m_out_data.bit.Wrn = digital_out.m_in_data.bit.warn;
+	panel_led->m_out_data.bit.Lim = digital_out.m_in_data.bit.limit;
+	panel_led->m_out_data.bit.En = digital_out.m_in_data.bit.sw_on;
+	panel_led->m_out_data.bit.T_mn = digital_out.m_in_data.bit.fwd_bwd & digital_out.m_in_data.bit.run;
+	panel_led->m_out_data.bit.T_pl = ~digital_out.m_in_data.bit.fwd_bwd & digital_out.m_in_data.bit.run;
 
 	panel_led->out_data = panel_led->m_out_data.all;
 }

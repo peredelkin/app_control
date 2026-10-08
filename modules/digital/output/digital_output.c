@@ -73,7 +73,7 @@ static void digital_output_calc(M_digital_output* output) {
 
 		switch(in_sel) {
 		case 0:
-			digital_output_handler(output, i, output->in_data.all);
+			digital_output_handler(output, i, output->m_in_data.all);
 			break;
 
 		case 1:
@@ -108,6 +108,8 @@ static void digital_output_calc(M_digital_output* output) {
 METHOD_CALC_IMPL(M_digital_output, output)
 {
 	digital_output_control_handler(output);
+
+	output->m_in_data.all = output->in_data;
 
 	 if ((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN))
 			 == (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN)) {

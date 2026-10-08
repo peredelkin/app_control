@@ -16,7 +16,7 @@ PROJECT_PATH = ".."
 REGXML2_FILENAME = "reglist.regxml2"
 
 ENCODING = 'utf-8'
-EXCLUDE_DIRS = ["can", "reg", "Debug", "Release", "Desktop", "fmc", "module", "sdcard", "rcc", "lib", "tft9341", "spi", "reg_mc", "interrupts", "graphics", "gpio", "doc", "dma", "sdio", "modbus", "uart", "init", "eth", ]
+EXCLUDE_DIRS = ["can", "reg", "Debug", "Release", "Desktop", "fmc", "module", "sdcard", "rcc", "lib", "tft9341", "spi", "reg_mc", "interrupts", "graphics", "gpio", "doc", "dma", "sdio", "modbus", "uart", "init", "eth", "resampler"]
 
 CPP_INCS = [PROJECT_PATH, os.path.join(PROJECT_PATH, "can/CANopenNode"),
             os.path.join(PROJECT_PATH, "lib/stm32f4xx"),

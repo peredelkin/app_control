@@ -901,7 +901,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x20c00320</default>
+                <default>0x25000320</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -1797,7 +1797,7 @@
                 <memory></memory>
                 <minimum>0</minimum>
                 <maximum>0</maximum>
-                <default>0x20b00320</default>
+                <default>0x25100320</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>0</flags>
@@ -2304,58 +2304,9 @@
         </RegVars>
     </RegEntry>
     <RegEntry index="8192">
-        <name>conf</name>
+        <name>sys_main</name>
         <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>2</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>conf.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>conf.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8208">
-        <name>sys</name>
-        <type>2</type>
-        <description></description>
+        <description>0x2000 -&gt; 8192</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -2375,7 +2326,7 @@
                 <name>control</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys.control</memory>
+                <memory>sys_main.control</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2389,7 +2340,7 @@
                 <name>status</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys.status</memory>
+                <memory>sys_main.status</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2403,7 +2354,7 @@
                 <name>errors</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys.errors</memory>
+                <memory>sys_main.errors</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2417,7 +2368,7 @@
                 <name>warnings</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys.warnings</memory>
+                <memory>sys_main.warnings</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2431,7 +2382,7 @@
                 <name>state</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys.state</memory>
+                <memory>sys_main.state</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2443,10 +2394,10 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8224">
-        <name>sys_tim</name>
+    <RegEntry index="8208">
+        <name>sys_main_tim</name>
         <type>2</type>
-        <description></description>
+        <description>0x2010 -&gt; 8208</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -2466,7 +2417,7 @@
                 <name>control</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys_tim.control</memory>
+                <memory>sys_main_tim.control</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2480,7 +2431,7 @@
                 <name>status</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys_tim.status</memory>
+                <memory>sys_main_tim.status</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2494,7 +2445,7 @@
                 <name>out_counter</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>sys_tim.out_counter</memory>
+                <memory>sys_main_tim.out_counter</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2508,7 +2459,7 @@
                 <name>on_timeout</name>
                 <type>0</type>
                 <count>1</count>
-                <memory>sys_tim.on_timeout</memory>
+                <memory>sys_main_tim.on_timeout</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2520,10 +2471,101 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8240">
-        <name>ms_tim</name>
+    <RegEntry index="8448">
+        <name>sys_secondary</name>
         <type>2</type>
-        <description></description>
+        <description>0x2100 -&gt; 8448</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>5</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>sys_secondary.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>sys_secondary.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>errors</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>sys_secondary.errors</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Ошибки.</description>
+            </RegVar>
+            <RegVar subindex="4">
+                <name>warnings</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>sys_secondary.warnings</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Предупреждения.</description>
+            </RegVar>
+            <RegVar subindex="5">
+                <name>state</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>sys_secondary.state</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Состояние.</description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="8464">
+        <name>sys_secondary_tim</name>
+        <type>2</type>
+        <description>0x2110 -&gt; 8464</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -2543,7 +2585,7 @@
                 <name>control</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>ms_tim.control</memory>
+                <memory>sys_secondary_tim.control</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2557,7 +2599,7 @@
                 <name>status</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>ms_tim.status</memory>
+                <memory>sys_secondary_tim.status</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2571,7 +2613,7 @@
                 <name>out_counter</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>ms_tim.out_counter</memory>
+                <memory>sys_secondary_tim.out_counter</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2585,7 +2627,7 @@
                 <name>on_timeout</name>
                 <type>0</type>
                 <count>1</count>
-                <memory>ms_tim.on_timeout</memory>
+                <memory>sys_secondary_tim.on_timeout</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -2597,10 +2639,227 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8256">
+    <RegEntry index="8960">
+        <name>rgb_led</name>
+        <type>2</type>
+        <description>0x2300 -&gt; 8960</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>6</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>rgb_led.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>rgb_led.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>in_data_1</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>rgb_led.in_data_1</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="4">
+                <name>in_data_2</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>rgb_led.in_data_2</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="5">
+                <name>in_data_3</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>rgb_led.in_data_3</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="6">
+                <name>in_data_4</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>rgb_led.in_data_4</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="8976">
+        <name>panel_led</name>
+        <type>2</type>
+        <description>0x2310 -&gt; 8976</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>3</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>panel_led.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>panel_led.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>out_data</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>panel_led.out_data</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="8992">
+        <name>modbus_to_can_panel</name>
+        <type>2</type>
+        <description>0x2320 -&gt; 8992</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>2</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>modbus_to_can_panel.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>modbus_to_can_panel.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="9008">
         <name>cli</name>
         <type>2</type>
-        <description></description>
+        <description>0x2330 -&gt; 9008</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -2646,73 +2905,10 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8272">
-        <name>rgb_led</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>3</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>rgb_led.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>rgb_led.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-            <RegVar subindex="3">
-                <name>in_data</name>
-                <type>4</type>
-                <count>1</count>
-                <memory>rgb_led.in_data</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8288">
+    <RegEntry index="9216">
         <name>msdi</name>
         <type>2</type>
-        <description></description>
+        <description>0x2400 -&gt; 9216</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -2912,290 +3108,10 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8304">
-        <name>ntc_temp</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>14</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>ntc_temp.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>ntc_temp.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-            <RegVar subindex="3">
-                <name>out_temp0</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_temp[0]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="4">
-                <name>out_temp1</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_temp[1]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="5">
-                <name>out_temp2</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_temp[2]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="6">
-                <name>out_temp3</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_temp[3]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="7">
-                <name>out_temp4</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_temp[4]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="8">
-                <name>out_temp5</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_temp[5]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="9">
-                <name>out_ohm0</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_ohm[0]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="10">
-                <name>out_ohm1</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_ohm[1]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="11">
-                <name>out_ohm2</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_ohm[2]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="12">
-                <name>out_ohm3</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_ohm[3]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="13">
-                <name>out_ohm4</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_ohm[4]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="14">
-                <name>out_ohm5</name>
-                <type>7</type>
-                <count>1</count>
-                <memory>ntc_temp.out_ohm[5]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8320">
-        <name>do_relay</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>3</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>do_relay.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>do_relay.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-            <RegVar subindex="3">
-                <name>in_data</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>do_relay.in_data</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8336">
+    <RegEntry index="9232">
         <name>do_ncv7608</name>
         <type>2</type>
-        <description></description>
+        <description>0x2410 -&gt; 9232</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -3255,10 +3171,269 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8368">
+    <RegEntry index="9248">
+        <name>do_relay</name>
+        <type>2</type>
+        <description>0x2420 -&gt; 9248</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>3</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>do_relay.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>do_relay.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>in_data</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>do_relay.in_data</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="9264">
+        <name>ai_ads8665</name>
+        <type>2</type>
+        <description>0x2430 -&gt; 9264</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>4</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ai_ads8665.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ai_ads8665.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>out_ch_a</name>
+                <type>4</type>
+                <count>1</count>
+                <memory>ai_ads8665.out_ch_a</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="4">
+                <name>out_ch_b</name>
+                <type>4</type>
+                <count>1</count>
+                <memory>ai_ads8665.out_ch_b</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="9280">
+        <name>ao_dac7562</name>
+        <type>2</type>
+        <description>0x2440 -&gt; 9280</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>7</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ao_dac7562.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ao_dac7562.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+            <RegVar subindex="3">
+                <name>in_ch_a</name>
+                <type>4</type>
+                <count>1</count>
+                <memory>ao_dac7562.in_ch_a</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="4">
+                <name>in_ch_b</name>
+                <type>4</type>
+                <count>1</count>
+                <memory>ao_dac7562.in_ch_b</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="5">
+                <name>spi_control0</name>
+                <type>0</type>
+                <count>1</count>
+                <memory>ao_dac7562.spi_control[0]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="6">
+                <name>spi_control1</name>
+                <type>0</type>
+                <count>1</count>
+                <memory>ao_dac7562.spi_control[1]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+            <RegVar subindex="7">
+                <name>spi_control2</name>
+                <type>0</type>
+                <count>1</count>
+                <memory>ao_dac7562.spi_control[2]</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description></description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="9472">
         <name>digital_in</name>
         <type>2</type>
-        <description>0x20b0 -&gt; 8368</description>
+        <description>0x2500 -&gt; 9472</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -5124,10 +5299,10 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8384">
+    <RegEntry index="9488">
         <name>digital_out</name>
         <type>2</type>
-        <description>0x20c0 -&gt; 8384</description>
+        <description>0x2510 -&gt; 9488</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -6979,10 +7154,10 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8400">
-        <name>mso</name>
+    <RegEntry index="9504">
+        <name>analog_in</name>
         <type>2</type>
-        <description></description>
+        <description>0x2520 -&gt; 9504</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -6991,7 +7166,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>34</default>
+                <default>2</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -7002,7 +7177,7 @@
                 <name>control</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>mso.control</memory>
+                <memory>analog_in.control</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7016,7 +7191,105 @@
                 <name>status</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>mso.status</memory>
+                <memory>analog_in.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="9520">
+        <name>analog_out</name>
+        <type>2</type>
+        <description>0x2530 -&gt; 9520</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>2</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>analog_out.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>analog_out.status</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово состояния.</description>
+            </RegVar>
+        </RegVars>
+    </RegEntry>
+    <RegEntry index="9536">
+        <name>ntc_temp</name>
+        <type>2</type>
+        <description>0x2540 -&gt; 9536</description>
+        <RegVars>
+            <RegVar subindex="0">
+                <name>count</name>
+                <type>5</type>
+                <count>1</count>
+                <memory></memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default>14</default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>2</flags>
+                <eflags>131076</eflags>
+                <description>Number of sub entries count</description>
+            </RegVar>
+            <RegVar subindex="1">
+                <name>control</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ntc_temp.control</memory>
+                <minimum></minimum>
+                <maximum></maximum>
+                <default></default>
+                <base_index>0</base_index>
+                <base_subindex>0</base_subindex>
+                <flags>0</flags>
+                <eflags>393216</eflags>
+                <description>Слово управления.</description>
+            </RegVar>
+            <RegVar subindex="2">
+                <name>status</name>
+                <type>3</type>
+                <count>1</count>
+                <memory>ntc_temp.status</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7027,10 +7300,10 @@
                 <description>Слово состояния.</description>
             </RegVar>
             <RegVar subindex="3">
-                <name>channel0</name>
-                <type>0</type>
+                <name>out_temp0</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[0]</memory>
+                <memory>ntc_temp.out_temp[0]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7041,10 +7314,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="4">
-                <name>channel1</name>
-                <type>0</type>
+                <name>out_temp1</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[1]</memory>
+                <memory>ntc_temp.out_temp[1]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7055,10 +7328,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="5">
-                <name>channel2</name>
-                <type>0</type>
+                <name>out_temp2</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[2]</memory>
+                <memory>ntc_temp.out_temp[2]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7069,10 +7342,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="6">
-                <name>channel3</name>
-                <type>0</type>
+                <name>out_temp3</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[3]</memory>
+                <memory>ntc_temp.out_temp[3]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7083,10 +7356,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="7">
-                <name>channel4</name>
-                <type>0</type>
+                <name>out_temp4</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[4]</memory>
+                <memory>ntc_temp.out_temp[4]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7097,10 +7370,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="8">
-                <name>channel5</name>
-                <type>0</type>
+                <name>out_temp5</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[5]</memory>
+                <memory>ntc_temp.out_temp[5]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7111,10 +7384,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="9">
-                <name>channel6</name>
-                <type>0</type>
+                <name>out_ohm0</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[6]</memory>
+                <memory>ntc_temp.out_ohm[0]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7125,10 +7398,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="10">
-                <name>channel7</name>
-                <type>0</type>
+                <name>out_ohm1</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[7]</memory>
+                <memory>ntc_temp.out_ohm[1]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7139,10 +7412,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="11">
-                <name>channel8</name>
-                <type>0</type>
+                <name>out_ohm2</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[8]</memory>
+                <memory>ntc_temp.out_ohm[2]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7153,10 +7426,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="12">
-                <name>channel9</name>
-                <type>0</type>
+                <name>out_ohm3</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[9]</memory>
+                <memory>ntc_temp.out_ohm[3]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7167,10 +7440,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="13">
-                <name>channel10</name>
-                <type>0</type>
+                <name>out_ohm4</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[10]</memory>
+                <memory>ntc_temp.out_ohm[4]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7181,290 +7454,10 @@
                 <description></description>
             </RegVar>
             <RegVar subindex="14">
-                <name>channel11</name>
-                <type>0</type>
+                <name>out_ohm5</name>
+                <type>7</type>
                 <count>1</count>
-                <memory>mso.r_channel[11]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="15">
-                <name>channel12</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[12]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="16">
-                <name>channel13</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[13]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="17">
-                <name>channel14</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[14]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="18">
-                <name>channel15</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[15]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="19">
-                <name>channel16</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[16]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="20">
-                <name>channel17</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[17]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="21">
-                <name>channel18</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[18]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="22">
-                <name>channel19</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[19]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="23">
-                <name>channel20</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[20]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="24">
-                <name>channel21</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[21]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="25">
-                <name>channel22</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[22]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="26">
-                <name>channel23</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[23]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="27">
-                <name>channel24</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[24]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="28">
-                <name>channel25</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[25]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="29">
-                <name>channel26</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[26]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="30">
-                <name>channel27</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[27]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="31">
-                <name>channel28</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[28]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="32">
-                <name>channel29</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[29]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="33">
-                <name>channel30</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[30]</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="34">
-                <name>channel31</name>
-                <type>0</type>
-                <count>1</count>
-                <memory>mso.r_channel[31]</memory>
+                <memory>ntc_temp.out_ohm[5]</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -7476,248 +7469,10 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8416">
-        <name>ao_dac7562</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>4</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>ao_dac7562.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>ao_dac7562.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-            <RegVar subindex="3">
-                <name>in_ch_a</name>
-                <type>4</type>
-                <count>1</count>
-                <memory>ao_dac7562.in_ch_a</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="4">
-                <name>in_ch_b</name>
-                <type>4</type>
-                <count>1</count>
-                <memory>ao_dac7562.in_ch_b</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8432">
-        <name>panel_led</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>3</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>panel_led.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>panel_led.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-            <RegVar subindex="3">
-                <name>out_data</name>
-                <type>4</type>
-                <count>1</count>
-                <memory>panel_led.out_data</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8448">
-        <name>modbus_to_can_panel</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>2</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>modbus_to_can_panel.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>modbus_to_can_panel.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8464">
-        <name>settings</name>
-        <type>2</type>
-        <description></description>
-        <RegVars>
-            <RegVar subindex="0">
-                <name>count</name>
-                <type>5</type>
-                <count>1</count>
-                <memory></memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default>2</default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>2</flags>
-                <eflags>131076</eflags>
-                <description>Number of sub entries count</description>
-            </RegVar>
-            <RegVar subindex="1">
-                <name>control</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>settings.control</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово управления.</description>
-            </RegVar>
-            <RegVar subindex="2">
-                <name>status</name>
-                <type>3</type>
-                <count>1</count>
-                <memory>settings.status</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description>Слово состояния.</description>
-            </RegVar>
-        </RegVars>
-    </RegEntry>
-    <RegEntry index="8480">
+    <RegEntry index="9552">
         <name>temp_comp</name>
         <type>2</type>
-        <description></description>
+        <description>0x2550 -&gt; 9552</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -8197,10 +7952,10 @@
             </RegVar>
         </RegVars>
     </RegEntry>
-    <RegEntry index="8496">
-        <name>ai_ads8665</name>
+    <RegEntry index="9568">
+        <name>settings</name>
         <type>2</type>
-        <description></description>
+        <description>0x2560 -&gt; 9568</description>
         <RegVars>
             <RegVar subindex="0">
                 <name>count</name>
@@ -8209,7 +7964,7 @@
                 <memory></memory>
                 <minimum></minimum>
                 <maximum></maximum>
-                <default>4</default>
+                <default>2</default>
                 <base_index>0</base_index>
                 <base_subindex>0</base_subindex>
                 <flags>2</flags>
@@ -8220,7 +7975,7 @@
                 <name>control</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>ai_ads8665.control</memory>
+                <memory>settings.control</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -8234,7 +7989,7 @@
                 <name>status</name>
                 <type>3</type>
                 <count>1</count>
-                <memory>ai_ads8665.status</memory>
+                <memory>settings.status</memory>
                 <minimum></minimum>
                 <maximum></maximum>
                 <default></default>
@@ -8243,34 +7998,6 @@
                 <flags>0</flags>
                 <eflags>393216</eflags>
                 <description>Слово состояния.</description>
-            </RegVar>
-            <RegVar subindex="3">
-                <name>out_ch_a</name>
-                <type>4</type>
-                <count>1</count>
-                <memory>ai_ads8665.out_ch_a</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
-            </RegVar>
-            <RegVar subindex="4">
-                <name>out_ch_b</name>
-                <type>4</type>
-                <count>1</count>
-                <memory>ai_ads8665.out_ch_b</memory>
-                <minimum></minimum>
-                <maximum></maximum>
-                <default></default>
-                <base_index>0</base_index>
-                <base_subindex>0</base_subindex>
-                <flags>0</flags>
-                <eflags>393216</eflags>
-                <description></description>
             </RegVar>
         </RegVars>
     </RegEntry>

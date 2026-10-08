@@ -1,4 +1,4 @@
-#include "CO_data.h"
+#include "OD_data.h"
 
 
 // THIS FILE IS GENERATED AUTOMATICALLY!
@@ -9,7 +9,7 @@
 
 // user code end
 
-struct _S_CO_data CO_data = {
+struct _S_OD_data OD_data = {
 .deviceType = {
     .value = 0 /*  */
 },
@@ -100,7 +100,7 @@ struct _S_CO_data CO_data = {
 },
 .RPDOMappingParameter = {
     .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
-    .applicationObject1 = 0x20c00320 /*  */,
+    .applicationObject1 = 0x25000320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,
@@ -176,7 +176,7 @@ struct _S_CO_data CO_data = {
 },
 .TPDOMappingParameter = {
     .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
-    .applicationObject1 = 0x20b00320 /*  */,
+    .applicationObject1 = 0x25100320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,
@@ -218,47 +218,20 @@ struct _S_CO_data CO_data = {
     .applicationObject7 = 0 /*  */,
     .applicationObject8 = 0 /*  */
 },
-.conf = {
-    .count = 2 /* Number of sub entries count */
-},
-.sys = {
+.sys_main = {
     .count = 5 /* Number of sub entries count */
 },
-.sys_tim = {
+.sys_main_tim = {
     .count = 4 /* Number of sub entries count */
 },
-.ms_tim = {
-    .count = 4 /* Number of sub entries count */
+.sys_secondary = {
+    .count = 5 /* Number of sub entries count */
 },
-.cli = {
-    .count = 2 /* Number of sub entries count */
+.sys_secondary_tim = {
+    .count = 4 /* Number of sub entries count */
 },
 .rgb_led = {
-    .count = 3 /* Number of sub entries count */
-},
-.msdi = {
-    .count = 13 /* Number of sub entries count */
-},
-.ntc_temp = {
-    .count = 14 /* Number of sub entries count */
-},
-.do_relay = {
-    .count = 3 /* Number of sub entries count */
-},
-.do_ncv7608 = {
-    .count = 3 /* Number of sub entries count */
-},
-.digital_in = {
-    .count = 132 /* Number of sub entries count */
-},
-.digital_out = {
-    .count = 131 /* Number of sub entries count */
-},
-.mso = {
-    .count = 34 /* Number of sub entries count */
-},
-.ao_dac7562 = {
-    .count = 4 /* Number of sub entries count */
+    .count = 6 /* Number of sub entries count */
 },
 .panel_led = {
     .count = 3 /* Number of sub entries count */
@@ -266,13 +239,43 @@ struct _S_CO_data CO_data = {
 .modbus_to_can_panel = {
     .count = 2 /* Number of sub entries count */
 },
-.settings = {
+.cli = {
     .count = 2 /* Number of sub entries count */
+},
+.msdi = {
+    .count = 13 /* Number of sub entries count */
+},
+.do_ncv7608 = {
+    .count = 3 /* Number of sub entries count */
+},
+.do_relay = {
+    .count = 3 /* Number of sub entries count */
+},
+.ai_ads8665 = {
+    .count = 4 /* Number of sub entries count */
+},
+.ao_dac7562 = {
+    .count = 7 /* Number of sub entries count */
+},
+.digital_in = {
+    .count = 132 /* Number of sub entries count */
+},
+.digital_out = {
+    .count = 131 /* Number of sub entries count */
+},
+.analog_in = {
+    .count = 2 /* Number of sub entries count */
+},
+.analog_out = {
+    .count = 2 /* Number of sub entries count */
+},
+.ntc_temp = {
+    .count = 14 /* Number of sub entries count */
 },
 .temp_comp = {
     .count = 33 /* Number of sub entries count */
 },
-.ai_ads8665 = {
-    .count = 4 /* Number of sub entries count */
+.settings = {
+    .count = 2 /* Number of sub entries count */
 }
 };
