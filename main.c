@@ -397,6 +397,10 @@ void fatal_error_handler() {
 	printf("\n");
 	sys_counter_tv_print();
 	printf("ERROR!!!\n");
+	rgb_led.in_data_1 = RGB_LED_COLOR_RED;
+	rgb_led.in_data_2 = RGB_LED_COLOR_RED;
+	rgb_led.in_data_3 = RGB_LED_COLOR_RED;
+	rgb_led.in_data_4 = RGB_LED_COLOR_RED;
 	while (1) {
 
 	}

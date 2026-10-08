@@ -22,13 +22,13 @@ static int timer_init_impl(M_ms_timer* ms_tmr)
     ms_tmr->TIM->CR2 = 0;
     ms_tmr->TIM->DIER = TIM_DIER_UIE;
     ms_tmr->TIM->PSC = MS_TIMER_PRESCALER - 1;
-    ms_tmr->TIM->ARR = MS_TIMER_TICKS_PERIOD_US - 1;
+    ms_tmr->TIM->ARR = MS_TIMER_TICKS_PERIOD_TUS - 1;
     ms_tmr->TIM->CNT = 0;
     ms_tmr->TIM->SR  = 0;
 
     //таймер проинициализирован?
     if((ms_tmr->TIM->PSC == (MS_TIMER_PRESCALER - 1)) &&
-    		(ms_tmr->TIM->ARR == (MS_TIMER_TICKS_PERIOD_US - 1))) {
+    		(ms_tmr->TIM->ARR == (MS_TIMER_TICKS_PERIOD_TUS - 1))) {
     	return 0;
     } else {
     	return -1;

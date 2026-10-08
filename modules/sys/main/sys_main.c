@@ -80,9 +80,6 @@ METHOD_DEINIT_IMPL(M_sys_main, sys)
 
     // Сброс внутренних переменных.
     sys->control = SYS_MAIN_CONTROL_NONE;
-    sys->status = SYS_MAIN_STATUS_NONE;
-    sys->errors = SYS_MAIN_ERROR_NONE;
-    sys->warnings = SYS_MAIN_WARNING_NONE;
     sys->state = SYS_MAIN_STATE_NONE;
 }
 

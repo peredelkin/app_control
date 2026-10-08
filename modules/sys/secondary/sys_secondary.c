@@ -82,9 +82,6 @@ METHOD_DEINIT_IMPL(M_sys_secondary, sys)
 
     // Сброс внутренних переменных.
     sys->control = SYS_SECONDARY_CONTROL_NONE;
-    sys->status = SYS_SECONDARY_STATUS_NONE;
-    sys->errors = SYS_SECONDARY_ERROR_NONE;
-    sys->warnings = SYS_SECONDARY_WARNING_NONE;
     sys->state = SYS_SECONDARY_STATE_NONE;
 }
 
