@@ -26,9 +26,9 @@
 
 #define UART3_DMA_Stream_IRQ_PRIO 9 //UART3 RX/TX RS485_1
 
-#define TIM3_IRQ_PRIO 11	//SYS_MAIN
+#define TIM5_IRQ_PRIO 11	//CAN1 CO_process
 
-#define TIM5_IRQ_PRIO 13	//CAN1 CO_process
+#define TIM3_IRQ_PRIO 13	//SYS_MAIN
 
 #define TIM4_IRQ_PRIO 15	//SYS_SECONDARY
 

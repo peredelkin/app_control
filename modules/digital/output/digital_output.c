@@ -87,6 +87,15 @@ static void digital_output_calc(M_digital_output* output) {
 	}
 }
 
+#define TEMP_COMP_0_1_2_3_4_5	0b111111
+#define TEMP_COMP_3_4_5			0b111000
+
+static void digital_output_internal_temp_comp_calc(M_digital_output* output) {
+	output->m_in_internal_data.bit.temp_comp = (temp_comp.out_data & TEMP_COMP_0_1_2_3_4_5);
+	output->m_in_internal_data.bit.temp_comp_3_or_4_or_5 = (temp_comp.out_data & TEMP_COMP_3_4_5) ? 1 : 0;
+	output->m_in_internal_data.bit.temp_comp_3_and_4_and_5 = ((temp_comp.out_data & TEMP_COMP_3_4_5) == TEMP_COMP_3_4_5) ? 1 : 0;
+}
+
 /*
  * Логика работы дискретных выходов:
  * 1.Если вход, выбранный в настройках, активен, то запускается счетчик установки бита выхода.
@@ -105,18 +114,14 @@ static void digital_output_calc(M_digital_output* output) {
  * Данные для NCV7608 и реле заполняются в структуре m_out_data
  * и передаются в соответствующие модули для управления выходами.
  */
-METHOD_CALC_IMPL(M_digital_output, output)
-{
+METHOD_CALC_IMPL(M_digital_output, output) {
 	digital_output_control_handler(output);
 
 	output->m_in_data.all = output->in_data;
+	digital_output_internal_temp_comp_calc(output);
 
-	 if ((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN))
-			 == (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN)) {
-		output->m_in_internal_data.bit.temp_comp = (temp_comp.out_data & 0b111111);
-		output->m_in_internal_data.bit.temp_comp_0_or_1 = (temp_comp.out_data & 0b000011) ? 1 : 0;
-		output->m_in_internal_data.bit.temp_comp_2_or_3 = (temp_comp.out_data & 0b001100) ? 1 : 0;
-		output->m_in_internal_data.bit.temp_comp_4_or_5 = (temp_comp.out_data & 0b110000) ? 1 : 0;
+	if ((output->status & (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN))
+			== (DIGITAL_OUTPUT_STATUS_READY | DIGITAL_OUTPUT_STATUS_RUN)) {
 		digital_output_calc(output);
 		do_ncv7608.in_data = output->m_out_data.bit.ncv;
 		do_relay.in_data = output->m_out_data.bit.relay;
