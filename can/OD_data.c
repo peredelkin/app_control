@@ -100,7 +100,7 @@ struct _S_OD_data OD_data = {
 },
 .RPDOMappingParameter = {
     .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
-    .applicationObject1 = 0x25000320 /*  */,
+    .applicationObject1 = 0x25100320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,
@@ -176,7 +176,7 @@ struct _S_OD_data OD_data = {
 },
 .TPDOMappingParameter = {
     .numberOfMappedApplicationObjectsInPDO = 1 /* Number of sub-entries */,
-    .applicationObject1 = 0x25100320 /*  */,
+    .applicationObject1 = 0x25000320 /*  */,
     .applicationObject2 = 0 /*  */,
     .applicationObject3 = 0 /*  */,
     .applicationObject4 = 0 /*  */,
