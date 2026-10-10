@@ -1,0 +1,42 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+      }
+    },
+    {
+      "name": "tvu_v20_base",
+      "inherits": "base",
+      "hidden": true,
+      "displayName": "TVU v2.0 base",
+      "cacheVariables": {
+        "TARGET": "PORT_TVU_V2_0"
+      }
+    },
+    {
+      "name": "tvu_v20_debug",
+      "inherits": "tvu_v20_base",
+      "displayName": "TVU v2.0 (Debug)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "tvu_v20_release",
+      "inherits": "tvu_v20_base",
+      "displayName": "TVU v2.0 (Release)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "build-tvu_v20_debug", "configurePreset": "tvu_v20_debug" },
+    { "name": "build-tvu_v20_release", "configurePreset": "tvu_v20_release" }
+  ]
+}
